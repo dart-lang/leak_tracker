@@ -1,0 +1,16 @@
+# Dependabot configuration file.
+version: 2
+enable-beta-ecosystems: true
+
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "pub"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # TODO: Remove this if / when the default changes (dependabot/dependabot-core/issues/4979)
+    versioning-strategy: increase-if-necessary

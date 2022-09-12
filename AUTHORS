@@ -1,9 +1,6 @@
-# Names should be added to this file with this pattern:
+# Below is a list of people and organizations that have contributed
+# to the project. Names should be added to the list like so:
 #
-# For individuals:
-#   Name <email address>
-#
-# For organizations:
-#   Organization <fnmatch pattern>
-#
-Google Inc. <*@google.com>
+#   Name/Organization <email address>
+
+Google Inc.
