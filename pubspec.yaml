@@ -6,5 +6,8 @@ repository: https://github.com/dart-lang/leak_tracker
 environment:
   sdk: ">=2.18.0 <3.0.0"
 
+dependencies:
+  collection: ^1.15.0
+
 dev_dependencies:
   test: ^1.16.0
