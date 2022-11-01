@@ -86,9 +86,9 @@ class _JsonFields {
 /// DevTools after deeper analysis.
 class LeakReport {
   LeakReport({
-    required this.type,
     required this.details,
     required this.code,
+    required this.type,
   });
 
   factory LeakReport.fromJson(Map<String, dynamic> json) => LeakReport(
@@ -98,9 +98,14 @@ class LeakReport {
         code: json[_JsonFields.code],
       );
 
-  final String type;
+  /// Information about the leak that can help in troubleshooting.
   final List<String> details;
+
+  /// [identityHashCode] of the object.
   final int code;
+
+  /// Runtime type of the object.
+  final String type;
 
   // The fields below do not need serialization as they are populated after.
   String? retainingPath;

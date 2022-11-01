@@ -9,7 +9,17 @@ import 'package:test/test.dart';
 
 void main() {
   test('$Leaks serializes.', () {
-    final leaks = Leaks({});
+    final leaks = Leaks({
+      LeakType.gcedLate: [
+        LeakReport(type: 't1', details: ['a', 'b', 'c'], code: 1),
+      ],
+      LeakType.notDisposed: [
+        LeakReport(type: 't2', details: ['1', '2', '3'], code: 2),
+      ],
+      LeakType.notGCed: [
+        LeakReport(type: 't3', details: ['a', 'b', 'c'], code: 1),
+      ],
+    });
 
     final json = leaks.toJson();
 
