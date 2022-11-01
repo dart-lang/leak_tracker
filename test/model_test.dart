@@ -2,73 +2,35 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'package:leak_tracker/leak_analysis.dart';
 import 'package:test/test.dart';
 
 void main() {
   test('$Leaks serializes.', () {
-    // final task = NotGCedAnalyzerTask(
-    //   reports: [
-    //     LeakReport(
-    //       type: 'type',
-    //       details: ['details'],
-    //       code: 2,
-    //     )
-    //   ],
-    //   heap: AdaptedHeapData(
-    //     [
-    //       AdaptedHeapObject(
-    //         heapClass: HeapClassName(
-    //           className: 'class',
-    //           library: 'library',
-    //         ),
-    //         references: [2, 3, 4],
-    //         code: 6,
-    //         shallowSize: 1,
-    //       ),
-    //     ],
-    //     rootIndex: 0,
-    //   ),
-    // );
+    final leaks = Leaks({});
 
-    // final json = task.toJson();
+    final json = leaks.toJson();
 
-    // expect(
-    //   jsonEncode(json),
-    //   jsonEncode(NotGCedAnalyzerTask.fromJson(json).toJson()),
-    // );
+    expect(
+      jsonEncode(json),
+      jsonEncode(Leaks.fromJson(json).toJson()),
+    );
   });
 
   test('$LeakSummary serializes.', () {
-    // final task = NotGCedAnalyzerTask(
-    //   reports: [
-    //     LeakReport(
-    //       type: 'type',
-    //       details: ['details'],
-    //       code: 2,
-    //     )
-    //   ],
-    //   heap: AdaptedHeapData(
-    //     [
-    //       AdaptedHeapObject(
-    //         heapClass: HeapClassName(
-    //           className: 'class',
-    //           library: 'library',
-    //         ),
-    //         references: [2, 3, 4],
-    //         code: 6,
-    //         shallowSize: 1,
-    //       ),
-    //     ],
-    //     rootIndex: 0,
-    //   ),
-    // );
+    final leakSummary = LeakSummary({
+      LeakType.gcedLate: 2,
+      LeakType.notDisposed: 3,
+      LeakType.notGCed: 4,
+    });
 
-    // final json = task.toJson();
+    final json = leakSummary.toJson();
 
-    // expect(
-    //   jsonEncode(json),
-    //   jsonEncode(NotGCedAnalyzerTask.fromJson(json).toJson()),
-    // );
+    expect(
+      jsonEncode(json),
+      jsonEncode(LeakSummary.fromJson(json).toJson()),
+    );
   });
 }
