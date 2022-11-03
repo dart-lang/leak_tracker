@@ -1,0 +1,6 @@
+name: leak_tracker_minimal_dart_example
+
+environment:
+  sdk: '>=2.19.0-317.0.dev <3.0.0'
+
+dependencies:
