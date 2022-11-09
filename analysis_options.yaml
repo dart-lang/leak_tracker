@@ -12,7 +12,6 @@ analyzer:
     missing_return: warning
   exclude:
     - build/**
-    - flutter_packages/**
 
 linter:
   rules:

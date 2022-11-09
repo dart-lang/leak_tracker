@@ -1,4 +1,4 @@
-name: Dart
+name: CI
 
 on:
   schedule:
@@ -22,8 +22,8 @@ jobs:
         with:
           channel: 'beta'
 
-      - name: content
-        run: pwd; ls -la; flutter --version
+      - name: version
+        run: flutter --version
 
       - name: flutter pub get
         run: flutter pub get

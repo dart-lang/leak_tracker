@@ -1,4 +1,4 @@
-[![Dart](https://github.com/dart-lang/leak_tracker/actions/workflows/dart.yaml/badge.svg)](https://github.com/dart-lang/leak_tracker/actions/workflows/dart.yaml)
+[![CI](https://github.com/dart-lang/leak_tracker/actions/workflows/ci.yaml/badge.svg)](https://github.com/dart-lang/leak_tracker/actions/workflows/ci.yaml)
 
 ## Memory Leak Tracker
 
