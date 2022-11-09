@@ -1,0 +1,42 @@
+name: Dart
+
+on:
+  schedule:
+    # “At 00:00 (UTC) on Sunday.”
+    - cron: '0 0 * * 0'
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: clone flutter/packages
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          repository: flutter/packages
+          path: flutter_packages
+
+      # Install the Flutter SDK using the subosito/flutter-action GitHub action.
+      - name: install the flutter sdk
+        uses: subosito/flutter-action@dbf1fa04f4d2e52c33185153d06cdb5443aa189d
+        with:
+          channel: 'beta'
+
+      - name: flutter --version
+        run: flutter --version
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: flutter analyze
+        run: flutter analyze
+
+      - name: dart test
+        run: dart test test/dart
+
+      - name: flutter test
+        run: flutter test test/flutter
