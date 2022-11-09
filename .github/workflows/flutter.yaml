@@ -29,6 +29,9 @@ jobs:
       - name: flutter --version
         run: flutter --version
 
+      - name: temp debug
+        run: pwd; ls -la
+
       - name: flutter pub get
         working-directory: .
         run: flutter pub get
