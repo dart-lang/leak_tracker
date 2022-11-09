@@ -30,6 +30,7 @@ jobs:
         run: flutter --version
 
       - name: flutter pub get
+        working-directory: .
         run: flutter pub get
 
       - name: flutter analyze
