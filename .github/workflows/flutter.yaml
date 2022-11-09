@@ -29,11 +29,8 @@ jobs:
         with:
           channel: 'beta'
 
-      - name: flutter --version
-        run: flutter --version
-
       - name: content
-        run: pwd; ls -la
+        run: pwd; ls -la; flutter --version
 
       - name: flutter pub get
         run: flutter pub get
