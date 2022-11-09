@@ -14,17 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: clone flutter/packages
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-        with:
-          repository: flutter/packages
-          path: flutter_packages
+      - uses: actions/checkout@v2
 
-      # Install the Flutter SDK using the subosito/flutter-action GitHub action.
-      - name: install the flutter sdk
-        uses: subosito/flutter-action@dbf1fa04f4d2e52c33185153d06cdb5443aa189d
+      - name: Setup Flutter SDK
+        uses: flutter-actions/setup-flutter@v2
         with:
-          channel: 'beta'
+          channel: stable
 
       - name: flutter --version
         run: flutter --version
