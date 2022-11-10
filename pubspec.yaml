@@ -11,3 +11,5 @@ dependencies:
 
 dev_dependencies:
   test: ^1.16.0
+  flutter_test:
+    sdk: flutter
