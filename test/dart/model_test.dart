@@ -13,7 +13,7 @@ void main() {
       LeakType.gcedLate: [
         LeakReport(
           type: 't1',
-          context: {'a': 1, 'b': DateTime.now(), 'c': ''},
+          context: {'a': 1, 'b': 3.14, 'c': ''},
           code: 1,
         ),
       ],

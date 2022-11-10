@@ -7,6 +7,7 @@ typedef IdentityHashCode = int;
 
 typedef ObjectGcCallback = void Function(Object code);
 
+/// Finilizer builder to mock finalizer.
 typedef FinalizerBuilder = Finalizer<Object> Function(
   ObjectGcCallback onObjectGc,
 );
