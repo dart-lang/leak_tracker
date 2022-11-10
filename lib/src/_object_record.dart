@@ -10,21 +10,27 @@ import 'model.dart';
 ///
 /// Objects migrate between collections based on their state.
 ///
-/// On registration, each object enters all collections [notGCed]
-/// and [notGCedFresh].
+/// On registration, each object enters the collections [notGCed].
+/// On disposal it is added to disposedOk. Then, if it is overdue
+/// to be GCed it migrates from [notGCedDisposedOk] to [notGCedDisposedLate].
 ///
-/// If the object stays not GCed after disposal too long,
-/// it migrates from [notGCedFresh] to [notGCedLate].
-///
-/// If the object gets GCed, it is removed from all _notGCed... collections,
-/// and, if it was GCed wrongly, added to one of _gced... collections.
+/// If the object gets GCed, it is removed from all notGCed... collections,
+/// and, if it was GCed wrongly, added to one of gced... collections.
 class ObjectRecords {
+  /// All not GCed objects.
   final Map<IdentityHashCode, ObjectRecord> notGCed =
       <IdentityHashCode, ObjectRecord>{};
-  final Set<IdentityHashCode> notGCedFresh = <IdentityHashCode>{};
-  final Set<IdentityHashCode> notGCedLate = <IdentityHashCode>{};
 
+  /// Not GCed objects, that were disposed and are not expected to be GCed yet.
+  final Set<IdentityHashCode> notGCedDisposedOk = <IdentityHashCode>{};
+
+  /// Not GCed objects, that were disposed and are overdue to be GCed.
+  final Set<IdentityHashCode> notGCedDisposedLate = <IdentityHashCode>{};
+
+  /// GCed objects that were late to be GCed.
   final List<ObjectRecord> gcedLateLeaks = <ObjectRecord>[];
+
+  /// GCed ibjects that were not disposed.
   final List<ObjectRecord> gcedNotDisposedLeaks = <ObjectRecord>[];
 }
 
@@ -39,43 +45,43 @@ class ObjectRecord {
   DateTime? _disposalTime;
   int? _disposalGcCount;
 
-  void setDisposed(int gcTime) {
+  void setDisposed(int gcTime, DateTime time) {
     if (_disposalGcCount != null) throw 'The object $code was disposed twice.';
-    if (_gcedGcTime != null)
+    if (_gcedGcCount != null)
       throw 'The object $code should not be disposed after being GCed.';
     _disposalGcCount = gcTime;
-    _disposalTime = DateTime.now();
+    _disposalTime = time;
   }
 
   DateTime? _gcedTime;
-  int? _gcedGcTime;
-  void setGCed(int gcTime) {
-    if (_gcedGcTime != null) throw 'The object $code GCed twice.';
-    _gcedGcTime = gcTime;
-    _gcedTime = DateTime.now();
+  int? _gcedGcCount;
+  void setGCed(int gcCount, DateTime time) {
+    if (_gcedGcCount != null) throw 'The object $code GCed twice.';
+    _gcedGcCount = gcCount;
+    _gcedTime = time;
   }
 
-  bool get isGCed => _gcedGcTime != null;
+  bool get isGCed => _gcedGcCount != null;
   bool get isDisposed => _disposalGcCount != null;
 
   bool get isGCedLateLeak {
-    if (_disposalGcCount == null || _gcedGcTime == null) return false;
+    if (_disposalGcCount == null || _gcedGcCount == null) return false;
     assert(_gcedTime != null);
     return shouldObjectBeGced(
       gcCountAtDisposal: _disposalGcCount!,
       timeAtDisposal: _disposalTime!,
-      currentGcCount: _gcedGcTime!,
+      currentGcCount: _gcedGcCount!,
       currentTime: _gcedTime!,
     );
   }
 
-  bool isNotGCedLeak(int currentGcCount) {
-    if (_gcedGcTime != null) return false;
+  bool isNotGCedLeak(int currentGcCount, DateTime currentTime) {
+    if (_gcedGcCount != null) return false;
     return shouldObjectBeGced(
       gcCountAtDisposal: _disposalGcCount!,
       timeAtDisposal: _disposalTime!,
       currentGcCount: currentGcCount,
-      currentTime: DateTime.now(),
+      currentTime: currentTime,
     );
   }
 
