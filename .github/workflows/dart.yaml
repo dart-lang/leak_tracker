@@ -21,7 +21,7 @@ jobs:
 
       - name: Install dependencies
         run: dart pub get
-  
+
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
@@ -30,3 +30,10 @@ jobs:
 
       - name: Run tests
         run: dart test
+
+      - name: Build Dart example
+        run:
+
+      - name: Build Flutter example
+        run:
+

@@ -7,6 +7,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  leak_tracker: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -15,3 +16,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+dependency_overrides:
+  leak_tracker:
+    path: ../..
