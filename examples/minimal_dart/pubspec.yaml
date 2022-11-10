@@ -4,3 +4,8 @@ environment:
   sdk: '>=2.19.0-317.0.dev <3.0.0'
 
 dependencies:
+  leak_tracker: ^1.0.0
+
+dependency_overrides:
+  leak_tracker:
+    path: ../..
