@@ -17,6 +17,7 @@ void dispatchObjectEvent(Map<Object, Map<String, Object>> event) =>
 /// Dispatches object creation to the leak tracker.
 ///
 /// Use [context] to provide additional information, that may help in leek troubleshooting.
+/// The value must be serializable.
 void dispatchObjectCreated({
   required String library,
   required String className,

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 
 import '_util.dart';
@@ -78,7 +80,7 @@ class Leaks {
 /// Names for json fields.
 class _JsonFields {
   static const String type = 'type';
-  static const String details = 'details';
+  static const String context = 'context';
   static const String code = 'code';
 }
 
@@ -86,20 +88,20 @@ class _JsonFields {
 /// DevTools after deeper analysis.
 class LeakReport {
   LeakReport({
-    required this.details,
+    required this.context,
     required this.code,
     required this.type,
   });
 
   factory LeakReport.fromJson(Map<String, dynamic> json) => LeakReport(
         type: json[_JsonFields.type],
-        details:
-            (json[_JsonFields.details] as List<dynamic>? ?? []).cast<String>(),
+        context: (json[_JsonFields.context] as Map<String, dynamic>? ?? {})
+            .cast<String, dynamic>(),
         code: json[_JsonFields.code],
       );
 
   /// Information about the leak that can help in troubleshooting.
-  final List<String> details;
+  final Map<String, dynamic> context;
 
   /// [identityHashCode] of the object.
   final int code;
@@ -113,7 +115,7 @@ class LeakReport {
 
   Map<String, dynamic> toJson() => {
         _JsonFields.type: type,
-        _JsonFields.details: details,
+        _JsonFields.context: context,
         _JsonFields.code: code,
       };
 
@@ -135,16 +137,15 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
     final result = StringBuffer();
     result.writeln('$indent$type:');
     result.writeln('$indent  identityHashCode: $code');
-    if (details.isNotEmpty) {
+    if (context.isNotEmpty) {
       result.writeln('$indent  details:');
-      final detailsIndent = '$indent    ';
+      final contextIndent = '$indent    ';
       result.write(
-        details
-            .map(
-              (t) =>
-                  '$detailsIndent- ${_indentNewLines(t, '  $detailsIndent')}\n',
-            )
-            .join(),
+        context.keys.map((key) {
+          final value =
+              _indentNewLines(jsonEncode(context[key]), '  $contextIndent');
+          return '$contextIndent$key: $value\n';
+        }).join(),
       );
     }
 

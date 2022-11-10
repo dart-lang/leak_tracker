@@ -11,13 +11,13 @@ void main() {
   test('$Leaks serializes.', () {
     final leaks = Leaks({
       LeakType.gcedLate: [
-        LeakReport(type: 't1', details: ['a', 'b', 'c'], code: 1),
+        LeakReport(type: 't1', context: ['a', 'b', 'c'], code: 1),
       ],
       LeakType.notDisposed: [
-        LeakReport(type: 't2', details: ['1', '2', '3'], code: 2),
+        LeakReport(type: 't2', context: ['1', '2', '3'], code: 2),
       ],
       LeakType.notGCed: [
-        LeakReport(type: 't3', details: ['a', 'b', 'c'], code: 1),
+        LeakReport(type: 't3', context: ['a', 'b', 'c'], code: 1),
       ],
     });
 

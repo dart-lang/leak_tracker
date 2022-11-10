@@ -4,7 +4,7 @@
 
 import 'package:meta/meta.dart';
 
-/// Detects if objects are expected to be disposed by watchung GC cycles.
+/// Wrapper for reachabilityBarrier, for mocking purposes.
 class GcCounter {
   /// Number of full GC cycles since start of the isolate.
   int get gcCount =>
@@ -12,17 +12,6 @@ class GcCounter {
       // when https://dart-review.git.corp.google.com/c/sdk/+/266424 reaches
       // Flutter master.
       DateTime.now().millisecondsSinceEpoch;
-
-  /// True, if the disposed object is expected to be GCed,
-  /// assuming at the disposal moment it was referenced only
-  /// by the the disposal invoker.
-  bool shouldBeGced(int gcCountAtDisposal, DateTime timeAtDisposal) =>
-      shouldObjectBeGced(
-        gcCountAtDisposal: gcCountAtDisposal,
-        timeAtDisposal: timeAtDisposal,
-        currentGcCount: gcCount,
-        currentTime: DateTime.now(),
-      );
 }
 
 /// Time to allow the disposal invoker to release the reference to the object.
@@ -36,7 +25,9 @@ const disposalTimeBuffer = Duration(milliseconds: 100);
 @visibleForTesting
 const gcCountBuffer = 2;
 
-@visibleForTesting
+/// True, if the disposed object is expected to be GCed,
+/// assuming at the disposal moment it was referenced only
+/// by the the disposal invoker.
 bool shouldObjectBeGced({
   required int gcCountAtDisposal,
   required DateTime timeAtDisposal,
