@@ -27,7 +27,7 @@ runApp(...
 
 ```
 
-2. Run application in debug mode and watch for a leak related warnings. If you see a warning, click the provided link to investigate the leaks.
+2. Run application in debug mode and watch for a leak related warnings. If you see a warning, open the link to investigate the leaks.
 
 TODO(polina-c): add example of the warning
 
