@@ -16,12 +16,12 @@ void dispatchObjectEvent(Map<Object, Map<String, Object>> event) =>
 
 /// Dispatches object creation to the leak tracker.
 ///
-/// Use [info] to provide additional information, that may help in leek troubleshooting.
+/// Use [context] to provide additional information, that may help in leek troubleshooting.
 void dispatchObjectCreated({
   required String library,
   required String className,
   required Object object,
-  Map<String, dynamic>? info,
+  Map<String, dynamic>? context,
 }) =>
     throw UnimplementedError();
 
@@ -30,15 +30,15 @@ void dispatchObjectCreated({
 /// See [dispatchObjectCreated] for parameters documentation.
 void dispatchObjectDisposed({
   required Object object,
-  Map<String, dynamic>? info,
+  Map<String, dynamic>? context,
 }) =>
     throw UnimplementedError();
 
-/// Dispatches additional object information to the leak tracker.
+/// Dispatches additional context information to the leak tracker.
 ///
 /// See [dispatchObjectCreated] for parameters documentation.
 void dispatchObjectTrace({
   required Object object,
-  Map<String, dynamic>? info,
+  Map<String, dynamic>? context,
 }) =>
     throw UnimplementedError();
