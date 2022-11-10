@@ -25,24 +25,23 @@ class GcCounter {
       );
 }
 
-/// The default is pessimistic assuming that user will want to
+/// Time to allow the disposal invoker to release the reference to the object.
+///
+/// The value is pessimistic assuming that user will want to
 /// detect leaks not more often than a second.
 @visibleForTesting
-const defaultDisposalTimeBuffer = Duration(milliseconds: 100);
+const disposalTimeBuffer = Duration(milliseconds: 100);
 
+/// Delta of GC time, enough for a non reachable object to be GCed.
 @visibleForTesting
 const gcCountBuffer = 2;
 
-/// [disposalBuffer] is time to allow the disposal invoker
-/// to release the reference to the object.
 @visibleForTesting
 bool shouldObjectBeGced({
   required int gcCountAtDisposal,
   required DateTime timeAtDisposal,
   required int currentGcCount,
   required DateTime currentTime,
-  Duration? disposalBuffer,
 }) =>
     currentGcCount - gcCountAtDisposal >= gcCountBuffer &&
-    currentTime.difference(timeAtDisposal) >=
-        (disposalBuffer ?? defaultDisposalTimeBuffer);
+    currentTime.difference(timeAtDisposal) >= disposalTimeBuffer;

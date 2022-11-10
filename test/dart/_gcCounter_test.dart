@@ -30,7 +30,7 @@ void main() {
 
     final forEnoughTimeAndGc = shouldBeGced(
       gcNow - gcCountBuffer,
-      now.subtract(defaultDisposalTimeBuffer),
+      now.subtract(disposalTimeBuffer),
     );
     expect(forEnoughTimeAndGc, isTrue);
   });
