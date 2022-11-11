@@ -101,7 +101,7 @@ class LeakReport {
       );
 
   /// Information about the leak that can help in troubleshooting.
-  final Map<String, dynamic> context;
+  final Map<String, dynamic>? context;
 
   /// [identityHashCode] of the object.
   final int code;
@@ -137,13 +137,14 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
     final result = StringBuffer();
     result.writeln('$indent$type:');
     result.writeln('$indent  identityHashCode: $code');
-    if (context.isNotEmpty) {
-      result.writeln('$indent  details:');
+    final theContext = context;
+    if (theContext != null && theContext.isNotEmpty) {
+      result.writeln('$indent  context:');
       final contextIndent = '$indent    ';
       result.write(
-        context.keys.map((key) {
+        theContext.keys.map((key) {
           final value =
-              _indentNewLines(jsonEncode(context[key]), '  $contextIndent');
+              _indentNewLines(jsonEncode(theContext[key]), '  $contextIndent');
           return '$contextIndent$key: $value\n';
         }).join(),
       );

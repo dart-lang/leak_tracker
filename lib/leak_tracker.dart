@@ -3,3 +3,4 @@
 // BSD-style license that can be found in the LICENSE file.
 
 export 'src/leak_tracker.dart';
+export 'src/leak_tracker_model.dart';

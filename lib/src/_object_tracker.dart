@@ -3,11 +3,14 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import '_gc_counter.dart';
+import '_object_record.dart';
 import '_primitives.dart';
+import 'leak_tracker_model.dart';
 
 class ObjectTracker {
   /// The parameters are injected for testing purposes.
-  ObjectTracker({
+  ObjectTracker(
+    this._config, {
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
   }) {
@@ -19,45 +22,49 @@ class ObjectTracker {
   late Finalizer<Object> _finalizer;
   late GcCounter _gcCounter;
   final _objects = ObjectRecords();
+  final LeakTrackingConfiguration _config;
 
   void _objectGarbageCollected(Object code) {
     if (code is! int) throw 'Object token should be integer.';
-    if (_duplicates.contains(code)) return;
-    final TrackedObjectInfo? info = _notGCed[code];
-    if (info == null) {
-      throw '$code cannot be garbage collected twice.';
-    }
-    assert(_assertIntegrity(info));
-    info.setGCed(_gcTime.now);
 
-    if (info.isGCedLateLeak) {
-      _gcedLateLeaks.add(info);
-    } else if (info.isNotDisposedLeak) {
-      _gcedNotDisposedLeaks.add(info);
-    }
-    _notGCed.remove(code);
-    _notGCedFresh.remove(code);
-    _notGCedLate.remove(code);
+    if (_objects.duplicates.contains(code)) return;
 
-    assert(_assertIntegrity(info));
+    final ObjectRecord? record = _objects.notGCed[code];
+    if (record == null) {
+      throw '$code should not be garbage collected twice.';
+    }
+    _objects.assertRecordIntegrity(code);
+
+    record.setGCed(_gcCounter.gcCount, DateTime.now());
+
+    if (record.isGCedLateLeak) {
+      _objects.gcedLateLeaks.add(record);
+    } else if (record.isNotDisposedLeak) {
+      _objects.gcedNotDisposedLeaks.add(record);
+    }
+    _objects.notGCed.remove(code);
+    _objects.notGCedDisposedOk.remove(code);
+    _objects.notGCedDisposedLate.remove(code);
+
+    _objects.assertRecordIntegrity(code);
   }
 
-  void startTracking(Object object, String? details) {
+  void startTracking(Object object, Map<String, dynamic>? context) {
     final code = identityHashCode(object);
     if (_checkForDuplicate(code)) return;
 
     _finalizer.attach(object, code);
 
-    final TrackedObjectInfo info = TrackedObjectInfo(
-      object,
-      <String>[
-        if (details != null) details,
-      ],
+    final record = ObjectRecord(
+      identityHashCode(object),
+      context,
+      object.runtimeType,
     );
 
-    final config = leakTrackingConfiguration!;
-    if (config.classesToCollectStackTraceOnTrackingStart
+
+    if (_config.classesToCollectStackTraceOnTrackingStart
         .contains(object.runtimeType.toString())) {
+      record.addDetails()
       info.details.add(StackTrace.current.toString());
     }
 
@@ -66,7 +73,7 @@ class ObjectTracker {
     assert(_assertIntegrity(info));
   }
 
-  /// Normally one ContainerLayer is created before main() is invoked.
+  /// Normally one ContainerLayer is created  in a Flutter app before main() is invoked.
   /// So, it is not registered, but disposed.
   /// This flag makes sure there is just one such object.
   int? oneNotRegisteredContainerLayer;
@@ -107,27 +114,6 @@ class ObjectTracker {
     _notGCed[code]!.details.add(details);
   }
 
-  bool _assertIntegrity(TrackedObjectInfo info) {
-    if (_notGCed.containsKey(info.code)) {
-      assert(_notGCed[info.code]!.code == info.code);
-
-      // It was false one time.
-      assert(!info.isGCed);
-    }
-
-    assert(
-      _gcedLateLeaks.contains(info) == info.isGCedLateLeak,
-      '${_gcedLateLeaks.contains(info)}, ${info.isDisposed}, ${info.isGCed},',
-    );
-
-    assert(
-      _gcedNotDisposedLeaks.contains(info) == (info.isGCed && !info.isDisposed),
-      '${_gcedNotDisposedLeaks.contains(info)}, ${info.isGCed}, ${!info.isDisposed}',
-    );
-
-    return true;
-  }
-
   LeakSummary collectLeaksSummary() {
     _checkForNewNotGCedLeaks();
 
@@ -166,25 +152,8 @@ class ObjectTracker {
     });
   }
 
-  bool _assertIntegrityForAll() {
-    _assertIntegrityForCollections();
-    _notGCed.values.forEach(_assertIntegrity);
-    _gcedLateLeaks.forEach(_assertIntegrity);
-    _gcedNotDisposedLeaks.forEach(_assertIntegrity);
-    return true;
-  }
-
-  bool _assertIntegrityForCollections() {
-    assert(_notGCed.length == _notGCedFresh.length + _notGCedLate.length);
-    return true;
-  }
-
-  void registerOldGCEvent() {
-    _gcTime.registerOldGCEvent();
-  }
-
   /// Normally there is no duplicates or 1-2 per application run. If there are
-  /// more, this means there is an issue.
+  /// more, this means an error.
   final _maxAllowedDuplicates = 100;
   bool _checkForDuplicate(int code) {
     if (!_notGCed.containsKey(code)) return false;

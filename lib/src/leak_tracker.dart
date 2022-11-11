@@ -2,10 +2,13 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import '../leak_tracker.dart';
+
 /// Enables leak tracking for the application.
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
-void enableLeakTracking() => throw UnimplementedError();
+void enableLeakTracking({LeakTrackingConfiguration? config}) =>
+    throw UnimplementedError();
 
 /// Dispatches an object event to the leak tracker.
 ///

@@ -4,7 +4,7 @@
 
 import '_gc_counter.dart';
 import '_primitives.dart';
-import 'model.dart';
+import 'leak_analysis_model.dart';
 
 /// Object collections to track leaks.
 ///
@@ -36,6 +36,41 @@ class ObjectRecords {
   /// As identityHashCode is not unique, we ignore objects that happen to have
   /// equal code.
   final Set<IdentityHashCode> duplicates = <int>{};
+
+  void _assertNotWatched(IdentityHashCode code) {
+    assert(() {
+      assert(!notGCed.containsKey(code));
+      assert(!notGCedDisposedOk.contains(code));
+      assert(!notGCedDisposedLate.contains(code));
+      return true;
+    }());
+  }
+
+  void assertRecordIntegrity(IdentityHashCode code) {
+    assert(() {
+      assert(
+        !notGCedDisposedOk.contains(code) ||
+            !notGCedDisposedLate.contains(code),
+      );
+      if (notGCedDisposedOk.contains(code) ||
+          notGCedDisposedLate.contains(code)) {
+        assert(notGCed.containsKey(code));
+      }
+
+      if (duplicates.contains(code)) _assertNotWatched(code);
+      return true;
+    }());
+  }
+
+  void assertIntegrity() {
+    assert(() {
+      notGCed.keys.forEach(assertRecordIntegrity);
+      gcedLateLeaks.map((e) => e.code).forEach(_assertNotWatched);
+      gcedNotDisposedLeaks.map((e) => e.code).forEach(_assertNotWatched);
+      duplicates.forEach(_assertNotWatched);
+      return true;
+    }());
+  }
 }
 
 /// Information about an object, tracked for leaks.
@@ -43,7 +78,7 @@ class ObjectRecord {
   ObjectRecord(this.code, this.context, this.type);
 
   final IdentityHashCode code;
-  final Map<String, dynamic> context;
+  Map<String, dynamic>? context;
   final Type type;
 
   DateTime? _disposalTime;
@@ -91,6 +126,12 @@ class ObjectRecord {
 
   bool get isNotDisposedLeak {
     return isGCed && !isDisposed;
+  }
+
+  void setContext(String key, Object value) {
+    final theContext = context ?? {};
+    theContext[key] = value;
+    context = theContext;
   }
 
   LeakReport toLeakReport() => LeakReport(

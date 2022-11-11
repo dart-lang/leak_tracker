@@ -7,4 +7,4 @@
 /// Should not be used in the application itself.
 library leak_analysis;
 
-export 'src/model.dart';
+export 'src/leak_analysis_model.dart';
