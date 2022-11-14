@@ -84,6 +84,11 @@ class _JsonFields {
   static const String code = 'code';
 }
 
+class ContextKeys {
+  static const startCallstack = 'start';
+  static const disposalCallstack = 'disposal';
+}
+
 /// Leak information, passed from application to DevTools and than extended by
 /// DevTools after deeper analysis.
 class LeakReport {

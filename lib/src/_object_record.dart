@@ -134,6 +134,16 @@ class ObjectRecord {
     context = theContext;
   }
 
+  void mergeContext(Map<String, dynamic>? addedContext) {
+    if (addedContext == null) return;
+    final theContext = context;
+    if (theContext == null) {
+      context = addedContext;
+      return;
+    }
+    theContext.addAll(addedContext);
+  }
+
   LeakReport toLeakReport() => LeakReport(
         type: type.toString(),
         context: context,
