@@ -20,7 +20,7 @@ jobs:
       - name: install Flutter sdk
         uses: subosito/flutter-action@dbf1fa04f4d2e52c33185153d06cdb5443aa189d
         with:
-          channel: 'beta'
+          channel: 'master'
 
       - name: version
         run: flutter --version
