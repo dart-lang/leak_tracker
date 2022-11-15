@@ -143,13 +143,14 @@ class ObjectTracker {
     _checkForNewNotGCedLeaks();
 
     return Leaks({
-      LeakType.notDisposed: _gcedNotDisposedLeaks
-          .map((TrackedObjectInfo i) => i.toLeakReport())
+      LeakType.notDisposed: _objects.gcedNotDisposedLeaks
+          .map((record) => record.toLeakReport())
           .toList(),
-      LeakType.notGCed:
-          _notGCedLate.map((t) => _notGCed[t]!.toLeakReport()).toList(),
-      LeakType.gcedLate: _gcedLateLeaks
-          .map((TrackedObjectInfo i) => i.toLeakReport())
+      LeakType.notGCed: _objects.notGCedDisposedLate
+          .map((code) => _objects.notGCed[code]!.toLeakReport())
+          .toList(),
+      LeakType.gcedLate: _objects.gcedLateLeaks
+          .map((record) => record.toLeakReport())
           .toList(),
     });
   }
