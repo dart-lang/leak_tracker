@@ -2,10 +2,12 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../leak_analysis.dart';
+import 'package:clock/clock.dart';
+
 import '_gc_counter.dart';
 import '_object_record.dart';
 import '_primitives.dart';
+import 'leak_analysis_model.dart';
 import 'leak_tracker_model.dart';
 
 class ObjectTracker {
@@ -16,7 +18,7 @@ class ObjectTracker {
     GcCounter? gcCounter,
   }) {
     finalizerBuilder ??= buildFinalizer;
-    _finalizer = finalizerBuilder(_objectGarbageCollected);
+    _finalizer = finalizerBuilder(_onOobjectGarbageCollected);
     _gcCounter = gcCounter ?? GcCounter();
   }
 
@@ -47,7 +49,7 @@ class ObjectTracker {
     _objects.assertRecordIntegrity(code);
   }
 
-  void _objectGarbageCollected(Object code) {
+  void _onOobjectGarbageCollected(Object code) {
     if (code is! int) throw 'Object token should be integer.';
 
     if (_objects.duplicates.contains(code)) return;
@@ -58,7 +60,7 @@ class ObjectTracker {
     }
     _objects.assertRecordIntegrity(code);
 
-    record.setGCed(_gcCounter.gcCount, DateTime.now());
+    record.setGCed(_gcCounter.gcCount, clock.now());
 
     if (record.isGCedLateLeak) {
       _objects.gcedLateLeaks.add(record);
@@ -99,7 +101,7 @@ class ObjectTracker {
 
     _objects.assertRecordIntegrity(code);
 
-    record.setDisposed(_gcCounter.gcCount, DateTime.now());
+    record.setDisposed(_gcCounter.gcCount, clock.now());
     _objects.notGCedDisposedOk.add(code);
 
     _objects.assertRecordIntegrity(code);
@@ -127,7 +129,7 @@ class ObjectTracker {
   void _checkForNewNotGCedLeaks() {
     _objects.assertIntegrity();
 
-    final now = DateTime.now();
+    final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
       final record = _objects.notGCed[code]!;
       if (record.isNotGCedLeak(_gcCounter.gcCount, now)) {
