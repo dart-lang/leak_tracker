@@ -34,7 +34,9 @@ class LeakSummary {
 
   final Map<LeakType, int> totals;
 
-  bool get isEmpty => totals.values.sum == 0;
+  int get total => totals.values.sum;
+
+  bool get isEmpty => total == 0;
 
   String toMessage() {
     return '${totals.values.sum} memory leak(s): '
@@ -75,6 +77,8 @@ class Leaks {
         (key, value) =>
             MapEntry(key.toString(), value.map((e) => e.toJson()).toList()),
       );
+
+  int get total => byType.values.map((e) => e.length).sum;
 }
 
 /// Names for json fields.
