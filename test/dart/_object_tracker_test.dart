@@ -10,18 +10,34 @@ import 'package:test/test.dart';
 
 void main() {
   final config = LeakTrackingConfiguration();
-  _MockFinalizerBuilder finalizerBuilder;
-  ObjectTracker tracker;
+  late _MockFinalizerBuilder finalizerBuilder;
+  late _MockGcCounter gcCounter;
+  late ObjectTracker tracker;
 
   setUp(() {
     finalizerBuilder = _MockFinalizerBuilder();
+    gcCounter = _MockGcCounter();
     tracker = ObjectTracker(
       config,
       finalizerBuilder: finalizerBuilder.build,
+      gcCounter: gcCounter,
     );
   });
 
-  test('$ObjectTracker tracks not disposed leaks.', () {});
+  test('$ObjectTracker uses finalizer.', () {
+    const theObject = '-';
+    tracker.startTracking(theObject, null);
+    expect(
+      finalizerBuilder.finalizer.attached,
+      contains(identityHashCode(theObject)),
+    );
+  });
+
+  test('$ObjectTracker tracks non disposed.', () {
+    const theObject = '-';
+    tracker.startTracking(theObject, null);
+    finalizerBuilder.finalizer.finalize(identityHashCode(theObject));
+  });
 }
 
 class _MockFinalizer implements Finalizer<Object> {
@@ -43,7 +59,7 @@ class _MockFinalizer implements Finalizer<Object> {
 }
 
 class _MockFinalizerBuilder {
-  late final _MockFinalizer? finalizer;
+  late final _MockFinalizer finalizer;
 
   _MockFinalizer build(ObjectGcCallback onGc) {
     return finalizer = _MockFinalizer(onGc);
