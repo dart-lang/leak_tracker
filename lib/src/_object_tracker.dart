@@ -27,7 +27,7 @@ class ObjectTracker {
   final _objects = ObjectRecords();
   final LeakTrackingConfiguration _config;
 
-  void startTracking(Object object, Map<String, dynamic>? context) {
+  void startTracking(Object object, {required Map<String, dynamic>? context}) {
     final code = identityHashCode(object);
     if (_checkForDuplicate(code)) return;
 
@@ -91,7 +91,10 @@ class ObjectTracker {
     return true;
   }
 
-  void registerDisposal(Object object, Map<String, dynamic>? context) {
+  void registerDisposal(
+    Object object, {
+    required Map<String, dynamic>? context,
+  }) {
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
@@ -107,7 +110,7 @@ class ObjectTracker {
     _objects.assertRecordIntegrity(code);
   }
 
-  void addContext(Object object, Map<String, dynamic>? context) {
+  void addContext(Object object, {required Map<String, dynamic>? context}) {
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;

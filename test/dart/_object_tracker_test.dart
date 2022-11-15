@@ -47,9 +47,14 @@ void main() {
     expect(leaks.total, 0);
   }
 
+  /// Emulates GC.
+  void _gc(Object object) {
+    finalizerBuilder.finalizer.finalize(identityHashCode(object));
+  }
+
   test('$ObjectTracker uses finalizer.', () {
     const theObject = '-';
-    tracker.startTracking(theObject, null);
+    tracker.startTracking(theObject, context: null);
     expect(
       finalizerBuilder.finalizer.attached,
       contains(theObject),
@@ -63,7 +68,7 @@ void main() {
 
     // Start tracking.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, null);
+      tracker.startTracking(theObject, context: null);
     });
 
     // Time travel.
@@ -79,11 +84,10 @@ void main() {
   test('$ObjectTracker tracks ${LeakType.notDisposed}.', () {
     // Define object.
     const theObject = '-';
-    final code = identityHashCode(theObject);
 
     // Start tracking and GC.
-    tracker.startTracking(theObject, /* context  = */ null);
-    finalizerBuilder.finalizer.finalize(code);
+    tracker.startTracking(theObject, context: null);
+    _gc(theObject);
 
     // Verify not-disposal is registered.
     _verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
@@ -96,8 +100,8 @@ void main() {
 
     // Start tracking and dispose.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, /* context  = */ null);
-      tracker.registerDisposal(theObject, /* context  = */ null);
+      tracker.startTracking(theObject, context: null);
+      tracker.registerDisposal(theObject, context: null);
     });
 
     // Time travel.
@@ -107,6 +111,28 @@ void main() {
     // Verify leak is registered.
     withClock(Clock.fixed(time), () {
       _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+    });
+  });
+
+  test('$ObjectTracker tracks ${LeakType.gcedLate}.', () {
+    // Define object and time.
+    const theObject = '-';
+    var time = DateTime(2000);
+
+    // Start tracking and dispose.
+    withClock(Clock.fixed(time), () {
+      tracker.startTracking(theObject, context: null);
+      tracker.registerDisposal(theObject, context: null);
+    });
+
+    // Time travel.
+    time = time.add(disposalTimeBuffer);
+    gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+    // GC and verify leak is registered.
+    withClock(Clock.fixed(time), () {
+      _gc(theObject);
+      _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
     });
   });
 }
