@@ -27,7 +27,11 @@ class ObjectTracker {
   final _objects = ObjectRecords();
   final LeakTrackingConfiguration _config;
 
-  void startTracking(Object object, {required Map<String, dynamic>? context}) {
+  void startTracking(
+    Object object, {
+    required Map<String, dynamic>? context,
+    required String trackedClass,
+  }) {
     final code = identityHashCode(object);
     if (_checkForDuplicate(code)) return;
 
@@ -37,6 +41,7 @@ class ObjectTracker {
       identityHashCode(object),
       context,
       object.runtimeType,
+      trackedClass,
     );
 
     if (_config.classesToCollectStackTraceOnTrackingStart

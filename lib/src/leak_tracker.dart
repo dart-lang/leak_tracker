@@ -3,24 +3,25 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import '../leak_tracker.dart';
+import '_dispatcher.dart' as dispatcher;
 import '_object_tracker.dart';
 
-ObjectTracker? _object_tracker;
+ObjectTracker? _objectTracker;
 
 /// Enables leak tracking for the application.
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void enableLeakTracking({LeakTrackingConfiguration? config}) {
-  if (_object_tracker != null)
+  if (_objectTracker != null)
     throw StateError('Leak tracking is alredy enabled.');
-  _object_tracker = ObjectTracker(config ?? LeakTrackingConfiguration());
+  _objectTracker = ObjectTracker(config ?? LeakTrackingConfiguration());
 }
 
 /// Disables leak tracking for the application.
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void disableLeakTracking() {
-  _object_tracker = null;
+  _objectTracker = null;
 }
 
 /// Dispatches an object event to the leak tracker.
@@ -28,9 +29,10 @@ void disableLeakTracking() {
 /// Consumes the MemoryAllocations event format:
 /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
 void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
-  final tracker = _object_tracker;
-  if (tracker == null) throw StateError('Leak tracking is alredy enabled.');
-  _dispatchObjectEvent(event, tracker);
+  final tracker = _objectTracker;
+  if (tracker == null)
+    throw StateError('Leak tracking should be enabled to dispatch event.');
+  dispatcher.dispatchObjectEvent(event, tracker);
 }
 
 /// Dispatches object creation to the leak tracker.

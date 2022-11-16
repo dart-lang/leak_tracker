@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import '_object_tracker.dart';
+import '_primitives.dart';
 
 // Values in [FieldNames] and [EventType] should be identical to ones osed in
 // https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L23
@@ -18,9 +19,9 @@ class _EventType {
   static const String disposed = 'disposed';
 }
 
-void dispatch(
+void dispatchObjectEvent(
   Map<Object, Map<String, Object>> event,
-  ObjectTracker tracker,
+  ObjectTracker objectTracker,
 ) {
   assert(event.length == 1);
   final entry = event.entries.first;
@@ -28,13 +29,21 @@ void dispatch(
   final object = entry.key;
   final fields = entry.value;
 
-  final type = fields[_FieldNames.eventType] as String;
+  final eventType = fields[_FieldNames.eventType] as String;
 
-  if (type == _EventType.created) {
-    tracker.startTracking(object, context: {});
-  } else if (type == _EventType.disposed) {
-    tracker.registerDisposal(object, context: null);
+  final libraryName = fields[_FieldNames.libraryName]?.toString() ?? '';
+  final className = fields[_FieldNames.className]?.toString() ?? '';
+
+  if (eventType == _EventType.created) {
+    objectTracker.startTracking(
+      object,
+      context: null,
+      trackedClass:
+          fullClassName(library: libraryName, shortClassName: className),
+    );
+  } else if (eventType == _EventType.disposed) {
+    objectTracker.registerDisposal(object, context: null);
   } else {
-    throw StateError('Unexpected event type for $object: $type.');
+    throw StateError('Unexpected event type for $object: $eventType.');
   }
 }

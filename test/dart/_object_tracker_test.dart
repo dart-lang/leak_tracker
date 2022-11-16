@@ -26,7 +26,11 @@ void main() {
     );
   });
 
-  void _verifyOneLeakIsRegistered(Object object, LeakType type) {
+  void _verifyOneLeakIsRegistered(
+    Object object,
+    LeakType type,
+    String trackedClass,
+  ) {
     final summary = tracker.collectLeaksSummary();
     final leaks = tracker.collectLeaks();
 
@@ -37,6 +41,7 @@ void main() {
     final theLeak = leaks.byType[type]!.first;
     expect(theLeak.type, object.runtimeType.toString());
     expect(theLeak.code, identityHashCode(object));
+    expect(theLeak.trackedClass, trackedClass);
   }
 
   void _verifyNoLeaks() {
@@ -54,7 +59,7 @@ void main() {
 
   test('$ObjectTracker uses finalizer.', () {
     const theObject = '-';
-    tracker.startTracking(theObject, context: null);
+    tracker.startTracking(theObject, context: null, trackedClass: '');
     expect(
       finalizerBuilder.finalizer.attached,
       contains(theObject),
@@ -68,7 +73,7 @@ void main() {
 
     // Start tracking.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, context: null);
+      tracker.startTracking(theObject, context: null, trackedClass: '');
     });
 
     // Time travel.
@@ -86,11 +91,12 @@ void main() {
     const theObject = '-';
 
     // Start tracking and GC.
-    tracker.startTracking(theObject, context: null);
+    tracker.startTracking(theObject,
+        context: null, trackedClass: 'trackedClass');
     _gc(theObject);
 
     // Verify not-disposal is registered.
-    _verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
+    _verifyOneLeakIsRegistered(theObject, LeakType.notDisposed, 'trackedClass');
   });
 
   test('$ObjectTracker tracks ${LeakType.notGCed}.', () {
@@ -100,7 +106,8 @@ void main() {
 
     // Start tracking and dispose.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, context: null);
+      tracker.startTracking(theObject,
+          context: null, trackedClass: 'trackedClass');
       tracker.registerDisposal(theObject, context: null);
     });
 
@@ -110,7 +117,7 @@ void main() {
 
     // Verify leak is registered.
     withClock(Clock.fixed(time), () {
-      _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+      _verifyOneLeakIsRegistered(theObject, LeakType.notGCed, 'trackedClass');
     });
   });
 
@@ -121,7 +128,8 @@ void main() {
 
     // Start tracking and dispose.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, context: null);
+      tracker.startTracking(theObject,
+          context: null, trackedClass: 'trackedClass');
       tracker.registerDisposal(theObject, context: null);
     });
 
@@ -132,7 +140,7 @@ void main() {
     // GC and verify leak is registered.
     withClock(Clock.fixed(time), () {
       _gc(theObject);
-      _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+      _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate, 'trackedClass');
     });
   });
 }
