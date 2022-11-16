@@ -97,6 +97,8 @@ class ContextKeys {
 /// DevTools after deeper analysis.
 class LeakReport {
   LeakReport({
+    required this.trackerClass,
+    required this.trackerLib,
     required this.context,
     required this.code,
     required this.type,
@@ -117,6 +119,14 @@ class LeakReport {
 
   /// Runtime type of the object.
   final String type;
+
+  /// Class, for which the leak tracking is defined.
+  ///
+  /// [trackerClass] is expected to be a supertype of [type].
+  final String trackerClass;
+
+  /// Library, where the leak tracking is defined.
+  final String trackerLib;
 
   // The fields below do not need serialization as they are populated after.
   String? retainingPath;
