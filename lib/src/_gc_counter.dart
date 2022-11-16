@@ -2,16 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:developer';
+
 import 'package:meta/meta.dart';
 
 /// Wrapper for reachabilityBarrier, for mocking purposes.
 class GcCounter {
   /// Number of full GC cycles since start of the isolate.
-  int get gcCount =>
-      // TODO(polina-c): replace with reachabilityBarrier from 'dart:developer'
-      // when https://dart-review.git.corp.google.com/c/sdk/+/266424 reaches
-      // Flutter master.
-      DateTime.now().millisecondsSinceEpoch;
+  int get gcCount => reachabilityBarrier;
 }
 
 /// Time to allow the disposal invoker to release the reference to the object.

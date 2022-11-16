@@ -34,7 +34,9 @@ class LeakSummary {
 
   final Map<LeakType, int> totals;
 
-  bool get isEmpty => totals.values.sum == 0;
+  int get total => totals.values.sum;
+
+  bool get isEmpty => total == 0;
 
   String toMessage() {
     return '${totals.values.sum} memory leak(s): '
@@ -75,6 +77,8 @@ class Leaks {
         (key, value) =>
             MapEntry(key.toString(), value.map((e) => e.toJson()).toList()),
       );
+
+  int get total => byType.values.map((e) => e.length).sum;
 }
 
 /// Names for json fields.
@@ -82,6 +86,11 @@ class _JsonFields {
   static const String type = 'type';
   static const String context = 'context';
   static const String code = 'code';
+}
+
+class ContextKeys {
+  static const startCallstack = 'start';
+  static const disposalCallstack = 'disposal';
 }
 
 /// Leak information, passed from application to DevTools and than extended by
@@ -101,7 +110,7 @@ class LeakReport {
       );
 
   /// Information about the leak that can help in troubleshooting.
-  final Map<String, dynamic> context;
+  final Map<String, dynamic>? context;
 
   /// [identityHashCode] of the object.
   final int code;
@@ -137,13 +146,14 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
     final result = StringBuffer();
     result.writeln('$indent$type:');
     result.writeln('$indent  identityHashCode: $code');
-    if (context.isNotEmpty) {
-      result.writeln('$indent  details:');
+    final theContext = context;
+    if (theContext != null && theContext.isNotEmpty) {
+      result.writeln('$indent  context:');
       final contextIndent = '$indent    ';
       result.write(
-        context.keys.map((key) {
+        theContext.keys.map((key) {
           final value =
-              _indentNewLines(jsonEncode(context[key]), '  $contextIndent');
+              _indentNewLines(jsonEncode(theContext[key]), '  $contextIndent');
           return '$contextIndent$key: $value\n';
         }).join(),
       );
