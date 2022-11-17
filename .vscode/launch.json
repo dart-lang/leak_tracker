@@ -8,16 +8,18 @@
             "name": "minimal_dart",
             "cwd": "examples/minimal_dart",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart",
         },
         {
             "name": "minimal_flutter",
             "cwd": "examples/minimal_flutter",
             "request": "launch",
-            "type": "dart"
+            "type": "dart",
+            "program": "lib/main.dart",
         },
         {
-            "name": "test in focus",
+            "name": "current test file",
             "request": "launch",
             "type": "dart",
         },
