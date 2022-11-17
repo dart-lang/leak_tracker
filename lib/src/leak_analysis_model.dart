@@ -134,6 +134,7 @@ class LeakReport {
         _JsonFields.type: type,
         _JsonFields.context: context,
         _JsonFields.code: code,
+        _JsonFields.trackedClass: trackedClass,
       };
 
   static String iterableToYaml(
