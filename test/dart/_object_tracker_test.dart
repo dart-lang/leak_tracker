@@ -91,8 +91,11 @@ void main() {
     const theObject = '-';
 
     // Start tracking and GC.
-    tracker.startTracking(theObject,
-        context: null, trackedClass: 'trackedClass');
+    tracker.startTracking(
+      theObject,
+      context: null,
+      trackedClass: 'trackedClass',
+    );
     _gc(theObject);
 
     // Verify not-disposal is registered.
@@ -106,8 +109,11 @@ void main() {
 
     // Start tracking and dispose.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject,
-          context: null, trackedClass: 'trackedClass');
+      tracker.startTracking(
+        theObject,
+        context: null,
+        trackedClass: 'trackedClass',
+      );
       tracker.registerDisposal(theObject, context: null);
     });
 
@@ -128,8 +134,11 @@ void main() {
 
     // Start tracking and dispose.
     withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject,
-          context: null, trackedClass: 'trackedClass');
+      tracker.startTracking(
+        theObject,
+        context: null,
+        trackedClass: 'trackedClass',
+      );
       tracker.registerDisposal(theObject, context: null);
     });
 
