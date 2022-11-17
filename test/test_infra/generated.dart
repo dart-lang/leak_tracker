@@ -5,5 +5,6 @@
 import 'package:leak_tracker/src/_object_tracker.dart';
 import 'package:mockito/annotations.dart';
 
+/// Run `dart run build_runner build` to regenerate mocks.
 @GenerateNiceMocks([MockSpec<ObjectTracker>()])
 void main() {}
