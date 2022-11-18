@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/src/_object_tracker.dart';
-import 'package:leak_tracker/src/leak_tracker_model.dart';
 
 enum EventType {
   started,
@@ -20,8 +19,6 @@ class Event {
 }
 
 class MockObjectTracker extends ObjectTracker {
-  MockObjectTracker() : super(LeakTrackingConfiguration());
-
   final events = <Event>[];
 
   @override
