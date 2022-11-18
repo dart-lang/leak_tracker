@@ -11,7 +11,7 @@ class LeakTrackingConfiguration {
     this.leakListener,
     this.stdoutLeaks = true,
     this.checkPeriod = const Duration(seconds: 1),
-    this.classesToCollectStackTraceOnTrackingStart = const {},
+    this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
   });
 
@@ -21,7 +21,7 @@ class LeakTrackingConfiguration {
   final Duration? checkPeriod;
 
   /// We use String, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnTrackingStart;
+  final Set<String> classesToCollectStackTraceOnStart;
 
   /// We use String, because some types are private and thus not accessible.
   final Set<String> classesToCollectStackTraceOnDisposal;

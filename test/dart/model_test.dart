@@ -12,16 +12,27 @@ void main() {
     final leaks = Leaks({
       LeakType.gcedLate: [
         LeakReport(
+          trackedClass: 'trackedClass1',
           type: 't1',
           context: {'a': 1, 'b': 3.14, 'c': ''},
           code: 1,
         ),
       ],
       LeakType.notDisposed: [
-        LeakReport(type: 't2', context: {}, code: 2),
+        LeakReport(
+          trackedClass: 'trackedClass2',
+          type: 't2',
+          context: {},
+          code: 2,
+        ),
       ],
       LeakType.notGCed: [
-        LeakReport(type: 't3', context: {}, code: 1),
+        LeakReport(
+          trackedClass: 'trackedClass3',
+          type: 't3',
+          context: {},
+          code: 1,
+        ),
       ],
     });
 

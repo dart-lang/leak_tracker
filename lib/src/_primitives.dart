@@ -14,3 +14,9 @@ typedef FinalizerBuilder = Finalizer<Object> Function(
 
 Finalizer<Object> buildFinalizer(ObjectGcCallback onObjectGc) =>
     Finalizer<Object>(onObjectGc);
+
+String fullClassName({
+  required String library,
+  required String shortClassName,
+}) =>
+    '$library/$shortClassName';

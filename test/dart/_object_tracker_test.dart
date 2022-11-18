@@ -7,26 +7,18 @@ import 'package:leak_tracker/leak_analysis.dart';
 import 'package:leak_tracker/src/_gc_counter.dart';
 import 'package:leak_tracker/src/_object_tracker.dart';
 import 'package:leak_tracker/src/_primitives.dart';
-import 'package:leak_tracker/src/leak_tracker_model.dart';
 import 'package:test/test.dart';
 
 void main() {
-  final config = LeakTrackingConfiguration();
   late _MockFinalizerBuilder finalizerBuilder;
   late _MockGcCounter gcCounter;
   late ObjectTracker tracker;
 
-  setUp(() {
-    finalizerBuilder = _MockFinalizerBuilder();
-    gcCounter = _MockGcCounter();
-    tracker = ObjectTracker(
-      config,
-      finalizerBuilder: finalizerBuilder.build,
-      gcCounter: gcCounter,
-    );
-  });
-
-  void _verifyOneLeakIsRegistered(Object object, LeakType type) {
+  void _verifyOneLeakIsRegistered(
+    Object object,
+    LeakType type,
+    String trackedClass,
+  ) {
     final summary = tracker.collectLeaksSummary();
     final leaks = tracker.collectLeaks();
 
@@ -34,9 +26,10 @@ void main() {
     expect(summary.totals[type], 1);
 
     expect(leaks.total, 1);
-    final theLeak = leaks.byType[type]!.first;
+    final theLeak = leaks.byType[type]!.single;
     expect(theLeak.type, object.runtimeType.toString());
     expect(theLeak.code, identityHashCode(object));
+    expect(theLeak.trackedClass, trackedClass);
   }
 
   void _verifyNoLeaks() {
@@ -52,87 +45,167 @@ void main() {
     finalizerBuilder.finalizer.finalize(identityHashCode(object));
   }
 
-  test('$ObjectTracker uses finalizer.', () {
-    const theObject = '-';
-    tracker.startTracking(theObject, context: null);
-    expect(
-      finalizerBuilder.finalizer.attached,
-      contains(theObject),
-    );
-  });
-
-  test('$ObjectTracker does not false positive.', () {
-    // Define object and time.
-    const theObject = '-';
-    var time = DateTime(2000);
-
-    // Start tracking.
-    withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, context: null);
+  group('$ObjectTracker default', () {
+    setUp(() {
+      finalizerBuilder = _MockFinalizerBuilder();
+      gcCounter = _MockGcCounter();
+      tracker = ObjectTracker(
+        finalizerBuilder: finalizerBuilder.build,
+        gcCounter: gcCounter,
+      );
     });
 
-    // Time travel.
-    time = time.add(disposalTimeBuffer * 1000);
-    gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer * 1000;
-
-    // Verify no leaks.
-    withClock(Clock.fixed(time), () {
-      _verifyNoLeaks();
-    });
-  });
-
-  test('$ObjectTracker tracks ${LeakType.notDisposed}.', () {
-    // Define object.
-    const theObject = '-';
-
-    // Start tracking and GC.
-    tracker.startTracking(theObject, context: null);
-    _gc(theObject);
-
-    // Verify not-disposal is registered.
-    _verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
-  });
-
-  test('$ObjectTracker tracks ${LeakType.notGCed}.', () {
-    // Define object and time.
-    const theObject = '-';
-    var time = DateTime(2000);
-
-    // Start tracking and dispose.
-    withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, context: null);
-      tracker.registerDisposal(theObject, context: null);
+    test('uses finalizer.', () {
+      const theObject = '-';
+      tracker.startTracking(theObject, context: null, trackedClass: '');
+      expect(
+        finalizerBuilder.finalizer.attached,
+        contains(theObject),
+      );
     });
 
-    // Time travel.
-    time = time.add(disposalTimeBuffer);
-    gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+    test('does not false positive.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
 
-    // Verify leak is registered.
-    withClock(Clock.fixed(time), () {
-      _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+      // Start tracking.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(theObject, context: null, trackedClass: '');
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer * 1000);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer * 1000;
+
+      // Verify no leaks.
+      withClock(Clock.fixed(time), () {
+        _verifyNoLeaks();
+      });
     });
-  });
 
-  test('$ObjectTracker tracks ${LeakType.gcedLate}.', () {
-    // Define object and time.
-    const theObject = '-';
-    var time = DateTime(2000);
+    test('tracks ${LeakType.notDisposed}.', () {
+      // Define object.
+      const theObject = '-';
 
-    // Start tracking and dispose.
-    withClock(Clock.fixed(time), () {
-      tracker.startTracking(theObject, context: null);
-      tracker.registerDisposal(theObject, context: null);
-    });
-
-    // Time travel.
-    time = time.add(disposalTimeBuffer);
-    gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
-
-    // GC and verify leak is registered.
-    withClock(Clock.fixed(time), () {
+      // Start tracking and GC.
+      tracker.startTracking(
+        theObject,
+        context: null,
+        trackedClass: 'trackedClass',
+      );
       _gc(theObject);
-      _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+
+      // Verify not-disposal is registered.
+      _verifyOneLeakIsRegistered(
+        theObject,
+        LeakType.notDisposed,
+        'trackedClass',
+      );
+    });
+
+    test('tracks ${LeakType.notGCed}.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
+
+      // Start tracking and dispose.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(
+          theObject,
+          context: null,
+          trackedClass: 'trackedClass',
+        );
+        tracker.dispatchDisposal(theObject, context: null);
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+      // Verify leak is registered.
+      withClock(Clock.fixed(time), () {
+        _verifyOneLeakIsRegistered(theObject, LeakType.notGCed, 'trackedClass');
+      });
+    });
+
+    test('tracks ${LeakType.gcedLate}.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
+
+      // Start tracking and dispose.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(
+          theObject,
+          context: null,
+          trackedClass: 'trackedClass',
+        );
+        tracker.dispatchDisposal(theObject, context: null);
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+      // GC and verify leak is registered.
+      withClock(Clock.fixed(time), () {
+        _gc(theObject);
+        _verifyOneLeakIsRegistered(
+          theObject,
+          LeakType.gcedLate,
+          'trackedClass',
+        );
+      });
+    });
+  });
+
+  group('$ObjectTracker with callstacks', () {
+    setUp(() {
+      finalizerBuilder = _MockFinalizerBuilder();
+      gcCounter = _MockGcCounter();
+      tracker = ObjectTracker(
+        finalizerBuilder: finalizerBuilder.build,
+        gcCounter: gcCounter,
+        classesToCollectStackTraceOnStart: {'String'},
+        classesToCollectStackTraceOnDisposal: {'String'},
+      );
+    });
+
+    test('collects callstacks.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
+
+      // Start tracking and dispose.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(
+          theObject,
+          context: null,
+          trackedClass: 'trackedClass',
+        );
+        tracker.dispatchDisposal(theObject, context: null);
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+      // GC and verify leak contains callstacks.
+      withClock(Clock.fixed(time), () {
+        _gc(theObject);
+        final theLeak =
+            tracker.collectLeaks().byType[LeakType.gcedLate]!.single;
+
+        expect(theLeak.context, hasLength(2));
+        final start = theLeak.context!['start'].toString();
+        final disposal = theLeak.context!['disposal'].toString();
+
+        const libName = '_object_tracker_test.dart';
+        expect(start, contains(libName));
+        expect(disposal, contains(libName));
+        expect(start, isNot(equals(disposal)));
+      });
     });
   });
 }

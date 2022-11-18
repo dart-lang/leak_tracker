@@ -84,6 +84,7 @@ class Leaks {
 /// Names for json fields.
 class _JsonFields {
   static const String type = 'type';
+  static const String trackedClass = 'tracked';
   static const String context = 'context';
   static const String code = 'code';
 }
@@ -97,6 +98,7 @@ class ContextKeys {
 /// DevTools after deeper analysis.
 class LeakReport {
   LeakReport({
+    required this.trackedClass,
     required this.context,
     required this.code,
     required this.type,
@@ -107,6 +109,7 @@ class LeakReport {
         context: (json[_JsonFields.context] as Map<String, dynamic>? ?? {})
             .cast<String, dynamic>(),
         code: json[_JsonFields.code],
+        trackedClass: json[_JsonFields.trackedClass],
       );
 
   /// Information about the leak that can help in troubleshooting.
@@ -118,6 +121,11 @@ class LeakReport {
   /// Runtime type of the object.
   final String type;
 
+  /// Full name of class, the leak tracking is defined for.
+  ///
+  /// Usually [trackedClass] is expected to be a supertype of [type].
+  final String trackedClass;
+
   // The fields below do not need serialization as they are populated after.
   String? retainingPath;
   List<String>? detailedPath;
@@ -126,6 +134,7 @@ class LeakReport {
         _JsonFields.type: type,
         _JsonFields.context: context,
         _JsonFields.code: code,
+        _JsonFields.trackedClass: trackedClass,
       };
 
   static String iterableToYaml(
