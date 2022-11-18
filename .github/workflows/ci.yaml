@@ -28,9 +28,6 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
 
-      - name: dart run build_runner build
-        run: dart run build_runner build
-
       - name: flutter analyze
         run: flutter analyze
 
