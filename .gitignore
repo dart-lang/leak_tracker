@@ -10,4 +10,3 @@ build/
 pubspec.lock
 
 **/macos/**/ephemeral/**
-test/test_infra/generated.mocks.dart
