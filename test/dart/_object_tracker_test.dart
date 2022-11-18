@@ -114,7 +114,7 @@ void main() {
         context: null,
         trackedClass: 'trackedClass',
       );
-      tracker.registerDisposal(theObject, context: null);
+      tracker.dispatchDisposal(theObject, context: null);
     });
 
     // Time travel.
@@ -139,7 +139,7 @@ void main() {
         context: null,
         trackedClass: 'trackedClass',
       );
-      tracker.registerDisposal(theObject, context: null);
+      tracker.dispatchDisposal(theObject, context: null);
     });
 
     // Time travel.

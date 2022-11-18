@@ -96,7 +96,7 @@ class ObjectTracker {
     return true;
   }
 
-  void registerDisposal(
+  void dispatchDisposal(
     Object object, {
     required Map<String, dynamic>? context,
   }) {

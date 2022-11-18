@@ -42,7 +42,7 @@ void dispatchObjectEvent(
           fullClassName(library: libraryName, shortClassName: className),
     );
   } else if (eventType == _EventType.disposed) {
-    objectTracker.registerDisposal(object, context: null);
+    objectTracker.dispatchDisposal(object, context: null);
   } else {
     throw StateError('Unexpected event type for $object: $eventType.');
   }

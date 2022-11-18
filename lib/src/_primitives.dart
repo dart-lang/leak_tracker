@@ -19,4 +19,4 @@ String fullClassName({
   required String library,
   required String shortClassName,
 }) =>
-    '$library/shortClassName';
+    '$library/$shortClassName';
