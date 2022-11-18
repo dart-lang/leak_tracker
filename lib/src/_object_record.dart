@@ -75,12 +75,12 @@ class ObjectRecords {
 
 /// Information about an object, tracked for leaks.
 class ObjectRecord {
-  ObjectRecord(this.code, this.context, this.type, this.tracker);
+  ObjectRecord(this.code, this.context, this.type, this.trackedClass);
 
   final IdentityHashCode code;
   Map<String, dynamic>? context;
   final Type type;
-  final String tracker;
+  final String trackedClass;
 
   DateTime? _disposalTime;
   int? _disposalGcCount;
@@ -149,6 +149,6 @@ class ObjectRecord {
         type: type.toString(),
         context: context,
         code: code,
-        trackedClass: tracker,
+        trackedClass: trackedClass,
       );
 }
