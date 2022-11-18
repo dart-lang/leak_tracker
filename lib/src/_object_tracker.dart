@@ -8,12 +8,12 @@ import '_gc_counter.dart';
 import '_object_record.dart';
 import '_primitives.dart';
 import 'leak_analysis_model.dart';
-import 'leak_tracker_model.dart';
 
 class ObjectTracker {
   /// The optional parameters are injected for testing purposes.
-  ObjectTracker(
-    this._config, {
+  ObjectTracker({
+    this.classesToCollectStackTraceOnStart = const {},
+    this.classesToCollectStackTraceOnDisposal = const {},
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
   }) {
@@ -25,7 +25,12 @@ class ObjectTracker {
   late Finalizer<Object> _finalizer;
   late GcCounter _gcCounter;
   final _objects = ObjectRecords();
-  final LeakTrackingConfiguration _config;
+
+  /// We use String, because some types are private and thus not accessible.
+  final Set<String> classesToCollectStackTraceOnStart;
+
+  /// We use String, because some types are private and thus not accessible.
+  final Set<String> classesToCollectStackTraceOnDisposal;
 
   void startTracking(
     Object object, {
@@ -44,7 +49,7 @@ class ObjectTracker {
       trackedClass,
     );
 
-    if (_config.classesToCollectStackTraceOnTrackingStart
+    if (classesToCollectStackTraceOnStart
         .contains(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
@@ -106,6 +111,10 @@ class ObjectTracker {
 
     final record = _objects.notGCed[code]!;
     record.mergeContext(context);
+    if (classesToCollectStackTraceOnDisposal
+        .contains(object.runtimeType.toString())) {
+      record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
+    }
 
     _objects.assertRecordIntegrity(code);
 

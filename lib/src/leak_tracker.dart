@@ -12,9 +12,14 @@ ObjectTracker? _objectTracker;
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void enableLeakTracking({LeakTrackingConfiguration? config}) {
+  config ??= LeakTrackingConfiguration();
   if (_objectTracker != null)
     throw StateError('Leak tracking is alredy enabled.');
-  _objectTracker = ObjectTracker(config ?? LeakTrackingConfiguration());
+  _objectTracker = ObjectTracker(
+    classesToCollectStackTraceOnStart: config.classesToCollectStackTraceOnStart,
+    classesToCollectStackTraceOnDisposal:
+        config.classesToCollectStackTraceOnDisposal,
+  );
 }
 
 /// Disables leak tracking for the application.
