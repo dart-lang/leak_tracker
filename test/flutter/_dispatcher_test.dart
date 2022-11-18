@@ -19,11 +19,22 @@ void main() {
     final picture = _createPicture();
 
     expect(tracker.events, hasLength(1));
-    final event = tracker.events[0];
+    var event = tracker.events[0];
+    tracker.events.clear();
     expect(event.type, _EventType.started);
     expect(event.object, picture);
     expect(event.context, null);
     expect(event.trackedClass, 'dart:ui/Picture');
+
+    picture.dispose();
+
+    expect(tracker.events, hasLength(1));
+    event = tracker.events[0];
+    tracker.events.clear();
+    expect(event.type, _EventType.disposed);
+    expect(event.object, picture);
+    expect(event.context, null);
+    expect(event.trackedClass, null);
   });
 }
 
