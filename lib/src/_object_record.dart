@@ -82,6 +82,8 @@ class ObjectRecord {
   final Type type;
   final String trackedClass;
 
+  bool reportedAsNonGced = false;
+
   DateTime? _disposalTime;
   int? _disposalGcCount;
 

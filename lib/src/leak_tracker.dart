@@ -6,6 +6,7 @@ import '../leak_tracker.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_object_tracker.dart';
 import '_primitives.dart';
+import 'leak_analysis_model.dart';
 
 ObjectTracker? _objectTracker;
 
@@ -72,10 +73,7 @@ void dispatchObjectDisposed({
   Map<String, dynamic>? context,
 }) {
   final tracker = _tracker();
-  tracker.dispatchDisposal(
-    object,
-    context: context,
-  );
+  tracker.dispatchDisposal(object, context: context);
 }
 
 /// Dispatches additional context information to the leak tracker.
@@ -86,8 +84,20 @@ void dispatchObjectTrace({
   Map<String, dynamic>? context,
 }) {
   final tracker = _tracker();
-  tracker.addContext(
-    object,
-    context: context,
-  );
+  tracker.addContext(object, context: context);
+}
+
+/// Returns summary of the leaks collected since last invocation of [collectLeaks].
+LeakSummary get leakSummary {
+  final tracker = _tracker();
+  return tracker.collectLeaksSummary();
+}
+
+/// Returns details of the leaks collected since last invocation.
+///
+/// The same object may be reported as leaked twice: first
+/// as non GCed, and then as GCed late.
+Leaks get collectLeaks {
+  final tracker = _tracker();
+  return tracker.collectLeaks();
 }

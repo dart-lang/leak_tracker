@@ -67,12 +67,8 @@ class ObjectTracker {
 
     if (_objects.duplicates.contains(code)) return;
 
-    final ObjectRecord? record = _objects.notGCed[code];
-    if (record == null) {
-      throw '$code should not be garbage collected twice.';
-    }
     _objects.assertRecordIntegrity(code);
-
+    final record = _notGCed(code);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
     if (record.isGCedLateLeak) {
@@ -113,7 +109,7 @@ class ObjectTracker {
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
 
-    final record = _objects.notGCed[code]!;
+    final record = _notGCed(code);
     record.mergeContext(context);
     if (classesToCollectStackTraceOnDisposal
         .contains(object.runtimeType.toString())) {
@@ -133,8 +129,7 @@ class ObjectTracker {
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
-    final record = _objects.notGCed[code];
-    if (record == null) throw 'The object is not registered for tracking.';
+    final record = _notGCed(code);
     record.mergeContext(context);
   }
 
@@ -154,8 +149,7 @@ class ObjectTracker {
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
-      final record = _objects.notGCed[code]!;
-      if (record.isNotGCedLeak(_gcCounter.gcCount, now)) {
+      if (_notGCed(code).isNotGCedLeak(_gcCounter.gcCount, now)) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
       }
@@ -164,21 +158,38 @@ class ObjectTracker {
     _objects.assertIntegrity();
   }
 
+  ObjectRecord _notGCed(int code) {
+    final result = _objects.notGCed[code];
+    if (result == null)
+      throw 'The object with code $code is not registered for tracking.';
+    return result;
+  }
+
   Leaks collectLeaks() {
     throwIfDisposed();
     _checkForNewNotGCedLeaks();
 
-    return Leaks({
+    final result = Leaks({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks
           .map((record) => record.toLeakReport())
           .toList(),
       LeakType.notGCed: _objects.notGCedDisposedLate
-          .map((code) => _objects.notGCed[code]!.toLeakReport())
+          .where((code) => !_notGCed(code).reportedAsNonGced)
+          .map((code) => _notGCed(code).toLeakReport())
           .toList(),
       LeakType.gcedLate: _objects.gcedLateLeaks
           .map((record) => record.toLeakReport())
           .toList(),
     });
+
+    for (var c in _objects.notGCedDisposedLate) {
+      _notGCed(c).reportedAsNonGced = true;
+    }
+
+    _objects.gcedNotDisposedLeaks.clear();
+    _objects.gcedLateLeaks.clear();
+
+    return result;
   }
 
   final _maxAllowedDuplicates = 100;
@@ -204,7 +215,7 @@ class ObjectTracker {
   }
 
   void dispose() {
-    if (disposed) return;
+    throwIfDisposed();
     disposed = true;
     for (final record in _objects.notGCed.values) {
       _finalizer.detach(record.code);
