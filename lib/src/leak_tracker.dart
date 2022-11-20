@@ -5,6 +5,7 @@
 import '../leak_tracker.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_object_tracker.dart';
+import '_primitives.dart';
 
 ObjectTracker? _objectTracker;
 
@@ -26,7 +27,14 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void disableLeakTracking() {
+  _objectTracker?.dispose();
   _objectTracker = null;
+}
+
+ObjectTracker _tracker() {
+  final tracker = _objectTracker;
+  if (tracker == null) throw StateError('Leak tracking should be enabled.');
+  return tracker;
 }
 
 /// Dispatches an object event to the leak tracker.
@@ -34,9 +42,7 @@ void disableLeakTracking() {
 /// Consumes the MemoryAllocations event format:
 /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
 void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
-  final tracker = _objectTracker;
-  if (tracker == null)
-    throw StateError('Leak tracking should be enabled to dispatch event.');
+  final tracker = _tracker();
   dispatcher.dispatchObjectEvent(event, tracker);
 }
 
@@ -49,8 +55,14 @@ void dispatchObjectCreated({
   required String className,
   required Object object,
   Map<String, dynamic>? context,
-}) =>
-    throw UnimplementedError();
+}) {
+  final tracker = _tracker();
+  tracker.startTracking(
+    object,
+    context: context,
+    trackedClass: fullClassName(library: library, shortClassName: className),
+  );
+}
 
 /// Dispatches object disposal to the leak tracker.
 ///
@@ -58,8 +70,13 @@ void dispatchObjectCreated({
 void dispatchObjectDisposed({
   required Object object,
   Map<String, dynamic>? context,
-}) =>
-    throw UnimplementedError();
+}) {
+  final tracker = _tracker();
+  tracker.dispatchDisposal(
+    object,
+    context: context,
+  );
+}
 
 /// Dispatches additional context information to the leak tracker.
 ///
@@ -67,5 +84,10 @@ void dispatchObjectDisposed({
 void dispatchObjectTrace({
   required Object object,
   Map<String, dynamic>? context,
-}) =>
-    throw UnimplementedError();
+}) {
+  final tracker = _tracker();
+  tracker.addContext(
+    object,
+    context: context,
+  );
+}

@@ -25,6 +25,7 @@ class ObjectTracker {
   late Finalizer<Object> _finalizer;
   late GcCounter _gcCounter;
   final _objects = ObjectRecords();
+  bool disposed = false;
 
   /// We use String, because some types are private and thus not accessible.
   final Set<String> classesToCollectStackTraceOnStart;
@@ -37,6 +38,7 @@ class ObjectTracker {
     required Map<String, dynamic>? context,
     required String trackedClass,
   }) {
+    throwIfDisposed();
     final code = identityHashCode(object);
     if (_checkForDuplicate(code)) return;
 
@@ -60,6 +62,7 @@ class ObjectTracker {
   }
 
   void _onOobjectGarbageCollected(Object code) {
+    if (disposed) return;
     if (code is! int) throw 'Object token should be integer.';
 
     if (_objects.duplicates.contains(code)) return;
@@ -105,6 +108,7 @@ class ObjectTracker {
     Object object, {
     required Map<String, dynamic>? context,
   }) {
+    throwIfDisposed();
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
@@ -125,6 +129,7 @@ class ObjectTracker {
   }
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
+    throwIfDisposed();
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
@@ -134,6 +139,7 @@ class ObjectTracker {
   }
 
   LeakSummary collectLeaksSummary() {
+    throwIfDisposed();
     _checkForNewNotGCedLeaks();
 
     return LeakSummary({
@@ -159,6 +165,7 @@ class ObjectTracker {
   }
 
   Leaks collectLeaks() {
+    throwIfDisposed();
     _checkForNewNotGCedLeaks();
 
     return Leaks({
@@ -190,5 +197,17 @@ class ObjectTracker {
           'to https://github.com/dart-lang/leak_tracker/issues.';
     }
     return true;
+  }
+
+  void throwIfDisposed() {
+    if (disposed) throw StateError('The disposed object should not be used.');
+  }
+
+  void dispose() {
+    if (disposed) return;
+    disposed = true;
+    for (final record in _objects.notGCed.values) {
+      _finalizer.detach(record.code);
+    }
   }
 }
