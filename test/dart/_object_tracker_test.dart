@@ -187,6 +187,36 @@ void main() {
         _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
+
+    test('collects context accurately.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
+
+      // Start tracking and dispose.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(
+          theObject,
+          context: {'0': 0},
+          trackedClass: _trackedClass,
+        );
+        tracker.addContext(theObject, context: {'1': 1});
+        tracker.dispatchDisposal(theObject, context: {'2': 2});
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+      // Verify context for the collected nonGCed.
+      withClock(Clock.fixed(time), () {
+        final leaks = tracker.collectLeaks();
+        final context = leaks.notGCed.first.context!;
+        for (final i in Iterable.generate(3)) {
+          expect(context[i.toString()], i);
+        }
+      });
+    });
   });
 
   group('$ObjectTracker with stack traces', () {
