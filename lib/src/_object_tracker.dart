@@ -202,6 +202,7 @@ class ObjectTracker {
     _objects.notGCedDisposedOk.remove(code);
     _objects.notGCedDisposedLate.remove(code);
     _objects.notGCedDisposedLateCollected.remove(code);
+    _finalizer.detach(code);
     if (_objects.duplicates.length > _maxAllowedDuplicates) {
       throw 'Too many duplicates, Please, file a bug '
           'to https://github.com/dart-lang/leak_tracker/issues.';
