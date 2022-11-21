@@ -80,6 +80,7 @@ class ObjectTracker {
     _objects.notGCed.remove(code);
     _objects.notGCedDisposedOk.remove(code);
     _objects.notGCedDisposedLate.remove(code);
+    _objects.notGCedDisposedLateCollected.remove(code);
 
     _objects.assertRecordIntegrity(code);
   }
@@ -133,7 +134,7 @@ class ObjectTracker {
     record.mergeContext(context);
   }
 
-  LeakSummary collectLeaksSummary() {
+  LeakSummary leaksSummary() {
     throwIfDisposed();
     _checkForNewNotGCedLeaks();
 
@@ -174,7 +175,6 @@ class ObjectTracker {
           .map((record) => record.toLeakReport())
           .toList(),
       LeakType.notGCed: _objects.notGCedDisposedLate
-          .where((code) => !_notGCed(code).reportedAsNonGced)
           .map((code) => _notGCed(code).toLeakReport())
           .toList(),
       LeakType.gcedLate: _objects.gcedLateLeaks
@@ -182,10 +182,8 @@ class ObjectTracker {
           .toList(),
     });
 
-    for (var c in _objects.notGCedDisposedLate) {
-      _notGCed(c).reportedAsNonGced = true;
-    }
-
+    _objects.notGCedDisposedLateCollected.addAll(_objects.notGCedDisposedLate);
+    _objects.notGCedDisposedLate.clear();
     _objects.gcedNotDisposedLeaks.clear();
     _objects.gcedLateLeaks.clear();
 
@@ -203,6 +201,7 @@ class ObjectTracker {
     _objects.notGCed.remove(code);
     _objects.notGCedDisposedOk.remove(code);
     _objects.notGCedDisposedLate.remove(code);
+    _objects.notGCedDisposedLateCollected.remove(code);
     if (_objects.duplicates.length > _maxAllowedDuplicates) {
       throw 'Too many duplicates, Please, file a bug '
           'to https://github.com/dart-lang/leak_tracker/issues.';

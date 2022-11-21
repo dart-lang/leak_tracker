@@ -11,8 +11,9 @@ import 'leak_analysis_model.dart';
 /// Objects migrate between collections based on their state.
 ///
 /// On registration, each object enters the collections [notGCed].
-/// On disposal it is added to disposedOk. Then, if it is overdue
-/// to be GCed it migrates from [notGCedDisposedOk] to [notGCedDisposedLate].
+/// On disposal it is added to [notGCedDisposedOk]. Then, if it is overdue
+/// to be GCed it migrates from to [notGCedDisposedLate].
+/// Then, if the leak is collected, it migrates to [notGCedDisposedLateCollected].
 ///
 /// If the object gets GCed, it is removed from all notGCed... collections,
 /// and, if it was GCed wrongly, added to one of gced... collections.
@@ -26,6 +27,11 @@ class ObjectRecords {
 
   /// Not GCed objects, that were disposed and are overdue to be GCed.
   final Set<IdentityHashCode> notGCedDisposedLate = <IdentityHashCode>{};
+
+  /// Not GCed objects, that were disposed, are overdue to be GCed,
+  /// and were collected as nonGCed leaks.
+  final Set<IdentityHashCode> notGCedDisposedLateCollected =
+      <IdentityHashCode>{};
 
   /// GCed objects that were late to be GCed.
   final List<ObjectRecord> gcedLateLeaks = <ObjectRecord>[];
@@ -42,18 +48,20 @@ class ObjectRecords {
       assert(!notGCed.containsKey(code));
       assert(!notGCedDisposedOk.contains(code));
       assert(!notGCedDisposedLate.contains(code));
+      assert(!notGCedDisposedLateCollected.contains(code));
       return true;
     }());
   }
 
   void assertRecordIntegrity(IdentityHashCode code) {
     assert(() {
-      assert(
-        !notGCedDisposedOk.contains(code) ||
-            !notGCedDisposedLate.contains(code),
-      );
-      if (notGCedDisposedOk.contains(code) ||
-          notGCedDisposedLate.contains(code)) {
+      final notGCedSetMembership = (notGCedDisposedOk.contains(code) ? 1 : 0) +
+          (notGCedDisposedLate.contains(code) ? 1 : 0) +
+          (notGCedDisposedLateCollected.contains(code) ? 1 : 0);
+
+      assert(notGCedSetMembership <= 1);
+
+      if (notGCedSetMembership == 1) {
         assert(notGCed.containsKey(code));
       }
 
@@ -81,8 +89,6 @@ class ObjectRecord {
   Map<String, dynamic>? context;
   final Type type;
   final String trackedClass;
-
-  bool reportedAsNonGced = false;
 
   DateTime? _disposalTime;
   int? _disposalGcCount;

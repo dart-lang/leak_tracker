@@ -90,7 +90,7 @@ void dispatchObjectTrace({
 /// Returns summary of the leaks collected since last invocation of [collectLeaks].
 LeakSummary get leakSummary {
   final tracker = _tracker();
-  return tracker.collectLeaksSummary();
+  return tracker.leaksSummary();
 }
 
 /// Returns details of the leaks collected since last invocation.
