@@ -211,7 +211,7 @@ class ObjectTracker {
   }
 
   void throwIfDisposed() {
-    if (disposed) throw StateError('The disposed object should not be used.');
+    if (disposed) throw StateError('The disposed instance should not be used.');
   }
 
   void dispose() {
