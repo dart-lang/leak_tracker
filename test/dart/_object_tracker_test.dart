@@ -9,31 +9,39 @@ import 'package:leak_tracker/src/_object_tracker.dart';
 import 'package:leak_tracker/src/_primitives.dart';
 import 'package:test/test.dart';
 
+const String _trackedClass = 'trackedClass';
+
 void main() {
   late _MockFinalizerBuilder finalizerBuilder;
   late _MockGcCounter gcCounter;
   late ObjectTracker tracker;
 
-  void _verifyOneLeakIsRegistered(
-    Object object,
-    LeakType type,
-    String trackedClass,
-  ) {
-    final summary = tracker.collectLeaksSummary();
-    final leaks = tracker.collectLeaks();
-
+  void _verifyOneLeakIsRegistered(Object object, LeakType type) {
+    var summary = tracker.leaksSummary();
     expect(summary.total, 1);
+
+    // Second leak summary should be the same.
+    summary = tracker.leaksSummary();
+    expect(summary.total, 1);
+
+    var leaks = tracker.collectLeaks();
     expect(summary.totals[type], 1);
 
     expect(leaks.total, 1);
     final theLeak = leaks.byType[type]!.single;
     expect(theLeak.type, object.runtimeType.toString());
     expect(theLeak.code, identityHashCode(object));
-    expect(theLeak.trackedClass, trackedClass);
+    expect(theLeak.trackedClass, _trackedClass);
+
+    // Second leak collection should not return results.
+    summary = tracker.leaksSummary();
+    leaks = tracker.collectLeaks();
+    expect(summary.total, 0);
+    expect(leaks.total, 0);
   }
 
   void _verifyNoLeaks() {
-    final summary = tracker.collectLeaksSummary();
+    final summary = tracker.leaksSummary();
     final leaks = tracker.collectLeaks();
 
     expect(summary.total, 0);
@@ -97,11 +105,7 @@ void main() {
       _gc(theObject);
 
       // Verify not-disposal is registered.
-      _verifyOneLeakIsRegistered(
-        theObject,
-        LeakType.notDisposed,
-        'trackedClass',
-      );
+      _verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
     });
 
     test('tracks ${LeakType.notGCed}.', () {
@@ -125,7 +129,7 @@ void main() {
 
       // Verify leak is registered.
       withClock(Clock.fixed(time), () {
-        _verifyOneLeakIsRegistered(theObject, LeakType.notGCed, 'trackedClass');
+        _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
       });
     });
 
@@ -151,16 +155,71 @@ void main() {
       // GC and verify leak is registered.
       withClock(Clock.fixed(time), () {
         _gc(theObject);
-        _verifyOneLeakIsRegistered(
+        _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+      });
+    });
+
+    test('tracks ${LeakType.gcedLate} lifecycle accurately.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
+
+      // Start tracking and dispose.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(
           theObject,
-          LeakType.gcedLate,
-          'trackedClass',
+          context: null,
+          trackedClass: _trackedClass,
         );
+        tracker.dispatchDisposal(theObject, context: null);
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+      withClock(Clock.fixed(time), () {
+        // Verify notGCed leak is registered.
+        _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+
+        // GC and verify gcedLate leak is registered.
+        _gc(theObject);
+        _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+      });
+    });
+
+    test('collects context accurately.', () {
+      // Define object and time.
+      const theObject = '-';
+      var time = DateTime(2000);
+
+      // Start tracking and dispose.
+      withClock(Clock.fixed(time), () {
+        tracker.startTracking(
+          theObject,
+          context: {'0': 0},
+          trackedClass: _trackedClass,
+        );
+        tracker.addContext(theObject, context: {'1': 1});
+        tracker.dispatchDisposal(theObject, context: {'2': 2});
+      });
+
+      // Time travel.
+      time = time.add(disposalTimeBuffer);
+      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+
+      // Verify context for the collected nonGCed.
+      withClock(Clock.fixed(time), () {
+        final leaks = tracker.collectLeaks();
+        final context = leaks.notGCed.first.context!;
+        for (final i in Iterable.generate(3)) {
+          expect(context[i.toString()], i);
+        }
       });
     });
   });
 
-  group('$ObjectTracker with callstacks', () {
+  group('$ObjectTracker with stack traces', () {
     setUp(() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
@@ -172,7 +231,7 @@ void main() {
       );
     });
 
-    test('collects callstacks.', () {
+    test('collects stack traces.', () {
       // Define object and time.
       const theObject = '-';
       var time = DateTime(2000);
@@ -182,7 +241,7 @@ void main() {
         tracker.startTracking(
           theObject,
           context: null,
-          trackedClass: 'trackedClass',
+          trackedClass: _trackedClass,
         );
         tracker.dispatchDisposal(theObject, context: null);
       });

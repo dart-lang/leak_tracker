@@ -25,6 +25,7 @@ class ObjectTracker {
   late Finalizer<Object> _finalizer;
   late GcCounter _gcCounter;
   final _objects = ObjectRecords();
+  bool disposed = false;
 
   /// We use String, because some types are private and thus not accessible.
   final Set<String> classesToCollectStackTraceOnStart;
@@ -37,6 +38,7 @@ class ObjectTracker {
     required Map<String, dynamic>? context,
     required String trackedClass,
   }) {
+    throwIfDisposed();
     final code = identityHashCode(object);
     if (_checkForDuplicate(code)) return;
 
@@ -60,16 +62,13 @@ class ObjectTracker {
   }
 
   void _onOobjectGarbageCollected(Object code) {
+    if (disposed) return;
     if (code is! int) throw 'Object token should be integer.';
 
     if (_objects.duplicates.contains(code)) return;
 
-    final ObjectRecord? record = _objects.notGCed[code];
-    if (record == null) {
-      throw '$code should not be garbage collected twice.';
-    }
     _objects.assertRecordIntegrity(code);
-
+    final record = _notGCed(code);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
     if (record.isGCedLateLeak) {
@@ -81,6 +80,7 @@ class ObjectTracker {
     _objects.notGCed.remove(code);
     _objects.notGCedDisposedOk.remove(code);
     _objects.notGCedDisposedLate.remove(code);
+    _objects.notGCedDisposedLateCollected.remove(code);
 
     _objects.assertRecordIntegrity(code);
   }
@@ -105,11 +105,12 @@ class ObjectTracker {
     Object object, {
     required Map<String, dynamic>? context,
   }) {
+    throwIfDisposed();
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
 
-    final record = _objects.notGCed[code]!;
+    final record = _notGCed(code);
     record.mergeContext(context);
     if (classesToCollectStackTraceOnDisposal
         .contains(object.runtimeType.toString())) {
@@ -125,15 +126,16 @@ class ObjectTracker {
   }
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
+    throwIfDisposed();
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
-    final record = _objects.notGCed[code];
-    if (record == null) throw 'The object is not registered for tracking.';
+    final record = _notGCed(code);
     record.mergeContext(context);
   }
 
-  LeakSummary collectLeaksSummary() {
+  LeakSummary leaksSummary() {
+    throwIfDisposed();
     _checkForNewNotGCedLeaks();
 
     return LeakSummary({
@@ -148,8 +150,7 @@ class ObjectTracker {
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
-      final record = _objects.notGCed[code]!;
-      if (record.isNotGCedLeak(_gcCounter.gcCount, now)) {
+      if (_notGCed(code).isNotGCedLeak(_gcCounter.gcCount, now)) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
       }
@@ -158,20 +159,35 @@ class ObjectTracker {
     _objects.assertIntegrity();
   }
 
+  ObjectRecord _notGCed(int code) {
+    final result = _objects.notGCed[code];
+    if (result == null)
+      throw 'The object with code $code is not registered for tracking.';
+    return result;
+  }
+
   Leaks collectLeaks() {
+    throwIfDisposed();
     _checkForNewNotGCedLeaks();
 
-    return Leaks({
+    final result = Leaks({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks
           .map((record) => record.toLeakReport())
           .toList(),
       LeakType.notGCed: _objects.notGCedDisposedLate
-          .map((code) => _objects.notGCed[code]!.toLeakReport())
+          .map((code) => _notGCed(code).toLeakReport())
           .toList(),
       LeakType.gcedLate: _objects.gcedLateLeaks
           .map((record) => record.toLeakReport())
           .toList(),
     });
+
+    _objects.notGCedDisposedLateCollected.addAll(_objects.notGCedDisposedLate);
+    _objects.notGCedDisposedLate.clear();
+    _objects.gcedNotDisposedLeaks.clear();
+    _objects.gcedLateLeaks.clear();
+
+    return result;
   }
 
   final _maxAllowedDuplicates = 100;
@@ -185,10 +201,24 @@ class ObjectTracker {
     _objects.notGCed.remove(code);
     _objects.notGCedDisposedOk.remove(code);
     _objects.notGCedDisposedLate.remove(code);
+    _objects.notGCedDisposedLateCollected.remove(code);
+    _finalizer.detach(code);
     if (_objects.duplicates.length > _maxAllowedDuplicates) {
       throw 'Too many duplicates, Please, file a bug '
           'to https://github.com/dart-lang/leak_tracker/issues.';
     }
     return true;
+  }
+
+  void throwIfDisposed() {
+    if (disposed) throw StateError('The disposed instance should not be used.');
+  }
+
+  void dispose() {
+    throwIfDisposed();
+    disposed = true;
+    for (final record in _objects.notGCed.values) {
+      _finalizer.detach(record.code);
+    }
   }
 }

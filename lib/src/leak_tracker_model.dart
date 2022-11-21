@@ -26,7 +26,7 @@ class LeakTrackingConfiguration {
   /// We use String, because some types are private and thus not accessible.
   final Set<String> classesToCollectStackTraceOnDisposal;
 
-  /// If true, the tool will output the leak summary to console.
+  /// If true, the tool will output the leak summary to console on every leak check.
   final bool stdoutLeaks;
 
   /// Listener for leaks.
