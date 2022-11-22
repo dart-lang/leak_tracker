@@ -2,19 +2,23 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'leak_analysis_model.dart';
 import 'leak_tracker_model.dart';
 
 class LeakChecker {
   LeakChecker({
-    required this.provider,
+    required this.leakProvider,
     required this.leakListener,
     required this.stdoutLeaks,
     required this.checkPeriod,
   }) {
     final period = checkPeriod;
-    if (period == null) return;
+    _timer = period == null ? null : Timer.periodic(period, (_) => checkLeaks);
   }
+
+  late final Timer? _timer;
 
   LeakSummary _previousResult = LeakSummary({});
 
@@ -32,10 +36,10 @@ class LeakChecker {
   /// Will be invoked if number of leaks is different since previous check.
   final LeakListener? leakListener;
 
-  final LeakProvider provider;
+  final LeakProvider leakProvider;
 
   void checkLeaks() {
-    final summary = provider.leaksSummary();
+    final summary = leakProvider.leaksSummary();
     if (summary.matches(_previousResult)) return;
 
     leakListener?.call(summary);
@@ -43,5 +47,7 @@ class LeakChecker {
     _previousResult = summary;
   }
 
-  void dispose() {}
+  void dispose() {
+    _timer?.cancel();
+  }
 }

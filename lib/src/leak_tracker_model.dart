@@ -8,8 +8,9 @@ typedef LeakListener = void Function(LeakSummary);
 
 class LeakTrackingConfiguration {
   LeakTrackingConfiguration({
-    this.leakListener,
     this.stdoutLeaks = true,
+    this.notifyDevTools = true,
+    this.leakListener,
     this.checkPeriod = const Duration(seconds: 1),
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
@@ -26,8 +27,11 @@ class LeakTrackingConfiguration {
   /// We use String, because some types are private and thus not accessible.
   final Set<String> classesToCollectStackTraceOnDisposal;
 
-  /// If true, the tool will output the leak summary to console on every leak check.
+  /// If true, leak information will output to console.
   final bool stdoutLeaks;
+
+  /// If true, DevTools will be notified about leaks.
+  final bool notifyDevTools;
 
   /// Listener for leaks.
   final LeakListener? leakListener;
