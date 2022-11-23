@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'leak_analysis_model.dart';
 import 'leak_tracker_model.dart';
@@ -10,10 +11,10 @@ import 'leak_tracker_model.dart';
 class LeakChecker {
   LeakChecker({
     required this.leakProvider,
+    required this.checkPeriod,
     required this.leakListener,
     required this.stdoutLeaks,
     required this.notifyDevTools,
-    required this.checkPeriod,
     StdoutSink? stdoutSink,
     DevToolsSink? devToolsSink,
   })  : stdoutSink = stdoutSink ?? StdoutSink(),
@@ -69,5 +70,6 @@ class StdoutSink {
 }
 
 class DevToolsSink {
-  void send(String content) => print(content);
+  void send(Map<String, dynamic> content) =>
+      postEvent(EventNames.memoryLeaksSummary, content);
 }
