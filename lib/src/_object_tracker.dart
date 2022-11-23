@@ -134,6 +134,7 @@ class ObjectTracker implements LeakProvider {
     record.mergeContext(context);
   }
 
+  @override
   LeakSummary leaksSummary() {
     throwIfDisposed();
     _checkForNewNotGCedLeaks();
