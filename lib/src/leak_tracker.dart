@@ -29,10 +29,10 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
   _objectTracker = newTracker;
   _leakChecker = LeakChecker(
     leakProvider: newTracker,
-    leakListener: config.leakListener,
-    stdoutLeaks: config.stdoutLeaks,
     checkPeriod: config.checkPeriod,
-    notifyDevTools: config.notifyDevTools,
+    leakListener: config.leakListener,
+    stdoutSink: config.stdoutLeaks ? StdoutSink() : null,
+    devToolsSink: config.notifyDevTools ? DevToolsSink() : null,
   );
 }
 

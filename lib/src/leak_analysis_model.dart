@@ -28,7 +28,7 @@ LeakType _parseLeakType(String source) =>
 
 /// Statistical information about found leaks.
 class LeakSummary {
-  LeakSummary(this.totals);
+  const LeakSummary(this.totals);
 
   factory LeakSummary.fromJson(Map<String, dynamic> json) => LeakSummary(
         json.map(

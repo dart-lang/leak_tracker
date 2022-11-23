@@ -13,36 +13,30 @@ class LeakChecker {
     required this.leakProvider,
     required this.checkPeriod,
     required this.leakListener,
-    required this.stdoutLeaks,
-    required this.notifyDevTools,
-    StdoutSink? stdoutSink,
-    DevToolsSink? devToolsSink,
-  })  : stdoutSink = stdoutSink ?? StdoutSink(),
-        devToolsSink = devToolsSink ?? DevToolsSink() {
+    required this.stdoutSink,
+    required this.devToolsSink,
+  }) {
     final period = checkPeriod;
-    _timer = period == null ? null : Timer.periodic(period, (_) => checkLeaks);
+    _timer =
+        period == null ? null : Timer.periodic(period, (_) => checkLeaks());
   }
 
   late final Timer? _timer;
 
-  LeakSummary _previousResult = LeakSummary({});
+  LeakSummary _previousResult = const LeakSummary({});
 
   /// Period to check for leaks.
   ///
   /// If null, there is no periodic checking.
   final Duration? checkPeriod;
 
-  /// If true, the tool will output the leak summary to console when
-  /// leak totals change.
-  final bool stdoutLeaks;
+  // If not null, the the leak summary will be printed here, when
+  // leak totals change.
+  final StdoutSink? stdoutSink;
 
-  /// If true, DevTools will notify DevTools when
-  /// leak totals change.
-  final bool notifyDevTools;
-
-  StdoutSink stdoutSink;
-
-  DevToolsSink devToolsSink;
+  // If not null, the leak summary will be sent here, when
+  // leak totals change.
+  final DevToolsSink? devToolsSink;
 
   /// Listener for leaks.
   ///
@@ -56,7 +50,9 @@ class LeakChecker {
     if (summary.matches(_previousResult)) return;
 
     leakListener?.call(summary);
-    if (stdoutLeaks) print(summary.toMessage());
+    stdoutSink?.print(summary.toMessage());
+    devToolsSink?.send(summary.toJson());
+
     _previousResult = summary;
   }
 

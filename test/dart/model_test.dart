@@ -45,7 +45,7 @@ void main() {
   });
 
   test('$LeakSummary serializes.', () {
-    final leakSummary = LeakSummary({
+    const leakSummary = LeakSummary({
       LeakType.gcedLate: 2,
       LeakType.notDisposed: 3,
       LeakType.notGCed: 4,
