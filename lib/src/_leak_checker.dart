@@ -12,8 +12,12 @@ class LeakChecker {
     required this.leakProvider,
     required this.leakListener,
     required this.stdoutLeaks,
+    required this.notifyDevTools,
     required this.checkPeriod,
-  }) {
+    StdoutSink? stdoutSink,
+    DevToolsSink? devToolsSink,
+  })  : stdoutSink = stdoutSink ?? StdoutSink(),
+        devToolsSink = devToolsSink ?? DevToolsSink() {
     final period = checkPeriod;
     _timer = period == null ? null : Timer.periodic(period, (_) => checkLeaks);
   }
@@ -31,9 +35,17 @@ class LeakChecker {
   /// leak totals change.
   final bool stdoutLeaks;
 
+  /// If true, DevTools will notify DevTools when
+  /// leak totals change.
+  final bool notifyDevTools;
+
+  StdoutSink stdoutSink;
+
+  DevToolsSink devToolsSink;
+
   /// Listener for leaks.
   ///
-  /// Will be invoked if number of leaks is different since previous check.
+  /// Will be invoked if leak totals change.
   final LeakListener? leakListener;
 
   final LeakProvider leakProvider;
@@ -50,4 +62,12 @@ class LeakChecker {
   void dispose() {
     _timer?.cancel();
   }
+}
+
+class StdoutSink {
+  void print(String content) => print(content);
+}
+
+class DevToolsSink {
+  void send(String content) => print(content);
 }

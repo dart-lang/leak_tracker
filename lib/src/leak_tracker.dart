@@ -32,6 +32,7 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
     leakListener: config.leakListener,
     stdoutLeaks: config.stdoutLeaks,
     checkPeriod: config.checkPeriod,
+    notifyDevTools: config.notifyDevTools,
   );
 }
 
