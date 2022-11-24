@@ -32,7 +32,7 @@ void main() {
 
   tearDown(() => _storage.clear());
 
-  test('not-referenced object is finalized and gced after barrier increase',
+  test('Non-referenced object is finalized and gced after barrier increase',
       () async {
     bool finalized = false;
     final finalizer = Finalizer<Object>((token) => finalized = true);
@@ -41,6 +41,7 @@ void main() {
 
     while (reachabilityBarrier <= barrier + 2) {
       _allocateMemory();
+      // Delay to give space to garbage collector.
       await Future.delayed(const Duration());
     }
     expect(finalized, true);
