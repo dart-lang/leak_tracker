@@ -4,17 +4,18 @@
 
 import 'dart:developer';
 
-final _storage = <List<DateTime>>[];
-void _allocateMemory() {
-  _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
-}
-
+/// Forces garbage collection by aggressive memory allocation.
 Future<void> forceGC() async {
+  final _storage = <List<DateTime>>[];
+
+  void _allocateMemory() {
+    _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
+  }
+
   final barrier = reachabilityBarrier;
 
-  while (reachabilityBarrier <= barrier + 2) {
+  while (reachabilityBarrier < barrier + 2) {
     await Future.delayed(const Duration());
     _allocateMemory();
   }
-  _storage.clear();
 }

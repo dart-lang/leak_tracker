@@ -13,37 +13,37 @@ import '../test_infra/mocks/instrumented_class.dart';
 ///
 /// Can serve as exapmles for regression leak-testing for Flutter widgets.
 void main() {
-  // tearDown(() => disableLeakTracking());
+  tearDown(() => disableLeakTracking());
 
-  // test('Not disposed object reported.', () async {
-  //   LeakSummary? lastSummary;
+  test('Not disposed object reported.', () async {
+    LeakSummary? lastSummary;
 
-  //   void _runApp() {
-  //     enableLeakTracking(
-  //       config: LeakTrackingConfiguration.minimal(
-  //         (summary) => lastSummary = summary,
-  //       ),
-  //     );
+    void _runApp() {
+      enableLeakTracking(
+        config: LeakTrackingConfiguration.minimal(
+          (summary) => lastSummary = summary,
+        ),
+      );
 
-  //     // Create and not dispose an inastance of instrumented class.
-  //     InstrumentedClass();
-  //   }
+      // Create and not dispose an inastance of instrumented class.
+      InstrumentedClass();
+    }
 
-  //   _runApp();
-  //   await forceGC();
-  //   expect(lastSummary, isNull);
-  //   checkLeaks();
+    _runApp();
+    await forceGC();
+    expect(lastSummary, isNull);
+    checkLeaks();
 
-  //   expect(lastSummary!.total, 1);
-  //   expect(lastSummary!.totals[LeakType.notDisposed], 1);
+    expect(lastSummary!.total, 1);
+    expect(lastSummary!.totals[LeakType.notDisposed], 1);
 
-  //   final leaks = collectLeaks();
-  //   expect(leaks.total, 1);
+    final leaks = collectLeaks();
+    expect(leaks.total, 1);
 
-  //   final theLeak = leaks.notDisposed.first;
-  //   expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-  //   expect(theLeak.trackedClass, contains('$InstrumentedClass'));
-  // });
+    final theLeak = leaks.notDisposed.first;
+    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
+    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+  });
 
   test('Not GCed object reported.', () async {
     LeakSummary? lastSummary;
