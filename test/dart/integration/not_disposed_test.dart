@@ -9,32 +9,27 @@ import 'package:test/test.dart';
 import '../../test_infra/helpers/gc.dart';
 import '../../test_infra/mocks/instrumented_class.dart';
 
-LeakSummary? lastSummary;
-
-void _testAppNotDisposed() {
-  enableLeakTracking(
-    config: LeakTrackingConfiguration(
-      checkPeriod: null,
-      leakListener: (summary) => lastSummary = summary,
-      stdoutLeaks: false,
-      notifyDevTools: false,
-    ),
-  );
-
-  Object? testObject = InstrumentedClass();
-  testObject.toString();
-  testObject = null;
-}
-
 void main() {
-  test('not disposed object reported', () {
-    _testAppNotDisposed();
+  tearDown(() => disableLeakTracking());
 
-    forceGC();
+  test('not disposed object reported', () async {
+    LeakSummary? lastSummary;
 
+    void _runApp() {
+      enableLeakTracking(
+        config: LeakTrackingConfiguration.minimal(
+          (summary) => lastSummary = summary,
+        ),
+      );
+
+      InstrumentedClass();
+    }
+
+    _runApp();
+    await forceGC();
     expect(lastSummary, isNull);
-
     checkLeaks();
+
     expect(lastSummary!.total, 1);
     expect(lastSummary!.totals[LeakType.notDisposed], 1);
 

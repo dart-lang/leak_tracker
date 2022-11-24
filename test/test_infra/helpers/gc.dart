@@ -4,16 +4,17 @@
 
 import 'dart:developer';
 
-// ignore: unused_element
-Object? _storage;
+final _storage = <List<DateTime>>[];
+void _allocateMemory() {
+  _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
+}
 
-void forceGC() async {
-  final gcCount = reachabilityBarrier;
+Future<void> forceGC() async {
+  final barrier = reachabilityBarrier;
 
-  while (reachabilityBarrier <= gcCount + 1) {
-    await Future.delayed(const Duration(milliseconds: 1));
-    _storage = Iterable.generate(10000, (_) => DateTime.now());
-    await Future.delayed(const Duration(milliseconds: 1));
-    _storage = null;
+  while (reachabilityBarrier <= barrier + 2) {
+    await Future.delayed(const Duration());
+    _allocateMemory();
   }
+  _storage.clear();
 }
