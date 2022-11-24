@@ -13,11 +13,42 @@ import '../test_infra/mocks/instrumented_class.dart';
 ///
 /// Can serve as exapmles for regression leak-testing for Flutter widgets.
 void main() {
-  tearDown(() => disableLeakTracking());
+  // tearDown(() => disableLeakTracking());
 
-  test('not disposed object reported', () async {
+  // test('Not disposed object reported.', () async {
+  //   LeakSummary? lastSummary;
+
+  //   void _runApp() {
+  //     enableLeakTracking(
+  //       config: LeakTrackingConfiguration.minimal(
+  //         (summary) => lastSummary = summary,
+  //       ),
+  //     );
+
+  //     // Create and not dispose an inastance of instrumented class.
+  //     InstrumentedClass();
+  //   }
+
+  //   _runApp();
+  //   await forceGC();
+  //   expect(lastSummary, isNull);
+  //   checkLeaks();
+
+  //   expect(lastSummary!.total, 1);
+  //   expect(lastSummary!.totals[LeakType.notDisposed], 1);
+
+  //   final leaks = collectLeaks();
+  //   expect(leaks.total, 1);
+
+  //   final theLeak = leaks.notDisposed.first;
+  //   expect(theLeak.trackedClass, contains(InstrumentedClass.library));
+  //   expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+  // });
+
+  test('Not GCed object reported.', () async {
     LeakSummary? lastSummary;
 
+    late InstrumentedClass notGCedObject;
     void _runApp() {
       enableLeakTracking(
         config: LeakTrackingConfiguration.minimal(
@@ -25,7 +56,8 @@ void main() {
         ),
       );
 
-      InstrumentedClass();
+      notGCedObject = InstrumentedClass();
+      notGCedObject.dispose();
     }
 
     _runApp();
@@ -34,12 +66,12 @@ void main() {
     checkLeaks();
 
     expect(lastSummary!.total, 1);
-    expect(lastSummary!.totals[LeakType.notDisposed], 1);
+    expect(lastSummary!.totals[LeakType.notGCed], 1);
 
     final leaks = collectLeaks();
     expect(leaks.total, 1);
 
-    final theLeak = leaks.notDisposed.first;
+    final theLeak = leaks.notGCed.first;
     expect(theLeak.trackedClass, contains(InstrumentedClass.library));
     expect(theLeak.trackedClass, contains('$InstrumentedClass'));
   });
