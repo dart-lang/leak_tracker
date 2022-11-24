@@ -11,7 +11,7 @@ import '../test_infra/mocks/instrumented_class.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 ///
-/// Can serve as exapmles for regression leak-testing for Flutter widgets.
+/// Can serve as examples for regression leak-testing for Flutter widgets.
 void main() {
   tearDown(() => disableLeakTracking());
 
