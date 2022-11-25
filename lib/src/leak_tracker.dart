@@ -4,11 +4,13 @@
 
 import '../leak_tracker.dart';
 import '_dispatcher.dart' as dispatcher;
+import '_leak_checker.dart';
 import '_object_tracker.dart';
 import '_primitives.dart';
 import 'leak_analysis_model.dart';
 
 ObjectTracker? _objectTracker;
+LeakChecker? _leakChecker;
 
 /// Enables leak tracking for the application.
 ///
@@ -17,10 +19,20 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
   config ??= LeakTrackingConfiguration();
   if (_objectTracker != null)
     throw StateError('Leak tracking is alredy enabled.');
-  _objectTracker = ObjectTracker(
+
+  final newTracker = ObjectTracker(
     classesToCollectStackTraceOnStart: config.classesToCollectStackTraceOnStart,
     classesToCollectStackTraceOnDisposal:
         config.classesToCollectStackTraceOnDisposal,
+  );
+
+  _objectTracker = newTracker;
+  _leakChecker = LeakChecker(
+    leakProvider: newTracker,
+    checkPeriod: config.checkPeriod,
+    leakListener: config.leakListener,
+    stdoutSink: config.stdoutLeaks ? StdoutSink() : null,
+    devToolsSink: config.notifyDevTools ? DevToolsSink() : null,
   );
 }
 
@@ -28,11 +40,14 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void disableLeakTracking() {
+  _leakChecker?.dispose();
+  _leakChecker = null;
   _objectTracker?.dispose();
   _objectTracker = null;
 }
 
 ObjectTracker _tracker() {
+  assert((_objectTracker == null) == (_leakChecker == null));
   final tracker = _objectTracker;
   if (tracker == null) throw StateError('Leak tracking should be enabled.');
   return tracker;

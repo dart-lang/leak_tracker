@@ -9,7 +9,7 @@ import '_object_record.dart';
 import '_primitives.dart';
 import 'leak_analysis_model.dart';
 
-class ObjectTracker {
+class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
     this.classesToCollectStackTraceOnStart = const {},
@@ -134,6 +134,7 @@ class ObjectTracker {
     record.mergeContext(context);
   }
 
+  @override
   LeakSummary leaksSummary() {
     throwIfDisposed();
     _checkForNewNotGCedLeaks();

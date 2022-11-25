@@ -8,6 +8,10 @@ import 'package:collection/collection.dart';
 
 import '_util.dart';
 
+class EventNames {
+  static const String memoryLeaksSummary = 'memory_leaks_summary';
+}
+
 enum LeakType {
   /// Not disposed and garbage collected.
   notDisposed,
@@ -24,7 +28,7 @@ LeakType _parseLeakType(String source) =>
 
 /// Statistical information about found leaks.
 class LeakSummary {
-  LeakSummary(this.totals);
+  const LeakSummary(this.totals);
 
   factory LeakSummary.fromJson(Map<String, dynamic> json) => LeakSummary(
         json.map(
@@ -79,6 +83,10 @@ class Leaks {
       );
 
   int get total => byType.values.map((e) => e.length).sum;
+}
+
+abstract class LeakProvider {
+  LeakSummary leaksSummary();
 }
 
 /// Names for json fields.
