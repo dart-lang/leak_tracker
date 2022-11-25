@@ -167,6 +167,7 @@ class ObjectTracker implements LeakProvider {
     return result;
   }
 
+  @override
   Leaks collectLeaks() {
     throwIfDisposed();
     _checkForNewNotGCedLeaks();

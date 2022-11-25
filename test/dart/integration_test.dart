@@ -57,6 +57,7 @@ void main() {
       );
 
       notGCedObject = InstrumentedClass();
+      // Dispose reachable instance.
       notGCedObject.dispose();
     }
 

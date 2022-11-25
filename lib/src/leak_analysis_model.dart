@@ -8,10 +8,6 @@ import 'package:collection/collection.dart';
 
 import '_util.dart';
 
-class EventNames {
-  static const String memoryLeaksSummary = 'memory_leaks_summary';
-}
-
 enum LeakType {
   /// Not disposed and garbage collected.
   notDisposed,
@@ -87,6 +83,7 @@ class Leaks {
 
 abstract class LeakProvider {
   LeakSummary leaksSummary();
+  Leaks collectLeaks();
 }
 
 /// Names for json fields.

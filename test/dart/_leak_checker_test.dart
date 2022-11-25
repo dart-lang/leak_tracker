@@ -245,4 +245,7 @@ class _MockLeakProvider implements LeakProvider {
 
   @override
   LeakSummary leaksSummary() => value;
+
+  @override
+  Leaks collectLeaks() => throw UnimplementedError();
 }
