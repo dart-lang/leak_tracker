@@ -14,11 +14,6 @@ import 'package:test/test.dart';
 // Enum-like static classes are ok.
 // ignore: avoid_classes_with_only_static_members
 class _SummaryValues {
-  static void verifyValues() {
-    expect(zero.toMessage(), isNot(nonZero.toMessage()));
-    expect(nonZero.toMessage(), nonZeroCopy.toMessage());
-  }
-
   static const zero = LeakSummary({});
 
   static const nonZero = LeakSummary({
@@ -72,7 +67,14 @@ void main() {
   });
 
   test('Mocks emulate production well.', () {
-    _SummaryValues.verifyValues();
+    expect(
+      _SummaryValues.zero.toMessage(),
+      isNot(_SummaryValues.nonZero.toMessage()),
+    );
+    expect(
+      _SummaryValues.nonZero.toMessage(),
+      _SummaryValues.nonZeroCopy.toMessage(),
+    );
 
     // Mock defaults match real configuration defaults.
     final config = LeakTrackingConfiguration();
@@ -98,8 +100,8 @@ void main() {
     // Report leaks and make sure they signaled one time.
     leakProvider.value = _SummaryValues.nonZero;
     await Future.delayed(doublePeriod);
-    stdout.checkAndClear(_SummaryValues.nonZero);
-    devtools.checkAndClear(_SummaryValues.nonZero);
+    stdout.checkStoreAndClear(_SummaryValues.nonZero);
+    devtools.checkStoreAndClear(_SummaryValues.nonZero);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -114,8 +116,8 @@ void main() {
     // Drop totals and check signal.
     leakProvider.value = _SummaryValues.zero;
     await Future.delayed(doublePeriod);
-    stdout.checkAndClear(_SummaryValues.zero);
-    devtools.checkAndClear(_SummaryValues.zero);
+    stdout.checkStoreAndClear(_SummaryValues.zero);
+    devtools.checkStoreAndClear(_SummaryValues.zero);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -146,7 +148,7 @@ void main() {
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
-    listened.checkAndClear(_SummaryValues.nonZero);
+    listened.checkStoreAndClear(_SummaryValues.nonZero);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -165,7 +167,7 @@ void main() {
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
-    listened.checkAndClear(_SummaryValues.zero);
+    listened.checkStoreAndClear(_SummaryValues.zero);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -197,16 +199,16 @@ void main() {
 
     // Check leaks and make sure they signaled one time.
     checker.checkLeaks();
-    stdout.checkAndClear(_SummaryValues.nonZero);
-    devtools.checkAndClear(_SummaryValues.nonZero);
-    listened.checkAndClear(_SummaryValues.nonZero);
+    stdout.checkStoreAndClear(_SummaryValues.nonZero);
+    devtools.checkStoreAndClear(_SummaryValues.nonZero);
+    listened.checkStoreAndClear(_SummaryValues.nonZero);
   });
 }
 
 class _ListenedSink {
   final store = <LeakSummary>[];
 
-  void checkAndClear(LeakSummary summary) {
+  void checkStoreAndClear(LeakSummary summary) {
     expect(store, hasLength(1));
     expect(store.first.matches(summary), isTrue);
     store.clear();
@@ -219,7 +221,7 @@ class _MockStdoutSink implements StdoutSink {
   @override
   void print(String content) => store.add(content);
 
-  void checkAndClear(LeakSummary summary) {
+  void checkStoreAndClear(LeakSummary summary) {
     expect(store, hasLength(1));
     expect(store.first, contains(summary.toMessage()));
     store.clear();
@@ -233,7 +235,7 @@ class _MockDevToolsSink implements DevToolsSink {
   void send(Map<String, dynamic> content) =>
       store.add(LeakSummary.fromJson(content));
 
-  void checkAndClear(LeakSummary summary) {
+  void checkStoreAndClear(LeakSummary summary) {
     expect(store, hasLength(1));
     expect(store.first.toJson(), summary.toJson());
     store.clear();
