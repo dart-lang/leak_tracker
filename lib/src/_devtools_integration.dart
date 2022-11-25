@@ -26,9 +26,15 @@ bool registerDevToolsIntegration(ObjectRef<LeakProvider?> leakProvider) {
             return successResponse;
           }
 
-          return errorResponse('unexpected event: ${event.runtimeType}');
+          return errorResponse(
+            ResponseErrors.unexpectedEventType,
+            event.runtimeType.toString(),
+          );
         } catch (error, stack) {
-          return errorResponse('$error\n$stack');
+          return errorResponse(
+            ResponseErrors.unexpectedError,
+            '$error\n$stack',
+          );
         }
       },
     );

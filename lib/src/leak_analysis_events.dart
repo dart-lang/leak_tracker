@@ -10,7 +10,6 @@ const String memoryLeakTrackingExtensionName = 'ext.dart.memoryLeakTracking';
 
 class _EventFields {
   static const String eventType = 'type';
-  static const String error = 'error';
 }
 
 /// Types of events that can be sent from DevTools to the connected application,
@@ -20,7 +19,8 @@ class _IncomingEventTypes {
 }
 
 class OutgoingEventKinds {
-  static const String memoryLeaksSummary = 'memoryLeaksSummary';
+  static const String memoryLeakSummary = 'memoryLeakSummary';
+  static const String memoryLeakDetails = 'memoryLeakDetails';
 }
 
 abstract class LeakTrackingEvent {}
@@ -36,10 +36,17 @@ LeakTrackingEvent parseEvent(Map<String, String> parameters) {
   throw ArgumentError('Unexpected event type: $eventType.');
 }
 
-ServiceExtensionResponse errorResponse(String error) {
-  return ServiceExtensionResponse.result(
-    jsonEncode({_EventFields.error, error}),
-  );
+enum ResponseErrors {
+  unexpectedError(0),
+  unexpectedEventType(1);
+
+  const ResponseErrors(this.code);
+
+  final int code;
+}
+
+ServiceExtensionResponse errorResponse(ResponseErrors error, String details) {
+  return ServiceExtensionResponse.error(error.code, details);
 }
 
 late final successResponse = ServiceExtensionResponse.result(jsonEncode({}));
