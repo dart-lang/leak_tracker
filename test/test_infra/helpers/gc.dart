@@ -8,7 +8,7 @@ import 'dart:developer';
 Future<void> forceGC() async {
   final _storage = <List<DateTime>>[];
 
-  void _allocateMemory() {
+  void allocateMemory() {
     _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
   }
 
@@ -16,6 +16,6 @@ Future<void> forceGC() async {
 
   while (reachabilityBarrier < barrier + 2) {
     await Future.delayed(const Duration());
-    _allocateMemory();
+    allocateMemory();
   }
 }
