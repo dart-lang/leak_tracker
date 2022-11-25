@@ -17,7 +17,7 @@ class LeakTrackingConfiguration {
   });
 
   /// The leak tracker will not auto check leaks, and, when
-  /// leak checking is invoked, will notify only [listener].
+  /// leak checking is invoked, will notify only [leakListener].
   LeakTrackingConfiguration.minimal(LeakListener leakListener)
       : this(
           leakListener: leakListener,
