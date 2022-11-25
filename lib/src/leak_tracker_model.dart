@@ -23,6 +23,7 @@ class LeakTrackingConfiguration {
           leakListener: leakListener,
           stdoutLeaks: false,
           notifyDevTools: false,
+          checkPeriod: null,
         );
 
   /// Period to check for leaks.

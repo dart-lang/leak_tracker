@@ -46,9 +46,6 @@ class LeakChecker {
   final LeakProvider leakProvider;
 
   void checkLeaks() {
-    // TODO: remove after debugging
-    print(StackTrace.current);
-
     final summary = leakProvider.leaksSummary();
     if (summary.matches(_previousResult)) return;
 
