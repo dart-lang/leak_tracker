@@ -5,6 +5,8 @@
 import 'dart:async';
 import 'dart:developer';
 
+import '_model.dart';
+import 'leak_analysis_events.dart';
 import 'leak_analysis_model.dart';
 import 'leak_tracker_model.dart';
 
@@ -32,11 +34,11 @@ class LeakChecker {
 
   // If not null, the the leak summary will be printed here, when
   // leak totals change.
-  final StdoutSink? stdoutSink;
+  final StdoutSummarySink? stdoutSink;
 
   // If not null, the leak summary will be sent here, when
   // leak totals change.
-  final DevToolsSink? devToolsSink;
+  final DevToolsSummarySink? devToolsSink;
 
   /// Listener for leaks.
   ///
@@ -61,11 +63,13 @@ class LeakChecker {
   }
 }
 
-class StdoutSink {
+class StdoutSummarySink {
   void print(String content) => print(content);
 }
 
-class DevToolsSink {
-  void send(Map<String, dynamic> content) =>
-      postEvent(EventNames.memoryLeaksSummary, content);
+class DevToolsSummarySink {
+  void send(Map<String, dynamic> content) => postEvent(
+        OutgoingEventKinds.memoryLeaksSummary,
+        content,
+      );
 }

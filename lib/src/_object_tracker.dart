@@ -5,6 +5,7 @@
 import 'package:clock/clock.dart';
 
 import '_gc_counter.dart';
+import '_model.dart';
 import '_object_record.dart';
 import '_primitives.dart';
 import 'leak_analysis_model.dart';

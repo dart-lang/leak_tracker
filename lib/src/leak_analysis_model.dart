@@ -81,11 +81,6 @@ class Leaks {
   int get total => byType.values.map((e) => e.length).sum;
 }
 
-abstract class LeakProvider {
-  LeakSummary leaksSummary();
-  Leaks collectLeaks();
-}
-
 /// Names for json fields.
 class _JsonFields {
   static const String type = 'type';

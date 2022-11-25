@@ -20,3 +20,8 @@ String fullClassName({
   required String shortClassName,
 }) =>
     '$library/$shortClassName';
+
+class ObjectRef<T> {
+  ObjectRef(this.value);
+  T value;
+}

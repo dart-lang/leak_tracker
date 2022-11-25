@@ -4,28 +4,35 @@
 
 import 'dart:developer';
 
+import '_model.dart';
+import '_primitives.dart';
 import 'leak_analysis_events.dart';
-import 'leak_analysis_model.dart';
 
-bool registerServiceExtension(LeakProvider provider) {
+bool _extentsionRegistered = false;
+
+/// Registers service extention for DevTools integration.
+///
+/// If the extention is alredy registered, returns false.
+bool registerDevToolsIntegration(ObjectRef<LeakProvider?> leakProvider) {
+  if (_extentsionRegistered) return false;
   try {
     registerExtension(
       memoryLeakTrackingExtensionName,
       (String method, Map<String, String> parameters) async {
-        final event = parseEvent(parameters);
+        try {
+          final event = parseEvent(parameters);
 
-        if (event is RequestForLeakDetails) {
-          return ServiceExtensionResponse.result('{}');
+          if (event is RequestForLeakDetails) {
+            return successResponse;
+          }
+
+          return errorResponse('unexpected event: ${event.runtimeType}');
+        } catch (error, stack) {
+          return errorResponse('$error\n$stack');
         }
-
-        final bool isRequestForDetails =
-            parameters.containsKey('requestDetails');
-        if (isRequestForDetails) reportLeaks(leakTracker.collectLeaks());
-
-        return ServiceExtensionResponse.result('{}');
       },
     );
-
+    _extentsionRegistered = true;
     return true;
   } on ArgumentError catch (ex) {
     // Return false if extension is already registered.

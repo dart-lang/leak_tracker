@@ -8,6 +8,7 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/_leak_checker.dart';
+import 'package:leak_tracker/src/_model.dart';
 import 'package:leak_tracker/src/leak_analysis_model.dart';
 import 'package:test/test.dart';
 
@@ -213,7 +214,7 @@ class _ListenedSink {
   }
 }
 
-class _MockStdoutSink implements StdoutSink {
+class _MockStdoutSink implements StdoutSummarySink {
   final store = <String>[];
 
   @override
@@ -226,7 +227,7 @@ class _MockStdoutSink implements StdoutSink {
   }
 }
 
-class _MockDevToolsSink implements DevToolsSink {
+class _MockDevToolsSink implements DevToolsSummarySink {
   final store = <LeakSummary>[];
 
   @override
