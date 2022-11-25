@@ -32,7 +32,7 @@ class LeakChecker {
   /// If null, there is no periodic checking.
   final Duration? checkPeriod;
 
-  // If not null, the the leak summary will be printed here, when
+  // If not null, then the leak summary will be printed here, when
   // leak totals change.
   final StdoutSummarySink? stdoutSink;
 
