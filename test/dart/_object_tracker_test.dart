@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:clock/clock.dart';
-import 'package:leak_tracker/leak_analysis.dart';
+import 'package:leak_tracker/devtools_integration.dart';
 import 'package:leak_tracker/src/_gc_counter.dart';
 import 'package:leak_tracker/src/_object_tracker.dart';
 import 'package:leak_tracker/src/_primitives.dart';

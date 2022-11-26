@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:leak_tracker/leak_analysis.dart';
+import 'package:leak_tracker/devtools_integration.dart';
 import 'package:test/test.dart';
 
 void main() {

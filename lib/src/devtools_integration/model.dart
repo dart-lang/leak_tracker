@@ -12,7 +12,7 @@ import '../_util.dart';
 /// Name of extension to integrate the leak tracker with DevDools.
 const String memoryLeakTrackingExtensionName = 'ext.dart.memoryLeakTracking';
 
-const String protocolVersion = '1';
+const String leakTrackerProtocolVersion = '1';
 
 late final successResponse = ServiceExtensionResponse.result(jsonEncode({}));
 

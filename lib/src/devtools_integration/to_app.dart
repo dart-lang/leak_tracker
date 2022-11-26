@@ -4,13 +4,17 @@
 
 import 'model.dart';
 
+abstract class ToAppEvent {}
+
 /// Types of events that can be sent from DevTools to the connected application,
 /// if [memoryLeakTrackingExtensionName] is registered.
-enum ToAppEventTypes {
-  requestForLeakDetails,
-}
+enum _ToAppEventTypes {
+  requestForLeakDetails('requestForLeakDetails');
 
-abstract class ToAppEvent {}
+  const _ToAppEventTypes(this.value);
+
+  final String value;
+}
 
 class _EventFields {
   static const String eventType = 'type';
@@ -21,7 +25,7 @@ class RequestForLeakDetails extends ToAppEvent {}
 ToAppEvent parseToAppEvent(Map<String, String> parameters) {
   final eventType = parameters[_EventFields.eventType];
 
-  if (eventType == ToAppEventTypes.requestForLeakDetails.name)
+  if (eventType == _ToAppEventTypes.requestForLeakDetails.value)
     return RequestForLeakDetails();
 
   throw ArgumentError('Unexpected event type: $eventType.');

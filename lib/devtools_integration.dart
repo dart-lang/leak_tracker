@@ -5,7 +5,7 @@
 /// The library should be used by DevTools to analyse the collected leaks.
 ///
 /// Should not be used in the application itself.
-library leak_analysis;
+library devtools_integration;
 
 export 'src/devtools_integration/from_app.dart';
 export 'src/devtools_integration/model.dart';
