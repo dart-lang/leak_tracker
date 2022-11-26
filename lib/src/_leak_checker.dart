@@ -69,7 +69,7 @@ class StdoutSummarySink {
 
 class DevToolsSummarySink {
   void send(Map<String, dynamic> content) => postEvent(
-        OutgoingEventKinds.memoryLeakSummary,
+        FromAppEventKinds.memoryLeakSummary,
         content,
       );
 }

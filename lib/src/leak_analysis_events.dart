@@ -14,23 +14,23 @@ class _EventFields {
 
 /// Types of events that can be sent from DevTools to the connected application,
 /// if [memoryLeakTrackingExtensionName] is registered.
-class _IncomingEventTypes {
+class _ToAppEventTypes {
   static const String requestForLeakDetails = 'requestForLeakDetails';
 }
 
-class OutgoingEventKinds {
+class FromAppEventKinds {
   static const String memoryLeakSummary = 'memoryLeakSummary';
   static const String memoryLeakDetails = 'memoryLeakDetails';
 }
 
-abstract class LeakTrackingEvent {}
+abstract class ToAppEvent {}
 
-class RequestForLeakDetails extends LeakTrackingEvent {}
+class RequestForLeakDetails extends ToAppEvent {}
 
-LeakTrackingEvent parseEvent(Map<String, String> parameters) {
+ToAppEvent parseToAppEvent(Map<String, String> parameters) {
   final eventType = parameters[_EventFields.eventType];
 
-  if (eventType == _IncomingEventTypes.requestForLeakDetails)
+  if (eventType == _ToAppEventTypes.requestForLeakDetails)
     return RequestForLeakDetails();
 
   throw ArgumentError('Unexpected event type: $eventType.');

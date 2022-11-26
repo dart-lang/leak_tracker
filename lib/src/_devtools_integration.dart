@@ -20,7 +20,7 @@ bool registerDevToolsIntegration(ObjectRef<LeakProvider?> leakProvider) {
       memoryLeakTrackingExtensionName,
       (String method, Map<String, String> parameters) async {
         try {
-          final event = parseEvent(parameters);
+          final event = parseToAppEvent(parameters);
 
           if (event is RequestForLeakDetails) {
             return successResponse;
