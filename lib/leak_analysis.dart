@@ -7,5 +7,6 @@
 /// Should not be used in the application itself.
 library leak_analysis;
 
-export 'src/leak_analysis_events.dart';
-export 'src/leak_analysis_model.dart';
+export 'src/devtools_integration/from_app.dart';
+export 'src/devtools_integration/model.dart';
+export 'src/devtools_integration/to_app.dart';

@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_analysis_model.dart';
+import 'package:leak_tracker/src/devtools_integration/model.dart';
 import 'package:test/test.dart';
 
 import '../test_infra/helpers/gc.dart';

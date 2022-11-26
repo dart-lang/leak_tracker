@@ -3,12 +3,12 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import '../leak_tracker.dart';
-import '_devtools_integration.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_leak_checker.dart';
 import '_object_tracker.dart';
 import '_primitives.dart';
-import 'leak_analysis_model.dart';
+import 'devtools_integration/_registration.dart';
+import 'devtools_integration/model.dart';
 
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 LeakChecker? _leakChecker;

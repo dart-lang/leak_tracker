@@ -4,7 +4,7 @@
 
 import '_gc_counter.dart';
 import '_primitives.dart';
-import 'leak_analysis_model.dart';
+import 'devtools_integration/model.dart';
 
 /// Object collections to track leaks.
 ///

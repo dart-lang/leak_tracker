@@ -3,11 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:developer';
 
 import '_model.dart';
-import 'leak_analysis_events.dart';
-import 'leak_analysis_model.dart';
+import 'devtools_integration/from_app.dart';
+import 'devtools_integration/model.dart';
 import 'leak_tracker_model.dart';
 
 class LeakChecker {
@@ -52,8 +51,8 @@ class LeakChecker {
     if (summary.matches(_previousResult)) return;
 
     leakListener?.call(summary);
-    stdoutSink?.print(summary.toMessage());
-    devToolsSink?.send(summary.toJson());
+    stdoutSink?.send(summary);
+    devToolsSink?.send(summary);
 
     _previousResult = summary;
   }
@@ -64,12 +63,9 @@ class LeakChecker {
 }
 
 class StdoutSummarySink {
-  void print(String content) => print(content);
+  void send(LeakSummary summary) => print(summary.toMessage());
 }
 
 class DevToolsSummarySink {
-  void send(Map<String, dynamic> content) => postEvent(
-        FromAppEventKinds.memoryLeakSummary,
-        content,
-      );
+  void send(LeakSummary summary) => sendLeakSummary(summary);
 }

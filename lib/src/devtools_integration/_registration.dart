@@ -4,9 +4,11 @@
 
 import 'dart:developer';
 
-import '_model.dart';
-import '_primitives.dart';
-import 'leak_analysis_events.dart';
+import '../_model.dart';
+import '../_primitives.dart';
+import 'from_app.dart';
+import 'model.dart';
+import 'to_app.dart';
 
 bool _extentsionRegistered = false;
 
@@ -39,6 +41,9 @@ bool registerDevToolsIntegration(ObjectRef<LeakProvider?> leakProvider) {
       },
     );
     _extentsionRegistered = true;
+
+    sendLeakTrackingStarted();
+
     return true;
   } on ArgumentError catch (ex) {
     // Return false if extension is already registered.

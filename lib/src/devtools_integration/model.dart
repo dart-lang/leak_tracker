@@ -3,10 +3,29 @@
 // found in the LICENSE file.
 
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 
-import '_util.dart';
+import '../_util.dart';
+
+/// Name of extension to integrate the leak tracker with DevDools.
+const String memoryLeakTrackingExtensionName = 'ext.dart.memoryLeakTracking';
+
+late final successResponse = ServiceExtensionResponse.result(jsonEncode({}));
+
+enum ResponseErrors {
+  unexpectedError(0),
+  unexpectedEventType(1);
+
+  const ResponseErrors(this.code);
+
+  final int code;
+}
+
+ServiceExtensionResponse errorResponse(ResponseErrors error, String details) {
+  return ServiceExtensionResponse.error(error.code, details);
+}
 
 enum LeakType {
   /// Not disposed and garbage collected.

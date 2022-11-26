@@ -9,7 +9,7 @@
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/_leak_checker.dart';
 import 'package:leak_tracker/src/_model.dart';
-import 'package:leak_tracker/src/leak_analysis_model.dart';
+import 'package:leak_tracker/src/devtools_integration/model.dart';
 import 'package:test/test.dart';
 
 // Enum-like static classes are ok.
@@ -217,10 +217,10 @@ class _ListenedSink {
 }
 
 class _MockStdoutSink implements StdoutSummarySink {
-  final store = <String>[];
+  final store = <LeakSummary>[];
 
   @override
-  void print(String content) => store.add(content);
+  void send(LeakSummary summary) => store.add(summary);
 
   void checkStoreAndClear(LeakSummary summary) {
     expect(store, hasLength(1));
@@ -233,8 +233,7 @@ class _MockDevToolsSink implements DevToolsSummarySink {
   final store = <LeakSummary>[];
 
   @override
-  void send(Map<String, dynamic> content) =>
-      store.add(LeakSummary.fromJson(content));
+  void send(LeakSummary summary) => store.add(summary);
 
   void checkStoreAndClear(LeakSummary summary) {
     expect(store, hasLength(1));
