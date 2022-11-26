@@ -6,18 +6,26 @@ import 'dart:developer';
 
 import 'model.dart';
 
+abstract class FromAppEvent {}
+
 enum _FromAppEventTypes {
   leakTrackingStarted,
   memoryLeakSummary,
-  //memoryLeakDetails,
+  memoryLeakDetails,
 }
 
-abstract class FromAppEvent {}
+enum _EventFields {
+  protocolVersion('version');
+
+  const _EventFields(this.value);
+
+  final String value;
+}
 
 void sendLeakTrackingStarted() {
   postEvent(
     _FromAppEventTypes.leakTrackingStarted.name,
-    {},
+    {_EventFields.protocolVersion.value: protocolVersion},
   );
 }
 
@@ -25,5 +33,12 @@ void sendLeakSummary(LeakSummary summary) {
   postEvent(
     _FromAppEventTypes.memoryLeakSummary.name,
     summary.toJson(),
+  );
+}
+
+void sendLeakDetails(Leaks leaks) {
+  postEvent(
+    _FromAppEventTypes.memoryLeakDetails.name,
+    leaks.toJson(),
   );
 }
