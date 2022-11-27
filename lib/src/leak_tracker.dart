@@ -37,7 +37,8 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
     devToolsSink: config.notifyDevTools ? DevToolsSummarySink() : null,
   );
 
-  registerDevToolsIntegration(_objectTracker);
+  // We register integr
+  setupDevToolsIntegration(_objectTracker);
 }
 
 /// Disables leak tracking for the application.
