@@ -35,6 +35,7 @@ class LeakTrackingStarted extends FromAppEvent {
 }
 
 void sendLeakTrackingStarted() {
+  print('!!!! leak traking start sent');
   postEvent(
     _FromAppEventTypes.leakTrackingStarted.value,
     {_EventFields.protocolVersion.value: leakTrackerProtocolVersion},
@@ -56,12 +57,16 @@ void sendLeakDetails(Leaks leaks) {
 }
 
 FromAppEvent parseFromAppEvent(Event event) {
+  print('kind: ${event.extensionKind}');
   final data = event.json!['extensionData']!;
 
-  if (event.extensionKind == _FromAppEventTypes.leakTrackingStarted.value) {
-    final version = data[_EventFields.protocolVersion.value];
-    return LeakTrackingStarted(version);
-  }
+  print('keys: ${data.k}');
 
-  throw ArgumentError('Unexpected event type: ${event.extensionKind}.');
+  // if (event.extensionKind == _FromAppEventTypes.leakTrackingStarted.value) {
+  //   final version = data[_EventFields.protocolVersion.value];
+  //   return LeakTrackingStarted(version);
+  // }
+
+  // throw ArgumentError('Unexpected event type: ${event.extensionKind}.');
+  return LeakTrackingStarted('1');
 }

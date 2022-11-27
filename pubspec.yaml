@@ -7,8 +7,9 @@ environment:
   sdk: ">=2.18.0 <3.0.0"
 
 dependencies:
-  collection: ^1.15.0
   clock: ^1.1.1
+  collection: ^1.15.0
+  vm_service: ^9.0.0
 
 dev_dependencies:
   flutter_test:
