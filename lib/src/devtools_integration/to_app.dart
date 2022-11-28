@@ -8,10 +8,10 @@ abstract class ToAppEvent {}
 
 /// Types of events that can be sent from DevTools to the connected application,
 /// if [memoryLeakTrackingExtensionName] is registered.
-enum _ToAppEventTypes {
+enum _EventTypes {
   requestForLeakDetails('requestForLeakDetails');
 
-  const _ToAppEventTypes(this.value);
+  const _EventTypes(this.value);
 
   final String value;
 }
@@ -25,7 +25,7 @@ class RequestForLeakDetails extends ToAppEvent {}
 ToAppEvent parseToAppEvent(Map<String, String> parameters) {
   final eventType = parameters[_EventFields.eventType];
 
-  if (eventType == _ToAppEventTypes.requestForLeakDetails.value)
+  if (eventType == _EventTypes.requestForLeakDetails.value)
     return RequestForLeakDetails();
 
   throw ArgumentError('Unexpected event type: $eventType.');

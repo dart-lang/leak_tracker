@@ -49,7 +49,7 @@ bool setupDevToolsIntegration(
 
   final result = _registerServiceExtention(handler);
 
-  sendLeakTrackingStarted();
+  postFromAppEvent(LeakTrackingStarted(appLeakTrackerProtocolVersion));
 
   return result;
 }

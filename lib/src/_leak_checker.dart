@@ -67,5 +67,6 @@ class StdoutSummarySink {
 }
 
 class DevToolsSummarySink {
-  void send(LeakSummary summary) => sendLeakSummary(summary);
+  void send(LeakSummary summary) =>
+      postFromAppEvent(LeakTrackingSummary(summary));
 }
