@@ -81,7 +81,7 @@ class LeakTrackingSummary extends FromAppEvent {
   Map<String, dynamic> toJson() => {
         _EventFields.eventType.value: _EventTypes.memoryLeakSummary.value,
         _EventFields.leakSummary.value: leakSummary,
-        _EventFields.time.value: time,
+        _EventFields.time.value: time.millisecondsSinceEpoch,
       };
 
   final LeakSummary leakSummary;
@@ -101,11 +101,7 @@ void postFromAppEvent(FromAppEvent event) {
 FromAppEvent? parseFromAppEvent(Event event, {required bool withHistory}) {
   if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
 
-  print(event.json!.keys);
-
   final data = event.json!['extensionData'] as Map<String, dynamic>;
-
-  print(data.keys);
 
   final typeString = data[_EventFields.eventType.value] as String;
   final type = _EventTypes.byValue(typeString);
@@ -123,7 +119,6 @@ FromAppEvent? parseFromAppEvent(Event event, {required bool withHistory}) {
 /// This function is needed, because `as` does not provide callstack when fails.
 T _cast<T>(value) {
   if (value is T) return value;
-  print(StackTrace.current);
   throw ArgumentError(
     '$value is of type ${value.runtimeType} that is not subtype of $T',
   );

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:convert';
 import 'dart:developer';
 
 import '../_model.dart';
@@ -18,8 +19,9 @@ bool _extentsionRegistered = false;
 /// should not be activated.
 ///
 /// If the extention is alredy registered, returns false.
-bool registerLeakTrackingServiceExtention() =>
-    _registerServiceExtention((p0, p1) async => successResponse);
+bool registerLeakTrackingServiceExtention() => _registerServiceExtention(
+      (p0, p1) async => ServiceExtensionResponse.result(jsonEncode({})),
+    );
 
 /// Registers service extention for DevTools integration.
 ///
@@ -32,17 +34,23 @@ bool setupDevToolsIntegration(
       final event = parseToAppEvent(parameters);
 
       if (event is RequestForLeakDetails) {
-        return successResponse;
+        return serviceResponse(
+          ResponseType.success,
+          details: 'hello',
+        );
       }
 
-      return errorResponse(
-        ResponseErrors.unexpectedEventType,
-        event.runtimeType.toString(),
+      return serviceResponse(
+        ResponseType.unexpectedEventType,
+        details: event.runtimeType.toString(),
       );
     } catch (error, stack) {
-      return errorResponse(
-        ResponseErrors.unexpectedError,
-        '$error\n$stack',
+      print('Error parsing leak tracking request.');
+      print(error);
+      print(stack);
+      return serviceResponse(
+        ResponseType.unexpectedError,
+        details: '$error\n$stack',
       );
     }
   };

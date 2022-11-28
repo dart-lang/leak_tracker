@@ -15,19 +15,22 @@ const String memoryLeakTrackingExtensionName = 'ext.dart.memoryLeakTracking';
 /// Version of protocol, executed by the application.
 const String appLeakTrackerProtocolVersion = '1';
 
-late final successResponse = ServiceExtensionResponse.result(jsonEncode({}));
+ServiceExtensionResponse serviceResponse(
+  ResponseType type, {
+  String? details,
+}) =>
+    ServiceExtensionResponse.result(jsonEncode({type: details}));
 
-enum ResponseErrors {
-  unexpectedError(0),
-  unexpectedEventType(1);
+/// Instead of using ServiceExtensionResponse.error, we use success response,
+/// because we do not want the error to be handled automatically.
+enum ResponseType {
+  success('success'),
+  unexpectedError('unexpectedError'),
+  unexpectedEventType('unexpectedEventType');
 
-  const ResponseErrors(this.code);
+  const ResponseType(this.value);
 
-  final int code;
-}
-
-ServiceExtensionResponse errorResponse(ResponseErrors error, String details) {
-  return ServiceExtensionResponse.error(error.code, details);
+  final String value;
 }
 
 enum LeakType {
