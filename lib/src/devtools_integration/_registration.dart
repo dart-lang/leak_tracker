@@ -45,7 +45,9 @@ bool setupDevToolsIntegration(
         details: event.runtimeType.toString(),
       );
     } catch (error, stack) {
-      print('Error parsing leak tracking request.');
+      print(
+        'Error handling leak tracking request from DevTools to application.',
+      );
       print(error);
       print(stack);
       return serviceResponse(

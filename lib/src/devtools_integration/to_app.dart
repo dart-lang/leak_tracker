@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:developer';
-
 import 'model.dart';
 
 abstract class ToAppEvent {
@@ -43,7 +41,7 @@ class RequestForLeakDetails extends ToAppEvent {
 }
 
 ToAppEvent parseToAppEvent(Map<String, String> parameters) {
-  final eventType = parameters[_EventFields.eventType];
+  final eventType = parameters[_EventFields.eventType.value];
 
   if (eventType == _EventTypes.requestForLeakDetails.value)
     return RequestForLeakDetails();

@@ -19,7 +19,7 @@ ServiceExtensionResponse serviceResponse(
   ResponseType type, {
   String? details,
 }) =>
-    ServiceExtensionResponse.result(jsonEncode({type: details}));
+    ServiceExtensionResponse.result(jsonEncode({type.value: details}));
 
 /// Instead of using ServiceExtensionResponse.error, we use success response,
 /// because we do not want the error to be handled automatically.
