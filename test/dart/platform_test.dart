@@ -25,7 +25,7 @@ void _allocateMemory() {
   _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
 }
 
-/// Tests for non-guaranteed asuumptions about Dart garbage collector,
+/// Tests for non-guaranteed assumptions about Dart garbage collector,
 /// the leak tracker relies on.
 void main() {
   setUp(() => _storage = []);
