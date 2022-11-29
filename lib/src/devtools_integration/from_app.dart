@@ -9,7 +9,7 @@ import 'package:vm_service/vm_service.dart';
 
 import 'model.dart';
 
-abstract class FromAppEvent {
+abstract class MessageFromApp {
   Map<String, dynamic> toJson();
 }
 
@@ -43,7 +43,7 @@ enum _EventFields {
   final String value;
 }
 
-class LeakTrackingStarted extends FromAppEvent {
+class LeakTrackingStarted extends MessageFromApp {
   LeakTrackingStarted(this.protocolVersion);
 
   factory LeakTrackingStarted.fromJson(Map<String, dynamic> json) {
@@ -61,7 +61,7 @@ class LeakTrackingStarted extends FromAppEvent {
   final String protocolVersion;
 }
 
-class LeakTrackingSummary extends FromAppEvent {
+class LeakTrackingSummary extends MessageFromApp {
   LeakTrackingSummary(this.leakSummary, {DateTime? time}) {
     this.time = time ?? DateTime.now();
   }
@@ -88,7 +88,7 @@ class LeakTrackingSummary extends FromAppEvent {
   late DateTime time;
 }
 
-void postFromAppEvent(FromAppEvent event) {
+void postFromAppEvent(MessageFromApp event) {
   postEvent(
     memoryLeakTrackingExtensionName,
     event.toJson(),
@@ -98,7 +98,7 @@ void postFromAppEvent(FromAppEvent event) {
 /// Parses event from application to DevTools.
 ///
 /// Ignores events from other extensions and event types that do not have right [withHistory].
-FromAppEvent? parseFromAppEvent(Event event, {required bool withHistory}) {
+MessageFromApp? parseFromAppEvent(Event event, {required bool withHistory}) {
   if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
 
   final data = event.json!['extensionData'] as Map<String, dynamic>;

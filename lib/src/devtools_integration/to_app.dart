@@ -4,7 +4,7 @@
 
 import 'model.dart';
 
-abstract class ToAppEvent {
+abstract class MessageToApp {
   Map<String, dynamic> toJson();
 }
 
@@ -28,7 +28,7 @@ enum _EventFields {
   final String value;
 }
 
-class RequestForLeakDetails extends ToAppEvent {
+class RequestForLeakDetails extends MessageToApp {
   RequestForLeakDetails();
 
   factory RequestForLeakDetails.fromJson(Map<String, dynamic> json) =>
@@ -40,7 +40,7 @@ class RequestForLeakDetails extends ToAppEvent {
       };
 }
 
-ToAppEvent parseToAppEvent(Map<String, String> parameters) {
+MessageToApp parseToAppEvent(Map<String, String> parameters) {
   final eventType = parameters[_EventFields.eventType.value];
 
   if (eventType == _EventTypes.requestForLeakDetails.value)

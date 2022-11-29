@@ -17,7 +17,7 @@ const String appLeakTrackerProtocolVersion = '1';
 
 ServiceExtensionResponse serviceResponse(
   ResponseType type, {
-  String? details,
+  Map<String, dynamic> details = const {},
 }) =>
     ServiceExtensionResponse.result(jsonEncode({type.value: details}));
 
@@ -25,6 +25,7 @@ ServiceExtensionResponse serviceResponse(
 /// because we do not want the error to be handled automatically.
 enum ResponseType {
   success('success'),
+  leakTrackingTurnedOff('leakTrackingTurnedOff'),
   unexpectedError('unexpectedError'),
   unexpectedEventType('unexpectedEventType');
 

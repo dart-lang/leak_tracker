@@ -101,8 +101,8 @@ void main() {
     // Report leaks and make sure they signaled one time.
     leakProvider.value = _SummaryValues.nonZero;
     await Future.delayed(doublePeriod);
-    stdout.checkStoreAndClear(_SummaryValues.nonZero);
-    devtools.checkStoreAndClear(_SummaryValues.nonZero);
+    stdout.checkStoreAndClear([_SummaryValues.nonZero]);
+    devtools.checkStoreAndClear([_SummaryValues.nonZero]);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -117,8 +117,8 @@ void main() {
     // Drop totals and check signal.
     leakProvider.value = _SummaryValues.zero;
     await Future.delayed(doublePeriod);
-    stdout.checkStoreAndClear(_SummaryValues.zero);
-    devtools.checkStoreAndClear(_SummaryValues.zero);
+    stdout.checkStoreAndClear([_SummaryValues.zero]);
+    devtools.checkStoreAndClear([_SummaryValues.zero]);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -149,7 +149,7 @@ void main() {
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
-    listened.checkStoreAndClear(_SummaryValues.nonZero);
+    listened.checkStoreAndClear([_SummaryValues.nonZero]);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -168,7 +168,7 @@ void main() {
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
-    listened.checkStoreAndClear(_SummaryValues.zero);
+    listened.checkStoreAndClear([_SummaryValues.zero]);
 
     await Future.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
@@ -200,18 +200,20 @@ void main() {
 
     // Check leaks and make sure they signaled one time.
     checker.checkLeaks();
-    stdout.checkStoreAndClear(_SummaryValues.nonZero);
-    devtools.checkStoreAndClear(_SummaryValues.nonZero);
-    listened.checkStoreAndClear(_SummaryValues.nonZero);
+    stdout.checkStoreAndClear([_SummaryValues.nonZero]);
+    devtools.checkStoreAndClear([_SummaryValues.nonZero]);
+    listened.checkStoreAndClear([_SummaryValues.nonZero]);
   });
 }
 
 class _ListenedSink {
   final store = <LeakSummary>[];
 
-  void checkStoreAndClear(LeakSummary summary) {
-    expect(store, hasLength(1));
-    expect(store.first.matches(summary), isTrue);
+  void checkStoreAndClear(List<LeakSummary> items) {
+    expect(store, hasLength(items.length));
+    for (final i in Iterable.generate(store.length)) {
+      expect(store[i].toMessage(), contains(items[i].toMessage()));
+    }
     store.clear();
   }
 }
@@ -222,9 +224,11 @@ class _MockStdoutSink implements StdoutSummarySink {
   @override
   void send(LeakSummary summary) => store.add(summary);
 
-  void checkStoreAndClear(LeakSummary summary) {
-    expect(store, hasLength(1));
-    expect(store.first, contains(summary.toMessage()));
+  void checkStoreAndClear(List<LeakSummary> items) {
+    expect(store, hasLength(items.length));
+    for (final i in Iterable.generate(store.length)) {
+      expect(store[i].toMessage(), contains(items[i].toMessage()));
+    }
     store.clear();
   }
 }
@@ -235,9 +239,11 @@ class _MockDevToolsSink implements DevToolsSummarySink {
   @override
   void send(LeakSummary summary) => store.add(summary);
 
-  void checkStoreAndClear(LeakSummary summary) {
-    expect(store, hasLength(1));
-    expect(store.first.toJson(), summary.toJson());
+  void checkStoreAndClear(List<LeakSummary> items) {
+    expect(store, hasLength(items.length));
+    for (final i in Iterable.generate(store.length)) {
+      expect(store[i].toMessage(), contains(items[i].toMessage()));
+    }
     store.clear();
   }
 }

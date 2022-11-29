@@ -14,7 +14,7 @@ import 'to_app.dart';
 bool _extentsionRegistered = false;
 
 /// Registers service extention to signal that leak tracking is
-/// elready enabled and other leak tracking systems
+/// already enabled and other leak tracking systems
 /// (for example, built into Flutter frameworks)
 /// should not be activated.
 ///
@@ -31,18 +31,26 @@ bool setupDevToolsIntegration(
 ) {
   final handler = (String method, Map<String, String> parameters) async {
     try {
+      final theLeakProvider = leakProvider.value;
+
+      if (theLeakProvider == null)
+        return serviceResponse(
+          ResponseType.leakTrackingTurnedOff,
+          details: {},
+        );
+
       final event = parseToAppEvent(parameters);
 
       if (event is RequestForLeakDetails) {
         return serviceResponse(
           ResponseType.success,
-          details: 'hello',
+          details: theLeakProvider.collectLeaks().toJson(),
         );
       }
 
       return serviceResponse(
         ResponseType.unexpectedEventType,
-        details: event.runtimeType.toString(),
+        details: {'type': event.runtimeType.toString()},
       );
     } catch (error, stack) {
       print(
@@ -52,7 +60,7 @@ bool setupDevToolsIntegration(
       print(stack);
       return serviceResponse(
         ResponseType.unexpectedError,
-        details: '$error\n$stack',
+        details: {error.toString(): stack},
       );
     }
   };
