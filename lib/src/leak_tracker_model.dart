@@ -16,6 +16,16 @@ class LeakTrackingConfiguration {
     this.classesToCollectStackTraceOnDisposal = const {},
   });
 
+  /// The leak tracker will not auto check leaks, and, when
+  /// leak checking is invoked, will notify only [leakListener].
+  LeakTrackingConfiguration.minimal(LeakListener leakListener)
+      : this(
+          leakListener: leakListener,
+          stdoutLeaks: false,
+          notifyDevTools: false,
+          checkPeriod: null,
+        );
+
   /// Period to check for leaks.
   ///
   /// If null, there is no periodic checking.

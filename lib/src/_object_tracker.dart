@@ -218,8 +218,5 @@ class ObjectTracker implements LeakProvider {
   void dispose() {
     throwIfDisposed();
     disposed = true;
-    for (final record in _objects.notGCed.values) {
-      _finalizer.detach(record.code);
-    }
   }
 }

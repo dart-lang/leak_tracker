@@ -47,6 +47,7 @@ void disableLeakTracking() {
 }
 
 ObjectTracker _tracker() {
+  // TODO(polina-c): return both tracker and checker when tuples get released.
   assert((_objectTracker == null) == (_leakChecker == null));
   final tracker = _objectTracker;
   if (tracker == null) throw StateError('Leak tracking should be enabled.');
@@ -102,17 +103,18 @@ void dispatchObjectTrace({
   tracker.addContext(object, context: context);
 }
 
-/// Returns summary of the leaks collected since last invocation of [collectLeaks].
-LeakSummary get leakSummary {
-  final tracker = _tracker();
-  return tracker.leaksSummary();
+/// Checks for leaks and outputs [LeakSummary] as configured.
+void checkLeaks() {
+  // TODO(polina-c): get checker as result when tuples are released.
+  _tracker();
+  _leakChecker!.checkLeaks();
 }
 
 /// Returns details of the leaks collected since last invocation.
 ///
 /// The same object may be reported as leaked twice: first
 /// as non GCed, and then as GCed late.
-Leaks get collectLeaks {
+Leaks collectLeaks() {
   final tracker = _tracker();
   return tracker.collectLeaks();
 }
