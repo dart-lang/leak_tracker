@@ -9,35 +9,59 @@ import 'package:vm_service/vm_service.dart';
 
 import 'model.dart';
 
-enum _MessageChannel {
+abstract class AppMessage {
+  String get eventType;
+  Map<String, dynamic> toJson();
+}
+
+typedef MessageParser<T extends AppMessage> = T Function(
+  Map<String, dynamic> json,
+);
+
+enum Channel {
   eventToApp,
   eventFromApp,
   responseFromApp,
 }
 
-abstract class Message {
-  _MessageChannel get channel;
-  Map<String, dynamic> toJson();
+class MessageFactory<T extends AppMessage> {
+  MessageFactory(this.code, this.channel, this.parser);
+
+  final String code;
+  final Channel channel;
+  final MessageParser<T> parser;
 }
 
-/// Strings are hard coded instead of using `toString`,
+final factories =
+
+/// Codes are hard coded instead of using `toString`,
 /// because they are part of protocol and should not change
 /// when class is renamed.
-enum _FromAppEventTypes {
-  leakTrackingStarted('leakTrackingStarted'),
-  memoryLeakSummary('memoryLeakSummary'),
+enum MessageTypes {
+  leakTrackingStarted(
+    'started',
+    Channel.eventFromApp,
+    LeakTrackingStarted,
+  ),
+  memoryLeakSummary(
+    'summary',
+    Channel.eventFromApp,
+    LeakTrackingSummary,
+  ),
   ;
 
-  const _FromAppEventTypes(this.value);
+  const MessageTypes(this.code, this.channel, this.type, this.parser);
 
-  static _FromAppEventTypes? byValue(String value) => _FromAppEventTypes.values
-      .firstWhereOrNull((element) => element.value == value);
+  static MessageTypes? byCode(String value) =>
+      MessageTypes.values.firstWhereOrNull((element) => element.code == value);
 
-  final String value;
+  final String code;
+  final Type type;
+  final Channel channel;
+  final MessageParser parser;
 }
 
 enum _EventFields {
-  eventType('type'),
   protocolVersion('version'),
   leakSummary('summary'),
   time('time'),
@@ -48,7 +72,7 @@ enum _EventFields {
   final String value;
 }
 
-class LeakTrackingStarted extends Message {
+class LeakTrackingStarted extends AppMessage {
   LeakTrackingStarted(this.protocolVersion);
 
   factory LeakTrackingStarted.fromJson(Map<String, dynamic> json) {
@@ -60,17 +84,17 @@ class LeakTrackingStarted extends Message {
   @override
   Map<String, dynamic> toJson() => {
         _EventFields.eventType.value:
-            _FromAppEventTypes.leakTrackingStarted.value,
+            FromAppEventTypes.leakTrackingStarted.value,
         _EventFields.protocolVersion.value: appLeakTrackerProtocolVersion,
       };
 
   final String protocolVersion;
 
   @override
-  final channel = _MessageChannel.eventFromApp;
+  final channel = Channel.eventFromApp;
 }
 
-class LeakTrackingSummary extends Message {
+class LeakTrackingSummary extends AppMessage {
   LeakTrackingSummary(this.leakSummary, {DateTime? time}) {
     this.time = time ?? DateTime.now();
   }
@@ -88,8 +112,7 @@ class LeakTrackingSummary extends Message {
 
   @override
   Map<String, dynamic> toJson() => {
-        _EventFields.eventType.value:
-            _FromAppEventTypes.memoryLeakSummary.value,
+        _EventFields.eventType.value: FromAppEventTypes.memoryLeakSummary.value,
         _EventFields.leakSummary.value: leakSummary,
         _EventFields.time.value: time.millisecondsSinceEpoch,
       };
@@ -98,35 +121,7 @@ class LeakTrackingSummary extends Message {
   late DateTime time;
 
   @override
-  final channel = _MessageChannel.eventFromApp;
-}
-
-void postFromAppEvent(Message message) {
-  assert(message.channel == _MessageChannel.eventFromApp);
-  postEvent(
-    memoryLeakTrackingExtensionName,
-    message.toJson(),
-  );
-}
-
-/// Parses event from application to DevTools.
-///
-/// Ignores events from other extensions and event types that do not have right [withHistory].
-Message? parseFromAppEvent(Event event) {
-  if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
-
-  final data = event.json!['extensionData'] as Map<String, dynamic>;
-
-  final typeString = data[_EventFields.eventType.value] as String;
-  final type = _FromAppEventTypes.byValue(typeString);
-  if (type == null) throw ArgumentError('Unexpected event type: $typeString.');
-
-  switch (type) {
-    case _FromAppEventTypes.leakTrackingStarted:
-      return LeakTrackingStarted.fromJson(data);
-    case _FromAppEventTypes.memoryLeakSummary:
-      return LeakTrackingSummary.fromJson(data);
-  }
+  final channel = Channel.eventFromApp;
 }
 
 /// This function is needed, because `as` does not provide callstack when fails.
