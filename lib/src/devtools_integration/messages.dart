@@ -9,26 +9,31 @@ import 'package:vm_service/vm_service.dart';
 
 import 'model.dart';
 
-abstract class MessageFromApp {
+enum _MessageChannel {
+  eventToApp,
+  eventFromApp,
+  responseFromApp,
+}
+
+abstract class Message {
+  _MessageChannel get channel;
   Map<String, dynamic> toJson();
 }
 
 /// Strings are hard coded instead of using `toString`,
 /// because they are part of protocol and should not change
 /// when class is renamed.
-enum _EventTypes {
-  leakTrackingStarted('leakTrackingStarted', true),
-  memoryLeakSummary('memoryLeakSummary', true),
-  //memoryLeakDetails('memoryLeakDetails'),
+enum _FromAppEventTypes {
+  leakTrackingStarted('leakTrackingStarted'),
+  memoryLeakSummary('memoryLeakSummary'),
   ;
 
-  const _EventTypes(this.value, this.withHistory);
+  const _FromAppEventTypes(this.value);
 
-  static _EventTypes? byValue(String value) =>
-      _EventTypes.values.firstWhereOrNull((element) => element.value == value);
+  static _FromAppEventTypes? byValue(String value) => _FromAppEventTypes.values
+      .firstWhereOrNull((element) => element.value == value);
 
   final String value;
-  final bool withHistory;
 }
 
 enum _EventFields {
@@ -43,7 +48,7 @@ enum _EventFields {
   final String value;
 }
 
-class LeakTrackingStarted extends MessageFromApp {
+class LeakTrackingStarted extends Message {
   LeakTrackingStarted(this.protocolVersion);
 
   factory LeakTrackingStarted.fromJson(Map<String, dynamic> json) {
@@ -54,14 +59,18 @@ class LeakTrackingStarted extends MessageFromApp {
 
   @override
   Map<String, dynamic> toJson() => {
-        _EventFields.eventType.value: _EventTypes.leakTrackingStarted.value,
+        _EventFields.eventType.value:
+            _FromAppEventTypes.leakTrackingStarted.value,
         _EventFields.protocolVersion.value: appLeakTrackerProtocolVersion,
       };
 
   final String protocolVersion;
+
+  @override
+  final channel = _MessageChannel.eventFromApp;
 }
 
-class LeakTrackingSummary extends MessageFromApp {
+class LeakTrackingSummary extends Message {
   LeakTrackingSummary(this.leakSummary, {DateTime? time}) {
     this.time = time ?? DateTime.now();
   }
@@ -79,39 +88,43 @@ class LeakTrackingSummary extends MessageFromApp {
 
   @override
   Map<String, dynamic> toJson() => {
-        _EventFields.eventType.value: _EventTypes.memoryLeakSummary.value,
+        _EventFields.eventType.value:
+            _FromAppEventTypes.memoryLeakSummary.value,
         _EventFields.leakSummary.value: leakSummary,
         _EventFields.time.value: time.millisecondsSinceEpoch,
       };
 
   final LeakSummary leakSummary;
   late DateTime time;
+
+  @override
+  final channel = _MessageChannel.eventFromApp;
 }
 
-void postFromAppEvent(MessageFromApp event) {
+void postFromAppEvent(Message message) {
+  assert(message.channel == _MessageChannel.eventFromApp);
   postEvent(
     memoryLeakTrackingExtensionName,
-    event.toJson(),
+    message.toJson(),
   );
 }
 
 /// Parses event from application to DevTools.
 ///
 /// Ignores events from other extensions and event types that do not have right [withHistory].
-MessageFromApp? parseFromAppEvent(Event event, {required bool withHistory}) {
+Message? parseFromAppEvent(Event event) {
   if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
 
   final data = event.json!['extensionData'] as Map<String, dynamic>;
 
   final typeString = data[_EventFields.eventType.value] as String;
-  final type = _EventTypes.byValue(typeString);
+  final type = _FromAppEventTypes.byValue(typeString);
   if (type == null) throw ArgumentError('Unexpected event type: $typeString.');
-  if (type.withHistory != withHistory) return null;
 
   switch (type) {
-    case _EventTypes.leakTrackingStarted:
+    case _FromAppEventTypes.leakTrackingStarted:
       return LeakTrackingStarted.fromJson(data);
-    case _EventTypes.memoryLeakSummary:
+    case _FromAppEventTypes.memoryLeakSummary:
       return LeakTrackingSummary.fromJson(data);
   }
 }
