@@ -15,7 +15,7 @@ bool _extentsionRegistered = false;
 
 /// Registers service extention to signal that leak tracking is
 /// already enabled and other leak tracking systems
-/// (for example, built into Flutter frameworks)
+/// (for example, the one built into Flutter framework)
 /// should not be activated.
 ///
 /// If the extention is alredy registered, returns false.
