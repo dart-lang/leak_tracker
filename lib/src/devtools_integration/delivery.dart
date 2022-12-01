@@ -43,7 +43,7 @@ Object parseRequestToApp(Map<String, dynamic> json) {
 }
 
 /// Parses response for a request sent from DevTools to app.
-T? parseResponseFromApp<T>(Response response) {
+T parseResponseFromApp<T>(Response response) {
   final envelope = envelopeByType(T);
   return envelope.parse(response.json ?? {});
 }
