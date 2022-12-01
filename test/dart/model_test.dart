@@ -45,11 +45,14 @@ void main() {
   });
 
   test('$LeakSummary serializes.', () {
-    final leakSummary = LeakSummary({
-      LeakType.gcedLate: 2,
-      LeakType.notDisposed: 3,
-      LeakType.notGCed: 4,
-    });
+    final leakSummary = LeakSummary(
+      {
+        LeakType.gcedLate: 2,
+        LeakType.notDisposed: 3,
+        LeakType.notGCed: 4,
+      },
+      time: DateTime(2022),
+    );
 
     final json = leakSummary.toJson();
 
