@@ -8,6 +8,5 @@
 library devtools_integration;
 
 export 'src/devtools_integration/delivery.dart';
-export 'src/devtools_integration/messages.dart';
 export 'src/devtools_integration/model.dart';
 export 'src/devtools_integration/to_app.dart';

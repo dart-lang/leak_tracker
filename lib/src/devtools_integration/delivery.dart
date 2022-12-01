@@ -4,10 +4,9 @@
 
 import 'dart:developer';
 
-import 'package:collection/collection.dart';
 import 'package:vm_service/vm_service.dart';
 
-import 'messages.dart';
+import '_envelopes.dart';
 import 'model.dart';
 
 class _JsonFields {
@@ -16,30 +15,23 @@ class _JsonFields {
 }
 
 void postFromAppEvent<T>(T message) {
-  final envelope = envelopesByType[T]!;
-  assert(envelope.channel == Channel.requestFromApp);
+  final theEnvelope = envelope<T>();
+  assert(theEnvelope.channel == Channel.requestFromApp);
   postEvent(memoryLeakTrackingExtensionName, {
-    _JsonFields.envelopeCode: envelope.code,
-    _JsonFields.content: envelope.encode(message),
+    _JsonFields.envelopeCode: theEnvelope.code,
+    _JsonFields.content: theEnvelope.encode(message),
   });
 }
 
-/// Parses event from application to DevTools.
+/// Parses request from application to DevTools.
 ///
 /// Ignores events from other extensions and event types that do not have right [withHistory].
-Message? parseFromAppEvent(Event event) {
+Envelope? parseRequestFromApp(Event event) {
   if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
 
   final data = event.json!['extensionData'] as Map<String, dynamic>;
+  final result = envelopeByCode(data[_JsonFields.envelopeCode] as String);
 
-  final typeString = data[_EventFields.eventType.value] as String;
-  final type = _FromAppEventTypes.byValue(typeString);
-  if (type == null) throw ArgumentError('Unexpected event type: $typeString.');
-
-  switch (type) {
-    case _FromAppEventTypes.leakTrackingStarted:
-      return LeakTrackingStarted.fromJson(data);
-    case _FromAppEventTypes.memoryLeakSummary:
-      return LeakTrackingSummary.fromJson(data);
-  }
+  assert(result.channel == Channel.requestFromApp);
+  return result;
 }

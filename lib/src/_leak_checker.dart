@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import '_model.dart';
-import 'devtools_integration/messages.dart';
+import 'devtools_integration/delivery.dart';
 import 'devtools_integration/model.dart';
 import 'leak_tracker_model.dart';
 
@@ -24,7 +24,7 @@ class LeakChecker {
 
   late final Timer? _timer;
 
-  LeakSummary _previousResult = const LeakSummary({});
+  LeakSummary _previousResult = LeakSummary({});
 
   /// Period to check for leaks.
   ///
@@ -67,6 +67,5 @@ class StdoutSummarySink {
 }
 
 class DevToolsSummarySink {
-  void send(LeakSummary summary) =>
-      postFromAppEvent(LeakTrackingSummary(summary));
+  void send(LeakSummary summary) => postFromAppEvent(summary);
 }

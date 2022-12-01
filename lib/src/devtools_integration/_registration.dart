@@ -7,7 +7,8 @@ import 'dart:developer';
 
 import '../_model.dart';
 import '../_primitives.dart';
-import 'messages.dart';
+import '_envelopes.dart';
+import 'delivery.dart';
 import 'model.dart';
 import 'to_app.dart';
 

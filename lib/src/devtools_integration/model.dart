@@ -124,6 +124,7 @@ class _JsonFields {
   static const String code = 'code';
   static const String time = 'time';
   static const String totals = 'totals';
+  static const String version = 'version';
 }
 
 class ContextKeys {
@@ -217,4 +218,14 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
   static String _indentNewLines(String text, String indent) {
     return text.replaceAll('\n', '\n$indent').trimRight();
   }
+}
+
+class LeakTrackingStarted {
+  LeakTrackingStarted(this.protocolVersion);
+  factory LeakTrackingStarted.fromJson(Map<String, dynamic> json) =>
+      LeakTrackingStarted(json[_JsonFields.version] as String);
+
+  Map<String, dynamic> toJson() => {_JsonFields.version: protocolVersion};
+
+  final String protocolVersion;
 }

@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:convert';
-
 import 'model.dart';
 
 enum Channel {
@@ -17,7 +15,10 @@ typedef MessageEncoder<T> = Map<String, dynamic> Function(T value);
 
 enum Codes {
   started,
-  summary,
+  summary;
+
+  static Codes byName(String name) =>
+      Codes.values.where((e) => e.name == name).single;
 }
 
 class Envelope<T> {
@@ -28,11 +29,7 @@ class Envelope<T> {
   final MessageParser<T> parse;
   final MessageEncoder<T> encode;
 
-  Type get messageType => T;
-}
-
-class _JsonFields {
-  static const version = 'version';
+  Type get type => T;
 }
 
 /// Envelopes should be unique by message type.
@@ -51,24 +48,23 @@ final _envelopes = [
   ),
 ];
 
+Envelope envelopeByCode(String codeString) {
+  final code = Codes.byName(codeString);
+  return _envelopesByCode[code]!;
+}
+
+Envelope<T> envelope<T>() {
+  return _envelopesByType[T]! as Envelope<T>;
+}
+
 late final _envelopesByCode = Map<String, Envelope>.fromIterable(
   _envelopes,
   key: (e) => e.code,
   value: (e) => e,
 );
 
-late final envelopesByType = Map<Type, Envelope>.fromIterable(
+late final _envelopesByType = Map<Type, Envelope>.fromIterable(
   _envelopes,
   key: (e) => e.type,
   value: (e) => e,
 );
-
-class LeakTrackingStarted {
-  LeakTrackingStarted(this.protocolVersion);
-  factory LeakTrackingStarted.fromJson(Map<String, dynamic> json) =>
-      LeakTrackingStarted(json[_JsonFields.version] as String);
-
-  Map<String, dynamic> toJson() => {_JsonFields.version: protocolVersion};
-
-  final String protocolVersion;
-}
