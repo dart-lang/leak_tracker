@@ -14,8 +14,8 @@ const _eventTypeField = 'type';
 const _eventContentField = 'content';
 
 
-void postFromAppEvent(AppMessage message) {
-  assert(message.channel == Channel.eventFromApp);
+void postFromAppEvent<T>(T message) {
+  assert(message.channel == Channel.requestFromApp);
   postEvent(
     memoryLeakTrackingExtensionName,
     {_eventTypeField: }

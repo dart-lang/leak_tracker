@@ -50,15 +50,21 @@ LeakType _parseLeakType(String source) =>
 
 /// Statistical information about found leaks.
 class LeakSummary {
-  const LeakSummary(this.totals);
+  LeakSummary(this.totals, {DateTime? time}) {
+    this.time = time ?? DateTime.now();
+  }
 
   factory LeakSummary.fromJson(Map<String, dynamic> json) => LeakSummary(
-        json.map(
+        (json[_JsonFields.totals] as Map<String, dynamic>).map(
           (key, value) => MapEntry(_parseLeakType(key), int.parse(value)),
         ),
+        time:
+            DateTime.fromMillisecondsSinceEpoch(json[_JsonFields.time] as int),
       );
 
   final Map<LeakType, int> totals;
+
+  late final DateTime time;
 
   int get total => totals.values.sum;
 
@@ -71,8 +77,11 @@ class LeakSummary {
         'GCed late: ${totals[LeakType.gcedLate]}';
   }
 
-  Map<String, dynamic> toJson() =>
-      totals.map((key, value) => MapEntry(key.toString(), value.toString()));
+  Map<String, dynamic> toJson() => {
+        _JsonFields.totals: totals
+            .map((key, value) => MapEntry(key.toString(), value.toString())),
+        _JsonFields.time: time.millisecondsSinceEpoch,
+      };
 
   bool matches(LeakSummary? other) =>
       other != null && mapEquals(totals, other.totals);
@@ -113,6 +122,8 @@ class _JsonFields {
   static const String trackedClass = 'tracked';
   static const String context = 'context';
   static const String code = 'code';
+  static const String time = 'time';
+  static const String totals = 'totals';
 }
 
 class ContextKeys {
