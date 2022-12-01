@@ -11,9 +11,9 @@ import 'package:test/test.dart';
 // Enum-like static classes are ok.
 // ignore: avoid_classes_with_only_static_members
 class _SummaryValues {
-  static const zero = LeakSummary({});
+  static final zero = LeakSummary({});
 
-  static const nonZero = LeakSummary({
+  static final nonZero = LeakSummary({
     LeakType.gcedLate: 1,
     LeakType.notDisposed: 2,
     LeakType.notGCed: 3,
@@ -245,7 +245,7 @@ class _MockDevToolsSink implements DevToolsSummarySink {
 }
 
 class _MockLeakProvider implements LeakProvider {
-  LeakSummary value = const LeakSummary({});
+  LeakSummary value = LeakSummary({});
 
   @override
   LeakSummary leaksSummary() => value;
