@@ -12,58 +12,63 @@ enum Channel {
   responseFromApp,
 }
 
-typedef _MessageParser<T> = T Function(String value);
-typedef _MessageEncoder<T> = String Function(T value);
+typedef MessageParser<T> = T Function(Map<String, dynamic> value);
+typedef MessageEncoder<T> = Map<String, dynamic> Function(T value);
 
 enum Codes {
   started,
   summary,
 }
 
-class _Envelope<T> {
-  _Envelope(this.code, this.channel, this.parser, this.encoder);
+class Envelope<T> {
+  Envelope(this.code, this.channel, this.parse, this.encode);
 
   final Codes code;
   final Channel channel;
-  final _MessageParser<T> parser;
-  final _MessageEncoder<T> encoder;
+  final MessageParser<T> parse;
+  final MessageEncoder<T> encode;
 
   Type get messageType => T;
 }
 
+class _JsonFields {
+  static const version = 'version';
+}
+
 /// Envelopes should be unique by message type.
 final _envelopes = [
-  _Envelope<LeakTrackingStarted>(
+  Envelope<LeakTrackingStarted>(
     Codes.started,
     Channel.requestFromApp,
-    (String protocolVersion) => LeakTrackingStarted(protocolVersion),
-    (LeakTrackingStarted started) => started.protocolVersion,
+    (Map<String, dynamic> json) => LeakTrackingStarted.fromJson(json),
+    (LeakTrackingStarted started) => started.toJson(),
   ),
-  _Envelope<LeakSummary>(
+  Envelope<LeakSummary>(
     Codes.summary,
     Channel.requestFromApp,
-    (String json) => LeakSummary.fromJson(jsonDecode(json)),
-    (LeakSummary summary) => jsonEncode(summary.toJson()),
+    (Map<String, dynamic> json) => LeakSummary.fromJson(json),
+    (LeakSummary summary) => summary.toJson(),
   ),
 ];
 
-late final _factoriesByCode = Map<String, _Envelope>.fromIterable(
+late final _envelopesByCode = Map<String, Envelope>.fromIterable(
   _envelopes,
   key: (e) => e.code,
   value: (e) => e,
 );
 
-late final _factoriesByType = Map<Type, _Envelope>.fromIterable(
+late final envelopesByType = Map<Type, Envelope>.fromIterable(
   _envelopes,
   key: (e) => e.type,
   value: (e) => e,
 );
 
-T parseMessage<T>(String code, String value) =>
-    _factoriesByCode[code]!.parser(value) as T;
-
 class LeakTrackingStarted {
   LeakTrackingStarted(this.protocolVersion);
+  factory LeakTrackingStarted.fromJson(Map<String, dynamic> json) =>
+      LeakTrackingStarted(json[_JsonFields.version] as String);
+
+  Map<String, dynamic> toJson() => {_JsonFields.version: protocolVersion};
 
   final String protocolVersion;
 }

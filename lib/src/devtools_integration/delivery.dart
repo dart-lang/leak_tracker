@@ -10,17 +10,18 @@ import 'package:vm_service/vm_service.dart';
 import 'messages.dart';
 import 'model.dart';
 
-const _eventTypeField = 'type';
-const _eventContentField = 'content';
-
+class _JsonFields {
+  static const envelopeCode = 'code';
+  static const content = 'content';
+}
 
 void postFromAppEvent<T>(T message) {
-  assert(message.channel == Channel.requestFromApp);
-  postEvent(
-    memoryLeakTrackingExtensionName,
-    {_eventTypeField: }
-    message.toJson(),
-  );
+  final envelope = envelopesByType[T]!;
+  assert(envelope.channel == Channel.requestFromApp);
+  postEvent(memoryLeakTrackingExtensionName, {
+    _JsonFields.envelopeCode: envelope.code,
+    _JsonFields.content: envelope.encode(message),
+  });
 }
 
 /// Parses event from application to DevTools.
