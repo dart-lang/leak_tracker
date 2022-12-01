@@ -15,7 +15,10 @@ typedef MessageEncoder<T> = Map<String, dynamic> Function(T value);
 
 enum Codes {
   started,
-  summary;
+  summary,
+  detailsRequest,
+  details,
+  ;
 
   static Codes byName(String name) =>
       Codes.values.where((e) => e.name == name).single;
@@ -44,7 +47,19 @@ final _envelopes = [
     Codes.summary,
     Channel.requestFromApp,
     (Map<String, dynamic> json) => LeakSummary.fromJson(json),
-    (LeakSummary summary) => summary.toJson(),
+    (LeakSummary message) => message.toJson(),
+  ),
+  Envelope<RequestForDetails>(
+    Codes.detailsRequest,
+    Channel.requestToApp,
+    (Map<String, dynamic> json) => RequestForDetails(),
+    (RequestForDetails message) => {},
+  ),
+  Envelope<Leaks>(
+    Codes.details,
+    Channel.responseFromApp,
+    (Map<String, dynamic> json) => Leaks.fromJson(json),
+    (Leaks message) => message.toJson(),
   ),
 ];
 
