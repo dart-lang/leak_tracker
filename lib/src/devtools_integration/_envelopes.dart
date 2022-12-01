@@ -4,12 +4,6 @@
 
 import 'model.dart';
 
-enum Channel {
-  requestToApp,
-  requestFromApp,
-  responseFromApp,
-}
-
 typedef MessageParser<T> = T Function(Map<String, dynamic> value);
 typedef MessageEncoder<T> = Map<String, dynamic> Function(T value);
 
@@ -68,9 +62,7 @@ Envelope<T> envelopeByCode<T>(String codeString) {
   return _envelopesByCode[code]! as Envelope<T>;
 }
 
-Envelope<T> envelope<T>() {
-  return _envelopesByType[T]! as Envelope<T>;
-}
+Envelope envelopeByType(Type type) => _envelopesByType[type]!;
 
 late final _envelopesByCode = Map<String, Envelope>.fromIterable(
   _envelopes,

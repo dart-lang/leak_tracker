@@ -15,6 +15,12 @@ const String memoryLeakTrackingExtensionName = 'ext.dart.memoryLeakTracking';
 /// Version of protocol, executed by the application.
 const String appLeakTrackerProtocolVersion = '1';
 
+enum Channel {
+  requestToApp,
+  requestFromApp,
+  responseFromApp,
+}
+
 ServiceExtensionResponse serviceResponse(
   ResponseType type, {
   Map<String, dynamic> details = const {},

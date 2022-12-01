@@ -15,7 +15,7 @@ class _JsonFields {
 }
 
 void postFromAppEvent<T>(T message) {
-  final theEnvelope = envelope<T>();
+  final theEnvelope = envelopeByType(T);
   assert(theEnvelope.channel == Channel.requestFromApp);
   postEvent(memoryLeakTrackingExtensionName, {
     _JsonFields.envelopeCode: theEnvelope.code,
@@ -34,4 +34,10 @@ T? parseRequestFromApp<T>(Event event) {
 
   assert(envelope.channel == Channel.requestFromApp);
   return envelope.parse(data[_JsonFields.content]);
+}
+
+Map<String, dynamic> encodeMessage(Object message, Channel channel) {
+  final envelope = envelopeByType(message.runtimeType);
+  assert(envelope.channel == channel);
+  return envelope.encode(message);
 }
