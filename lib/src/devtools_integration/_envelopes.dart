@@ -63,9 +63,9 @@ final _envelopes = [
   ),
 ];
 
-Envelope envelopeByCode(String codeString) {
+Envelope<T> envelopeByCode<T>(String codeString) {
   final code = Codes.byName(codeString);
-  return _envelopesByCode[code]!;
+  return _envelopesByCode[code]! as Envelope<T>;
 }
 
 Envelope<T> envelope<T>() {
