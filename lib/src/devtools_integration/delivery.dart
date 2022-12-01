@@ -26,7 +26,7 @@ void postFromAppEvent<T>(T message) {
 /// Parses request from application to DevTools.
 ///
 /// Ignores events from other extensions and event types that do not have right [withHistory].
-T? parseRequestFromApp<T>(Event event) {
+Object? parseRequestFromApp(Event event) {
   if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
 
   final data = event.json!['extensionData'] as Map<String, dynamic>;
@@ -34,6 +34,18 @@ T? parseRequestFromApp<T>(Event event) {
 
   assert(envelope.channel == Channel.requestFromApp);
   return envelope.parse(data[_JsonFields.content]);
+}
+
+Object parseRequestToApp(Map<String, dynamic> json) {
+  final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
+  assert(envelope.channel == Channel.requestToApp);
+  return envelope.parse(json[_JsonFields.content]);
+}
+
+/// Parses response for a request sent from DevTools to app.
+T? parseResponseFromApp<T>(Response response) {
+  final envelope = envelopeByType(T);
+  return envelope.parse(response.json ?? {});
 }
 
 Map<String, dynamic> encodeMessage(Object message, Channel channel) {

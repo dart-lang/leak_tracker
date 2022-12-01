@@ -9,7 +9,6 @@ import '../_model.dart';
 import '../_primitives.dart';
 import 'delivery.dart';
 import 'model.dart';
-import 'to_app.dart';
 
 bool _extentsionRegistered = false;
 
@@ -31,6 +30,8 @@ bool setupDevToolsIntegration(
 ) {
   final handler = (String method, Map<String, String> parameters) async {
     try {
+      print('method: $method');
+
       final theLeakProvider = leakProvider.value;
 
       if (theLeakProvider == null)
@@ -39,12 +40,15 @@ bool setupDevToolsIntegration(
           details: {},
         );
 
-      final event = parseToAppEvent(parameters);
+      final event = parseRequestToApp(parameters);
 
       if (event is RequestForLeakDetails) {
         return serviceResponse(
           ResponseType.success,
-          details: theLeakProvider.collectLeaks().toJson(),
+          details: encodeMessage(
+            theLeakProvider.collectLeaks(),
+            Channel.responseFromApp,
+          ),
         );
       }
 

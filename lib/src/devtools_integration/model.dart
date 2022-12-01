@@ -236,4 +236,4 @@ class LeakTrackingStarted {
   final String protocolVersion;
 }
 
-class RequestForDetails {}
+class RequestForLeakDetails {}

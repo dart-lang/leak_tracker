@@ -12,6 +12,7 @@ enum Codes {
   summary,
   detailsRequest,
   details,
+  success,
   ;
 
   static Codes byName(String name) =>
@@ -43,11 +44,11 @@ final _envelopes = [
     (Map<String, dynamic> json) => LeakSummary.fromJson(json),
     (LeakSummary message) => message.toJson(),
   ),
-  Envelope<RequestForDetails>(
+  Envelope<RequestForLeakDetails>(
     Codes.detailsRequest,
     Channel.requestToApp,
-    (Map<String, dynamic> json) => RequestForDetails(),
-    (RequestForDetails message) => {},
+    (Map<String, dynamic> json) => RequestForLeakDetails(),
+    (RequestForLeakDetails message) => {},
   ),
   Envelope<Leaks>(
     Codes.details,
