@@ -44,4 +44,13 @@ void main() {
       expect(decodedMEssage.runtimeType, message.runtimeType);
     });
   }
+
+  for (final message in _tests) {
+    test('envelopes sealing plus opening result in original type', () {
+      final envelope = envelopeByType(message.runtimeType);
+      final envelopedMessage = sealEnvelope(message, envelope.channel);
+      final openedMessage = openEnvelope(envelopedMessage, envelope.channel);
+      expect(openedMessage.runtimeType, message.runtimeType);
+    });
+  }
 }

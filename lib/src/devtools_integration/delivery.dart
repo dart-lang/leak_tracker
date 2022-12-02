@@ -9,18 +9,11 @@ import 'package:vm_service/vm_service.dart';
 import '_envelopes.dart';
 import 'model.dart';
 
-class _JsonFields {
-  static const envelopeCode = 'code';
-  static const content = 'content';
-}
-
-void postFromAppEvent<T>(T message) {
-  final theEnvelope = envelopeByType(T);
-  assert(theEnvelope.channel == Channel.requestFromApp);
-  postEvent(memoryLeakTrackingExtensionName, {
-    _JsonFields.envelopeCode: theEnvelope.code,
-    _JsonFields.content: theEnvelope.encode(message),
-  });
+void postFromAppEvent(Object message) {
+  postEvent(
+    memoryLeakTrackingExtensionName,
+    sealEnvelope(message, Channel.requestFromApp),
+  );
 }
 
 /// Parses request from application to DevTools.
@@ -28,18 +21,8 @@ void postFromAppEvent<T>(T message) {
 /// Ignores events from other extensions and event types that do not have right [withHistory].
 Object? parseRequestFromApp(Event event) {
   if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
-
   final data = event.json!['extensionData'] as Map<String, dynamic>;
-  final envelope = envelopeByCode(data[_JsonFields.envelopeCode] as String);
-
-  assert(envelope.channel == Channel.requestFromApp);
-  return envelope.decode(data[_JsonFields.content]);
-}
-
-Object parseRequestToApp(Map<String, dynamic> json) {
-  final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
-  assert(envelope.channel == Channel.requestToApp);
-  return envelope.decode(json[_JsonFields.content]);
+  return openEnvelope(data, Channel.requestFromApp);
 }
 
 /// Parses response for a request sent from DevTools to app.

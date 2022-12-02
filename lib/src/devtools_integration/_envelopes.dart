@@ -63,15 +63,14 @@ final envelopes = [
 ];
 
 Envelope<T> envelopeByCode<T>(String codeString) {
-  final code = Codes.byName(codeString);
-  return _envelopesByCode[code]! as Envelope<T>;
+  return _envelopesByCode[codeString]! as Envelope<T>;
 }
 
 Envelope envelopeByType(Type type) => _envelopesByType[type]!;
 
 late final _envelopesByCode = Map<String, Envelope>.fromIterable(
   envelopes,
-  key: (e) => e.code,
+  key: (e) => (e as Envelope).code.name,
   value: (e) => e,
 );
 
@@ -80,3 +79,27 @@ late final _envelopesByType = Map<Type, Envelope>.fromIterable(
   key: (e) => e.type,
   value: (e) => e,
 );
+
+class _JsonFields {
+  static const envelopeCode = 'code';
+  static const content = 'content';
+}
+
+Map<String, dynamic> sealEnvelope(Object message, Channel channel) {
+  final theEnvelope = envelopeByType(message.runtimeType);
+  assert(theEnvelope.channel == channel);
+
+  return {
+    _JsonFields.envelopeCode: theEnvelope.code.name,
+    _JsonFields.content: theEnvelope.encode(message),
+  };
+}
+
+Object openEnvelope(
+  Map<String, dynamic> json,
+  Channel channel,
+) {
+  final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
+  assert(envelope.channel == channel);
+  return envelope.decode(json[_JsonFields.content]);
+}

@@ -7,6 +7,7 @@ import 'dart:developer';
 
 import '../_model.dart';
 import '../_primitives.dart';
+import '_envelopes.dart';
 import 'delivery.dart';
 import 'model.dart';
 
@@ -40,7 +41,7 @@ bool setupDevToolsIntegration(
           details: {},
         );
 
-      final event = parseRequestToApp(parameters);
+      final event = openEnvelope(parameters, Channel.requestToApp);
 
       if (event is RequestForLeakDetails) {
         return serviceResponse(
