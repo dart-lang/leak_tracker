@@ -8,6 +8,7 @@ import 'model.dart';
 
 /// Generic parameter is not used for encoder, because the message type cannot be detected in runtime.
 typedef AppMessageEncoder = Map<String, dynamic> Function(dynamic message);
+
 typedef AppMessageDecoder<T> = T Function(Map<String, dynamic> message);
 
 enum Codes {
