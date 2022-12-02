@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:meta/meta.dart';
+
 import 'model.dart';
 
 typedef MessageParser<T> = T Function(Map<String, dynamic> value);
@@ -12,7 +14,6 @@ enum Codes {
   summary,
   detailsRequest,
   details,
-  success,
   ;
 
   static Codes byName(String name) =>
@@ -31,7 +32,8 @@ class Envelope<T> {
 }
 
 /// Envelopes should be unique by message type.
-final _envelopes = [
+@visibleForTesting
+final envelopes = [
   Envelope<LeakTrackingStarted>(
     Codes.started,
     Channel.requestFromApp,
