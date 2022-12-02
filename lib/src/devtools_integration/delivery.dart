@@ -33,19 +33,19 @@ Object? parseRequestFromApp(Event event) {
   final envelope = envelopeByCode(data[_JsonFields.envelopeCode] as String);
 
   assert(envelope.channel == Channel.requestFromApp);
-  return envelope.parse(data[_JsonFields.content]);
+  return envelope.decode(data[_JsonFields.content]);
 }
 
 Object parseRequestToApp(Map<String, dynamic> json) {
   final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
   assert(envelope.channel == Channel.requestToApp);
-  return envelope.parse(json[_JsonFields.content]);
+  return envelope.decode(json[_JsonFields.content]);
 }
 
 /// Parses response for a request sent from DevTools to app.
 T parseResponseFromApp<T>(Response response) {
   final envelope = envelopeByType(T);
-  return envelope.parse(response.json ?? {});
+  return envelope.decode(response.json ?? {});
 }
 
 Map<String, dynamic> encodeMessage(Object message, Channel channel) {

@@ -3,17 +3,29 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/src/devtools_integration/_envelopes.dart';
+import 'package:leak_tracker/src/devtools_integration/model.dart';
 import 'package:test/test.dart';
 
-class _Test<T> {
-  _Test(this.message);
+final _tests = [
+  LeakTrackingStarted('version'),
+  LeakSummary({}),
+  RequestForLeakDetails(),
+  Leaks({}),
+];
 
-  final T message;
+void verifyTestsCoverAllEnvelopes() {
+  final nonCoveredEnvelopes = Set.from(envelopes.map((e) => e.type));
+  for (final test in _tests) {
+    nonCoveredEnvelopes.remove(test.runtimeType);
+  }
+  expect(nonCoveredEnvelopes, isEmpty);
 }
 
-final _tests = [];
-
 void main() {
+  setUp(() {
+    verifyTestsCoverAllEnvelopes();
+  });
+
   test('each code matches exactly one envelope', () {
     final codesInEnvelopes = Set.from(envelopes.map((e) => e.code));
     expect(codesInEnvelopes, hasLength(Codes.values.length));
@@ -23,4 +35,13 @@ void main() {
     final types = Set.from(envelopes.map((e) => e.type));
     expect(types, hasLength(envelopes.length));
   });
+
+  for (final message in _tests) {
+    test('envelopes encoding plus decoding result in original type', () {
+      final envelope = envelopeByType(message.runtimeType);
+      final encodedMessage = envelope.encode(message);
+      final decodedMEssage = envelope.decode(encodedMessage);
+      expect(decodedMEssage.runtimeType, message.runtimeType);
+    });
+  }
 }

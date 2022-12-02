@@ -6,8 +6,9 @@ import 'package:meta/meta.dart';
 
 import 'model.dart';
 
-typedef MessageParser<T> = T Function(Map<String, dynamic> value);
-typedef MessageEncoder<T> = Map<String, dynamic> Function(T value);
+/// Generic parameter is not used for encoder, because the message type cannot be detected in runtime.
+typedef AppMessageEncoder = Map<String, dynamic> Function(dynamic message);
+typedef AppMessageDecoder<T> = T Function(Map<String, dynamic> message);
 
 enum Codes {
   started,
@@ -21,12 +22,12 @@ enum Codes {
 }
 
 class Envelope<T> {
-  Envelope(this.code, this.channel, this.parse, this.encode);
+  Envelope(this.code, this.channel, this.decode, this.encode);
 
   final Codes code;
   final Channel channel;
-  final MessageParser<T> parse;
-  final MessageEncoder<T> encode;
+  final AppMessageDecoder<T> decode;
+  final AppMessageEncoder encode;
 
   Type get type => T;
 }
@@ -38,25 +39,25 @@ final envelopes = [
     Codes.started,
     Channel.requestFromApp,
     (Map<String, dynamic> json) => LeakTrackingStarted.fromJson(json),
-    (LeakTrackingStarted started) => started.toJson(),
+    (message) => (message as LeakTrackingStarted).toJson(),
   ),
   Envelope<LeakSummary>(
     Codes.summary,
     Channel.requestFromApp,
     (Map<String, dynamic> json) => LeakSummary.fromJson(json),
-    (LeakSummary message) => message.toJson(),
+    (message) => (message as LeakSummary).toJson(),
   ),
   Envelope<RequestForLeakDetails>(
     Codes.detailsRequest,
     Channel.requestToApp,
     (Map<String, dynamic> json) => RequestForLeakDetails(),
-    (RequestForLeakDetails message) => {},
+    (message) => {},
   ),
   Envelope<Leaks>(
     Codes.details,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => Leaks.fromJson(json),
-    (Leaks message) => message.toJson(),
+    (message) => (message as Leaks).toJson(),
   ),
 ];
 
