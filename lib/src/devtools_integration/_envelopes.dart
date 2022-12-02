@@ -68,13 +68,13 @@ Envelope<T> envelopeByCode<T>(String codeString) {
 Envelope envelopeByType(Type type) => _envelopesByType[type]!;
 
 late final _envelopesByCode = Map<String, Envelope>.fromIterable(
-  _envelopes,
+  envelopes,
   key: (e) => e.code,
   value: (e) => e,
 );
 
 late final _envelopesByType = Map<Type, Envelope>.fromIterable(
-  _envelopes,
+  envelopes,
   key: (e) => e.type,
   value: (e) => e,
 );
