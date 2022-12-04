@@ -5,7 +5,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import '../_model.dart';
+import '../model.dart';
 import '../_primitives.dart';
 import 'delivery.dart';
 import 'messages.dart';

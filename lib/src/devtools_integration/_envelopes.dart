@@ -4,7 +4,7 @@
 
 import 'package:meta/meta.dart';
 
-import '../_model.dart';
+import '../model.dart';
 import 'messages.dart';
 import 'primitives.dart';
 

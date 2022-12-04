@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'devtools_integration/messages.dart';
-import '_model.dart';
+import 'model.dart';
 
 typedef LeakListener = void Function(LeakSummary);
 

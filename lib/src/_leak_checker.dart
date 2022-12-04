@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import '_model.dart';
+import 'model.dart';
 import 'devtools_integration/delivery.dart';
 import 'devtools_integration/messages.dart';
 import 'leak_tracker_model.dart';
