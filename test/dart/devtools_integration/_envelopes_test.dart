@@ -7,30 +7,7 @@ import 'package:leak_tracker/src/devtools_integration/messages.dart';
 import 'package:leak_tracker/src/model.dart';
 import 'package:test/test.dart';
 
-final _messages = [
-  // Events from app.
-  LeakTrackingStarted('version'),
-  LeakSummary({}),
-
-  // Requests to app.
-  RequestForLeakDetails(),
-
-  // Successfull responses from app.
-  Leaks({}),
-
-  // Error responses from app.
-  LeakTrackingTurnedOffError(),
-  UnexpectedError.fromStrings(error: 'error', stackTrace: 'stackTrace'),
-  UnexpectedRequestTypeError.fromString('theType'),
-];
-
-void verifyTestsCoverAllEnvelopes() {
-  final nonCoveredEnvelopes = Set.from(envelopes.map((e) => e.type));
-  for (final test in _messages) {
-    nonCoveredEnvelopes.remove(test.runtimeType);
-  }
-  expect(nonCoveredEnvelopes, isEmpty);
-}
+import '../../test_infra/data/messages.dart';
 
 void main() {
   setUp(() {
@@ -47,7 +24,7 @@ void main() {
     expect(types, hasLength(envelopes.length));
   });
 
-  for (final message in _messages) {
+  for (final message in messages) {
     test('envelopes preserve original type', () {
       final envelope = envelopeByType(message.runtimeType);
       final envelopedMessage = Envelope.seal(message, envelope.channel);

@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:leak_tracker/devtools_integration.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 void main() {

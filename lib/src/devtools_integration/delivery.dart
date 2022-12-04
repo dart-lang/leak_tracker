@@ -37,33 +37,42 @@ class RequestToApp<T extends Object> {
 class ResponseFromApp<T extends Object> {
   ResponseFromApp(this.message);
 
+  ResponseFromApp.fromJson(Map<String, dynamic> json)
+      : this(Envelope.open(json, Channel.responseFromApp) as T);
+
   ResponseFromApp.fromServiceResponse(Response response)
-      : message = Envelope.open(response.json!, Channel.responseFromApp) as T;
+      : this.fromJson(response.json!);
 
   final T message;
 
-  ServiceExtensionResponse toServiceResponse() {
-    return ServiceExtensionResponse.result(
-      jsonEncode(Envelope.seal(message, Channel.responseFromApp)),
-    );
-  }
+  ServiceExtensionResponse toServiceResponse() =>
+      ServiceExtensionResponse.result(jsonEncode(toJson()));
+
+  Map<String, dynamic> toJson() =>
+      Envelope.seal(message, Channel.responseFromApp);
 }
 
 class EventFromApp<T extends Object> {
   EventFromApp(this.message);
 
+  EventFromApp.fromJson(Map<String, dynamic> json)
+      : this(Envelope.open(json, Channel.eventFromApp) as T);
+
   static EventFromApp? fromVmServiceEvent(Event event) {
     if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
     final data = event.json!['extensionData'] as Map<String, dynamic>;
-    return EventFromApp(Envelope.open(data, Channel.eventFromApp));
+    return EventFromApp.fromJson(data);
   }
 
   final T message;
 
+  Map<String, dynamic> messageAsJson() =>
+      Envelope.seal(message, Channel.eventFromApp);
+
   void post() {
     postEvent(
       memoryLeakTrackingExtensionName,
-      Envelope.seal(message, Channel.eventFromApp),
+      messageAsJson(),
     );
   }
 }
