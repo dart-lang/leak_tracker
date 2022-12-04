@@ -4,8 +4,6 @@
 
 import 'package:leak_tracker/devtools_integration.dart';
 import 'package:leak_tracker/src/devtools_integration/_envelopes.dart';
-import 'package:leak_tracker/src/devtools_integration/messages.dart';
-import 'package:leak_tracker/src/model.dart';
 import 'package:test/test.dart';
 
 import '../../test_infra/data/messages.dart';
