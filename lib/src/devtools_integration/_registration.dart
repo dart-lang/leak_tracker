@@ -31,7 +31,7 @@ bool setupDevToolsIntegration(
 ) {
   final handler = (String method, Map<String, String> parameters) async {
     try {
-      print('!!!! method: $method');
+      assert(method == memoryLeakTrackingExtensionName);
 
       final theLeakProvider = leakProvider.value;
 
@@ -40,7 +40,7 @@ bool setupDevToolsIntegration(
             .toServiceResponse();
       }
 
-      final request = RequestToApp.fromRequestParameters(parameters);
+      final request = RequestToApp.fromRequestParameters(parameters).message;
 
       if (request is RequestForLeakDetails) {
         return ResponseFromApp(theLeakProvider.collectLeaks())

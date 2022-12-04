@@ -42,9 +42,6 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _counter++;
     });
-
-    // !!! remove before merge!
-    EventFromApp(LeakSummary({})).post();
   }
 
   @override
