@@ -7,9 +7,9 @@ import 'dart:developer';
 
 import '../_model.dart';
 import '../_primitives.dart';
-import '_envelopes.dart';
 import 'delivery.dart';
-import 'model.dart';
+import 'messages.dart';
+import 'primitives.dart';
 
 bool _extentsionRegistered = false;
 
@@ -31,48 +31,39 @@ bool setupDevToolsIntegration(
 ) {
   final handler = (String method, Map<String, String> parameters) async {
     try {
-      print('method: $method');
+      print('!!!! method: $method');
 
       final theLeakProvider = leakProvider.value;
 
-      if (theLeakProvider == null)
-        return serviceResponse(
-          ResponseType.leakTrackingTurnedOff,
-          details: {},
-        );
-
-      final event = openEnvelope(parameters, Channel.requestToApp);
-
-      if (event is RequestForLeakDetails) {
-        return serviceResponse(
-          ResponseType.success,
-          details: encodeMessage(
-            theLeakProvider.collectLeaks(),
-            Channel.responseFromApp,
-          ),
-        );
+      if (theLeakProvider == null) {
+        return ResponseFromApp(LeakTrackingTurnedOffError())
+            .toServiceResponse();
       }
 
-      return serviceResponse(
-        ResponseType.unexpectedEventType,
-        details: {'type': event.runtimeType.toString()},
-      );
+      final request = RequestToApp.fromRequestParameters(parameters);
+
+      if (request is RequestForLeakDetails) {
+        return ResponseFromApp(theLeakProvider.collectLeaks())
+            .toServiceResponse();
+      }
+
+      return ResponseFromApp(
+        UnexpectedRequestTypeError(request.runtimeType),
+      ).toServiceResponse();
     } catch (error, stack) {
       print(
         'Error handling leak tracking request from DevTools to application.',
       );
       print(error);
       print(stack);
-      return serviceResponse(
-        ResponseType.unexpectedError,
-        details: {error.toString(): stack},
-      );
+
+      return ResponseFromApp(UnexpectedError(error, stack)).toServiceResponse();
     }
   };
 
   final result = _registerServiceExtention(handler);
 
-  postFromAppEvent(LeakTrackingStarted(appLeakTrackerProtocolVersion));
+  EventFromApp(LeakTrackingStarted(appLeakTrackerProtocolVersion)).post();
 
   return result;
 }

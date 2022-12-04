@@ -2,37 +2,61 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:vm_service/vm_service.dart';
 
 import '_envelopes.dart';
-import 'model.dart';
+import 'primitives.dart';
 
-void postFromAppEvent(Object message) {
-  postEvent(
-    memoryLeakTrackingExtensionName,
-    sealEnvelope(message, Channel.requestFromApp),
-  );
+/// Names for json fields.
+class _JsonFields {
+  static const String content = 'content';
 }
 
-/// Parses request from application to DevTools.
-///
-/// Ignores events from other extensions and event types that do not have right [withHistory].
-Object? parseRequestFromApp(Event event) {
-  if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
-  final data = event.json!['extensionData'] as Map<String, dynamic>;
-  return openEnvelope(data, Channel.requestFromApp);
+class RequestToApp<T extends Object> {
+  RequestToApp(this.message);
+
+  RequestToApp.fromRequestParameters(Map<String, String> parameters)
+      : message = Envelope.open(
+          jsonDecode(parameters[_JsonFields.content]!),
+          Channel.requestToApp,
+        ) as T;
+
+  final T message;
 }
 
-/// Parses response for a request sent from DevTools to app.
-T parseResponseFromApp<T>(Response response) {
-  final envelope = envelopeByType(T);
-  return envelope.decode(response.json ?? {});
+class ResponseFromApp<T extends Object> {
+  ResponseFromApp(this.message);
+
+  ResponseFromApp.fromServiceResponse(Response response)
+      : message = Envelope.open(response.json!, Channel.responseFromApp) as T;
+
+  final T message;
+
+  ServiceExtensionResponse toServiceResponse() {
+    return ServiceExtensionResponse.result(
+      jsonEncode(Envelope.seal(message, Channel.responseFromApp)),
+    );
+  }
 }
 
-Map<String, dynamic> encodeMessage(Object message, Channel channel) {
-  final envelope = envelopeByType(message.runtimeType);
-  assert(envelope.channel == channel);
-  return envelope.encode(message);
+class EventFromApp<T extends Object> {
+  EventFromApp(this.message);
+
+  EventFromApp? fromVmServiceEvent(Event event) {
+    if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
+    final data = event.json!['extensionData'] as Map<String, dynamic>;
+    return EventFromApp(Envelope.open(data, Channel.eventFromApp));
+  }
+
+  final T message;
+
+  void post() {
+    postEvent(
+      memoryLeakTrackingExtensionName,
+      Envelope.seal(message, Channel.eventFromApp),
+    );
+  }
 }

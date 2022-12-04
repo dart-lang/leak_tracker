@@ -6,7 +6,7 @@ import 'dart:async';
 
 import '_model.dart';
 import 'devtools_integration/delivery.dart';
-import 'devtools_integration/model.dart';
+import 'devtools_integration/messages.dart';
 import 'leak_tracker_model.dart';
 
 class LeakChecker {
@@ -67,5 +67,5 @@ class StdoutSummarySink {
 }
 
 class DevToolsSummarySink {
-  void send(LeakSummary summary) => postFromAppEvent(summary);
+  void send(LeakSummary summary) => EventFromApp(summary).post();
 }

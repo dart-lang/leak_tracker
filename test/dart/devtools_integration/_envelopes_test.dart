@@ -3,10 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/src/devtools_integration/_envelopes.dart';
+import 'package:leak_tracker/src/devtools_integration/delivery.dart';
 import 'package:leak_tracker/src/devtools_integration/model.dart';
 import 'package:test/test.dart';
 
-final _tests = [
+final _messages = [
   LeakTrackingStarted('version'),
   LeakSummary({}),
   RequestForLeakDetails(),
@@ -15,7 +16,7 @@ final _tests = [
 
 void verifyTestsCoverAllEnvelopes() {
   final nonCoveredEnvelopes = Set.from(envelopes.map((e) => e.type));
-  for (final test in _tests) {
+  for (final test in _messages) {
     nonCoveredEnvelopes.remove(test.runtimeType);
   }
   expect(nonCoveredEnvelopes, isEmpty);
@@ -36,7 +37,7 @@ void main() {
     expect(types, hasLength(envelopes.length));
   });
 
-  for (final message in _tests) {
+  for (final message in _messages) {
     test('envelopes encoding plus decoding result in original type', () {
       final envelope = envelopeByType(message.runtimeType);
       final encodedMessage = envelope.encode(message);
@@ -45,7 +46,7 @@ void main() {
     });
   }
 
-  for (final message in _tests) {
+  for (final message in _messages) {
     test('envelopes sealing plus opening result in original type', () {
       final envelope = envelopeByType(message.runtimeType);
       final envelopedMessage = sealEnvelope(message, envelope.channel);

@@ -4,7 +4,9 @@
 
 import 'package:meta/meta.dart';
 
-import 'model.dart';
+import '../_model.dart';
+import 'messages.dart';
+import 'primitives.dart';
 
 /// Generic parameter is not used for encoder, because the message type cannot be detected in runtime.
 typedef AppMessageEncoder = Map<String, dynamic> Function(dynamic message);
@@ -15,7 +17,13 @@ enum Codes {
   started,
   summary,
   detailsRequest,
-  details,
+  leakDetails,
+
+  successResponse,
+
+  leakTrackingTurnedOffError,
+  unexpectedError,
+  unexpectedEventTypeError,
   ;
 
   static Codes byName(String name) =>
@@ -31,6 +39,24 @@ class Envelope<T> {
   final AppMessageEncoder encode;
 
   Type get type => T;
+
+  static Map<String, dynamic> seal(Object message, Channel channel) {
+    final theEnvelope = envelopeByType(message.runtimeType);
+    assert(theEnvelope.channel == channel);
+    return {
+      _JsonFields.envelopeCode: theEnvelope.code.name,
+      _JsonFields.content: theEnvelope.encode(message),
+    };
+  }
+
+  static Object open(
+    Map<String, dynamic> json,
+    Channel channel,
+  ) {
+    final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
+    assert(envelope.channel == channel);
+    return envelope.decode(json[_JsonFields.content]);
+  }
 }
 
 /// Envelopes should be unique by message type.
@@ -38,13 +64,13 @@ class Envelope<T> {
 final envelopes = [
   Envelope<LeakTrackingStarted>(
     Codes.started,
-    Channel.requestFromApp,
+    Channel.eventFromApp,
     (Map<String, dynamic> json) => LeakTrackingStarted.fromJson(json),
     (message) => (message as LeakTrackingStarted).toJson(),
   ),
   Envelope<LeakSummary>(
     Codes.summary,
-    Channel.requestFromApp,
+    Channel.eventFromApp,
     (Map<String, dynamic> json) => LeakSummary.fromJson(json),
     (message) => (message as LeakSummary).toJson(),
   ),
@@ -55,7 +81,7 @@ final envelopes = [
     (message) => {},
   ),
   Envelope<Leaks>(
-    Codes.details,
+    Codes.leakDetails,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => Leaks.fromJson(json),
     (message) => (message as Leaks).toJson(),
@@ -83,23 +109,4 @@ late final _envelopesByType = Map<Type, Envelope>.fromIterable(
 class _JsonFields {
   static const envelopeCode = 'code';
   static const content = 'content';
-}
-
-Map<String, dynamic> sealEnvelope(Object message, Channel channel) {
-  final theEnvelope = envelopeByType(message.runtimeType);
-  assert(theEnvelope.channel == channel);
-
-  return {
-    _JsonFields.envelopeCode: theEnvelope.code.name,
-    _JsonFields.content: theEnvelope.encode(message),
-  };
-}
-
-Object openEnvelope(
-  Map<String, dynamic> json,
-  Channel channel,
-) {
-  final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
-  assert(envelope.channel == channel);
-  return envelope.decode(json[_JsonFields.content]);
 }
