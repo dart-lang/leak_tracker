@@ -53,7 +53,7 @@ class Envelope<T> {
     final theEnvelope = envelopeByType(message.runtimeType);
     assert(theEnvelope.channel == channel);
     return {
-      _JsonFields.envelopeCode: theEnvelope.code,
+      _JsonFields.envelopeCode: theEnvelope.code.name,
       _JsonFields.content: theEnvelope.encode(message),
     };
   }

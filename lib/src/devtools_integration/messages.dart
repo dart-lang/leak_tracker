@@ -42,12 +42,12 @@ class UnexpectedError {
       : error = error.toString(),
         stackTrace = stackTrace.toString();
 
-  UnexpectedError.fromStrings(this.error, this.stackTrace);
+  UnexpectedError.fromStrings({required this.error, required this.stackTrace});
 
   factory UnexpectedError.fromJson(Map<String, dynamic> json) =>
       UnexpectedError.fromStrings(
-        json[_JsonFields.error] as String,
-        json[_JsonFields.stackTrace] as String,
+        error: json[_JsonFields.error] as String,
+        stackTrace: json[_JsonFields.stackTrace] as String,
       );
 
   Map<String, dynamic> toJson() => {

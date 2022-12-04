@@ -19,9 +19,9 @@ final _messages = [
   Leaks({}),
 
   // Error responses from app.
-  LeakTrackingTurnedOffError,
-  UnexpectedError,
-  UnexpectedRequestTypeError,
+  LeakTrackingTurnedOffError(),
+  UnexpectedError.fromStrings(error: 'error', stackTrace: 'stackTrace'),
+  UnexpectedRequestTypeError.fromString('theType'),
 ];
 
 void verifyTestsCoverAllEnvelopes() {
@@ -48,7 +48,7 @@ void main() {
   });
 
   for (final message in _messages) {
-    test('envelopes sealing plus opening result in original type', () {
+    test('envelopes preserve original type', () {
       final envelope = envelopeByType(message.runtimeType);
       final envelopedMessage = Envelope.seal(message, envelope.channel);
       final openedMessage = Envelope.open(envelopedMessage, envelope.channel);
