@@ -24,6 +24,13 @@ class RequestToApp<T extends Object> {
           Channel.requestToApp,
         ) as T;
 
+  Map<String, String> toRequestParameters() {
+    return {
+      _JsonFields.content:
+          jsonEncode(Envelope.seal(message, Channel.requestToApp)),
+    };
+  }
+
   final T message;
 }
 

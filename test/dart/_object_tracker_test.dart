@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:clock/clock.dart';
-import 'package:leak_tracker/devtools_integration.dart';
 import 'package:leak_tracker/src/_gc_counter.dart';
 import 'package:leak_tracker/src/_object_tracker.dart';
 import 'package:leak_tracker/src/_primitives.dart';
+import 'package:leak_tracker/src/model.dart';
 import 'package:test/test.dart';
 
 const String _trackedClass = 'trackedClass';

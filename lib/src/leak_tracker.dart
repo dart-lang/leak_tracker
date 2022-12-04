@@ -8,8 +8,6 @@ import '_leak_checker.dart';
 import '_object_tracker.dart';
 import '_primitives.dart';
 import 'devtools_integration/_registration.dart';
-import 'devtools_integration/messages.dart';
-import 'model.dart';
 
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 LeakChecker? _leakChecker;

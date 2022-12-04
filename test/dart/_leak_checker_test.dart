@@ -4,8 +4,6 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/_leak_checker.dart';
-import 'package:leak_tracker/src/model.dart';
-import 'package:leak_tracker/src/devtools_integration/model.dart';
 import 'package:test/test.dart';
 
 // Enum-like static classes are ok.

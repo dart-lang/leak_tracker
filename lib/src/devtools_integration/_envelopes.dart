@@ -14,24 +14,33 @@ typedef AppMessageEncoder = Map<String, dynamic> Function(dynamic message);
 typedef AppMessageDecoder<T> = T Function(Map<String, dynamic> message);
 
 enum Codes {
+  // Events from app.
   started,
   summary,
+
+  // Requests to app.
   detailsRequest,
+
+  // Successfull responses from app.
   leakDetails,
 
-  successResponse,
-
+  // Error responses from app.
   leakTrackingTurnedOffError,
   unexpectedError,
-  unexpectedEventTypeError,
+  unexpectedRequestTypeError,
   ;
 
   static Codes byName(String name) =>
       Codes.values.where((e) => e.name == name).single;
 }
 
+class _JsonFields {
+  static const envelopeCode = 'code';
+  static const content = 'content';
+}
+
 class Envelope<T> {
-  Envelope(this.code, this.channel, this.decode, this.encode);
+  const Envelope(this.code, this.channel, this.decode, this.encode);
 
   final Codes code;
   final Channel channel;
@@ -44,7 +53,7 @@ class Envelope<T> {
     final theEnvelope = envelopeByType(message.runtimeType);
     assert(theEnvelope.channel == channel);
     return {
-      _JsonFields.envelopeCode: theEnvelope.code.name,
+      _JsonFields.envelopeCode: theEnvelope.code,
       _JsonFields.content: theEnvelope.encode(message),
     };
   }
@@ -62,6 +71,8 @@ class Envelope<T> {
 /// Envelopes should be unique by message type.
 @visibleForTesting
 final envelopes = [
+  // Events from app.
+
   Envelope<LeakTrackingStarted>(
     Codes.started,
     Channel.eventFromApp,
@@ -74,17 +85,44 @@ final envelopes = [
     (Map<String, dynamic> json) => LeakSummary.fromJson(json),
     (message) => (message as LeakSummary).toJson(),
   ),
+
+  // Requests to app.
+
   Envelope<RequestForLeakDetails>(
     Codes.detailsRequest,
     Channel.requestToApp,
     (Map<String, dynamic> json) => RequestForLeakDetails(),
     (message) => {},
   ),
+
+  // Responses from app.
+
   Envelope<Leaks>(
     Codes.leakDetails,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => Leaks.fromJson(json),
     (message) => (message as Leaks).toJson(),
+  ),
+
+  Envelope<LeakTrackingTurnedOffError>(
+    Codes.leakTrackingTurnedOffError,
+    Channel.responseFromApp,
+    (Map<String, dynamic> json) => LeakTrackingTurnedOffError(),
+    (message) => {},
+  ),
+
+  Envelope<UnexpectedRequestTypeError>(
+    Codes.unexpectedRequestTypeError,
+    Channel.responseFromApp,
+    (Map<String, dynamic> json) => UnexpectedRequestTypeError.fromJson(json),
+    (message) => (message as UnexpectedRequestTypeError).toJson(),
+  ),
+
+  Envelope<UnexpectedError>(
+    Codes.unexpectedError,
+    Channel.responseFromApp,
+    (Map<String, dynamic> json) => UnexpectedError.fromJson(json),
+    (message) => (message as UnexpectedError).toJson(),
   ),
 ];
 
@@ -105,8 +143,3 @@ late final _envelopesByType = Map<Type, Envelope>.fromIterable(
   key: (e) => e.type,
   value: (e) => e,
 );
-
-class _JsonFields {
-  static const envelopeCode = 'code';
-  static const content = 'content';
-}
