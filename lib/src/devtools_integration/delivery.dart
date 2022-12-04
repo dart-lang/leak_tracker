@@ -52,7 +52,7 @@ class ResponseFromApp<T extends Object> {
 class EventFromApp<T extends Object> {
   EventFromApp(this.message);
 
-  EventFromApp? fromVmServiceEvent(Event event) {
+  static EventFromApp? fromVmServiceEvent(Event event) {
     if (event.extensionKind != memoryLeakTrackingExtensionName) return null;
     final data = event.json!['extensionData'] as Map<String, dynamic>;
     return EventFromApp(Envelope.open(data, Channel.eventFromApp));
