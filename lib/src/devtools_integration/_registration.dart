@@ -61,7 +61,7 @@ bool setupDevToolsIntegration(
     }
   };
 
-  final result = _registerServiceExtention(handler);
+  final result = _registerServiceExtension(handler);
 
   EventFromApp(LeakTrackingStarted(appLeakTrackerProtocolVersion)).post();
 
