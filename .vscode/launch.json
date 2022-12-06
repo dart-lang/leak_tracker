@@ -5,15 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "minimal_dart",
-            "cwd": "examples/minimal_dart",
+            "name": "example",
+            "cwd": "example",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
         },
         {
-            "name": "minimal_flutter",
-            "cwd": "examples/minimal_flutter",
+            "name": "more_examples/minimal_flutter",
+            "cwd": "more_examples/minimal_flutter",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
