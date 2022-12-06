@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 import '../../test_infra/data/messages.dart';
 
 void main() {
-  setUp(() {
+  setUpAll(() {
     verifyTestsCoverAllEnvelopes();
   });
 

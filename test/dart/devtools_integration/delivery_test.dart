@@ -9,37 +9,45 @@ import 'package:test/test.dart';
 import '../../test_infra/data/messages.dart';
 
 void main() {
-  setUp(() {
+  final messagesByChannel = Map<Channel, List<Object>>.fromIterable(
+    Channel.values,
+    key: (c) => c,
+    value: (c) => messages
+        .where((m) => envelopeByType(m.runtimeType).channel == c)
+        .toList(),
+  );
+
+  setUpAll(() {
     verifyTestsCoverAllEnvelopes();
   });
 
-  for (final message in messages) {
-    test('delivery classes serialize ${message.runtimeType} message', () {
-      final envelope = envelopeByType(message.runtimeType);
+  for (final message in messagesByChannel[Channel.eventFromApp]!) {
+    test('$EventFromApp serializes ${message.runtimeType}', () {
+      final event = EventFromApp(message);
+      final serialized = event.messageAsJson();
+      final deserialized = EventFromApp.fromJson(serialized);
+      expect(event.message.runtimeType, deserialized.message.runtimeType);
+    });
+  }
 
-      switch (envelope.channel) {
-        case Channel.requestToApp:
-          final request = RequestToApp(message);
-          final serialized = request.toRequestParameters();
-          final deserialized = RequestToApp.fromRequestParameters(serialized);
-          expect(request.message.runtimeType, deserialized.message.runtimeType);
-          break;
-        case Channel.eventFromApp:
-          final event = EventFromApp(message);
-          final serialized = event.messageAsJson();
-          final deserialized = EventFromApp.fromJson(serialized);
-          expect(event.message.runtimeType, deserialized.message.runtimeType);
-          break;
-        case Channel.responseFromApp:
-          final response = ResponseFromApp(message);
-          final serialized = response.toJson();
-          final deserialized = ResponseFromApp.fromJson(serialized);
-          expect(
-            response.message.runtimeType,
-            deserialized.message.runtimeType,
-          );
-          break;
-      }
+  for (final message in messagesByChannel[Channel.requestToApp]!) {
+    test('$RequestToApp serializes ${message.runtimeType}', () {
+      final request = RequestToApp(message);
+      final serialized = request.toRequestParameters();
+      final deserialized = RequestToApp.fromRequestParameters(serialized);
+      expect(request.message.runtimeType, deserialized.message.runtimeType);
+    });
+  }
+
+  for (final message in messagesByChannel[Channel.responseFromApp]!) {
+    test('$ResponseFromApp serializes ${message.runtimeType}', () {
+      final response = ResponseFromApp(message);
+      final serialized = response.toJson();
+      final deserialized = ResponseFromApp.fromJson(serialized);
+      expect(
+        response.message.runtimeType,
+        deserialized.message.runtimeType,
+      );
     });
   }
 }
