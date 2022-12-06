@@ -8,4 +8,4 @@ dependencies:
 
 dependency_overrides:
   leak_tracker:
-    path: ../..
+    path: ..

@@ -1,1 +1,1 @@
-Instruction to explore the example will be here.
+Minimal Flutter application with leak tracker enabled.
