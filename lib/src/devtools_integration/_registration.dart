@@ -18,7 +18,7 @@ bool _extentsionRegistered = false;
 /// (for example, the one built into Flutter framework)
 /// should not be activated.
 ///
-/// If the extention is alredy registered, returns false.
+/// If the extension is already registered, returns false.
 bool registerLeakTrackingServiceExtention() => _registerServiceExtention(
       (p0, p1) async => ServiceExtensionResponse.result(jsonEncode({})),
     );
