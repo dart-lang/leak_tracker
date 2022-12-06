@@ -14,7 +14,7 @@ void main() {
   });
 
   for (final message in messages) {
-    test('delivery classes serialize message', () {
+    test('delivery classes serialize ${message.runtimeType} message', () {
       final envelope = envelopeByType(message.runtimeType);
 
       switch (envelope.channel) {
