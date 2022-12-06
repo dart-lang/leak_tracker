@@ -19,7 +19,7 @@ bool _extentsionRegistered = false;
 /// should not be activated.
 ///
 /// If the extension is already registered, returns false.
-bool registerLeakTrackingServiceExtention() => _registerServiceExtention(
+bool registerLeakTrackingServiceExtension() => _registerServiceExtension(
       (p0, p1) async => ServiceExtensionResponse.result(jsonEncode({})),
     );
 
