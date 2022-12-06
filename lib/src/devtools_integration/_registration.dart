@@ -23,9 +23,9 @@ bool registerLeakTrackingServiceExtension() => _registerServiceExtension(
       (p0, p1) async => ServiceExtensionResponse.result(jsonEncode({})),
     );
 
-/// Registers service extention for DevTools integration.
+/// Registers service extension for DevTools integration.
 ///
-/// If the extention is alredy registered, returns false.
+/// If the extension is already registered, returns false.
 bool setupDevToolsIntegration(
   ObjectRef<LeakProvider?> leakProvider,
 ) {
