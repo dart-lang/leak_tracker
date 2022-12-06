@@ -26,6 +26,7 @@ enum Channel {
 /// When user wants to get more about the collected leaks, they request details in
 /// DevTools, devtools sends [detailsRequest] to the app, and the app responds with
 /// [leakDetails].
+@visibleForTesting
 enum Codes {
   // Events from app.
   started,
@@ -74,8 +75,8 @@ Object openEnvelope(
 
 /// Information necessary to serialize and deserialize an instance of type [T],
 /// so that type can be auto-detected.
-class Envelope<T> {
-  const Envelope(this.code, this.channel, this.decode, this.encode);
+class _Envelope<T> {
+  const _Envelope(this.code, this.channel, this.decode, this.encode);
 
   /// Serialization code, that corresponts to [T].
   final Codes code;
@@ -97,13 +98,13 @@ class Envelope<T> {
 final envelopes = [
   // Events from app.
 
-  Envelope<LeakTrackingStarted>(
+  _Envelope<LeakTrackingStarted>(
     Codes.started,
     Channel.eventFromApp,
     (Map<String, dynamic> json) => LeakTrackingStarted.fromJson(json),
     (message) => (message as LeakTrackingStarted).toJson(),
   ),
-  Envelope<LeakSummary>(
+  _Envelope<LeakSummary>(
     Codes.summary,
     Channel.eventFromApp,
     (Map<String, dynamic> json) => LeakSummary.fromJson(json),
@@ -112,7 +113,7 @@ final envelopes = [
 
   // Requests to app.
 
-  Envelope<RequestForLeakDetails>(
+  _Envelope<RequestForLeakDetails>(
     Codes.detailsRequest,
     Channel.requestToApp,
     (Map<String, dynamic> json) => RequestForLeakDetails(),
@@ -121,28 +122,28 @@ final envelopes = [
 
   // Responses from app.
 
-  Envelope<Leaks>(
+  _Envelope<Leaks>(
     Codes.leakDetails,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => Leaks.fromJson(json),
     (message) => (message as Leaks).toJson(),
   ),
 
-  Envelope<LeakTrackingTurnedOffError>(
+  _Envelope<LeakTrackingTurnedOffError>(
     Codes.leakTrackingTurnedOffError,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => LeakTrackingTurnedOffError(),
     (message) => {},
   ),
 
-  Envelope<UnexpectedRequestTypeError>(
+  _Envelope<UnexpectedRequestTypeError>(
     Codes.unexpectedRequestTypeError,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => UnexpectedRequestTypeError.fromJson(json),
     (message) => (message as UnexpectedRequestTypeError).toJson(),
   ),
 
-  Envelope<UnexpectedError>(
+  _Envelope<UnexpectedError>(
     Codes.unexpectedError,
     Channel.responseFromApp,
     (Map<String, dynamic> json) => UnexpectedError.fromJson(json),
@@ -150,19 +151,19 @@ final envelopes = [
   ),
 ];
 
-Envelope<T> envelopeByCode<T>(String codeString) {
-  return _envelopesByCode[codeString]! as Envelope<T>;
+_Envelope<T> envelopeByCode<T>(String codeString) {
+  return _envelopesByCode[codeString]! as _Envelope<T>;
 }
 
-Envelope envelopeByType(Type type) => _envelopesByType[type]!;
+_Envelope envelopeByType(Type type) => _envelopesByType[type]!;
 
-late final _envelopesByCode = Map<String, Envelope>.fromIterable(
+late final _envelopesByCode = Map<String, _Envelope>.fromIterable(
   envelopes,
-  key: (e) => (e as Envelope).code.name,
+  key: (e) => (e as _Envelope).code.name,
   value: (e) => e,
 );
 
-late final _envelopesByType = Map<Type, Envelope>.fromIterable(
+late final _envelopesByType = Map<Type, _Envelope>.fromIterable(
   envelopes,
   key: (e) => e.type,
   value: (e) => e,
