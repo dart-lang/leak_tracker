@@ -39,7 +39,7 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
   if (config.notifyDevTools) {
     setupDevToolsIntegration(_objectTracker);
   } else {
-    registerLeakTrackingServiceExtention();
+    registerLeakTrackingServiceExtension();
   }
 }
 

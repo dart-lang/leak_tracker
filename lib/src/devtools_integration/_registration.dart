@@ -68,7 +68,7 @@ bool setupDevToolsIntegration(
   return result;
 }
 
-bool _registerServiceExtention(
+bool _registerServiceExtension(
   Future<ServiceExtensionResponse> Function(String, Map<String, String>)
       handler,
 ) {
