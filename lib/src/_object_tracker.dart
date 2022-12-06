@@ -7,7 +7,7 @@ import 'package:clock/clock.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import '_primitives.dart';
-import 'leak_analysis_model.dart';
+import 'model.dart';
 
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
@@ -167,6 +167,7 @@ class ObjectTracker implements LeakProvider {
     return result;
   }
 
+  @override
   Leaks collectLeaks() {
     throwIfDisposed();
     _checkForNewNotGCedLeaks();

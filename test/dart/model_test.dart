@@ -4,7 +4,7 @@
 
 import 'dart:convert';
 
-import 'package:leak_tracker/leak_analysis.dart';
+import 'package:leak_tracker/src/model.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -45,11 +45,14 @@ void main() {
   });
 
   test('$LeakSummary serializes.', () {
-    const leakSummary = LeakSummary({
-      LeakType.gcedLate: 2,
-      LeakType.notDisposed: 3,
-      LeakType.notGCed: 4,
-    });
+    final leakSummary = LeakSummary(
+      {
+        LeakType.gcedLate: 2,
+        LeakType.notDisposed: 3,
+        LeakType.notGCed: 4,
+      },
+      time: DateTime(2022),
+    );
 
     final json = leakSummary.toJson();
 

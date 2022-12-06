@@ -23,3 +23,11 @@ bool mapEquals<T, U>(Map<T, U>? a, Map<T, U>? b) {
   }
   return true;
 }
+
+/// This function is better than `as`, because `as` does not provide callstack on failure.
+T cast<T>(value) {
+  if (value is T) return value;
+  throw ArgumentError(
+    '$value is of type ${value.runtimeType} that is not subtype of $T',
+  );
+}

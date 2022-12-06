@@ -7,9 +7,9 @@ import '_dispatcher.dart' as dispatcher;
 import '_leak_checker.dart';
 import '_object_tracker.dart';
 import '_primitives.dart';
-import 'leak_analysis_model.dart';
+import 'devtools_integration/_registration.dart';
 
-ObjectTracker? _objectTracker;
+final _objectTracker = ObjectRef<ObjectTracker?>(null);
 LeakChecker? _leakChecker;
 
 /// Enables leak tracking for the application.
@@ -17,7 +17,7 @@ LeakChecker? _leakChecker;
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void enableLeakTracking({LeakTrackingConfiguration? config}) {
   config ??= LeakTrackingConfiguration();
-  if (_objectTracker != null)
+  if (_objectTracker.value != null)
     throw StateError('Leak tracking is alredy enabled.');
 
   final newTracker = ObjectTracker(
@@ -26,14 +26,21 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
         config.classesToCollectStackTraceOnDisposal,
   );
 
-  _objectTracker = newTracker;
+  _objectTracker.value = newTracker;
+
   _leakChecker = LeakChecker(
     leakProvider: newTracker,
     checkPeriod: config.checkPeriod,
     leakListener: config.leakListener,
-    stdoutSink: config.stdoutLeaks ? StdoutSink() : null,
-    devToolsSink: config.notifyDevTools ? DevToolsSink() : null,
+    stdoutSink: config.stdoutLeaks ? StdoutSummarySink() : null,
+    devToolsSink: config.notifyDevTools ? DevToolsSummarySink() : null,
   );
+
+  if (config.notifyDevTools) {
+    setupDevToolsIntegration(_objectTracker);
+  } else {
+    registerLeakTrackingServiceExtension();
+  }
 }
 
 /// Disables leak tracking for the application.
@@ -42,16 +49,16 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
 void disableLeakTracking() {
   _leakChecker?.dispose();
   _leakChecker = null;
-  _objectTracker?.dispose();
-  _objectTracker = null;
+  _objectTracker.value?.dispose();
+  _objectTracker.value = null;
 }
 
 ObjectTracker _tracker() {
   // TODO(polina-c): return both tracker and checker when tuples get released.
-  assert((_objectTracker == null) == (_leakChecker == null));
-  final tracker = _objectTracker;
-  if (tracker == null) throw StateError('Leak tracking should be enabled.');
-  return tracker;
+  final result = _objectTracker.value;
+  assert((result == null) == (_leakChecker == null));
+  if (result == null) throw StateError('Leak tracking should be enabled.');
+  return result;
 }
 
 /// Dispatches an object event to the leak tracker.

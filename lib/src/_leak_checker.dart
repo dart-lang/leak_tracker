@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:developer';
 
-import 'leak_analysis_model.dart';
+import 'devtools_integration/delivery.dart';
 import 'leak_tracker_model.dart';
+import 'model.dart';
 
 class LeakChecker {
   LeakChecker({
@@ -23,7 +23,7 @@ class LeakChecker {
 
   late final Timer? _timer;
 
-  LeakSummary _previousResult = const LeakSummary({});
+  LeakSummary _previousResult = LeakSummary({});
 
   /// Period to check for leaks.
   ///
@@ -32,11 +32,11 @@ class LeakChecker {
 
   // If not null, then the leak summary will be printed here, when
   // leak totals change.
-  final StdoutSink? stdoutSink;
+  final StdoutSummarySink? stdoutSink;
 
   // If not null, the leak summary will be sent here, when
   // leak totals change.
-  final DevToolsSink? devToolsSink;
+  final DevToolsSummarySink? devToolsSink;
 
   /// Listener for leaks.
   ///
@@ -50,8 +50,8 @@ class LeakChecker {
     if (summary.matches(_previousResult)) return;
 
     leakListener?.call(summary);
-    stdoutSink?.print(summary.toMessage());
-    devToolsSink?.send(summary.toJson());
+    stdoutSink?.send(summary);
+    devToolsSink?.send(summary);
 
     _previousResult = summary;
   }
@@ -61,11 +61,10 @@ class LeakChecker {
   }
 }
 
-class StdoutSink {
-  void print(String content) => print(content);
+class StdoutSummarySink {
+  void send(LeakSummary summary) => print(summary.toMessage());
 }
 
-class DevToolsSink {
-  void send(Map<String, dynamic> content) =>
-      postEvent(EventNames.memoryLeaksSummary, content);
+class DevToolsSummarySink {
+  void send(LeakSummary summary) => EventFromApp(summary).post();
 }

@@ -1,6 +1,6 @@
-// Copyright 2022 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright (c) 2022, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 import 'dart:convert';
 
@@ -8,8 +8,9 @@ import 'package:collection/collection.dart';
 
 import '_util.dart';
 
-class EventNames {
-  static const String memoryLeaksSummary = 'memory_leaks_summary';
+class ContextKeys {
+  static const startCallstack = 'start';
+  static const disposalCallstack = 'disposal';
 }
 
 enum LeakType {
@@ -20,23 +21,44 @@ enum LeakType {
   notGCed,
 
   /// Disposed and garbage collected later than expected.
-  gcedLate,
+  gcedLate;
+
+  static LeakType byName(String name) =>
+      LeakType.values.firstWhere((e) => e.name == name);
 }
 
-LeakType _parseLeakType(String source) =>
-    LeakType.values.firstWhere((e) => e.toString() == source);
+/// Names for json fields.
+class _JsonFields {
+  static const String type = 'type';
+  static const String trackedClass = 'tracked';
+  static const String context = 'context';
+  static const String code = 'code';
+  static const String time = 'time';
+  static const String totals = 'totals';
+}
+
+abstract class LeakProvider {
+  LeakSummary leaksSummary();
+  Leaks collectLeaks();
+}
 
 /// Statistical information about found leaks.
 class LeakSummary {
-  const LeakSummary(this.totals);
+  LeakSummary(this.totals, {DateTime? time}) {
+    this.time = time ?? DateTime.now();
+  }
 
   factory LeakSummary.fromJson(Map<String, dynamic> json) => LeakSummary(
-        json.map(
-          (key, value) => MapEntry(_parseLeakType(key), int.parse(value)),
+        (json[_JsonFields.totals] as Map<String, dynamic>).map(
+          (key, value) => MapEntry(LeakType.byName(key), int.parse(value)),
         ),
+        time:
+            DateTime.fromMillisecondsSinceEpoch(json[_JsonFields.time] as int),
       );
 
   final Map<LeakType, int> totals;
+
+  late final DateTime time;
 
   int get total => totals.values.sum;
 
@@ -49,8 +71,11 @@ class LeakSummary {
         'GCed late: ${totals[LeakType.gcedLate]}';
   }
 
-  Map<String, dynamic> toJson() =>
-      totals.map((key, value) => MapEntry(key.toString(), value.toString()));
+  Map<String, dynamic> toJson() => {
+        _JsonFields.totals:
+            totals.map((key, value) => MapEntry(key.name, value.toString())),
+        _JsonFields.time: time.millisecondsSinceEpoch,
+      };
 
   bool matches(LeakSummary? other) =>
       other != null && mapEquals(totals, other.totals);
@@ -63,7 +88,7 @@ class Leaks {
   factory Leaks.fromJson(Map<String, dynamic> json) => Leaks(
         json.map(
           (key, value) => MapEntry(
-            _parseLeakType(key),
+            LeakType.byName(key),
             (value as List)
                 .cast<Map<String, dynamic>>()
                 .map((e) => LeakReport.fromJson(e))
@@ -79,27 +104,10 @@ class Leaks {
 
   Map<String, dynamic> toJson() => byType.map(
         (key, value) =>
-            MapEntry(key.toString(), value.map((e) => e.toJson()).toList()),
+            MapEntry(key.name, value.map((e) => e.toJson()).toList()),
       );
 
   int get total => byType.values.map((e) => e.length).sum;
-}
-
-abstract class LeakProvider {
-  LeakSummary leaksSummary();
-}
-
-/// Names for json fields.
-class _JsonFields {
-  static const String type = 'type';
-  static const String trackedClass = 'tracked';
-  static const String context = 'context';
-  static const String code = 'code';
-}
-
-class ContextKeys {
-  static const startCallstack = 'start';
-  static const disposalCallstack = 'disposal';
 }
 
 /// Leak information, passed from application to DevTools and than extended by
