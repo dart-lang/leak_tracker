@@ -13,7 +13,7 @@ import 'primitives.dart';
 
 bool _extentsionRegistered = false;
 
-/// Registers service extention to signal that leak tracking is
+/// Registers service extension to signal that leak tracking is
 /// already enabled and other leak tracking systems
 /// (for example, the one built into Flutter framework)
 /// should not be activated.
