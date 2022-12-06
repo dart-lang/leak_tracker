@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/src/devtools_integration/_envelopes.dart';
+import 'package:leak_tracker/src/devtools_integration/_protocol.dart';
 import 'package:test/test.dart';
 
 import '../../test_infra/data/messages.dart';

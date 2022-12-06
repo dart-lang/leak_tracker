@@ -7,7 +7,7 @@ import 'dart:developer';
 
 import 'package:vm_service/vm_service.dart';
 
-import '_envelopes.dart';
+import '_protocol.dart';
 import 'primitives.dart';
 
 /// Names for json fields.

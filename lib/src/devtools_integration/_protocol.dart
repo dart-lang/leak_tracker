@@ -18,6 +18,14 @@ enum Channel {
   responseFromApp,
 }
 
+/// Codes to identify event types in interaction between appliocation and DevTools.
+///
+/// When application starts real tracking, it sends [started]. As soon as it
+/// catch new leaks, it sends [summary] information about collected leaks.
+///
+/// When user wants to get more about the collected leaks, they request details in
+/// DevTools, devtools sends [detailsRequest] to the app, and the app responds with
+/// [leakDetails].
 enum Codes {
   // Events from app.
   started,
