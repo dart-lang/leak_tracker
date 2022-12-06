@@ -44,33 +44,44 @@ class _JsonFields {
   static const content = 'content';
 }
 
+/// Serializes an object so that it's type can be reconstructed.
+Map<String, dynamic> sealEnvelope(Object message, Channel channel) {
+  final theEnvelope = envelopeByType(message.runtimeType);
+  assert(theEnvelope.channel == channel);
+  return {
+    _JsonFields.envelopeCode: theEnvelope.code.name,
+    _JsonFields.content: theEnvelope.encode(message),
+  };
+}
+
+/// Deserialize [message] into an opbejct of a right type.
+Object openEnvelope(
+  Map<String, dynamic> message,
+  Channel channel,
+) {
+  final envelope = envelopeByCode(message[_JsonFields.envelopeCode] as String);
+  assert(envelope.channel == channel);
+  return envelope.decode(message[_JsonFields.content]);
+}
+
+/// Information necessary to serialize and deserialize an instance of type [T],
+/// so that type can be auto-detected.
 class Envelope<T> {
   const Envelope(this.code, this.channel, this.decode, this.encode);
 
+  /// Serialization code, that corresponts to [T].
   final Codes code;
+
+  /// Communication channel, that should be used for messages of type [T].
   final Channel channel;
+
+  /// Decoder for the message.
   final AppMessageDecoder<T> decode;
+
+  /// Encoder for the message.
   final AppMessageEncoder encode;
 
   Type get type => T;
-
-  static Map<String, dynamic> seal(Object message, Channel channel) {
-    final theEnvelope = envelopeByType(message.runtimeType);
-    assert(theEnvelope.channel == channel);
-    return {
-      _JsonFields.envelopeCode: theEnvelope.code.name,
-      _JsonFields.content: theEnvelope.encode(message),
-    };
-  }
-
-  static Object open(
-    Map<String, dynamic> json,
-    Channel channel,
-  ) {
-    final envelope = envelopeByCode(json[_JsonFields.envelopeCode] as String);
-    assert(envelope.channel == channel);
-    return envelope.decode(json[_JsonFields.content]);
-  }
 }
 
 /// Envelopes should be unique by message type.

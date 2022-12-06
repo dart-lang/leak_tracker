@@ -25,8 +25,8 @@ void main() {
   for (final message in messages) {
     test('envelopes preserve original type', () {
       final envelope = envelopeByType(message.runtimeType);
-      final envelopedMessage = Envelope.seal(message, envelope.channel);
-      final openedMessage = Envelope.open(envelopedMessage, envelope.channel);
+      final envelopedMessage = sealEnvelope(message, envelope.channel);
+      final openedMessage = openEnvelope(envelopedMessage, envelope.channel);
       expect(openedMessage.runtimeType, message.runtimeType);
     });
   }
