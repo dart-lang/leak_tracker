@@ -74,7 +74,7 @@ Object openEnvelope(
 }
 
 /// Information necessary to serialize and deserialize an instance of type [T],
-/// so that type can be auto-detected.
+/// so that the message type can be auto-detected.
 class _Envelope<T> {
   const _Envelope(this.code, this.channel, this.decode, this.encode);
 
