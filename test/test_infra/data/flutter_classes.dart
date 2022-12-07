@@ -9,12 +9,11 @@ import 'dart_classes.dart';
 final notGcedStorage = <InstrumentedClass>[];
 
 InstrumentedClass notGCed = InstrumentedClass();
-InstrumentedClass? notDisposed = InstrumentedClass();
 
 class StatelessLeakingWidget extends StatelessWidget {
   StatelessLeakingWidget({super.key}) {
     // ignore: unused_local_variable
-    final notDisposed = InstrumentedClass();
+    //final notDisposed = InstrumentedClass();
     notGcedStorage.add(InstrumentedClass()..dispose());
   }
 

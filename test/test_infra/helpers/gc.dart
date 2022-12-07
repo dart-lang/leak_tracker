@@ -5,16 +5,17 @@
 import 'dart:developer';
 
 /// Forces garbage collection by aggressive memory allocation.
-Future<void> forceGC() async {
+Future<void> forceGC({int gcCycles = 2}) async {
   final _storage = <List<DateTime>>[];
 
   void allocateMemory() {
     _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
+    if (_storage.length > 100) _storage.removeAt(0);
   }
 
   final barrier = reachabilityBarrier;
 
-  while (reachabilityBarrier < barrier + 2) {
+  while (reachabilityBarrier < barrier + gcCycles) {
     await Future.delayed(const Duration());
     allocateMemory();
   }

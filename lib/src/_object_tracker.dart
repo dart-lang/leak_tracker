@@ -59,9 +59,11 @@ class ObjectTracker implements LeakProvider {
     _objects.notGCed[code] = record;
 
     _objects.assertRecordIntegrity(code);
+    print('!!!!: started $code');
   }
 
   void _onOobjectGarbageCollected(Object code) {
+    print('!!!! gced: $code');
     if (disposed) return;
     if (code is! int) throw 'Object token should be integer.';
 
@@ -107,6 +109,7 @@ class ObjectTracker implements LeakProvider {
   }) {
     throwIfDisposed();
     final code = identityHashCode(object);
+    print('!!!! disposed: $code');
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
 
@@ -151,6 +154,7 @@ class ObjectTracker implements LeakProvider {
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
+      print('checking $code');
       if (_notGCed(code).isNotGCedLeak(_gcCounter.gcCount, now)) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);

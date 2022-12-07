@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 import '../test_infra/data/dart_classes.dart';
+import '../test_infra/data/flutter_classes.dart';
 import '../test_infra/helpers/gc.dart';
 
 /// Tests for non-mocked public API of leak tracker.
@@ -14,65 +15,31 @@ import '../test_infra/helpers/gc.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
-  test('Not disposed object reported.', () async {
-    LeakSummary? lastSummary;
+  testWidgets('Leaks in widgets are detected.', (WidgetTester tester) async {
+    await tester.runAsync(() async {
+      LeakSummary? lastSummary;
 
-    void _runApp() {
-      enableLeakTracking(
-        config: LeakTrackingConfiguration.minimal(
-          (summary) => lastSummary = summary,
-        ),
-      );
+      Future<void> _runApp() async {
+        enableLeakTracking(
+          config: LeakTrackingConfiguration.minimal(
+            (summary) => lastSummary = summary,
+          ),
+        );
 
-      // Create and not dispose an inastance of instrumented class.
-      InstrumentedClass();
-    }
+        await tester.pumpWidget(StatelessLeakingWidget());
+      }
 
-    _runApp();
-    await forceGC();
-    expect(lastSummary, isNull);
-    checkLeaks();
+      await _runApp();
+      print('!!!! in storage: ${identityHashCode(notGcedStorage.single)}');
 
-    expect(lastSummary!.total, 1);
-    expect(lastSummary!.totals[LeakType.notDisposed], 1);
+      await forceGC(gcCycles: 20);
+      expect(lastSummary, isNull);
+      checkLeaks();
 
-    final leaks = collectLeaks();
-    expect(leaks.total, 1);
+      final leaks = collectLeaks();
 
-    final theLeak = leaks.notDisposed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
-  });
-
-  test('Not GCed object reported.', () async {
-    LeakSummary? lastSummary;
-
-    late InstrumentedClass notGCedObject;
-    void _runApp() {
-      enableLeakTracking(
-        config: LeakTrackingConfiguration.minimal(
-          (summary) => lastSummary = summary,
-        ),
-      );
-
-      notGCedObject = InstrumentedClass();
-      // Dispose reachable instance.
-      notGCedObject.dispose();
-    }
-
-    _runApp();
-    await forceGC();
-    expect(lastSummary, isNull);
-    checkLeaks();
-
-    expect(lastSummary!.total, 1);
-    expect(lastSummary!.totals[LeakType.notGCed], 1);
-
-    final leaks = collectLeaks();
-    expect(leaks.total, 1);
-
-    final theLeak = leaks.notGCed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+      print(notGcedStorage.length);
+      print('found notGCed: ${lastSummary!.totals[LeakType.notGCed]}');
+    });
   });
 }
