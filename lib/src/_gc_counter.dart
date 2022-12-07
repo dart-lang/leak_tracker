@@ -20,8 +20,11 @@ class GcCounter {
 const disposalTimeBuffer = Duration(milliseconds: 100);
 
 /// Delta of GC time, enough for a non reachable object to be GCed.
+///
+/// Theoretically, 2 should be enough, however it gives false positives
+/// if there is no activity in the application for ~5 minutes.
 @visibleForTesting
-const gcCountBuffer = 2;
+const gcCountBuffer = 3;
 
 /// True, if the disposed object is expected to be GCed,
 /// assuming at the disposal moment it was referenced only
