@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:test/test.dart';
 
 import '../test_infra/data/instrumented_classes.dart';
 import '../test_infra/helpers/gc.dart';
