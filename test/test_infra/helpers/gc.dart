@@ -5,7 +5,7 @@
 import 'dart:developer';
 
 /// Forces garbage collection by aggressive memory allocation.
-Future<void> forceGC({int gcCycles = 2}) async {
+Future<void> forceGC({required int gcCycles}) async {
   final _storage = <List<DateTime>>[];
 
   void allocateMemory() {

@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/_gc_counter.dart';
 import 'package:test/test.dart';
 
 import '../test_infra/data/dart_classes.dart';
@@ -29,7 +30,7 @@ void main() {
     }
 
     _runApp();
-    await forceGC();
+    await forceGC(gcCycles: gcCountBuffer);
     expect(lastSummary, isNull);
     checkLeaks();
 
@@ -61,7 +62,7 @@ void main() {
     }
 
     _runApp();
-    await forceGC();
+    await forceGC(gcCycles: gcCountBuffer);
     expect(lastSummary, isNull);
     checkLeaks();
 
