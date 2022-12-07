@@ -4,6 +4,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/_gc_counter.dart';
 
 import '../test_infra/data/flutter_classes.dart';
 import '../test_infra/helpers/gc.dart';
@@ -31,8 +32,9 @@ void main() {
       await _runApp();
       print('!!!! in storage: ${identityHashCode(notGcedStorage.single)}');
 
-      await forceGC(gcCycles: 20);
-      expect(lastSummary, isNull);
+      await forceGC(gcCycles: gcCountBuffer);
+
+      await Future.delayed(disposalTimeBuffer);
       checkLeaks();
 
       //final leaks = collectLeaks();
