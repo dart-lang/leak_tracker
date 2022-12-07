@@ -125,7 +125,7 @@ class LeakReport {
         context: (json[_JsonFields.context] as Map<String, dynamic>? ?? {})
             .cast<String, dynamic>(),
         code: json[_JsonFields.code],
-        trackedClass: json[_JsonFields.trackedClass],
+        trackedClass: json[_JsonFields.trackedClass] ?? '',
       );
 
   /// Information about the leak that can help in troubleshooting.
