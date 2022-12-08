@@ -2,4 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:developer';
+/// The library should be used by DevTools to analyse the collected leaks.
+///
+/// Should not be used in the application itself.
+library testing;
+
+export 'src/shared_model.dart';
+export 'src/testing.dart';

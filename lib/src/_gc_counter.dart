@@ -4,8 +4,6 @@
 
 import 'dart:developer';
 
-import 'package:meta/meta.dart';
-
 /// Wrapper for reachabilityBarrier, for mocking purposes.
 class GcCounter {
   /// Number of full GC cycles since start of the isolate.
@@ -16,7 +14,6 @@ class GcCounter {
 ///
 /// Theoretically, 2 should be enough, however it gives false positives
 /// if there is no activity in the application for ~5 minutes.
-@visibleForTesting
 const gcCountBuffer = 3;
 
 /// True, if the disposed object is expected to be GCed,

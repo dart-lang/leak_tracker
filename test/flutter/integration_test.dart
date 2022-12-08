@@ -3,39 +3,24 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/_gc_counter.dart';
+import 'package:leak_tracker/testing.dart';
 
 import '../test_infra/data/dart_classes.dart';
 import '../test_infra/data/flutter_classes.dart';
-import '../test_infra/helpers/gc.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 ///
 /// Can serve as examples for regression leak-testing for Flutter widgets.
 void main() {
-  tearDown(() => disableLeakTracking());
-
   testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
     await tester.runAsync(() async {
-      Future<void> _runApp() async {
-        enableLeakTracking(
-          config: LeakTrackingConfiguration.forUnitTests(),
-        );
+      final leaks = await withLeakTracking(
+        () async {
+          await tester.pumpWidget(StatelessLeakingWidget());
+        },
+        throwOnLeaks: false,
+      );
 
-        await tester.pumpWidget(StatelessLeakingWidget());
-      }
-
-      await _runApp();
-
-      await forceGC(gcCycles: gcCountBuffer);
-      final summary = checkLeaks();
-
-      expect(summary.total, 2);
-      expect(summary.totals[LeakType.notDisposed], 1);
-      expect(summary.totals[LeakType.notGCed], 1);
-
-      final leaks = collectLeaks();
       expect(leaks.total, 2);
 
       final notDisposedLeak = leaks.notDisposed.first;

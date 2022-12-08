@@ -3,11 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/_gc_counter.dart';
+import 'package:leak_tracker/testing.dart';
 import 'package:test/test.dart';
 
 import '../test_infra/data/dart_classes.dart';
-import '../test_infra/helpers/gc.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 ///
@@ -16,23 +15,13 @@ void main() {
   tearDown(() => disableLeakTracking());
 
   test('Not disposed object reported.', () async {
-    void _runApp() {
-      enableLeakTracking(
-        config: LeakTrackingConfiguration.forUnitTests(),
-      );
+    final leaks = await withLeakTracking(
+      () async {
+        InstrumentedClass();
+      },
+      throwOnLeaks: false,
+    );
 
-      // Create and not dispose an inastance of instrumented class.
-      InstrumentedClass();
-    }
-
-    _runApp();
-    await forceGC(gcCycles: gcCountBuffer);
-    final summary = checkLeaks();
-
-    expect(summary.total, 1);
-    expect(summary.totals[LeakType.notDisposed], 1);
-
-    final leaks = collectLeaks();
     expect(leaks.total, 1);
 
     final theLeak = leaks.notDisposed.first;
@@ -42,25 +31,15 @@ void main() {
 
   test('Not GCed object reported.', () async {
     late InstrumentedClass notGCedObject;
-    void _runApp() {
-      enableLeakTracking(
-        config: LeakTrackingConfiguration.forUnitTests(),
-      );
+    final leaks = await withLeakTracking(
+      () async {
+        notGCedObject = InstrumentedClass();
+        // Dispose reachable instance.
+        notGCedObject.dispose();
+      },
+      throwOnLeaks: false,
+    );
 
-      notGCedObject = InstrumentedClass();
-      // Dispose reachable instance.
-      notGCedObject.dispose();
-    }
-
-    _runApp();
-    await forceGC(gcCycles: gcCountBuffer);
-
-    final summary = checkLeaks();
-
-    expect(summary.total, 1);
-    expect(summary.totals[LeakType.notGCed], 1);
-
-    final leaks = collectLeaks();
     expect(leaks.total, 1);
 
     final theLeak = leaks.notGCed.first;
