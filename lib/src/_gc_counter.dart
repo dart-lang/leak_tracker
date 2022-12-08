@@ -12,13 +12,6 @@ class GcCounter {
   int get gcCount => reachabilityBarrier;
 }
 
-/// Time to allow the disposal invoker to release the reference to the object.
-///
-/// The value is pessimistic assuming that user will want to
-/// detect leaks not more often than a second.
-@visibleForTesting
-const disposalTimeBuffer = Duration(milliseconds: 100);
-
 /// Delta of GC time, enough for a non reachable object to be GCed.
 ///
 /// Theoretically, 2 should be enough, however it gives false positives
@@ -34,6 +27,7 @@ bool shouldObjectBeGced({
   required DateTime timeAtDisposal,
   required int currentGcCount,
   required DateTime currentTime,
+  required Duration disposalTimeBuffer,
 }) =>
     currentGcCount - gcCountAtDisposal >= gcCountBuffer &&
     currentTime.difference(timeAtDisposal) >= disposalTimeBuffer;

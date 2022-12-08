@@ -14,16 +14,17 @@ class LeakTrackingConfiguration {
     this.checkPeriod = const Duration(seconds: 1),
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
+    this.disposalTimeBuffer = const Duration(milliseconds: 100),
   });
 
   /// The leak tracker will not auto check leaks, and, when
   /// leak checking is invoked, will notify only [leakListener].
-  LeakTrackingConfiguration.minimal(LeakListener leakListener)
+  LeakTrackingConfiguration.minimal()
       : this(
-          leakListener: leakListener,
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
+          disposalTimeBuffer: const Duration(),
         );
 
   /// Period to check for leaks.
@@ -45,4 +46,10 @@ class LeakTrackingConfiguration {
 
   /// Listener for leaks.
   final LeakListener? leakListener;
+
+  /// Time to allow the disposal invoker to release the reference to the object.
+  ///
+  /// The default value is pessimistic assuming that user will want to
+  /// detect leaks not more often than a second.
+  final Duration disposalTimeBuffer;
 }

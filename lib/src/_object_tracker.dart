@@ -12,6 +12,7 @@ import 'model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
+    required this.disposalTimeBuffer,
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
     FinalizerBuilder? finalizerBuilder,
@@ -22,9 +23,15 @@ class ObjectTracker implements LeakProvider {
     _gcCounter = gcCounter ?? GcCounter();
   }
 
+  /// Time to allow the disposal invoker to release the reference to the object.
+  final Duration disposalTimeBuffer;
+
   late Finalizer<Object> _finalizer;
+
   late GcCounter _gcCounter;
+
   final _objects = ObjectRecords();
+
   bool disposed = false;
 
   /// We use String, because some types are private and thus not accessible.
@@ -59,11 +66,9 @@ class ObjectTracker implements LeakProvider {
     _objects.notGCed[code] = record;
 
     _objects.assertRecordIntegrity(code);
-    print('!!!!: started $code');
   }
 
   void _onOobjectGarbageCollected(Object code) {
-    print('!!!! gced: $code');
     if (disposed) return;
     if (code is! int) throw 'Object token should be integer.';
 
@@ -73,7 +78,7 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
-    if (record.isGCedLateLeak) {
+    if (record.isGCedLateLeak(disposalTimeBuffer)) {
       _objects.gcedLateLeaks.add(record);
     } else if (record.isNotDisposedLeak) {
       _objects.gcedNotDisposedLeaks.add(record);
@@ -109,7 +114,6 @@ class ObjectTracker implements LeakProvider {
   }) {
     throwIfDisposed();
     final code = identityHashCode(object);
-    print('!!!! disposed: $code');
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredContainer(object, code)) return;
 
@@ -154,8 +158,8 @@ class ObjectTracker implements LeakProvider {
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
-      print('checking $code');
-      if (_notGCed(code).isNotGCedLeak(_gcCounter.gcCount, now)) {
+      if (_notGCed(code)
+          .isNotGCedLeak(_gcCounter.gcCount, now, disposalTimeBuffer)) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
       }

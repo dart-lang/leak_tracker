@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/_gc_counter.dart';
 
+import '../test_infra/data/dart_classes.dart';
 import '../test_infra/data/flutter_classes.dart';
 import '../test_infra/helpers/gc.dart';
 
@@ -15,32 +16,35 @@ import '../test_infra/helpers/gc.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
-  testWidgets('Leaks in widgets are detected.', (WidgetTester tester) async {
+  testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
     await tester.runAsync(() async {
-      LeakSummary? lastSummary;
-
       Future<void> _runApp() async {
         enableLeakTracking(
-          config: LeakTrackingConfiguration.minimal(
-            (summary) => lastSummary = summary,
-          ),
+          config: LeakTrackingConfiguration.minimal(),
         );
 
         await tester.pumpWidget(StatelessLeakingWidget());
       }
 
       await _runApp();
-      print('!!!! in storage: ${identityHashCode(notGcedStorage.single)}');
 
       await forceGC(gcCycles: gcCountBuffer);
+      final summary = checkLeaks();
 
-      await Future.delayed(disposalTimeBuffer);
-      checkLeaks();
+      expect(summary.total, 2);
+      expect(summary.totals[LeakType.notDisposed], 1);
+      expect(summary.totals[LeakType.notGCed], 1);
 
-      //final leaks = collectLeaks();
+      final leaks = collectLeaks();
+      expect(leaks.total, 2);
 
-      print(notGcedStorage.length);
-      print('found notGCed: ${lastSummary!.totals[LeakType.notGCed]}');
+      final notDisposedLeak = leaks.notDisposed.first;
+      expect(notDisposedLeak.trackedClass, contains(InstrumentedClass.library));
+      expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
+
+      final notGcedLeak = leaks.notDisposed.first;
+      expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
+      expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
     });
   });
 }

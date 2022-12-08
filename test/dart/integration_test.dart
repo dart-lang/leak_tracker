@@ -16,13 +16,9 @@ void main() {
   tearDown(() => disableLeakTracking());
 
   test('Not disposed object reported.', () async {
-    LeakSummary? lastSummary;
-
     void _runApp() {
       enableLeakTracking(
-        config: LeakTrackingConfiguration.minimal(
-          (summary) => lastSummary = summary,
-        ),
+        config: LeakTrackingConfiguration.minimal(),
       );
 
       // Create and not dispose an inastance of instrumented class.
@@ -31,11 +27,10 @@ void main() {
 
     _runApp();
     await forceGC(gcCycles: gcCountBuffer);
-    expect(lastSummary, isNull);
-    checkLeaks();
+    final summary = checkLeaks();
 
-    expect(lastSummary!.total, 1);
-    expect(lastSummary!.totals[LeakType.notDisposed], 1);
+    expect(summary.total, 1);
+    expect(summary.totals[LeakType.notDisposed], 1);
 
     final leaks = collectLeaks();
     expect(leaks.total, 1);
@@ -46,14 +41,10 @@ void main() {
   });
 
   test('Not GCed object reported.', () async {
-    LeakSummary? lastSummary;
-
     late InstrumentedClass notGCedObject;
     void _runApp() {
       enableLeakTracking(
-        config: LeakTrackingConfiguration.minimal(
-          (summary) => lastSummary = summary,
-        ),
+        config: LeakTrackingConfiguration.minimal(),
       );
 
       notGCedObject = InstrumentedClass();
@@ -63,11 +54,11 @@ void main() {
 
     _runApp();
     await forceGC(gcCycles: gcCountBuffer);
-    expect(lastSummary, isNull);
-    checkLeaks();
 
-    expect(lastSummary!.total, 1);
-    expect(lastSummary!.totals[LeakType.notGCed], 1);
+    final summary = checkLeaks();
+
+    expect(summary.total, 1);
+    expect(summary.totals[LeakType.notGCed], 1);
 
     final leaks = collectLeaks();
     expect(leaks.total, 1);

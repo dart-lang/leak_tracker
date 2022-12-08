@@ -13,7 +13,7 @@ InstrumentedClass notGCed = InstrumentedClass();
 class StatelessLeakingWidget extends StatelessWidget {
   StatelessLeakingWidget({super.key}) {
     // ignore: unused_local_variable
-    //final notDisposed = InstrumentedClass();
+    final notDisposed = InstrumentedClass();
     notGcedStorage.add(InstrumentedClass()..dispose());
   }
 

@@ -112,7 +112,7 @@ class ObjectRecord {
   bool get isGCed => _gcedGcCount != null;
   bool get isDisposed => _disposalGcCount != null;
 
-  bool get isGCedLateLeak {
+  bool isGCedLateLeak(Duration disposalTimeBuffer) {
     if (_disposalGcCount == null || _gcedGcCount == null) return false;
     assert(_gcedTime != null);
     return shouldObjectBeGced(
@@ -120,16 +120,22 @@ class ObjectRecord {
       timeAtDisposal: _disposalTime!,
       currentGcCount: _gcedGcCount!,
       currentTime: _gcedTime!,
+      disposalTimeBuffer: disposalTimeBuffer,
     );
   }
 
-  bool isNotGCedLeak(int currentGcCount, DateTime currentTime) {
+  bool isNotGCedLeak(
+    int currentGcCount,
+    DateTime currentTime,
+    Duration disposalTimeBuffer,
+  ) {
     if (_gcedGcCount != null) return false;
     return shouldObjectBeGced(
       gcCountAtDisposal: _disposalGcCount!,
       timeAtDisposal: _disposalTime!,
       currentGcCount: currentGcCount,
       currentTime: currentTime,
+      disposalTimeBuffer: disposalTimeBuffer,
     );
   }
 

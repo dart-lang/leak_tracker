@@ -15,6 +15,7 @@ void main() {
   late _MockFinalizerBuilder finalizerBuilder;
   late _MockGcCounter gcCounter;
   late ObjectTracker tracker;
+  const disposalTimeBuffer = Duration(milliseconds: 100);
 
   void _verifyOneLeakIsRegistered(Object object, LeakType type) {
     var summary = tracker.leaksSummary();
@@ -60,6 +61,7 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
+        disposalTimeBuffer: disposalTimeBuffer,
       );
     });
 
@@ -228,6 +230,7 @@ void main() {
         gcCounter: gcCounter,
         classesToCollectStackTraceOnStart: {'String'},
         classesToCollectStackTraceOnDisposal: {'String'},
+        disposalTimeBuffer: disposalTimeBuffer,
       );
     });
 
