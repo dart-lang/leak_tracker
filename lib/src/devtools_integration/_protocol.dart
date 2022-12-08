@@ -4,7 +4,7 @@
 
 import 'package:meta/meta.dart';
 
-import '../model.dart';
+import '../shared_model.dart';
 import 'messages.dart';
 
 /// Generic parameter is not used for encoder, because the message type cannot be detected in runtime.

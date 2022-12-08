@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'devtools_integration/delivery.dart';
 import 'leak_tracker_model.dart';
-import 'model.dart';
+import 'shared_model.dart';
 
 class LeakChecker {
   LeakChecker({

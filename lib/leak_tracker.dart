@@ -4,4 +4,4 @@
 
 export 'src/leak_tracker.dart';
 export 'src/leak_tracker_model.dart';
-export 'src/model.dart';
+export 'src/shared_model.dart';

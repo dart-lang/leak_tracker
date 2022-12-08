@@ -7,7 +7,7 @@ import 'package:clock/clock.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import '_primitives.dart';
-import 'model.dart';
+import 'shared_model.dart';
 
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
