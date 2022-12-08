@@ -18,7 +18,7 @@ void main() {
   test('Not disposed object reported.', () async {
     void _runApp() {
       enableLeakTracking(
-        config: LeakTrackingConfiguration.minimal(),
+        config: LeakTrackingConfiguration.forUnitTests(),
       );
 
       // Create and not dispose an inastance of instrumented class.
@@ -44,7 +44,7 @@ void main() {
     late InstrumentedClass notGCedObject;
     void _runApp() {
       enableLeakTracking(
-        config: LeakTrackingConfiguration.minimal(),
+        config: LeakTrackingConfiguration.forUnitTests(),
       );
 
       notGCedObject = InstrumentedClass();

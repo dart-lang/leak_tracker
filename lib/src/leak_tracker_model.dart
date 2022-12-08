@@ -18,8 +18,8 @@ class LeakTrackingConfiguration {
   });
 
   /// The leak tracker will not auto check leaks, and, when
-  /// leak checking is invoked, will notify only [leakListener].
-  LeakTrackingConfiguration.minimal()
+  /// leak checking is invoked, will not send notifications.
+  LeakTrackingConfiguration.forUnitTests()
       : this(
           stdoutLeaks: false,
           notifyDevTools: false,

@@ -20,7 +20,7 @@ void main() {
     await tester.runAsync(() async {
       Future<void> _runApp() async {
         enableLeakTracking(
-          config: LeakTrackingConfiguration.minimal(),
+          config: LeakTrackingConfiguration.forUnitTests(),
         );
 
         await tester.pumpWidget(StatelessLeakingWidget());
