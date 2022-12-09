@@ -17,14 +17,22 @@ class LeakTrackingConfiguration {
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
   });
 
-  /// The leak tracker will not auto check leaks, and, when
-  /// leak checking is invoked, will not send notifications.
-  LeakTrackingConfiguration.forUnitTests()
-      : this(
+  /// The leak tracker:
+  /// - will not auto check leaks
+  /// - when leak checking is invoked, will not send notifications
+  /// - will assume the methods `dispose` are completed
+  /// at the moment of leak checking.
+  LeakTrackingConfiguration.passive({
+    Set<String> classesToCollectStackTraceOnStart = const {},
+    Set<String> classesToCollectStackTraceOnDisposal = const {},
+  }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
           disposalTimeBuffer: const Duration(),
+          classesToCollectStackTraceOnStart: classesToCollectStackTraceOnStart,
+          classesToCollectStackTraceOnDisposal:
+              classesToCollectStackTraceOnDisposal,
         );
 
   /// Period to check for leaks.

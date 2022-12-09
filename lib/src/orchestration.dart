@@ -17,15 +17,13 @@ class MemoryLeaksDetectedError extends StateError {
 
 /// Tests the functionality with leak tracking.
 ///
-/// If invoked inside `testWidget`, use `tester.runAsync`.
+/// If invoked in tests inside `testWidget`, use `tester.runAsync`.
 Future<Leaks> withLeakTracking(
   Future<void> Function() callback, {
   bool throwOnLeaks = true,
 }) async {
-  // TODO: check condition with callstack.
-
   enableLeakTracking(
-    config: LeakTrackingConfiguration.forUnitTests(),
+    config: LeakTrackingConfiguration.passive(),
   );
 
   await callback();
