@@ -4,7 +4,7 @@
 
 import 'package:leak_tracker/src/devtools_integration/_protocol.dart';
 import 'package:leak_tracker/src/devtools_integration/messages.dart';
-import 'package:leak_tracker/src/model.dart';
+import 'package:leak_tracker/src/shared_model.dart';
 import 'package:test/test.dart';
 
 final messages = [

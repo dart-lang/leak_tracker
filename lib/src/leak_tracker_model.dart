@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'model.dart';
+import 'shared_model.dart';
 
 typedef LeakListener = void Function(LeakSummary);
 
@@ -14,16 +14,25 @@ class LeakTrackingConfiguration {
     this.checkPeriod = const Duration(seconds: 1),
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
+    this.disposalTimeBuffer = const Duration(milliseconds: 100),
   });
 
-  /// The leak tracker will not auto check leaks, and, when
-  /// leak checking is invoked, will notify only [leakListener].
-  LeakTrackingConfiguration.minimal(LeakListener leakListener)
-      : this(
-          leakListener: leakListener,
+  /// The leak tracker:
+  /// - will not auto check leaks
+  /// - when leak checking is invoked, will not send notifications
+  /// - will assume the methods `dispose` are completed
+  /// at the moment of leak checking.
+  LeakTrackingConfiguration.passive({
+    Set<String> classesToCollectStackTraceOnStart = const {},
+    Set<String> classesToCollectStackTraceOnDisposal = const {},
+  }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
+          disposalTimeBuffer: const Duration(),
+          classesToCollectStackTraceOnStart: classesToCollectStackTraceOnStart,
+          classesToCollectStackTraceOnDisposal:
+              classesToCollectStackTraceOnDisposal,
         );
 
   /// Period to check for leaks.
@@ -45,4 +54,10 @@ class LeakTrackingConfiguration {
 
   /// Listener for leaks.
   final LeakListener? leakListener;
+
+  /// Time to allow the disposal invoker to release the reference to the object.
+  ///
+  /// The default value is pessimistic assuming that user will want to
+  /// detect leaks not more often than a second.
+  final Duration disposalTimeBuffer;
 }

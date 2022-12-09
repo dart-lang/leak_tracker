@@ -19,6 +19,9 @@ class Event {
 }
 
 class MockObjectTracker extends ObjectTracker {
+  MockObjectTracker()
+      : super(disposalTimeBuffer: const Duration(milliseconds: 100));
+
   final events = <Event>[];
 
   @override

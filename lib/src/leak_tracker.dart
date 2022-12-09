@@ -24,6 +24,7 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
     classesToCollectStackTraceOnStart: config.classesToCollectStackTraceOnStart,
     classesToCollectStackTraceOnDisposal:
         config.classesToCollectStackTraceOnDisposal,
+    disposalTimeBuffer: config.disposalTimeBuffer,
   );
 
   _objectTracker.value = newTracker;
@@ -111,10 +112,10 @@ void dispatchObjectTrace({
 }
 
 /// Checks for leaks and outputs [LeakSummary] as configured.
-void checkLeaks() {
+LeakSummary checkLeaks() {
   // TODO(polina-c): get checker as result when tuples are released.
   _tracker();
-  _leakChecker!.checkLeaks();
+  return _leakChecker!.checkLeaks();
 }
 
 /// Returns details of the leaks collected since last invocation.

@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'devtools_integration/delivery.dart';
 import 'leak_tracker_model.dart';
-import 'model.dart';
+import 'shared_model.dart';
 
 class LeakChecker {
   LeakChecker({
@@ -45,15 +45,18 @@ class LeakChecker {
 
   final LeakProvider leakProvider;
 
-  void checkLeaks() {
+  /// Checks leaks, if there are new ones, send notifications.
+  LeakSummary checkLeaks() {
     final summary = leakProvider.leaksSummary();
-    if (summary.matches(_previousResult)) return;
 
-    leakListener?.call(summary);
-    stdoutSink?.send(summary);
-    devToolsSink?.send(summary);
+    if (!summary.matches(_previousResult)) {
+      leakListener?.call(summary);
+      stdoutSink?.send(summary);
+      devToolsSink?.send(summary);
 
-    _previousResult = summary;
+      _previousResult = summary;
+    }
+    return summary;
   }
 
   void dispose() {
