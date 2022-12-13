@@ -14,44 +14,53 @@ LeakChecker? _leakChecker;
 
 /// Enables leak tracking for the application.
 ///
+/// The leak tracking will function only for debug/profile/developer mode.
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void enableLeakTracking({LeakTrackingConfiguration? config}) {
-  config ??= LeakTrackingConfiguration();
-  if (_objectTracker.value != null)
-    throw StateError('Leak tracking is alredy enabled.');
+  assert(() {
+    final theConfig = config ??= LeakTrackingConfiguration();
+    if (_objectTracker.value != null)
+      throw StateError('Leak tracking is alredy enabled.');
 
-  final newTracker = ObjectTracker(
-    classesToCollectStackTraceOnStart: config.classesToCollectStackTraceOnStart,
-    classesToCollectStackTraceOnDisposal:
-        config.classesToCollectStackTraceOnDisposal,
-    disposalTimeBuffer: config.disposalTimeBuffer,
-  );
+    final newTracker = ObjectTracker(
+      classesToCollectStackTraceOnStart:
+          theConfig.classesToCollectStackTraceOnStart,
+      classesToCollectStackTraceOnDisposal:
+          theConfig.classesToCollectStackTraceOnDisposal,
+      disposalTimeBuffer: theConfig.disposalTimeBuffer,
+    );
 
-  _objectTracker.value = newTracker;
+    _objectTracker.value = newTracker;
 
-  _leakChecker = LeakChecker(
-    leakProvider: newTracker,
-    checkPeriod: config.checkPeriod,
-    leakListener: config.leakListener,
-    stdoutSink: config.stdoutLeaks ? StdoutSummarySink() : null,
-    devToolsSink: config.notifyDevTools ? DevToolsSummarySink() : null,
-  );
+    _leakChecker = LeakChecker(
+      leakProvider: newTracker,
+      checkPeriod: theConfig.checkPeriod,
+      leakListener: theConfig.leakListener,
+      stdoutSink: theConfig.stdoutLeaks ? StdoutSummarySink() : null,
+      devToolsSink: theConfig.notifyDevTools ? DevToolsSummarySink() : null,
+    );
 
-  if (config.notifyDevTools) {
-    setupDevToolsIntegration(_objectTracker);
-  } else {
-    registerLeakTrackingServiceExtension();
-  }
+    if (theConfig.notifyDevTools) {
+      setupDevToolsIntegration(_objectTracker);
+    } else {
+      registerLeakTrackingServiceExtension();
+    }
+    return true;
+  }());
 }
 
 /// Disables leak tracking for the application.
 ///
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void disableLeakTracking() {
-  _leakChecker?.dispose();
-  _leakChecker = null;
-  _objectTracker.value?.dispose();
-  _objectTracker.value = null;
+  assert(() {
+    _leakChecker?.dispose();
+    _leakChecker = null;
+    _objectTracker.value?.dispose();
+    _objectTracker.value = null;
+
+    return true;
+  }());
 }
 
 ObjectTracker _tracker() {
@@ -67,8 +76,12 @@ ObjectTracker _tracker() {
 /// Consumes the MemoryAllocations event format:
 /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
 void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
-  final tracker = _tracker();
-  dispatcher.dispatchObjectEvent(event, tracker);
+  assert(() {
+    final tracker = _tracker();
+    dispatcher.dispatchObjectEvent(event, tracker);
+
+    return true;
+  }());
 }
 
 /// Dispatches object creation to the leak tracker.
@@ -81,12 +94,16 @@ void dispatchObjectCreated({
   required Object object,
   Map<String, dynamic>? context,
 }) {
-  final tracker = _tracker();
-  tracker.startTracking(
-    object,
-    context: context,
-    trackedClass: fullClassName(library: library, shortClassName: className),
-  );
+  assert(() {
+    final tracker = _tracker();
+    tracker.startTracking(
+      object,
+      context: context,
+      trackedClass: fullClassName(library: library, shortClassName: className),
+    );
+
+    return true;
+  }());
 }
 
 /// Dispatches object disposal to the leak tracker.
@@ -96,8 +113,12 @@ void dispatchObjectDisposed({
   required Object object,
   Map<String, dynamic>? context,
 }) {
-  final tracker = _tracker();
-  tracker.dispatchDisposal(object, context: context);
+  assert(() {
+    final tracker = _tracker();
+    tracker.dispatchDisposal(object, context: context);
+
+    return true;
+  }());
 }
 
 /// Dispatches additional context information to the leak tracker.
@@ -107,15 +128,27 @@ void dispatchObjectTrace({
   required Object object,
   Map<String, dynamic>? context,
 }) {
-  final tracker = _tracker();
-  tracker.addContext(object, context: context);
+  assert(() {
+    final tracker = _tracker();
+    tracker.addContext(object, context: context);
+
+    return true;
+  }());
 }
 
 /// Checks for leaks and outputs [LeakSummary] as configured.
 LeakSummary checkLeaks() {
-  // TODO(polina-c): get checker as result when tuples are released.
-  _tracker();
-  return _leakChecker!.checkLeaks();
+  LeakSummary? result;
+
+  assert(() {
+    // TODO(polina-c): get checker as result when tuples are released.
+    _tracker();
+    result = _leakChecker!.checkLeaks();
+
+    return true;
+  }());
+
+  return result ?? LeakSummary({});
 }
 
 /// Returns details of the leaks collected since last invocation.
@@ -123,6 +156,14 @@ LeakSummary checkLeaks() {
 /// The same object may be reported as leaked twice: first
 /// as non GCed, and then as GCed late.
 Leaks collectLeaks() {
-  final tracker = _tracker();
-  return tracker.collectLeaks();
+  Leaks? result;
+
+  assert(() {
+    final tracker = _tracker();
+    result = tracker.collectLeaks();
+
+    return true;
+  }());
+
+  return result ?? Leaks({});
 }
