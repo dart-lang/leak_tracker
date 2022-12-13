@@ -196,13 +196,11 @@ when it is the case.
 There are two steps in leak collection: (1) get signal that leaks happened
 (leak summary) and (2) get details about the leaks.
 
-
-
 By default, the leak tracker checks for leaks every second, and, if there are some, outputs the
 summary to console and sends it to DevTools. Then you can get leak details either by
 requesting them from DevTools or by invoking `collectLeaks()` programmatically.
 
-You can change the default by passing customized
+You can change the default behavior by passing customized
 [configuration](https://github.com/dart-lang/leak_tracker/blob/29fa7c0e7fb950c974d15f838636bc97a03a5bcc/lib/src/leak_tracker_model.dart)
 to `enableLeakTracking()`:
 
@@ -210,10 +208,9 @@ to `enableLeakTracking()`:
 2. Disable output to console or to DevTools.
 3. Listen to the leaks with custom handler.
 
-See [DevTools guidance] on how to interact with leak tracker.
+See `DevTools > Memory > Leaks` guidance on how to interact with leak tracker.
 
-
-
+TODO: add link to DevTools documentation.
 
 ## Performance impact
 
