@@ -130,7 +130,7 @@ and GCed, the victims it referenced will be also GCed:
 
 The leak tracker will catch leaks only for instrumented objects (See [concepts](#leak-tracking-concepts) for details).
 
-However, the good news are:
+However, the good news is:
 
 1. Most of disposable Flutter Framework classes are already instrumented. So, Widget related
 leaks in your Flutter application will be cought without additional effort.
