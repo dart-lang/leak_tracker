@@ -61,7 +61,7 @@ The tool assumes that, with proper memory management,
 an object's disposal and garbage collection should happen sequentially,
 close to each other.
 
-By monitoring disposal and GC events, the tool detects different types of leaks:
+By monitoring disposal and Garbage Collect events, the tool detects different types of leaks:
 
 - **Not disposed, but GCed (not-disposed)**:
     - a disposable object was GCed,
