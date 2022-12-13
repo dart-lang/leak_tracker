@@ -165,7 +165,7 @@ If you want to catch leaks for objects outside of Flutter Framework,
 (that are already instrumented) you need to instrument them.
 
 For each tracked object the library should get two signals from your code:
-(1) the object is created and (2) the object is not in use. It is most convenient to give first signal in constractor and the second one in the method `dispose`:
+(1) the object is created and (2) the object is not in use. It is most convenient to give the first signal in the constructor and the second one in the `dispose` method:
 
 ```dart
 import 'package:leak_tracker/src/leak_tracker.dart';
