@@ -49,7 +49,7 @@ test('...', () async {
 });
 ```
 
-## Leak tracking concepts
+## How leak tracking works
 
 Before reading about leak tracking, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
 
@@ -59,39 +59,47 @@ The leak tracker can catch only certain types of leaks, in particular, related t
 
 The tool assumes that, with proper memory management,
 an object's disposal and garbage collection should happen sequentially,
-close to each other.
+close to each other. I.e. the object should be garbage collected
+during next garbage collection cycle after disposal.
 
 By monitoring disposal and Garbage Collect events, the tool detects different types of leaks:
 
 - **Not disposed, but GCed (not-disposed)**:
-    - a disposable object was GCed,
+
+    - **Definition**: a disposable object was GCed,
        without being disposed first. This means that the object's disposable content
        is using memory after the object is no longer needed.
-       To fix the leak, invoke `dispose()` to free up the memory.
+
+    - **Fix**: invoke `dispose()` for the object to free up the memory.
 
 - **Disposed, but not GCed (not-GCed)**:
-    - an object was disposed,
+    - **Definition**: an object was disposed,
        but not GCed after certain number of GC events. This means that
        a reference to the object is preventing it from being
        garbage collected after it's no longer needed.
-       To fix the leak, after disposal assign all reachable references
-       of the object to null:
 
-    ```
-    myField.dispose();
-    myField = null;
-    ```
+    - **Fix**: To fix the leak, assign all reachable references
+       of the object to null after disposal:
+
+        ```
+        myField.dispose();
+        myField = null;
+        ```
 
 - **Disposed and GCed late (GCed-late)**:
-    - an object was disposed and then GCed,
+    - **Definition**: an object was disposed and then GCed,
        but GC happened later than expected. This means the retaining path was
        holding the object in memory for some period, but then disappeared.
 
+    - **Fix**: the same as for **not-GCed**
+
 - **Disposed, but not GCed, without path (not-GCed-without-path)**:
-    - an object
+    - **Definition**: an object
        was disposed and not GCed when expected, but retaining path is not detected,
        that means that the object will be most likely GCed in the next GC cycle,
        and the leak will convert to **GCed-late** leak.
+
+    - **Fix**: please, [create issue](https://github.com/dart-lang/leak_tracker/issues) if you see this type of leaks, as it means something is wrong with the tool.
 
 ### Culprits and victims
 
@@ -132,8 +140,9 @@ The leak tracker will catch leaks only for instrumented objects (See [concepts](
 
 However, the good news is:
 
-1. Most of disposable Flutter Framework classes are already instrumented. So, Widget related
-leaks in your Flutter application will be caught without additional effort.
+1. Most of disposable Flutter Framework classes are already instrumented. So, if
+your Flutter application manages widgets in a way that creates leaks, the leaks
+will be caught without additional effort.
 
 2. If a leak involves at least one instrumented object, the leak will be caught and all
 other objects, even non-instrumented, will stop leaking as well.
