@@ -63,17 +63,19 @@ close to each other.
 
 By monitoring disposal and GC events, the tool detects different types of leaks:
 
-**Not disposed, but GCed (not-disposed)**: a disposable object was GCed,
-without being disposed first. This means that the object's disposable content
-is using memory after the object is no longer needed.
-To fix the leak, invoke `dispose()` to free up the memory.
+- **Not disposed, but GCed (not-disposed)**:
+    - a disposable object was GCed,
+       without being disposed first. This means that the object's disposable content
+       is using memory after the object is no longer needed.
+       To fix the leak, invoke `dispose()` to free up the memory.
 
-**Disposed, but not GCed (not-GCed)**: an object was disposed,
-but not GCed after certain number of GC events. This means that
-a reference to the object is preventing it from being
-garbage collected after it's no longer needed.
-To fix the leak, after disposal assign all reachable references
-of the object to null:
+- **Disposed, but not GCed (not-GCed)**:
+    - an object was disposed,
+       but not GCed after certain number of GC events. This means that
+       a reference to the object is preventing it from being
+       garbage collected after it's no longer needed.
+       To fix the leak, after disposal assign all reachable references
+       of the object to null:
 
 ```
 myField.dispose();
