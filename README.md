@@ -128,7 +128,7 @@ and GCed, the victims it referenced will be also GCed:
 
 ### By tracked classes
 
-The leak traker will catch leaks only for instrumented onjects (See [concepts](#leak-tracking-concepts) for details).
+The leak tracker will catch leaks only for instrumented objects (See [concepts](#leak-tracking-concepts) for details).
 
 However, the good news are:
 
