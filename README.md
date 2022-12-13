@@ -32,9 +32,8 @@ runApp(...
 
 TODO(polina-c): implement the link and add example of the warning.
 
-See more on memory leaks and leak tracking at [Dart memory leak tracker](https://github.com/flutter/devtools/blob/master/packages/devtools_app/lib/src/screens/memory/panes/leaks/LEAK_TRACKING.md).
-
 ### Flutter tests
+
 
 ```dart
 test('...', () async {
@@ -51,11 +50,13 @@ test('...', () async {
 
 ## Leak tracking concepts
 
-Before reading about leak tracking, make sure you understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
+Before reading about leak tracking, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
 
-### Leak types
+### Addressed leak types
 
-To detect memory leaks, the tool assumes that, with proper memory management,
+The leak tracker can catch only certain types of leaks, in particular, related to timing of disposal and garbage collection.
+
+The tool assumes that, with proper memory management,
 an object's disposal and garbage collection should happen sequentially,
 close to each other.
 
