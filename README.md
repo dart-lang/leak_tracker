@@ -190,7 +190,6 @@ To start leak tracking, invoke `enableLeakTracking()`, to stop: `disableLeakTrac
 TODO(polina-c): note that Flutter Framework enables leak tracking by default,
 when it is the case.
 
-
 ## Collect leaks
 
 There are two steps in leak collection: (1) get signal that leaks happened
