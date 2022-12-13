@@ -77,10 +77,10 @@ By monitoring disposal and GC events, the tool detects different types of leaks:
        To fix the leak, after disposal assign all reachable references
        of the object to null:
 
-```
-myField.dispose();
-myField = null;
-```
+    ```
+    myField.dispose();
+    myField = null;
+    ```
 
 - **Disposed and GCed late (GCed-late)**:
     - an object was disposed and then GCed,
