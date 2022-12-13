@@ -82,14 +82,16 @@ myField.dispose();
 myField = null;
 ```
 
-**Disposed and GCed late (GCed-late)**: an object was disposed and then GCed,
-but GC happened later than expected. This means the retaining path was
-holding the object in memory for some period, but then disappeared.
+- **Disposed and GCed late (GCed-late)**:
+    - an object was disposed and then GCed,
+       but GC happened later than expected. This means the retaining path was
+       holding the object in memory for some period, but then disappeared.
 
-**Disposed, but not GCed, without path (not-GCed-without-path)**: an object
-was disposed and not GCed when expected, but retaining path is not detected,
-that means that the object will be most likely GCed in the next GC cycle,
-and the leak will convert to **GCed-late** leak.
+- **Disposed, but not GCed, without path (not-GCed-without-path)**:
+    - an object
+       was disposed and not GCed when expected, but retaining path is not detected,
+       that means that the object will be most likely GCed in the next GC cycle,
+       and the leak will convert to **GCed-late** leak.
 
 ### Culprits and victims
 
