@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 void main() {
-  enableLeakTracking();
+  enableLeakTracking(
+    config: LeakTrackingConfiguration(
+      classesToCollectStackTraceOnStart: {'ValueNotifier<bool>'},
+    ),
+  );
   MemoryAllocations.instance
       .addListener((ObjectEvent event) => dispatchObjectEvent(event.toMap()));
 
