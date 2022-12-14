@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 
 import '_util.dart';
@@ -177,8 +175,10 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
       final contextIndent = '$indent    ';
       result.write(
         theContext.keys.map((key) {
-          final value =
-              _indentNewLines(jsonEncode(theContext[key]), '  $contextIndent');
+          final value = _toMultiLineYamlString(
+            theContext[key],
+            '  $contextIndent',
+          );
           return '$contextIndent$key: $value\n';
         }).join(),
       );
@@ -193,7 +193,8 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
     return result.toString();
   }
 
-  static String _indentNewLines(String text, String indent) {
-    return text.replaceAll('\n', '\n$indent').trimRight();
+  static String _toMultiLineYamlString(String text, String indent) {
+    if (!text.contains('\n')) return text;
+    return '>\n$indent' + text.replaceAll('\n', '\n$indent').trimRight();
   }
 }
