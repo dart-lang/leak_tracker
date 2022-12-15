@@ -58,10 +58,15 @@ Future<Leaks> withLeakTracking(
   );
 
   final result = collectLeaks();
-  if (result.total > 0 && throwOnLeaks) {
-    throw MemoryLeaksDetectedError(result);
+
+  try {
+    if (result.total > 0 && throwOnLeaks) {
+      throw MemoryLeaksDetectedError(result);
+    }
+  } finally {
+    disableLeakTracking();
   }
-  disableLeakTracking();
+
   return result;
 }
 
