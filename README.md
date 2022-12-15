@@ -13,7 +13,8 @@ This is a framework for memory leak tracking for Dart and Flutter applications.
 
 ### Flutter application
 
-1. Before `runApp` invocation, enable leak tracking, and connect the Flutter memory allocation events:
+1. Before `runApp` invocation, enable leak tracking, and connect
+the Flutter memory allocation events:
 
 ```dart
 import 'package:flutter/foundation.dart';
@@ -28,7 +29,8 @@ runApp(...
 
 ```
 
-2. Run the application in debug mode and watch for a leak related warnings. If you see a warning, open the link to investigate the leaks.
+2. Run the application in debug mode and watch for a leak related warnings.
+If you see a warning, open the link to investigate the leaks.
 
 TODO(polina-c): implement the link and add example of the warning.
 
@@ -42,10 +44,9 @@ test('...', () async {
     () async {
       ...
     },
-    throwOnLeaks: false,
   );
 
-  expect(leaks.total, 0);
+  expect(leaks, leakFree);
 });
 ```
 
@@ -55,13 +56,15 @@ Before reading about leak tracking, understand [Dart memory concepts](https://do
 
 ### Addressed leak types
 
-The leak tracker can catch only certain types of leaks, in particular, related to timing of disposal and garbage collection.
-With proper memory management, this tool assumes that, 
+The leak tracker can catch only certain types of leaks, in particular,
+related to timing of disposal and garbage collection.
+With proper memory management, this tool assumes that,
 an object's disposal and garbage collection occur in quick succession.
 That is, the object should be garbage collected
 during next garbage collection cycle after disposal.
 
-By monitoring disposal and Garbage Collect events, the tool detects different types of leaks:
+By monitoring disposal and Garbage Collect events, the tool detects
+different types of leaks:
 
 - **Not disposed, but GCed (not-disposed)**:
 
@@ -94,11 +97,16 @@ By monitoring disposal and Garbage Collect events, the tool detects different ty
 
 - **Disposed, but not GCed, without path (not-GCed-without-path)**:
     - **Definition**: an object
-       was disposed and not GCed when expected, but retaining path is not detected,
-       that means that the object will be most likely GCed in the next GC cycle,
+       was disposed and not GCed when expected, but retaining path
+       is not detected,
+       that means that the object will be most likely GCed in
+       the next GC cycle,
        and the leak will convert to **GCed-late** leak.
 
-    - **Fix**: please, [create issue](https://github.com/dart-lang/leak_tracker/issues) if you see this type of leaks, as it means something is wrong with the tool.
+    - **Fix**: please,
+    [create issue](https://github.com/dart-lang/leak_tracker/issues)
+    if you see this type of leaks, as it means
+    something is wrong with the tool.
 
 ### Culprits and victims
 
@@ -135,21 +143,26 @@ and GCed, the victims it referenced will be also GCed:
 
 ### By tracked classes
 
-The leak tracker will catch leaks only for instrumented objects (See [concepts](#leak-tracking-concepts) for details).
+The leak tracker will catch leaks only for instrumented
+objects (See [concepts](#leak-tracking-concepts) for details).
 
 However, the good news is:
 
 1. Most disposable Flutter Framework classes include instrumentation.
-If how your Flutter app manages widgets results in leaks, Flutter will catch them.
+If how your Flutter app manages widgets results in leaks,
+Flutter will catch them.
 
-2. If a leak involves at least one instrumented object, the leak will be caught and all
+2. If a leak involves at least one instrumented object,
+the leak will be caught and all
 other objects, even non-instrumented, will stop leaking as well.
 
 See [the instrumentation guidance](#instrument-your-code).
 
 ### By build mode
 
-The leak tracker availability differs by build modes. See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436) or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).
+The leak tracker availability differs by build modes.
+See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436)
+or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).
 
 **Dart development and Flutter debug**
 
@@ -157,8 +170,10 @@ Leak tracking is fully available.
 
 **Flutter profile**
 
-Leak tracking is available, but MemoryAllocations that listens to Flutter instrumented objects,
-should be [turned on](https://github.com/flutter/flutter/blob/15af81782e19ebe7273872f8b07ac71df4e749f2/packages/flutter/lib/src/foundation/memory_allocations.dart#L13) if you want to track Flutter Framework objects.
+Leak tracking is available, but MemoryAllocations that listens to
+Flutter instrumented objects,
+should be [turned on](https://github.com/flutter/flutter/blob/15af81782e19ebe7273872f8b07ac71df4e749f2/packages/flutter/lib/src/foundation/memory_allocations.dart#L13)
+if you want to track Flutter Framework objects.
 
 **Dart productive and Flutter release**
 
@@ -172,7 +187,9 @@ If you want to catch leaks for objects outside of Flutter Framework,
 (that are already instrumented) you need to instrument them.
 
 For each tracked object the library should get two signals from your code:
-(1) the object is created and (2) the object is not in use. It is most convenient to give the first signal in the constructor and the second one in the `dispose` method:
+(1) the object is created and (2) the object is not in use.
+It is most convenient to give the first signal in the constructor
+and the second one in the `dispose` method:
 
 ```dart
 import 'package:leak_tracker/src/leak_tracker.dart';
@@ -196,7 +213,8 @@ class InstrumentedClass {
 
 ## Start/stop leak tracking
 
-To start leak tracking, invoke `enableLeakTracking()`, to stop: `disableLeakTracking()`.
+To start leak tracking, invoke `enableLeakTracking()`,
+to stop: `disableLeakTracking()`.
 
 TODO(polina-c): note that Flutter Framework enables leak tracking by default,
 when it is the case.
@@ -206,9 +224,12 @@ when it is the case.
 There are two steps in leak collection: (1) get signal that leaks happened
 (leak summary) and (2) get details about the leaks.
 
-By default, the leak tracker checks for leaks every second, and, if there are some, outputs the
-summary to console and sends it to DevTools. Then you can get leak details either by
-requesting them from DevTools or by invoking `collectLeaks()` programmatically.
+By default, the leak tracker checks for leaks every second, and,
+if there are some, outputs the
+summary to console and sends it to DevTools. Then you can get
+leak details either by
+requesting them from DevTools or by invoking `collectLeaks()`
+programmatically.
 
 You can change the default behavior by passing customized
 [configuration](https://github.com/dart-lang/leak_tracker/blob/29fa7c0e7fb950c974d15f838636bc97a03a5bcc/lib/src/leak_tracker_model.dart)
@@ -226,11 +247,14 @@ TODO: add link to DevTools documentation.
 
 ### Memory
 
-The Leak Tracker stores a small additional record for each tracked alive object and for each
+The Leak Tracker stores a small additional record for each
+tracked alive object and for each
 detected leak, that increases the memory footprint.
 
-For the [Gallery application](https://github.com/flutter/gallery) in profile mode on `macos`
-the leak tracking increased memory footprint of the home page by ~400 KB that is ~0.5% of
+For the [Gallery application](https://github.com/flutter/gallery)
+in profile mode on `macos`
+the leak tracking increased memory footprint of the home page
+by ~400 KB that is ~0.5% of
 the total.
 
 ### CPU
@@ -239,8 +263,10 @@ Leak tracking impacts CPU in two areas:
 
 1. Per object tracking.
    Added ~0.05 of millisecond (~2.7%) to the total load time of
-   [Gallery](https://github.com/flutter/gallery) home page in profile mode on `macos`.
+   [Gallery](https://github.com/flutter/gallery) home page
+   in profile mode on `macos`.
 
 2. Regular asynchronous analysis of the tracked objects.
-   Took ~2.5 millisectonds for [Gallery](https://github.com/flutter/gallery) home page in
+   Took ~2.5 millisectonds for
+   [Gallery](https://github.com/flutter/gallery) home page in
    profile mode on `macos`.
