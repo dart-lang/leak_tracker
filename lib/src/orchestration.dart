@@ -20,15 +20,27 @@ class MemoryLeaksDetectedError extends StateError {
 
 /// Tests the functionality with leak tracking.
 ///
-/// If invoked inside `testWidget`, use `tester.runAsync`:
+/// If invoked inside `testWidget`, connect Flutter objects and use `tester.runAsync`:
+///
 /// ```
-/// await tester.runAsync(() async {
-///   await withLeakTracking(() async {
-///     ...
+/// void flutterEventListener(ObjectEvent event) => dispatchObjectEvent(event.toMap());
+///
+/// setUpAll(() {
+///   MemoryAllocations.instance.addListener(flutterEventListener);
+/// });
+///
+/// tearDownAll(() {
+///   MemoryAllocations.instance.removeListener(flutterEventListener);
+/// });
+///
+/// testWidgets('...', (WidgetTester tester) async {
+///   await tester.runAsync(() async {
+///     await withLeakTracking(() async {
+///       ...
+///     });
 ///   });
 /// });
 /// ```
-///
 Future<Leaks> withLeakTracking(
   Future<void> Function() callback, {
   bool throwOnLeaks = true,

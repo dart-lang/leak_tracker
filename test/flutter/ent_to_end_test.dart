@@ -67,7 +67,7 @@ void main() {
     expect(theLeak.trackedClass, contains('ValueNotifier<'));
   });
 
-  // This test will start failing after fix of
+  // This test will start failing and should be deleted after fix of
   // https://github.com/flutter/flutter/issues/117063
   test('Not disposed ValueNotifier in OverlayEntry is cought.', () async {
     final leaks = await withLeakTracking(
