@@ -183,8 +183,8 @@ NOTE: If you are interested in enabling leak tracking for release mode, please, 
 
 ## Instrument your code
 
-If you want to catch leaks for objects outside of Flutter Framework,
-(that are already instrumented) you need to instrument them.
+If you want to catch leaks for objects outside of Flutter Framework
+(that are already instrumented), you need to instrument them.
 
 For each tracked object the library should get two signals from your code:
 (1) the object is created and (2) the object is not in use.
