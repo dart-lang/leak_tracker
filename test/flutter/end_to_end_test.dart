@@ -66,24 +66,4 @@ void main() {
     expect(theLeak.trackedClass, contains('foundation.dart'));
     expect(theLeak.trackedClass, contains('ValueNotifier<'));
   });
-
-  // This test will start failing and should be deleted after fix of
-  // https://github.com/flutter/flutter/issues/117063
-  test('Not disposed ValueNotifier in OverlayEntry is cought.', () async {
-    final leaks = await withLeakTracking(
-      () async {
-        // ignore: unused_local_variable
-        Object? notDisposer = OverlayEntry(builder: (_) => const Text('hello'));
-        notDisposer = null;
-      },
-      throwOnLeaks: false,
-      timeoutForFinalGarbageCollection: _gcTimeout,
-    );
-
-    expect(leaks.total, 1);
-
-    final theLeak = leaks.notDisposed.first;
-    expect(theLeak.trackedClass, contains('foundation.dart'));
-    expect(theLeak.trackedClass, contains('ValueNotifier<'));
-  });
 }
