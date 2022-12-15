@@ -13,7 +13,7 @@ import '../test_infra/data/flutter_classes.dart';
 void _flutterEventListener(ObjectEvent event) =>
     dispatchObjectEvent(event.toMap());
 
-const _gcTimeout = Duration(milliseconds: 500);
+const _gcTimeout = Duration(milliseconds: 1000);
 
 /// Tests for non-mocked public API of leak tracker.
 ///
