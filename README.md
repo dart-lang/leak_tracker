@@ -139,9 +139,8 @@ The leak tracker will catch leaks only for instrumented objects (See [concepts](
 
 However, the good news is:
 
-1. Most of disposable Flutter Framework classes are already instrumented. So, if
-your Flutter application manages widgets in a way that creates leaks, the leaks
-will be caught without additional effort.
+1. Most disposable Flutter Framework classes include instrumentation.
+If how your Flutter app manages widgets results in leaks, Flutter will catch them.
 
 2. If a leak involves at least one instrumented object, the leak will be caught and all
 other objects, even non-instrumented, will stop leaking as well.
