@@ -22,3 +22,7 @@ class StatelessLeakingWidget extends StatelessWidget {
     return const Placeholder();
   }
 }
+
+class ValueNotifierNotDisposer {
+  final ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(false);
+}

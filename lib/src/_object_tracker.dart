@@ -228,4 +228,6 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     disposed = true;
   }
+
+  int get notGCed => _objects.notGCed.length;
 }
