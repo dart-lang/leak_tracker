@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
@@ -23,7 +24,7 @@ void main() {
   });
 
   tearDownAll(() {
-    //MemoryAllocations.instance.removeListener(_flutterEventListener);
+    MemoryAllocations.instance.removeListener(_flutterEventListener);
   });
 
   testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
@@ -53,6 +54,26 @@ void main() {
       () async {
         // ignore: unused_local_variable
         Object? notDisposer = ValueNotifierNotDisposer();
+        notDisposer = null;
+      },
+      throwOnLeaks: false,
+      timeoutForFinalGarbageCollection: _gcTimeout,
+    );
+
+    expect(leaks.total, 1);
+
+    final theLeak = leaks.notDisposed.first;
+    expect(theLeak.trackedClass, contains('foundation.dart'));
+    expect(theLeak.trackedClass, contains('ValueNotifier<'));
+  });
+
+  // This test will start failing after fix of
+  // https://github.com/flutter/flutter/issues/117063
+  test('Not disposed ValueNotifier in OverlayEntry is cought.', () async {
+    final leaks = await withLeakTracking(
+      () async {
+        // ignore: unused_local_variable
+        Object? notDisposer = OverlayEntry(builder: (_) => const Text('hello'));
         notDisposer = null;
       },
       throwOnLeaks: false,

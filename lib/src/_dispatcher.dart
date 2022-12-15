@@ -21,8 +21,10 @@ class _EventType {
 
 void dispatchObjectEvent(
   Map<Object, Map<String, Object>> event,
-  ObjectTracker objectTracker,
+  ObjectTracker? objectTracker,
 ) {
+  if (objectTracker == null) return;
+
   assert(event.length == 1);
   final entry = event.entries.first;
 
