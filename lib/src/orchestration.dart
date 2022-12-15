@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:clock/clock.dart';
+import 'package:matcher/matcher.dart';
 
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
@@ -43,11 +44,17 @@ class MemoryLeaksDetectedError extends StateError {
 /// ```
 Future<Leaks> withLeakTracking(
   Future<void> Function() callback, {
-  bool throwOnLeaks = true,
+  bool throwOnLeaks = false,
   Duration? timeoutForFinalGarbageCollection,
+  Set<String> classesToCollectStackTraceOnStart = const {},
+  Set<String> classesToCollectStackTraceOnDisposal = const {},
 }) async {
   enableLeakTracking(
-    config: LeakTrackingConfiguration.passive(),
+    config: LeakTrackingConfiguration.passive(
+      classesToCollectStackTraceOnDisposal:
+          classesToCollectStackTraceOnDisposal,
+      classesToCollectStackTraceOnStart: classesToCollectStackTraceOnStart,
+    ),
   );
 
   await callback();
@@ -89,4 +96,37 @@ Future<void> _forceGC({required int gcCycles, Duration? timeout}) async {
     await Future.delayed(const Duration());
     allocateMemory();
   }
+}
+
+/// Checks if the leak collection is empty.
+const Matcher isLeakFree = _IsLeakFree();
+
+class _IsLeakFree extends Matcher {
+  const _IsLeakFree();
+
+  @override
+  bool matches(Object? item, Map matchState) {
+    if (item is Leaks && item.total == 0) return true;
+    return false;
+  }
+
+  @override
+  Description describeMismatch(
+    Object? item,
+    Description mismatchDescription,
+    Map matchState,
+    bool verbose,
+  ) {
+    if (item is! Leaks) {
+      return mismatchDescription
+        ..add(
+          'The matcher applies to $Leaks and cannot be applied to ${item.runtimeType}',
+        );
+    }
+
+    return mismatchDescription..add('contains leaks:\n${item.toYaml()}');
+  }
+
+  @override
+  Description describe(Description description) => description.add('leak free');
 }
