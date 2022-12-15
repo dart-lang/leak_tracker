@@ -56,10 +56,9 @@ Before reading about leak tracking, understand [Dart memory concepts](https://do
 ### Addressed leak types
 
 The leak tracker can catch only certain types of leaks, in particular, related to timing of disposal and garbage collection.
-
-The tool assumes that, with proper memory management,
-an object's disposal and garbage collection should happen sequentially,
-close to each other. I.e. the object should be garbage collected
+With proper memory management, this tool assumes that, 
+an object's disposal and garbage collection occur in quick succession.
+That is, the object should be garbage collected
 during next garbage collection cycle after disposal.
 
 By monitoring disposal and Garbage Collect events, the tool detects different types of leaks:
