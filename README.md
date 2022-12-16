@@ -161,7 +161,7 @@ See [the instrumentation guidance](#instrument-your-code).
 ### By build mode
 
 The leak tracker availability differs by build modes.
-See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436)
+See [Dart build modes](https://dart.dev/overview#platform)
 or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).
 
 **Dart development and Flutter debug**
@@ -175,7 +175,7 @@ Flutter instrumented objects,
 should be [turned on](https://github.com/flutter/flutter/blob/15af81782e19ebe7273872f8b07ac71df4e749f2/packages/flutter/lib/src/foundation/memory_allocations.dart#L13)
 if you want to track Flutter Framework objects.
 
-**Dart productive and Flutter release**
+**Dart production and Flutter release**
 
 Leak tracking is disabled.
 
