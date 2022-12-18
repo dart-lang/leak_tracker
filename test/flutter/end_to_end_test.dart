@@ -32,6 +32,7 @@ void main() {
         () async {
           await tester.pumpWidget(StatelessLeakingWidget());
         },
+        throwOnLeaks: false,
         timeoutForFinalGarbageCollection: _gcTimeout,
       );
 
@@ -54,6 +55,7 @@ void main() {
         Object? notDisposer = ValueNotifierNotDisposer();
         notDisposer = null;
       },
+      throwOnLeaks: false,
       timeoutForFinalGarbageCollection: _gcTimeout,
     );
 

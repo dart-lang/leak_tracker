@@ -32,7 +32,7 @@ T cast<T>(value) {
   );
 }
 
-Object? safeToEncodable(Object? object) {
-  if (object == null) return object;
+Object? toEncodable(Object? object) {
+  if (object == null) return null;
   return object.toString();
 }

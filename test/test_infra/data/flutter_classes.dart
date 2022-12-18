@@ -23,6 +23,7 @@ class StatelessLeakingWidget extends StatelessWidget {
   }
 }
 
+/// The class creates and does not dispose ValueNotifier.
 class ValueNotifierNotDisposer {
   final ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(false);
 }
