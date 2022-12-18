@@ -19,7 +19,6 @@ void main() {
       () async {
         InstrumentedClass();
       },
-      throwOnLeaks: false,
     );
 
     expect(leaks.total, 1);
@@ -37,7 +36,6 @@ void main() {
         // Dispose reachable instance.
         notGCedObject.dispose();
       },
-      throwOnLeaks: false,
     );
 
     expect(leaks.total, 1);

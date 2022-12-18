@@ -31,10 +31,7 @@ void enableLeakTracking({LeakTrackingConfiguration? config}) {
       throw StateError('Leak tracking is alredy enabled.');
 
     final newTracker = ObjectTracker(
-      classesToCollectStackTraceOnStart:
-          theConfig.classesToCollectStackTraceOnStart,
-      classesToCollectStackTraceOnDisposal:
-          theConfig.classesToCollectStackTraceOnDisposal,
+      stackTraceCollectionConfig: theConfig.stackTraceCollectionConfig,
       disposalTimeBuffer: theConfig.disposalTimeBuffer,
     );
 

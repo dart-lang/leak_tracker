@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/_object_tracker.dart';
 
 enum EventType {
@@ -20,7 +21,10 @@ class Event {
 
 class MockObjectTracker extends ObjectTracker {
   MockObjectTracker()
-      : super(disposalTimeBuffer: const Duration(milliseconds: 100));
+      : super(
+          disposalTimeBuffer: const Duration(milliseconds: 100),
+          stackTraceCollectionConfig: const StackTraceCollectionConfig(),
+        );
 
   final events = <Event>[];
 

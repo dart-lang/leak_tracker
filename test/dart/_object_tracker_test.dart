@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:clock/clock.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/_gc_counter.dart';
 import 'package:leak_tracker/src/_object_tracker.dart';
 import 'package:leak_tracker/src/_primitives.dart';
-import 'package:leak_tracker/src/shared_model.dart';
 import 'package:test/test.dart';
 
 const String _trackedClass = 'trackedClass';
@@ -59,6 +59,7 @@ void main() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
       tracker = ObjectTracker(
+        stackTraceCollectionConfig: const StackTraceCollectionConfig(),
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
         disposalTimeBuffer: disposalTimeBuffer,
@@ -228,8 +229,10 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
-        classesToCollectStackTraceOnStart: {'String'},
-        classesToCollectStackTraceOnDisposal: {'String'},
+        stackTraceCollectionConfig: const StackTraceCollectionConfig(
+          classesToCollectStackTraceOnStart: {'String'},
+          classesToCollectStackTraceOnDisposal: {'String'},
+        ),
         disposalTimeBuffer: disposalTimeBuffer,
       );
     });

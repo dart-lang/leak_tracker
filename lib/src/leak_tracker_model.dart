@@ -6,15 +6,54 @@ import 'shared_model.dart';
 
 typedef LeakListener = void Function(LeakSummary);
 
+/// Configuration of stack trace collection.
+///
+/// Stacktrace collection can seriously affect performance and memory footprint.
+/// So, it is recommended to have it disabled for leak detection and to enable it
+/// only for leak troubleshooting.
+class StackTraceCollectionConfig {
+  const StackTraceCollectionConfig({
+    this.classesToCollectStackTraceOnStart = const {},
+    this.classesToCollectStackTraceOnDisposal = const {},
+    this.collectStackTraceOnStart = false,
+    this.collectStackTraceOnDisposal = false,
+  });
+
+  /// Set of classes to cllect callstack on tracking start.
+  ///
+  /// Ignored if [collectStackTraceOnStart] is true.
+  /// String is used, because some types are private and thus not accessible.
+  final Set<String> classesToCollectStackTraceOnStart;
+
+  /// Set of classes to cllect callstack on disposal.
+  ///
+  /// Ignored if [collectStackTraceOnDisposal] is true.
+  /// String is used, because some types are private and thus not accessible.
+  final Set<String> classesToCollectStackTraceOnDisposal;
+
+  /// If true, stack trace will be collected on start of tracking for all classes.
+  final bool collectStackTraceOnStart;
+
+  /// If true, stack trace will be collected on disposal for all tracked classes.
+  final bool collectStackTraceOnDisposal;
+
+  bool shouldCollectOnStart(String classname) =>
+      collectStackTraceOnStart ||
+      classesToCollectStackTraceOnStart.contains(classname);
+
+  bool shouldCollectOnDisposal(String classname) =>
+      collectStackTraceOnDisposal ||
+      classesToCollectStackTraceOnDisposal.contains(classname);
+}
+
 class LeakTrackingConfiguration {
   LeakTrackingConfiguration({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
     this.leakListener,
     this.checkPeriod = const Duration(seconds: 1),
-    this.classesToCollectStackTraceOnStart = const {},
-    this.classesToCollectStackTraceOnDisposal = const {},
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
+    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
   });
 
   /// The leak tracker:
@@ -30,21 +69,14 @@ class LeakTrackingConfiguration {
           notifyDevTools: false,
           checkPeriod: null,
           disposalTimeBuffer: const Duration(),
-          classesToCollectStackTraceOnStart: classesToCollectStackTraceOnStart,
-          classesToCollectStackTraceOnDisposal:
-              classesToCollectStackTraceOnDisposal,
         );
+
+  final StackTraceCollectionConfig stackTraceCollectionConfig;
 
   /// Period to check for leaks.
   ///
   /// If null, there is no periodic checking.
   final Duration? checkPeriod;
-
-  /// We use String, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnStart;
-
-  /// We use String, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnDisposal;
 
   /// If true, leak information will output to console.
   final bool stdoutLeaks;
