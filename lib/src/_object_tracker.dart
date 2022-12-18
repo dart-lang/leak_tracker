@@ -9,6 +9,11 @@ import '_gc_counter.dart';
 import '_object_record.dart';
 import '_primitives.dart';
 
+/// Keeps collection of opject records till
+/// disposal and garbage gollection.
+///
+/// If disposal and garbage gollection happened ubnormally,
+/// maks the object as leaked.
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({

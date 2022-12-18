@@ -8,6 +8,10 @@ import 'devtools_integration/delivery.dart';
 import 'leak_tracker_model.dart';
 import 'shared_model.dart';
 
+/// Checks [leakProvider] either by schedule or by request.
+///
+/// If there are leaks, reports them to the enabled outputs:
+/// listener, console and DevTools.
 class LeakChecker {
   LeakChecker({
     required this.leakProvider,
