@@ -26,7 +26,7 @@ ObjectTracker _theObjectTracker() {
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
 void enableLeakTracking({LeakTrackingConfiguration? config}) {
   assert(() {
-    final theConfig = config ??= LeakTrackingConfiguration();
+    final theConfig = config ??= const LeakTrackingConfiguration();
     if (_objectTracker.value != null)
       throw StateError('Leak tracking is alredy enabled.');
 

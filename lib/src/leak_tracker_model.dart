@@ -47,7 +47,7 @@ class StackTraceCollectionConfig {
 }
 
 class LeakTrackingConfiguration {
-  LeakTrackingConfiguration({
+  const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
     this.leakListener,
@@ -62,13 +62,14 @@ class LeakTrackingConfiguration {
   /// - will assume the methods `dispose` are completed
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
-    Set<String> classesToCollectStackTraceOnStart = const {},
-    Set<String> classesToCollectStackTraceOnDisposal = const {},
+    StackTraceCollectionConfig stackTraceCollectionConfig =
+        const StackTraceCollectionConfig(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
           disposalTimeBuffer: const Duration(),
+          stackTraceCollectionConfig: stackTraceCollectionConfig,
         );
 
   final StackTraceCollectionConfig stackTraceCollectionConfig;

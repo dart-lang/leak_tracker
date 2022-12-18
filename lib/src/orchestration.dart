@@ -47,14 +47,12 @@ Future<Leaks> withLeakTracking(
   Future<void> Function() callback, {
   bool throwOnLeaks = false,
   Duration? timeoutForFinalGarbageCollection,
-  Set<String> classesToCollectStackTraceOnStart = const {},
-  Set<String> classesToCollectStackTraceOnDisposal = const {},
+  StackTraceCollectionConfig stackTraceCollectionConfig =
+      const StackTraceCollectionConfig(),
 }) async {
   enableLeakTracking(
     config: LeakTrackingConfiguration.passive(
-      classesToCollectStackTraceOnDisposal:
-          classesToCollectStackTraceOnDisposal,
-      classesToCollectStackTraceOnStart: classesToCollectStackTraceOnStart,
+      stackTraceCollectionConfig: stackTraceCollectionConfig,
     ),
   );
 

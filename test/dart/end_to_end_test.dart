@@ -38,10 +38,6 @@ void main() {
       },
     );
 
-    expect(leaks.total, 1);
-
-    final theLeak = leaks.notGCed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+    expect(leaks.total, isLeakFree);
   });
 }
