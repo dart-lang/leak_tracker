@@ -21,6 +21,7 @@ void main() {
       },
     );
 
+    expect(() => expect(leaks, isLeakFree), throwsException);
     expect(leaks.total, 1);
 
     final theLeak = leaks.notDisposed.first;
@@ -38,6 +39,19 @@ void main() {
       },
     );
 
-    expect(leaks.total, isLeakFree);
+    expect(() => expect(leaks, isLeakFree), throwsException);
+    expect(leaks.total, 1);
+
+    final theLeak = leaks.notGCed.first;
+    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
+    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+  });
+
+  test('$isLeakFree succeeds.', () async {
+    final leaks = await withLeakTracking(
+      () async {},
+    );
+
+    expect(leaks, isLeakFree);
   });
 }

@@ -35,6 +35,7 @@ void main() {
         timeoutForFinalGarbageCollection: _gcTimeout,
       );
 
+      expect(() => expect(leaks, isLeakFree), throwsException);
       expect(leaks.total, 2);
 
       final notDisposedLeak = leaks.notDisposed.first;
@@ -57,6 +58,7 @@ void main() {
       timeoutForFinalGarbageCollection: _gcTimeout,
     );
 
+    expect(() => expect(leaks, isLeakFree), throwsException);
     expect(leaks.total, 1);
 
     final theLeak = leaks.notDisposed.first;
