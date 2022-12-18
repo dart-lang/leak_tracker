@@ -243,6 +243,37 @@ See `DevTools > Memory > Leaks` guidance on how to interact with leak tracker.
 
 TODO: add link to DevTools documentation.
 
+## Troubleshoot leaks
+
+### Collect callstack
+
+The stacktrace at the moments of tacking start and helps to find owner, that did
+not invoke dispose, i.e. not-disposed leaks.
+
+And, the stacktrace at the moment of disposal helps to find non-nulled long living
+references, i.e. not-GCed leaks.
+
+By default, the leak tracker does not collect stacktraces, because the collection may
+impact performance and memory footprint.
+
+There are options to enable stacktrace collection for troubleshooting:
+
+1. By passing `stackTraceCollectionConfig`
+to `withLeakTracking` or `enableLeakTracking`.
+
+[![enable stacktrace collection](md_images/collect_callstack.mov)]
+
+2. Using interactive UI in DevTools > Memory > Leaks.
+
+TODO: add details
+
+### Check retaining pathes
+
+Open DevTools > Memory > Leaks, wait for not-GCed leaks to be caught,
+and click 'Analyze and Download'.
+
+TODO: add details
+
 ## Performance impact
 
 ### Memory

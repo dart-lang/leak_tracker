@@ -32,7 +32,13 @@ T cast<T>(value) {
   );
 }
 
-Object? toEncodable(Object? object) {
-  if (object == null) return null;
+String contextToString(Object? object) {
+  // Spaces need to be removed from stacktrace
+  // because otherwise test framework changes formatting
+  // of a message from matcher.
+  if (object is StackTrace) {
+    return object.toString().replaceAll(' ', '_');
+  }
+
   return object.toString();
 }

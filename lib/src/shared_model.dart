@@ -185,7 +185,7 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
       result.write(
         theContext.keys.map((key) {
           final value = _toMultiLineYamlString(
-            theContext[key],
+            contextToString(theContext[key]),
             '  $contextIndent',
           );
           return '$contextIndent$key: $value\n';
