@@ -7,6 +7,7 @@ import 'dart:developer';
 
 import 'package:vm_service/vm_service.dart';
 
+import '../_util.dart';
 import '_protocol.dart';
 import 'primitives.dart';
 
@@ -46,7 +47,9 @@ class ResponseFromApp<T extends Object> {
   final T message;
 
   ServiceExtensionResponse toServiceResponse() =>
-      ServiceExtensionResponse.result(jsonEncode(toJson()));
+      ServiceExtensionResponse.result(
+        jsonEncode(toJson(), toEncodable: toEncodable),
+      );
 
   Map<String, dynamic> toJson() =>
       sealEnvelope(message, Channel.responseFromApp);

@@ -31,3 +31,8 @@ T cast<T>(value) {
     '$value is of type ${value.runtimeType} that is not subtype of $T',
   );
 }
+
+Object? toEncodable(Object? object) {
+  if (object == null) return null;
+  return object.toString();
+}

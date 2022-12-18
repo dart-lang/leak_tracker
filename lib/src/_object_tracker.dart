@@ -92,19 +92,20 @@ class ObjectTracker implements LeakProvider {
     _objects.assertRecordIntegrity(code);
   }
 
-  /// Normally one ContainerLayer is created  in a Flutter app before main() is invoked.
-  /// So, it is not registered, but disposed.
-  /// This flag makes sure there is just one such object.
-  int? _oneNotRegisteredContainerLayer;
+  /// Number of times [dispatchDisposal] or [addContext] were invoked for
+  /// not registered objects.
+  ///
+  /// Normally one ContainerLayer is created in a Flutter app before main() is invoked.
+  /// The layer and it's children are not registered, but disposed.
+  int _notRegisterdObjects = 0;
 
-  bool _checkForNotRegisteredContainer(Object object, int code) {
+  final _maxAllowedNotRegisterdObjects = 100;
+
+  bool _checkForNotRegisteredObject(Object object, int code) {
     if (_objects.notGCed.containsKey(code)) return false;
-    assert(object.runtimeType.toString().contains('Layer'));
-    assert(
-      _oneNotRegisteredContainerLayer == null ||
-          _oneNotRegisteredContainerLayer == code,
-    );
-    _oneNotRegisteredContainerLayer = code;
+    _notRegisterdObjects++;
+
+    assert(_notRegisterdObjects <= _maxAllowedNotRegisterdObjects);
     return true;
   }
 
@@ -115,7 +116,7 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
-    if (_checkForNotRegisteredContainer(object, code)) return;
+    if (_checkForNotRegisteredObject(object, code)) return;
 
     final record = _notGCed(code);
     record.mergeContext(context);
@@ -136,7 +137,7 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     final code = identityHashCode(object);
     if (_objects.duplicates.contains(code)) return;
-    if (_checkForNotRegisteredContainer(object, code)) return;
+    if (_checkForNotRegisteredObject(object, code)) return;
     final record = _notGCed(code);
     record.mergeContext(context);
   }
@@ -228,4 +229,6 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     disposed = true;
   }
+
+  int get notGCed => _objects.notGCed.length;
 }

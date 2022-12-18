@@ -12,6 +12,14 @@ import 'devtools_integration/_registration.dart';
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 LeakChecker? _leakChecker;
 
+ObjectTracker _theObjectTracker() {
+  // TODO(polina-c): return both tracker and checker when tuples get released.
+  final result = _objectTracker.value;
+  assert((result == null) == (_leakChecker == null));
+  if (result == null) throw StateError('Leak tracking should be enabled.');
+  return result;
+}
+
 /// Enables leak tracking for the application.
 ///
 /// The leak tracking will function only for debug/profile/developer mode.
@@ -63,22 +71,13 @@ void disableLeakTracking() {
   }());
 }
 
-ObjectTracker _tracker() {
-  // TODO(polina-c): return both tracker and checker when tuples get released.
-  final result = _objectTracker.value;
-  assert((result == null) == (_leakChecker == null));
-  if (result == null) throw StateError('Leak tracking should be enabled.');
-  return result;
-}
-
 /// Dispatches an object event to the leak tracker.
 ///
 /// Consumes the MemoryAllocations event format:
 /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
 void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
   assert(() {
-    final tracker = _tracker();
-    dispatcher.dispatchObjectEvent(event, tracker);
+    dispatcher.dispatchObjectEvent(event, _objectTracker.value);
 
     return true;
   }());
@@ -95,7 +94,9 @@ void dispatchObjectCreated({
   Map<String, dynamic>? context,
 }) {
   assert(() {
-    final tracker = _tracker();
+    final tracker = _objectTracker.value;
+    if (tracker == null) return true;
+
     tracker.startTracking(
       object,
       context: context,
@@ -114,9 +115,10 @@ void dispatchObjectDisposed({
   Map<String, dynamic>? context,
 }) {
   assert(() {
-    final tracker = _tracker();
-    tracker.dispatchDisposal(object, context: context);
+    final tracker = _objectTracker.value;
+    if (tracker == null) return true;
 
+    tracker.dispatchDisposal(object, context: context);
     return true;
   }());
 }
@@ -129,7 +131,7 @@ void dispatchObjectTrace({
   Map<String, dynamic>? context,
 }) {
   assert(() {
-    final tracker = _tracker();
+    final tracker = _theObjectTracker();
     tracker.addContext(object, context: context);
 
     return true;
@@ -142,7 +144,7 @@ LeakSummary checkLeaks() {
 
   assert(() {
     // TODO(polina-c): get checker as result when tuples are released.
-    _tracker();
+    _theObjectTracker();
     result = _leakChecker!.checkLeaks();
 
     return true;
@@ -159,7 +161,7 @@ Leaks collectLeaks() {
   Leaks? result;
 
   assert(() {
-    final tracker = _tracker();
+    final tracker = _theObjectTracker();
     result = tracker.collectLeaks();
 
     return true;

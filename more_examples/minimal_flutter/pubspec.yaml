@@ -7,7 +7,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  leak_tracker: ^1.0.0
+  leak_tracker: ^1.0.0-dev.1.3
 
 dev_dependencies:
   flutter_test:
@@ -19,4 +19,4 @@ flutter:
 
 dependency_overrides:
   leak_tracker:
-    path: ..
+    path: ../..
