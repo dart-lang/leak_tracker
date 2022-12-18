@@ -261,7 +261,7 @@ There are options to enable stacktrace collection for troubleshooting:
 1. By passing `stackTraceCollectionConfig`
 to `withLeakTracking` or `enableLeakTracking`.
 
-[![enable stacktrace collection](md_images/collect_callstack.mov)]
+<video src="md_images/collect_callstack.mov" controls="controls" playsinline="playsinline"></video>
 
 2. Using interactive UI in DevTools > Memory > Leaks.
 
