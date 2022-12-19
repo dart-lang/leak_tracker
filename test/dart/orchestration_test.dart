@@ -20,11 +20,11 @@ final _leaks = Leaks({
 // TODO(polina-c): add more test coverage for the matcher.
 
 void main() {
-  test('No leaks matcher passes.', () async {
+  test('$isLeakFree passes.', () async {
     expect(Leaks({}), isLeakFree);
   });
 
-  test('No leaks matcher fails.', () async {
+  test('$isLeakFree fails.', () async {
     expect(isLeakFree.matches(_leaks, {}), false);
   });
 
