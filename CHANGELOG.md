@@ -1,3 +1,7 @@
+# 1.0.0-dev.1.6
+
+* Enable reset for leak tracker.
+
 # 1.0.0-dev.1.5
 
 * Define matcher for leaks.
