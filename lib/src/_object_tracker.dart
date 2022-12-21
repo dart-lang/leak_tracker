@@ -12,7 +12,7 @@ import '_primitives.dart';
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
 ///
-/// If disposal and garbage gollection happened ubnormally,
+/// If disposal and garbage collection happened abnormally,
 /// marks the object as leaked.
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
