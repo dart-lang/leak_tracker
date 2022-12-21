@@ -1,3 +1,7 @@
+# 1.0.0
+
+* First release.
+
 # 1.0.0-dev.1.6
 
 * Enable reset for leak tracker.
