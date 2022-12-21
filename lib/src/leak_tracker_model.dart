@@ -25,7 +25,7 @@ class StackTraceCollectionConfig {
   /// String is used, because some types are private and thus not accessible.
   final Set<String> classesToCollectStackTraceOnStart;
 
-  /// Set of classes to cllect callstack on disposal.
+  /// Set of classes to collect callstack on disposal.
   ///
   /// Ignored if [collectStackTraceOnDisposal] is true.
   /// String is used, because some types are private and thus not accessible.

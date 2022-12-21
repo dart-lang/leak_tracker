@@ -248,7 +248,7 @@ TODO: add link to DevTools documentation.
 ### Collect callstack
 
 Stacktrace for the object's lifecycle events may help to catch out
-the leak's root cause. The lyfecycle event will be creation
+the leak's root cause. The lifecycle event will be creation
 for not-disposed leaks, and disposal for non-GCed leaks.
 
 By default, the leak tracker does not collect stacktraces, because the collection may
