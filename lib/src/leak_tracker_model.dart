@@ -19,7 +19,7 @@ class StackTraceCollectionConfig {
     this.collectStackTraceOnDisposal = false,
   });
 
-  /// Set of classes to cllect callstack on tracking start.
+  /// Set of classes to collect callstack on tracking start.
   ///
   /// Ignored if [collectStackTraceOnStart] is true.
   /// String is used, because some types are private and thus not accessible.
