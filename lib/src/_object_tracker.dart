@@ -4,17 +4,21 @@
 
 import 'package:clock/clock.dart';
 
+import '../leak_tracker.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import '_primitives.dart';
-import 'shared_model.dart';
 
+/// Keeps collection of object records until
+/// disposal and garbage gollection.
+///
+/// If disposal and garbage collection happened abnormally,
+/// marks the object as leaked.
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
+    required this.stackTraceCollectionConfig,
     required this.disposalTimeBuffer,
-    this.classesToCollectStackTraceOnStart = const {},
-    this.classesToCollectStackTraceOnDisposal = const {},
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
   }) {
@@ -34,11 +38,7 @@ class ObjectTracker implements LeakProvider {
 
   bool disposed = false;
 
-  /// We use String, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnStart;
-
-  /// We use String, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnDisposal;
+  final StackTraceCollectionConfig stackTraceCollectionConfig;
 
   void startTracking(
     Object object, {
@@ -58,8 +58,8 @@ class ObjectTracker implements LeakProvider {
       trackedClass,
     );
 
-    if (classesToCollectStackTraceOnStart
-        .contains(object.runtimeType.toString())) {
+    if (stackTraceCollectionConfig
+        .shouldCollectOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
 
@@ -120,8 +120,9 @@ class ObjectTracker implements LeakProvider {
 
     final record = _notGCed(code);
     record.mergeContext(context);
-    if (classesToCollectStackTraceOnDisposal
-        .contains(object.runtimeType.toString())) {
+
+    if (stackTraceCollectionConfig
+        .shouldCollectOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
 

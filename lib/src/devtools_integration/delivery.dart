@@ -48,7 +48,7 @@ class ResponseFromApp<T extends Object> {
 
   ServiceExtensionResponse toServiceResponse() =>
       ServiceExtensionResponse.result(
-        jsonEncode(toJson(), toEncodable: toEncodable),
+        jsonEncode(toJson(), toEncodable: contextToString),
       );
 
   Map<String, dynamic> toJson() =>

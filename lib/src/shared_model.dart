@@ -4,6 +4,7 @@
 
 import 'package:collection/collection.dart';
 
+import '_primitives.dart';
 import '_util.dart';
 
 class ContextKeys {
@@ -106,6 +107,14 @@ class Leaks {
       );
 
   int get total => byType.values.map((e) => e.length).sum;
+
+  String toYaml() {
+    if (total == 0) return '';
+    final leaks = LeakType.values
+        .map((e) => LeakReport.iterableToYaml(e.name, byType[e] ?? []))
+        .join();
+    return '$leakTrackerYamlHeader$leaks';
+  }
 }
 
 /// Leak information, passed from application to DevTools and than extended by
@@ -176,7 +185,7 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
       result.write(
         theContext.keys.map((key) {
           final value = _toMultiLineYamlString(
-            theContext[key],
+            contextToString(theContext[key]),
             '  $contextIndent',
           );
           return '$contextIndent$key: $value\n';

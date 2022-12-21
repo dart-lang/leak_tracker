@@ -1,3 +1,7 @@
+# 1.0.0-dev.1.5
+
+* Define matcher for leaks.
+
 # 1.0.0-dev.1.4
 
 * Tests and minor fixes.

@@ -32,10 +32,10 @@ void main() {
         () async {
           await tester.pumpWidget(StatelessLeakingWidget());
         },
-        throwOnLeaks: false,
         timeoutForFinalGarbageCollection: _gcTimeout,
       );
 
+      expect(() => expect(leaks, isLeakFree), throwsException);
       expect(leaks.total, 2);
 
       final notDisposedLeak = leaks.notDisposed.first;
@@ -55,10 +55,10 @@ void main() {
         Object? notDisposer = ValueNotifierNotDisposer();
         notDisposer = null;
       },
-      throwOnLeaks: false,
       timeoutForFinalGarbageCollection: _gcTimeout,
     );
 
+    expect(() => expect(leaks, isLeakFree), throwsException);
     expect(leaks.total, 1);
 
     final theLeak = leaks.notDisposed.first;
