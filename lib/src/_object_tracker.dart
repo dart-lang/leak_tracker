@@ -13,7 +13,7 @@ import '_primitives.dart';
 /// disposal and garbage gollection.
 ///
 /// If disposal and garbage gollection happened ubnormally,
-/// maks the object as leaked.
+/// marks the object as leaked.
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
