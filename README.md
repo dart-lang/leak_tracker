@@ -264,7 +264,7 @@ to `withLeakTracking` or `enableLeakTracking`.
 
 2. Using interactive UI in DevTools > Memory > Leaks.
 
-TODO: add details
+TODO: link DevTools documentation with explanation
 
 ### Check retaining pathes
 
