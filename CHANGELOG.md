@@ -1,3 +1,15 @@
+# 1.0.1
+
+* Documentation updates.
+
+# 1.0.0
+
+* First release.
+
+# 1.0.0-dev.1.6
+
+* Enable reset for leak tracker.
+
 # 1.0.0-dev.1.5
 
 * Define matcher for leaks.

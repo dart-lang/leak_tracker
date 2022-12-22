@@ -24,11 +24,16 @@ ObjectTracker _theObjectTracker() {
 ///
 /// The leak tracking will function only for debug/profile/developer mode.
 /// See usage guidance at https://github.com/dart-lang/leak_tracker.
-void enableLeakTracking({LeakTrackingConfiguration? config}) {
+void enableLeakTracking({
+  LeakTrackingConfiguration? config,
+  bool resetIfEnabled = false,
+}) {
   assert(() {
     final theConfig = config ??= const LeakTrackingConfiguration();
-    if (_objectTracker.value != null)
-      throw StateError('Leak tracking is alredy enabled.');
+    if (_objectTracker.value != null) {
+      if (!resetIfEnabled) throw StateError('Leak tracking is already enabled.');
+      disableLeakTracking();
+    }
 
     final newTracker = ObjectTracker(
       stackTraceCollectionConfig: theConfig.stackTraceCollectionConfig,

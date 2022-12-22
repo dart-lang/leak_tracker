@@ -20,11 +20,22 @@ final _leaks = Leaks({
 // TODO(polina-c): add more test coverage for the matcher.
 
 void main() {
-  test('No leaks matcher passes.', () async {
+  test('$isLeakFree passes.', () async {
     expect(Leaks({}), isLeakFree);
   });
 
-  test('No leaks matcher fails.', () async {
+  test('$isLeakFree fails.', () async {
     expect(isLeakFree.matches(_leaks, {}), false);
+  });
+
+  test('$withLeakTracking does not fail after exception.', () async {
+    const exception = 'some exception';
+    try {
+      await withLeakTracking(() => throw exception);
+    } catch (e) {
+      expect(e, exception);
+    }
+
+    await withLeakTracking(() async {});
   });
 }

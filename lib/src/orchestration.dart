@@ -51,6 +51,7 @@ Future<Leaks> withLeakTracking(
       const StackTraceCollectionConfig(),
 }) async {
   enableLeakTracking(
+    resetIfEnabled: true,
     config: LeakTrackingConfiguration.passive(
       stackTraceCollectionConfig: stackTraceCollectionConfig,
     ),
