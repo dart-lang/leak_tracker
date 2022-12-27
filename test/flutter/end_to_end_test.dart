@@ -34,7 +34,6 @@ void main() {
       },
       timeoutForFinalGarbageCollection: _gcTimeout,
       asyncCodeRunner: (action) async => tester.runAsync(action),
-      shouldThrowOnLeaks: false,
     );
 
     expect(() => expect(leaks, isLeakFree), throwsException);
@@ -57,6 +56,7 @@ void main() {
       },
       timeoutForFinalGarbageCollection: _gcTimeout,
       asyncCodeRunner: (action) async => tester.runAsync(action),
+      throwOnLeaks: true,
     );
   });
 
@@ -68,7 +68,6 @@ void main() {
         notDisposer = null;
       },
       timeoutForFinalGarbageCollection: _gcTimeout,
-      shouldThrowOnLeaks: false,
     );
 
     expect(() => expect(leaks, isLeakFree), throwsException);
