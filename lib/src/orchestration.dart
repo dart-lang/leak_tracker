@@ -13,13 +13,17 @@ import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
 import 'shared_model.dart';
 
+/// Asyncronous callback.
+///
+/// The prefix `Dart` is used to avoid conflict with Flutter's `AsyncCallback`.
+typedef DartAsyncCallback = Future<void> Function();
+
+typedef AsyncCodeRunner = Future<void> Function(DartAsyncCallback);
+
 class MemoryLeaksDetectedError extends StateError {
   MemoryLeaksDetectedError(this.leaks) : super('Leaks detected.');
-
   final Leaks leaks;
 }
-
-typedef AsyncCodeRunner = Future<void> Function(Future<void> Function());
 
 /// Tests the functionality with leak tracking.
 ///
@@ -53,8 +57,8 @@ typedef AsyncCodeRunner = Future<void> Function(Future<void> Function());
 /// });
 /// ```
 Future<Leaks> withLeakTracking(
-  Future<void> Function() callback, {
-  bool shouldThrowOnLeaks = true,
+  DartAsyncCallback callback, {
+  bool throwOnLeaks = false,
   Duration? timeoutForFinalGarbageCollection,
   StackTraceCollectionConfig stackTraceCollectionConfig =
       const StackTraceCollectionConfig(),
@@ -78,16 +82,15 @@ Future<Leaks> withLeakTracking(
       ),
     );
 
-    final result = collectLeaks();
+    final leaks = collectLeaks();
 
-    if (result.total > 0 && shouldThrowOnLeaks) {
-      // We use matcher for better debugging experience.
-      expect(result, isLeakFree);
-
-      throw MemoryLeaksDetectedError(result);
+    if (leaks.total > 0 && throwOnLeaks) {
+      // `expect` should not be used here, because, when the method is used
+      // from Flutter, the packages `test` and `flutter_test` conflict.
+      MemoryLeaksDetectedError(leaks);
     }
 
-    return result;
+    return leaks;
   } finally {
     disableLeakTracking();
   }
