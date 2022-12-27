@@ -1,3 +1,7 @@
+# 2.0.0
+
+* Breaking changes in `withLeakTracking` signature.
+
 # 1.0.1
 
 * Documentation updates.

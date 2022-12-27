@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
@@ -27,25 +28,36 @@ void main() {
   });
 
   testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
-    await tester.runAsync(() async {
-      final leaks = await withLeakTracking(
-        () async {
-          await tester.pumpWidget(StatelessLeakingWidget());
-        },
-        timeoutForFinalGarbageCollection: _gcTimeout,
-      );
+    final leaks = await withLeakTracking(
+      () async {
+        await tester.pumpWidget(StatelessLeakingWidget());
+      },
+      timeoutForFinalGarbageCollection: _gcTimeout,
+      asyncCodeRunner: (action) async => tester.runAsync(action),
+      shouldThrowOnLeaks: false,
+    );
 
-      expect(() => expect(leaks, isLeakFree), throwsException);
-      expect(leaks.total, 2);
+    expect(() => expect(leaks, isLeakFree), throwsException);
+    expect(leaks.total, 2);
 
-      final notDisposedLeak = leaks.notDisposed.first;
-      expect(notDisposedLeak.trackedClass, contains(InstrumentedClass.library));
-      expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
+    final notDisposedLeak = leaks.notDisposed.first;
+    expect(notDisposedLeak.trackedClass, contains(InstrumentedClass.library));
+    expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
 
-      final notGcedLeak = leaks.notDisposed.first;
-      expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
-      expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
-    });
+    final notGcedLeak = leaks.notDisposed.first;
+    expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
+    expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
+  });
+
+  testWidgets('Leak-free code in pumpWidget passes.',
+      (WidgetTester tester) async {
+    await withLeakTracking(
+      () async {
+        await tester.pumpWidget(const MaterialApp(home: Scaffold()));
+      },
+      timeoutForFinalGarbageCollection: _gcTimeout,
+      asyncCodeRunner: (action) async => tester.runAsync(action),
+    );
   });
 
   test('Not disposed member is cought.', () async {
@@ -56,6 +68,7 @@ void main() {
         notDisposer = null;
       },
       timeoutForFinalGarbageCollection: _gcTimeout,
+      shouldThrowOnLeaks: false,
     );
 
     expect(() => expect(leaks, isLeakFree), throwsException);

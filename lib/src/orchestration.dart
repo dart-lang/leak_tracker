@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:clock/clock.dart';
-import 'package:matcher/matcher.dart';
+import 'package:test/test.dart';
 
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
@@ -19,10 +19,12 @@ class MemoryLeaksDetectedError extends StateError {
   final Leaks leaks;
 }
 
+typedef AsyncCodeRunner = Future<void> Function(Future<void> Function());
+
 /// Tests the functionality with leak tracking.
 ///
-/// If you use `withLeakTracking` inside `testWidget`, connect Flutter
-/// objects and use `tester.runAsync`:
+/// If you test Flutter widgets, connect their instrumentation to the leak
+/// tracker:
 ///
 /// ```
 /// void flutterEventListener(ObjectEvent event) => dispatchObjectEvent(event.toMap());
@@ -34,21 +36,29 @@ class MemoryLeaksDetectedError extends StateError {
 /// tearDownAll(() {
 ///   MemoryAllocations.instance.removeListener(flutterEventListener);
 /// });
+/// ```
 ///
+/// If you use `withLeakTracking` inside `testWidget`, pass `tester.runAsync`
+/// as `asyncCodeRunner` to run asyncronouse leak detection after the
+/// test code execution:
+///
+/// ```
 /// testWidgets('...', (WidgetTester tester) async {
-///   await tester.runAsync(() async {
-///     await withLeakTracking(() async {
+///   await withLeakTracking(
+///     () async {
 ///       ...
-///     });
-///   });
+///     },
+///     asyncCodeRunner: (action) async => tester.runAsync(action),
+///   );
 /// });
 /// ```
 Future<Leaks> withLeakTracking(
   Future<void> Function() callback, {
-  bool throwOnLeaks = false,
+  bool shouldThrowOnLeaks = true,
   Duration? timeoutForFinalGarbageCollection,
   StackTraceCollectionConfig stackTraceCollectionConfig =
       const StackTraceCollectionConfig(),
+  AsyncCodeRunner? asyncCodeRunner,
 }) async {
   enableLeakTracking(
     resetIfEnabled: true,
@@ -57,24 +67,30 @@ Future<Leaks> withLeakTracking(
     ),
   );
 
-  await callback();
-
-  await _forceGC(
-    gcCycles: gcCountBuffer,
-    timeout: timeoutForFinalGarbageCollection,
-  );
-
-  final result = collectLeaks();
-
   try {
-    if (result.total > 0 && throwOnLeaks) {
+    await callback();
+
+    asyncCodeRunner ??= (action) => action();
+    await asyncCodeRunner(
+      () async => await _forceGC(
+        gcCycles: gcCountBuffer,
+        timeout: timeoutForFinalGarbageCollection,
+      ),
+    );
+
+    final result = collectLeaks();
+
+    if (result.total > 0 && shouldThrowOnLeaks) {
+      // We use matcher for better debugging experience.
+      expect(result, isLeakFree);
+
       throw MemoryLeaksDetectedError(result);
     }
+
+    return result;
   } finally {
     disableLeakTracking();
   }
-
-  return result;
 }
 
 /// Forces garbage collection by aggressive memory allocation.
