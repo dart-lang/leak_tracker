@@ -57,7 +57,7 @@ class MemoryLeaksDetectedError extends StateError {
 /// ```
 Future<Leaks> withLeakTracking(
   DartAsyncCallback callback, {
-  bool throwOnLeaks = false,
+  bool shouldThrowOnLeaks = true,
   Duration? timeoutForFinalGarbageCollection,
   StackTraceCollectionConfig stackTraceCollectionConfig =
       const StackTraceCollectionConfig(),
@@ -83,7 +83,7 @@ Future<Leaks> withLeakTracking(
 
     final leaks = collectLeaks();
 
-    if (leaks.total > 0 && throwOnLeaks) {
+    if (leaks.total > 0 && shouldThrowOnLeaks) {
       // `expect` should not be used here, because, when the method is used
       // from Flutter, the packages `test` and `flutter_test` conflict.
       MemoryLeaksDetectedError(leaks);

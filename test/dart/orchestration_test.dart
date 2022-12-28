@@ -9,7 +9,10 @@ void main() {
   test('$withLeakTracking does not fail after exception.', () async {
     const exception = 'some exception';
     try {
-      await withLeakTracking(() => throw exception);
+      await withLeakTracking(
+        () => throw exception,
+        shouldThrowOnLeaks: false,
+      );
     } catch (e) {
       expect(e, exception);
     }
