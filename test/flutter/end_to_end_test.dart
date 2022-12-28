@@ -17,30 +17,30 @@ const _gcTimeout = Duration(milliseconds: 1000);
 /// Can serve as examples for regression leak-testing for Flutter widgets.
 void main() {
   testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
+    late Leaks leaks;
+
     expect(
       () async => await withFlutterLeakTracking(
         () async {
           await tester.pumpWidget(StatelessLeakingWidget());
         },
         tester: tester,
+        leaksObtainer: (foundLeaks) => leaks = foundLeaks,
       ),
       throwsA(
         predicate((e) {
-          if (e is! MemoryLeaksDetectedError) {
-            throw 'Wrong exception type: ${e.runtimeType}';
-          }
+          expect(e.toString(), contains('Expected: leak free'));
+          expect(() => expect(leaks, isLeakFree), throwsException);
+          expect(leaks.total, 2);
 
-          expect(() => expect(e.leaks, isLeakFree), throwsException);
-          expect(e.leaks.total, 2);
-
-          final notDisposedLeak = e.leaks.notDisposed.first;
+          final notDisposedLeak = leaks.notDisposed.first;
           expect(
             notDisposedLeak.trackedClass,
             contains(InstrumentedClass.library),
           );
           expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
 
-          final notGcedLeak = e.leaks.notDisposed.first;
+          final notGcedLeak = leaks.notDisposed.first;
           expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
           expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
 
@@ -51,6 +51,8 @@ void main() {
   });
 
   test('Not disposed members are cought.', () async {
+    late Leaks leaks;
+
     expect(
       () async => await withFlutterLeakTracking(
         () async {
@@ -59,19 +61,18 @@ void main() {
           notDisposer = null;
         },
         tester: null,
+        leaksObtainer: (foundLeaks) => leaks = foundLeaks,
       ),
       throwsA(
         predicate((e) {
-          if (e is! MemoryLeaksDetectedError) {
-            throw 'Wrong exception type: ${e.runtimeType}';
-          }
+          expect(e.toString(), contains('Expected: leak free'));
 
-          // expect(() => expect(e.leaks, isLeakFree), throwsException);
-          // expect(e.leaks.total, 1);
+          expect(() => expect(leaks, isLeakFree), throwsException);
+          expect(leaks.total, 1);
 
-          // final theLeak = e.leaks.notDisposed.first;
-          // expect(theLeak.trackedClass, contains('foundation.dart'));
-          // expect(theLeak.trackedClass, contains('ValueNotifier<'));
+          final theLeak = leaks.notDisposed.first;
+          expect(theLeak.trackedClass, contains('foundation.dart'));
+          expect(theLeak.trackedClass, contains('ValueNotifier<'));
 
           return true;
         }),

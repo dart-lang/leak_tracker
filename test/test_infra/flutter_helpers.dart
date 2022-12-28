@@ -15,6 +15,7 @@ Future<void> withFlutterLeakTracking(
   StackTraceCollectionConfig stackTraceCollectionConfig =
       const StackTraceCollectionConfig(),
   Duration? timeoutForFinalGarbageCollection,
+  void Function(Leaks foundLeaks)? leaksObtainer,
 }) async {
   void flutterEventToLeakTracker(ObjectEvent event) =>
       dispatchObjectEvent(event.toMap());
@@ -32,7 +33,7 @@ Future<void> withFlutterLeakTracking(
       shouldThrowOnLeaks: false,
       timeoutForFinalGarbageCollection: timeoutForFinalGarbageCollection,
     );
-
+    if (leaksObtainer != null) leaksObtainer(leaks);
     expect(leaks, isLeakFree);
   } finally {
     MemoryAllocations.instance.removeListener(flutterEventToLeakTracker);
