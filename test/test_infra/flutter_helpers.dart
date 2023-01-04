@@ -26,7 +26,7 @@ Future<void> withFlutterLeakTracking(
   MemoryAllocations.instance.addListener(flutterEventToLeakTracker);
 
   final asyncCodeRunner = tester == null
-      ? (action) async => action()
+      ? (DartAsyncCallback action) async => action()
       : (DartAsyncCallback action) async => tester.runAsync(action);
 
   try {
@@ -37,7 +37,9 @@ Future<void> withFlutterLeakTracking(
       shouldThrowOnLeaks: false,
       timeoutForFinalGarbageCollection: timeoutForFinalGarbageCollection,
     );
-    if (leaksObtainer != null) leaksObtainer(leaks);
+    if (leaksObtainer != null) {
+      leaksObtainer(leaks);
+    }
     expect(leaks, isLeakFree);
   } finally {
     MemoryAllocations.instance.removeListener(flutterEventToLeakTracker);
