@@ -3,35 +3,16 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/src/orchestration.dart';
-import 'package:leak_tracker/src/shared_model.dart';
 import 'package:test/test.dart';
 
-final _leaks = Leaks({
-  LeakType.gcedLate: [
-    LeakReport(
-      trackedClass: 'trackedClass',
-      context: {},
-      code: 1,
-      type: 'type',
-    ),
-  ]
-});
-
-// TODO(polina-c): add more test coverage for the matcher.
-
 void main() {
-  test('$isLeakFree passes.', () async {
-    expect(Leaks({}), isLeakFree);
-  });
-
-  test('$isLeakFree fails.', () async {
-    expect(isLeakFree.matches(_leaks, {}), false);
-  });
-
   test('$withLeakTracking does not fail after exception.', () async {
     const exception = 'some exception';
     try {
-      await withLeakTracking(() => throw exception);
+      await withLeakTracking(
+        () => throw exception,
+        shouldThrowOnLeaks: false,
+      );
     } catch (e) {
       expect(e, exception);
     }

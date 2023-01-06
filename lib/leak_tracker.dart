@@ -4,5 +4,6 @@
 
 export 'src/leak_tracker.dart';
 export 'src/leak_tracker_model.dart';
+export 'src/matchers.dart';
 export 'src/orchestration.dart';
 export 'src/shared_model.dart';
