@@ -1,6 +1,6 @@
 # 1.0.2
 
-* Documentation updates.
+* Refactor test_infra libraries.
 
 # 1.0.1
 
