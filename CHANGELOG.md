@@ -2,6 +2,10 @@
 
 * Breaking changes in `withLeakTracking`.
 
+# 1.0.2
+
+* Refactor test_infra libraries.
+
 # 1.0.1
 
 * Documentation updates.

@@ -64,7 +64,7 @@ Future<Leaks> withLeakTracking(
   AsyncCodeRunner? asyncCodeRunner,
 }) async {
   enableLeakTracking(
-    resetIfEnabled: true,
+    resetIfAlreadyEnabled: true,
     config: LeakTrackingConfiguration.passive(
       stackTraceCollectionConfig: stackTraceCollectionConfig,
     ),

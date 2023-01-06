@@ -10,7 +10,8 @@ import '../test_infra/data/dart_classes.dart';
 import '../test_infra/data/flutter_classes.dart';
 import '../test_infra/flutter_helpers.dart';
 
-const _gcTimeout = Duration(milliseconds: 1000);
+/// Normally 300 milliseconds are ok, but sometimes test environment is slow.
+const _gcTimeout = Duration(milliseconds: 10000);
 
 /// Tests for non-mocked public API of leak tracker.
 ///
