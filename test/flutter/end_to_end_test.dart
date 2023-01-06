@@ -6,8 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-import '../test_infra/data/dart_classes.dart';
-import '../test_infra/data/flutter_classes.dart';
+import '../dart_test_infra/data/dart_classes.dart';
+import '../flutter_test_infra/flutter_classes.dart';
 
 void _flutterEventListener(ObjectEvent event) =>
     dispatchObjectEvent(event.toMap());
