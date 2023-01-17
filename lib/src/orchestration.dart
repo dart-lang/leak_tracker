@@ -86,7 +86,7 @@ Future<Leaks> withLeakTracking(
     if (leaks.total > 0 && shouldThrowOnLeaks) {
       // `expect` should not be used here, because, when the method is used
       // from Flutter, the packages `test` and `flutter_test` conflict.
-      MemoryLeaksDetectedError(leaks);
+      throw MemoryLeaksDetectedError(leaks);
     }
 
     return leaks;

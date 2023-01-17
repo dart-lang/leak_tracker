@@ -13,9 +13,8 @@ class _IsLeakFree extends Matcher {
   const _IsLeakFree();
 
   @override
-  bool matches(Object? item, Map matchState) {
-    return (item is Leaks && item.total == 0)
-  }
+  bool matches(Object? item, Map matchState) =>
+      item is Leaks && item.total == 0;
 
   @override
   Description describeMismatch(
