@@ -12,7 +12,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 /// Wrapper for [withLeakTracking] with Flutter specific functionality.
 ///
 /// 1. Listens to [MemoryAllocations] events.
-/// 2. Uses `tester.runAsync` for leak detection if [tester] is provided.
+/// 2. Uses [tester.runAsync] for leak detection if [tester] is provided.
 Future<void> withFlutterLeakTracking(
   DartAsyncCallback callback, {
   required WidgetTester? tester,
