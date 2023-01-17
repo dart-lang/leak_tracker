@@ -1,3 +1,7 @@
+# 2.0.1-dev.1.1
+
+* Minor changes.
+
 # 2.0.0
 
 * Breaking changes in `withLeakTracking`.
