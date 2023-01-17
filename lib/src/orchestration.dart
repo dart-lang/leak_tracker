@@ -41,8 +41,8 @@ class MemoryLeaksDetectedError extends StateError {
 /// });
 /// ```
 ///
-/// If you use `withLeakTracking` inside `testWidget`, pass `tester.runAsync`
-/// as `asyncCodeRunner` to run asyncronouse leak detection after the
+/// If you use [withLeakTracking] inside [testWidget], pass [tester.runAsync]
+/// as [asyncCodeRunner] to run asynchronous leak detection after the
 /// test code execution:
 ///
 /// ```
