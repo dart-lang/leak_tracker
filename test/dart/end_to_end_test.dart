@@ -19,6 +19,7 @@ void main() {
       () async {
         InstrumentedClass();
       },
+      shouldThrowOnLeaks: false,
     );
 
     expect(() => expect(leaks, isLeakFree), throwsException);
@@ -37,6 +38,7 @@ void main() {
         // Dispose reachable instance.
         notGCedObject.dispose();
       },
+      shouldThrowOnLeaks: false,
     );
 
     expect(() => expect(leaks, isLeakFree), throwsException);
@@ -50,6 +52,7 @@ void main() {
   test('$isLeakFree succeeds.', () async {
     final leaks = await withLeakTracking(
       () async {},
+      shouldThrowOnLeaks: false,
     );
 
     expect(leaks, isLeakFree);

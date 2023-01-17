@@ -6,23 +6,28 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:clock/clock.dart';
-import 'package:matcher/matcher.dart';
 
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
 import 'shared_model.dart';
 
+/// Asynchronous callback.
+///
+/// The prefix `Dart` is used to avoid conflict with Flutter's [AsyncCallback].
+typedef DartAsyncCallback = Future<void> Function();
+
+typedef AsyncCodeRunner = Future<void> Function(DartAsyncCallback);
+
 class MemoryLeaksDetectedError extends StateError {
   MemoryLeaksDetectedError(this.leaks) : super('Leaks detected.');
-
   final Leaks leaks;
 }
 
 /// Tests the functionality with leak tracking.
 ///
-/// If you use `withLeakTracking` inside `testWidget`, connect Flutter
-/// objects and use `tester.runAsync`:
+/// If you test Flutter widgets, connect their instrumentation to the leak
+/// tracker:
 ///
 /// ```
 /// void flutterEventListener(ObjectEvent event) => dispatchObjectEvent(event.toMap());
@@ -34,21 +39,29 @@ class MemoryLeaksDetectedError extends StateError {
 /// tearDownAll(() {
 ///   MemoryAllocations.instance.removeListener(flutterEventListener);
 /// });
+/// ```
 ///
+/// If you use [withLeakTracking] inside [testWidget], pass [tester.runAsync]
+/// as [asyncCodeRunner] to run asynchronous leak detection after the
+/// test code execution:
+///
+/// ```
 /// testWidgets('...', (WidgetTester tester) async {
-///   await tester.runAsync(() async {
-///     await withLeakTracking(() async {
+///   await withLeakTracking(
+///     () async {
 ///       ...
-///     });
-///   });
+///     },
+///     asyncCodeRunner: (action) async => tester.runAsync(action),
+///   );
 /// });
 /// ```
 Future<Leaks> withLeakTracking(
-  Future<void> Function() callback, {
-  bool throwOnLeaks = false,
+  DartAsyncCallback callback, {
+  bool shouldThrowOnLeaks = true,
   Duration? timeoutForFinalGarbageCollection,
   StackTraceCollectionConfig stackTraceCollectionConfig =
       const StackTraceCollectionConfig(),
+  AsyncCodeRunner? asyncCodeRunner,
 }) async {
   enableLeakTracking(
     resetIfAlreadyEnabled: true,
@@ -57,24 +70,29 @@ Future<Leaks> withLeakTracking(
     ),
   );
 
-  await callback();
-
-  await _forceGC(
-    gcCycles: gcCountBuffer,
-    timeout: timeoutForFinalGarbageCollection,
-  );
-
-  final result = collectLeaks();
-
   try {
-    if (result.total > 0 && throwOnLeaks) {
-      throw MemoryLeaksDetectedError(result);
+    await callback();
+
+    asyncCodeRunner ??= (action) => action();
+    await asyncCodeRunner(
+      () async => await _forceGC(
+        gcCycles: gcCountBuffer,
+        timeout: timeoutForFinalGarbageCollection,
+      ),
+    );
+
+    final leaks = collectLeaks();
+
+    if (leaks.total > 0 && shouldThrowOnLeaks) {
+      // `expect` should not be used here, because, when the method is used
+      // from Flutter, the packages `test` and `flutter_test` conflict.
+      throw MemoryLeaksDetectedError(leaks);
     }
+
+    return leaks;
   } finally {
     disableLeakTracking();
   }
-
-  return result;
 }
 
 /// Forces garbage collection by aggressive memory allocation.
@@ -96,37 +114,4 @@ Future<void> _forceGC({required int gcCycles, Duration? timeout}) async {
     await Future.delayed(const Duration());
     allocateMemory();
   }
-}
-
-/// Checks if the leak collection is empty.
-const Matcher isLeakFree = _IsLeakFree();
-
-class _IsLeakFree extends Matcher {
-  const _IsLeakFree();
-
-  @override
-  bool matches(Object? item, Map matchState) {
-    if (item is Leaks && item.total == 0) return true;
-    return false;
-  }
-
-  @override
-  Description describeMismatch(
-    Object? item,
-    Description mismatchDescription,
-    Map matchState,
-    bool verbose,
-  ) {
-    if (item is! Leaks) {
-      return mismatchDescription
-        ..add(
-          'The matcher applies to $Leaks and cannot be applied to ${item.runtimeType}',
-        );
-    }
-
-    return mismatchDescription..add('contains leaks:\n${item.toYaml()}');
-  }
-
-  @override
-  Description describe(Description description) => description.add('leak free');
 }
