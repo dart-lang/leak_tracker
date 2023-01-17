@@ -14,8 +14,7 @@ class _IsLeakFree extends Matcher {
 
   @override
   bool matches(Object? item, Map matchState) {
-    if (item is Leaks && item.total == 0) return true;
-    return false;
+    return (item is Leaks && item.total == 0)
   }
 
   @override
