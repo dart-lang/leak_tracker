@@ -14,7 +14,7 @@ import 'shared_model.dart';
 
 /// Asynchronous callback.
 ///
-/// The prefix `Dart` is used to avoid conflict with Flutter's `AsyncCallback`.
+/// The prefix `Dart` is used to avoid conflict with Flutter's [AsyncCallback].
 typedef DartAsyncCallback = Future<void> Function();
 
 typedef AsyncCodeRunner = Future<void> Function(DartAsyncCallback);
