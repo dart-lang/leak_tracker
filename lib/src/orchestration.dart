@@ -12,7 +12,7 @@ import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
 import 'shared_model.dart';
 
-/// Asyncronous callback.
+/// Asynchronous callback.
 ///
 /// The prefix `Dart` is used to avoid conflict with Flutter's `AsyncCallback`.
 typedef DartAsyncCallback = Future<void> Function();
