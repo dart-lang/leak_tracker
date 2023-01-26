@@ -26,9 +26,18 @@ class MemoryLeaksDetectedError extends StateError {
 
 /// Tests the functionality with leak tracking.
 ///
+/// Wrap code inside your test with this method in order to catch memory
+/// leaks.
+///
+/// The methods will fail in two cases:
+/// 1. Instrumented objects are garbage collected without being disposed.
+/// 2. Instrumented objects are disposed, but not garbage collected.
+///
+/// See [README.md](https://github.com/dart-lang/leak_tracker/blob/main/README.md)
+/// for more details.
+///
 /// If you test Flutter widgets, connect their instrumentation to the leak
 /// tracker:
-///
 /// ```
 /// void flutterEventListener(ObjectEvent event) => dispatchObjectEvent(event.toMap());
 ///
