@@ -1,6 +1,7 @@
-# 2.0.1-dev.1.1
+# 2.0.1
 
 * Minor changes.
+* Updated `vm_service` version to >=9.0.0 <12.0.0.
 
 # 2.0.0
 
