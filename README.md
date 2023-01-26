@@ -13,7 +13,9 @@ This is a framework for memory leak tracking for Dart and Flutter applications.
 
 ### Flutter application
 
-1. Before `runApp` invocation, enable leak tracking, and connect
+1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
+
+2. Before `runApp` invocation, enable leak tracking, and connect
 the Flutter memory allocation events:
 
 ```dart
@@ -29,7 +31,7 @@ runApp(...
 
 ```
 
-2. Run the application in debug mode and watch for a leak related warnings.
+3. Run the application in debug mode and watch for a leak related warnings.
 If you see a warning, open the link to investigate the leaks.
 
 TODO(polina-c): implement the link and add example of the warning.

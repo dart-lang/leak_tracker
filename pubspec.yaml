@@ -19,3 +19,4 @@ dev_dependencies:
     sdk: flutter
   flutter:
     sdk: flutter
+  layerlens: ^1.0.9
