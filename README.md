@@ -128,18 +128,7 @@ For example, out of four not-GCed leaks on the following diagram,
 only one is the culprit, because, when the object is fixed
 and GCed, the victims it referenced will be also GCed:
 
-```mermaid
-
-   flowchart TD;
-      l1[leak1\nculprit]
-      l2[leak2\nvictim]
-      l3[leak3\nvictim]
-      l4[leak4\nvictim]
-      l1-->l2;
-      l1-->l3;
-      l2-->l4;
-      l3-->l4;
-```
+<img width="204" alt="Screenshot 2023-01-26 at 4 31 54 PM" src="https://user-images.githubusercontent.com/12115586/214981096-9967c554-f037-4ed0-812b-ff5b387bb4e1.png">
 
 ## Limitations
 
