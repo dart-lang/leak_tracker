@@ -13,7 +13,9 @@ This is a framework for memory leak tracking for Dart and Flutter applications.
 
 ### Flutter application
 
-1. Before `runApp` invocation, enable leak tracking, and connect
+1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
+
+2. Before `runApp` invocation, enable leak tracking, and connect
 the Flutter memory allocation events:
 
 ```dart
@@ -29,7 +31,7 @@ runApp(...
 
 ```
 
-2. Run the application in debug mode and watch for a leak related warnings.
+3. Run the application in debug mode and watch for a leak related warnings.
 If you see a warning, open the link to investigate the leaks.
 
 TODO(polina-c): implement the link and add example of the warning.
@@ -126,18 +128,7 @@ For example, out of four not-GCed leaks on the following diagram,
 only one is the culprit, because, when the object is fixed
 and GCed, the victims it referenced will be also GCed:
 
-```mermaid
-
-   flowchart TD;
-      l1[leak1\nculprit]
-      l2[leak2\nvictim]
-      l3[leak3\nvictim]
-      l4[leak4\nvictim]
-      l1-->l2;
-      l1-->l3;
-      l2-->l4;
-      l3-->l4;
-```
+<img width="204" alt="Screenshot 2023-01-26 at 4 31 54 PM" src="https://user-images.githubusercontent.com/12115586/214981096-9967c554-f037-4ed0-812b-ff5b387bb4e1.png">
 
 ## Limitations
 
