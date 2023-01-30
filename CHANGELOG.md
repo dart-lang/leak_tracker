@@ -1,3 +1,7 @@
+# 2.0.2-dev.0.0
+
+* Improve documentation.
+
 # 2.0.1
 
 * Minor changes.
