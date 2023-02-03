@@ -132,6 +132,10 @@ and GCed, the victims it referenced will be also GCed:
 
 ## Limitations
 
+### By platform
+
+Leak tracker does not work for web platform.
+
 ### By tracked classes
 
 The leak tracker will catch leaks only for instrumented
