@@ -1,0 +1,32 @@
+name: Generate diagrams.
+
+on:
+  push:
+    branches: [ main]
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: clone the repo
+      uses: actions/checkout@v3
+
+    - name: install dart sdk
+      uses: dart-lang/setup-dart@v1.3
+      with:
+        sdk: dev
+
+    - name: version
+      run: dart --version
+
+    - name: dart pub get
+      run: dart pub get
+
+    - name: generate
+      run: dart run layerlens
+
+    - name: Commit files
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Update dependency diagrams.
