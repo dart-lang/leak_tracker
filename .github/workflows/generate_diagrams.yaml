@@ -13,7 +13,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: install dart sdk
-      uses: dart-lang/setup-dart@v1.3
+      uses: dart-lang/setup-dart@v1.4
       with:
         sdk: dev
 
