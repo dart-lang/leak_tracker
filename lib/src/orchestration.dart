@@ -29,7 +29,7 @@ class MemoryLeaksDetectedError extends StateError {
 /// Wrap code inside your test with this method to catch memory
 /// leaks.
 ///
-/// The methods will fail in two cases:
+/// The methods will fail with [MemoryLeaksDetectedError] in two cases:
 /// 1. Instrumented objects are garbage collected without being disposed.
 /// 2. Instrumented objects are disposed, but not garbage collected.
 ///
