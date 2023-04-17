@@ -24,20 +24,15 @@ class MemoryLeaksDetectedError extends StateError {
   final Leaks leaks;
 }
 
-/// Tests the functionality with leak tracking.
+/// Runs [callback] with memory leak detection.
 ///
-/// Wrap code inside your test with this method to catch memory
-/// leaks.
+/// See https://github.com/dart-lang/leak_tracker
+/// for memory leak definition.
 ///
-/// The methods will fail in two cases:
-/// 1. Instrumented objects are garbage collected without being disposed.
-/// 2. Instrumented objects are disposed, but not garbage collected.
+/// If leaks are not detected, returns empty collection of leaks.
 ///
-/// See [README.md](https://github.com/dart-lang/leak_tracker/blob/main/README.md)
-/// for more details.
-///
-/// Pass customized [stackTraceCollectionConfig] if you want to collect
-/// creation or disposal stack trace for the leaking instances.
+/// If leaks are detected, either returns collection of leaks
+/// or throws [MemoryLeaksDetectedError], depending on value of [shouldThrowOnLeaks].
 ///
 /// Flip [shouldThrowOnLeaks] to false if you want to test cover the leak tracker or
 /// analyze leak details in the returned result.
