@@ -26,7 +26,8 @@ class MemoryLeaksDetectedError extends StateError {
 
 /// Runs [callback] with memory leak detection.
 ///
-/// See https://github.com/dart-lang/leak_tracker for memory leak definition.
+/// See https://github.com/dart-lang/leak_tracker
+/// for memory leak definition.
 ///
 /// If leaks are not detected, returns empty collection of leaks.
 ///
