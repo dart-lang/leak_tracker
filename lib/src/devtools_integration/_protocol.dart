@@ -155,7 +155,7 @@ _Envelope<T> _envelopeByCode<T>(String codeString) {
   return _envelopesByCode[codeString]! as _Envelope<T>;
 }
 
-// ignore: library_private_types_in_public_api, pubic for testing
+// ignore: library_private_types_in_public_api, public for testing
 _Envelope envelopeByType(Type type) => _envelopesByType[type]!;
 
 final _envelopesByCode = {for (var e in envelopes) e.code.name: e};

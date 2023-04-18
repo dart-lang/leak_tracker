@@ -102,10 +102,10 @@ class LeakTrackingConfiguration {
   final Duration disposalTimeBuffer;
 }
 
-/// Configuration for leak trecking in unit tests.
+/// Configuration for leak tracking in unit tests.
 ///
 /// The configuration is needed only for test debugging,
-/// not for regular test run.
+/// not for regular test runs.
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
   const LeakTrackingTestConfig({
@@ -116,8 +116,8 @@ class LeakTrackingTestConfig {
 
   /// When to collect stack trace information.
   ///
-  /// You may need to know call stack to troubleshoot memory leaks.
-  /// Custonize this parameter to collect stack traces when needed.
+  /// Knowing call stack may help to troubleshoot memory leaks.
+  /// Customize this parameter to collect stack traces when needed.
   final StackTraceCollectionConfig stackTraceCollectionConfig;
 
   /// Handler to obtain details about collected leaks.
@@ -128,7 +128,7 @@ class LeakTrackingTestConfig {
 
   /// If true, the test will fail if leaks are found.
   ///
-  /// Set it to false if you want the test to pass, in order
-  /// to analyze the found leaks after the test execution.
+  /// If false, the test will not fail if leaks are
+  /// found to allow for analyzing leaks after the test completes.
   final bool failTestOnLeaks;
 }

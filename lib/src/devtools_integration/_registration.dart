@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import '../_primitives.dart';
+import '../_util.dart';
 import '../shared_model.dart';
 import 'delivery.dart';
 import 'messages.dart';
@@ -54,14 +55,11 @@ bool setupDevToolsIntegration(
         UnexpectedRequestTypeError(request.runtimeType),
       ).toServiceResponse();
     } catch (error, stack) {
-      // ignore: avoid_print
-      print(
+      printToConsole(
         'Error handling leak tracking request from DevTools to application.',
       );
-      // ignore: avoid_print
-      print(error);
-      // ignore: avoid_print
-      print(stack);
+      printToConsole(error);
+      printToConsole(stack);
 
       return ResponseFromApp(UnexpectedError(error, stack)).toServiceResponse();
     }

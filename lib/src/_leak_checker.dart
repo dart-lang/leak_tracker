@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import '_util.dart';
 import 'devtools_integration/delivery.dart';
 import 'leak_tracker_model.dart';
 import 'shared_model.dart';
@@ -69,8 +70,7 @@ class LeakChecker {
 }
 
 class StdoutSummarySink {
-  // ignore: avoid_print
-  void send(LeakSummary summary) => print(summary.toMessage());
+  void send(LeakSummary summary) => printToConsole(summary.toMessage());
 }
 
 class DevToolsSummarySink {
