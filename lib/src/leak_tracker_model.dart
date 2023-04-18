@@ -57,7 +57,7 @@ class LeakTrackingConfiguration {
   const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
-    this.leakListener,
+    this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
     this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
@@ -93,7 +93,7 @@ class LeakTrackingConfiguration {
   final bool notifyDevTools;
 
   /// Listener for leaks.
-  final LeakSummaryCallback? leakListener;
+  final LeakSummaryCallback? onLeaks;
 
   /// Time to allow the disposal invoker to release the reference to the object.
   ///

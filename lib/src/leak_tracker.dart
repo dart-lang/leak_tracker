@@ -54,7 +54,7 @@ void enableLeakTracking({
     _leakChecker = LeakChecker(
       leakProvider: newTracker,
       checkPeriod: theConfig.checkPeriod,
-      leakListener: theConfig.leakListener,
+      onLeaks: theConfig.onLeaks,
       stdoutSink: theConfig.stdoutLeaks ? StdoutSummarySink() : null,
       devToolsSink: theConfig.notifyDevTools ? DevToolsSummarySink() : null,
     );

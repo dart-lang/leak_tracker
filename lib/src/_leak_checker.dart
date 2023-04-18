@@ -16,7 +16,7 @@ class LeakChecker {
   LeakChecker({
     required this.leakProvider,
     required this.checkPeriod,
-    required this.leakListener,
+    required this.onLeaks,
     required this.stdoutSink,
     required this.devToolsSink,
   }) {
@@ -45,7 +45,7 @@ class LeakChecker {
   /// Listener for leaks.
   ///
   /// Will be invoked if leak totals change.
-  final LeakSummaryCallback? leakListener;
+  final LeakSummaryCallback? onLeaks;
 
   final LeakProvider leakProvider;
 
@@ -54,7 +54,7 @@ class LeakChecker {
     final summary = leakProvider.leaksSummary();
 
     if (!summary.matches(_previousResult)) {
-      leakListener?.call(summary);
+      onLeaks?.call(summary);
       stdoutSink?.send(summary);
       devToolsSink?.send(summary);
 
