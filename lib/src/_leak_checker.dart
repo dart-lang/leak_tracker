@@ -45,7 +45,7 @@ class LeakChecker {
   /// Listener for leaks.
   ///
   /// Will be invoked if leak totals change.
-  final LeakListener? leakListener;
+  final LeakSummaryCallback? leakListener;
 
   final LeakProvider leakProvider;
 

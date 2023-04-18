@@ -4,7 +4,14 @@
 
 import 'shared_model.dart';
 
-typedef LeakListener = void Function(LeakSummary);
+/// Handler to collect leak summary.
+typedef LeakSummaryCallback = void Function(LeakSummary);
+
+/// Handler to collect leak information.
+///
+/// Used by [LeakTrackingTestConfig.onLeaks].
+/// The parameter [leaks] contains details about found leaks.
+typedef LeaksCallback = void Function(Leaks leaks);
 
 /// Configuration of stack trace collection.
 ///
@@ -86,11 +93,42 @@ class LeakTrackingConfiguration {
   final bool notifyDevTools;
 
   /// Listener for leaks.
-  final LeakListener? leakListener;
+  final LeakSummaryCallback? leakListener;
 
   /// Time to allow the disposal invoker to release the reference to the object.
   ///
   /// The default value is pessimistic assuming that user will want to
   /// detect leaks not more often than a second.
   final Duration disposalTimeBuffer;
+}
+
+/// Configuration for leak trecking in unit tests.
+///
+/// The configuration is needed only for test debugging,
+/// not for regular test run.
+class LeakTrackingTestConfig {
+  /// Creates a new instance of [LeakTrackingFlutterTestConfig].
+  const LeakTrackingTestConfig({
+    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
+    this.onLeaks,
+    this.failTestOnLeaks = true,
+  });
+
+  /// When to collect stack trace information.
+  ///
+  /// You may need to know call stack to troubleshoot memory leaks.
+  /// Custonize this parameter to collect stack traces when needed.
+  final StackTraceCollectionConfig stackTraceCollectionConfig;
+
+  /// Handler to obtain details about collected leaks.
+  ///
+  /// Use the handler to process the collected leak
+  /// details programmatically.
+  final LeaksCallback? onLeaks;
+
+  /// If true, the test will fail if leaks are found.
+  ///
+  /// Set it to false if you want the test to pass, in order
+  /// to analyze the found leaks after the test execution.
+  final bool failTestOnLeaks;
 }
