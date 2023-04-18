@@ -2,7 +2,7 @@
 
 * Breaking changes: update names of types to be align with Flutter naming convention.
 * Add model for Flutter unit testing configuration.
-* Adapt Flutter standard lints.
+* Adopt Flutter standard lints.
 
 # 2.0.3
 
