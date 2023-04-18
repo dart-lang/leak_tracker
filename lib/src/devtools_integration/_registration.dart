@@ -29,7 +29,10 @@ bool registerLeakTrackingServiceExtension() => _registerServiceExtension(
 bool setupDevToolsIntegration(
   ObjectRef<LeakProvider?> leakProvider,
 ) {
-  final handler = (String method, Map<String, String> parameters) async {
+  Future<ServiceExtensionResponse> handler(
+    String method,
+    Map<String, String> parameters,
+  ) async {
     try {
       assert(method == memoryLeakTrackingExtensionName);
 
@@ -51,15 +54,18 @@ bool setupDevToolsIntegration(
         UnexpectedRequestTypeError(request.runtimeType),
       ).toServiceResponse();
     } catch (error, stack) {
+      // ignore: avoid_print
       print(
         'Error handling leak tracking request from DevTools to application.',
       );
+      // ignore: avoid_print
       print(error);
+      // ignore: avoid_print
       print(stack);
 
       return ResponseFromApp(UnexpectedError(error, stack)).toServiceResponse();
     }
-  };
+  }
 
   final result = _registerServiceExtension(handler);
 

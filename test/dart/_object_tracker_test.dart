@@ -17,7 +17,7 @@ void main() {
   late ObjectTracker tracker;
   const disposalTimeBuffer = Duration(milliseconds: 100);
 
-  void _verifyOneLeakIsRegistered(Object object, LeakType type) {
+  void verifyOneLeakIsRegistered(Object object, LeakType type) {
     var summary = tracker.leaksSummary();
     expect(summary.total, 1);
 
@@ -41,7 +41,7 @@ void main() {
     expect(leaks.total, 0);
   }
 
-  void _verifyNoLeaks() {
+  void verifyNoLeaks() {
     final summary = tracker.leaksSummary();
     final leaks = tracker.collectLeaks();
 
@@ -50,7 +50,7 @@ void main() {
   }
 
   /// Emulates GC.
-  void _gc(Object object) {
+  void gc(Object object) {
     finalizerBuilder.finalizer.finalize(identityHashCode(object));
   }
 
@@ -91,7 +91,7 @@ void main() {
 
       // Verify no leaks.
       withClock(Clock.fixed(time), () {
-        _verifyNoLeaks();
+        verifyNoLeaks();
       });
     });
 
@@ -105,10 +105,10 @@ void main() {
         context: null,
         trackedClass: 'trackedClass',
       );
-      _gc(theObject);
+      gc(theObject);
 
       // Verify not-disposal is registered.
-      _verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
+      verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
     });
 
     test('tracks ${LeakType.notGCed}.', () {
@@ -132,7 +132,7 @@ void main() {
 
       // Verify leak is registered.
       withClock(Clock.fixed(time), () {
-        _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+        verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
       });
     });
 
@@ -157,8 +157,8 @@ void main() {
 
       // GC and verify leak is registered.
       withClock(Clock.fixed(time), () {
-        _gc(theObject);
-        _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+        gc(theObject);
+        verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
 
@@ -183,11 +183,11 @@ void main() {
 
       withClock(Clock.fixed(time), () {
         // Verify notGCed leak is registered.
-        _verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+        verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
 
         // GC and verify gcedLate leak is registered.
-        _gc(theObject);
-        _verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+        gc(theObject);
+        verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
 
@@ -258,7 +258,7 @@ void main() {
 
       // GC and verify leak contains callstacks.
       withClock(Clock.fixed(time), () {
-        _gc(theObject);
+        gc(theObject);
         final theLeak =
             tracker.collectLeaks().byType[LeakType.gcedLate]!.single;
 

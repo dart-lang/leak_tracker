@@ -173,8 +173,9 @@ class ObjectTracker implements LeakProvider {
 
   ObjectRecord _notGCed(int code) {
     final result = _objects.notGCed[code];
-    if (result == null)
+    if (result == null) {
       throw 'The object with code $code is not registered for tracking.';
+    }
     return result;
   }
 

@@ -204,6 +204,7 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
 
   static String _toMultiLineYamlString(String text, String indent) {
     if (!text.contains('\n')) return text;
-    return '>\n$indent' + text.replaceAll('\n', '\n$indent').trimRight();
+    text = text.replaceAll('\n', '\n$indent').trimRight();
+    return '>\n$indent$text';
   }
 }

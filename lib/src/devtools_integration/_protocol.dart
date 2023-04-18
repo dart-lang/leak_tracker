@@ -68,7 +68,7 @@ Object openEnvelope(
   Map<String, dynamic> message,
   Channel channel,
 ) {
-  final envelope = envelopeByCode(message[_JsonFields.envelopeCode] as String);
+  final envelope = _envelopeByCode(message[_JsonFields.envelopeCode] as String);
   assert(envelope.channel == channel);
   return envelope.decode(message[_JsonFields.content]);
 }
@@ -151,20 +151,13 @@ final envelopes = [
   ),
 ];
 
-_Envelope<T> envelopeByCode<T>(String codeString) {
+_Envelope<T> _envelopeByCode<T>(String codeString) {
   return _envelopesByCode[codeString]! as _Envelope<T>;
 }
 
+// ignore: library_private_types_in_public_api, pubic for testing
 _Envelope envelopeByType(Type type) => _envelopesByType[type]!;
 
-late final _envelopesByCode = Map<String, _Envelope>.fromIterable(
-  envelopes,
-  key: (e) => (e as _Envelope).code.name,
-  value: (e) => e,
-);
+final _envelopesByCode = {for (var e in envelopes) e.code.name: e};
 
-late final _envelopesByType = Map<Type, _Envelope>.fromIterable(
-  envelopes,
-  key: (e) => e.type,
-  value: (e) => e,
-);
+final _envelopesByType = {for (var e in envelopes) e.type: e};

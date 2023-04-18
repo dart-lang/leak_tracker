@@ -69,6 +69,7 @@ class LeakChecker {
 }
 
 class StdoutSummarySink {
+  // ignore: avoid_print
   void send(LeakSummary summary) => print(summary.toMessage());
 }
 
