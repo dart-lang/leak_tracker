@@ -42,3 +42,8 @@ String contextToString(Object? object) {
 
   return object.toString();
 }
+
+void printToConsole(Object message) {
+  // ignore: avoid_print, dart:io is not available in web
+  print('leak_tracker: $message');
+}

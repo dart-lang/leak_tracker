@@ -17,7 +17,7 @@ class _SummaryValues {
     LeakType.notGCed: 3,
   });
 
-  static late final nonZeroCopy =
+  static final nonZeroCopy =
       LeakSummary(<LeakType, int>{}..addAll(nonZero.totals));
 }
 
@@ -40,8 +40,7 @@ void main() {
       LeakChecker(
         leakProvider: leakProvider,
         checkPeriod: checkPeriodically ? period : null,
-        leakListener:
-            hasListener ? (summary) => listened.store.add(summary) : null,
+        onLeaks: hasListener ? (summary) => listened.store.add(summary) : null,
         stdoutSink: hasStdout ? stdout : null,
         devToolsSink: hasDevtools ? devtools : null,
       );
@@ -76,7 +75,7 @@ void main() {
     final checker = defaultLeakChecker();
     expect(config.notifyDevTools, checker.devToolsSink != null);
     expect(config.stdoutLeaks, checker.stdoutSink != null);
-    expect(config.leakListener == null, checker.leakListener == null);
+    expect(config.onLeaks == null, checker.onLeaks == null);
     expect(config.checkPeriod == null, checker.checkPeriod == null);
   });
 

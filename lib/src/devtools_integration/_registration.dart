@@ -6,6 +6,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import '../_primitives.dart';
+import '../_util.dart';
 import '../shared_model.dart';
 import 'delivery.dart';
 import 'messages.dart';
@@ -29,7 +30,10 @@ bool registerLeakTrackingServiceExtension() => _registerServiceExtension(
 bool setupDevToolsIntegration(
   ObjectRef<LeakProvider?> leakProvider,
 ) {
-  final handler = (String method, Map<String, String> parameters) async {
+  Future<ServiceExtensionResponse> handler(
+    String method,
+    Map<String, String> parameters,
+  ) async {
     try {
       assert(method == memoryLeakTrackingExtensionName);
 
@@ -51,15 +55,15 @@ bool setupDevToolsIntegration(
         UnexpectedRequestTypeError(request.runtimeType),
       ).toServiceResponse();
     } catch (error, stack) {
-      print(
+      printToConsole(
         'Error handling leak tracking request from DevTools to application.',
       );
-      print(error);
-      print(stack);
+      printToConsole(error);
+      printToConsole(stack);
 
       return ResponseFromApp(UnexpectedError(error, stack)).toServiceResponse();
     }
-  };
+  }
 
   final result = _registerServiceExtension(handler);
 

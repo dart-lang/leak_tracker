@@ -38,8 +38,9 @@ void enableLeakTracking({
   assert(() {
     final theConfig = config ??= const LeakTrackingConfiguration();
     if (_objectTracker.value != null) {
-      if (!resetIfAlreadyEnabled)
+      if (!resetIfAlreadyEnabled) {
         throw StateError('Leak tracking is already enabled.');
+      }
       disableLeakTracking();
     }
 
@@ -53,7 +54,7 @@ void enableLeakTracking({
     _leakChecker = LeakChecker(
       leakProvider: newTracker,
       checkPeriod: theConfig.checkPeriod,
-      leakListener: theConfig.leakListener,
+      onLeaks: theConfig.onLeaks,
       stdoutSink: theConfig.stdoutLeaks ? StdoutSummarySink() : null,
       devToolsSink: theConfig.notifyDevTools ? DevToolsSummarySink() : null,
     );

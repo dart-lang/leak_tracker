@@ -9,13 +9,12 @@ import 'package:test/test.dart';
 import '../../dart_test_infra/data/messages.dart';
 
 void main() {
-  final messagesByChannel = Map<Channel, List<Object>>.fromIterable(
-    Channel.values,
-    key: (c) => c,
-    value: (c) => messages
-        .where((m) => envelopeByType(m.runtimeType).channel == c)
-        .toList(),
-  );
+  final messagesByChannel = {
+    for (var c in Channel.values)
+      c: messages
+          .where((m) => envelopeByType(m.runtimeType).channel == c)
+          .toList()
+  };
 
   setUpAll(() {
     verifyTestsCoverAllEnvelopes();

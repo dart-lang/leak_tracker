@@ -114,11 +114,11 @@ Future<void> _forceGC({required int gcCycles, Duration? timeout}) async {
   final start = clock.now();
   final barrier = reachabilityBarrier;
 
-  final _storage = <List<DateTime>>[];
+  final storage = <List<DateTime>>[];
 
   void allocateMemory() {
-    _storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
-    if (_storage.length > 100) _storage.removeAt(0);
+    storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
+    if (storage.length > 100) storage.removeAt(0);
   }
 
   while (reachabilityBarrier < barrier + gcCycles) {
