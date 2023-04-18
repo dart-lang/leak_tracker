@@ -1,3 +1,8 @@
+# 3.0.1
+
+* Increase sdk version
+* Remove obsolet lint
+
 # 3.0.0
 
 * Breaking changes: update names of types to be align with Flutter naming convention.
