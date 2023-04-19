@@ -114,6 +114,8 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
   });
 
+  static bool warnForNonSupportedPlatforms = true;
+
   /// When to collect stack trace information.
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
