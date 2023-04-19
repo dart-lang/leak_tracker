@@ -114,6 +114,7 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
   });
 
+  /// If true, warning will be printed when leak tracking is requested for a non-supported platform.
   static bool warnForNonSupportedPlatforms = true;
 
   /// When to collect stack trace information.
