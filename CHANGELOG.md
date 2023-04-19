@@ -1,6 +1,6 @@
 # 3.0.2
 
-Add flag warnForNonSupportedPlatforms to test config.
+* Add flag warnForNonSupportedPlatforms and allow lists to test config.
 
 # 3.0.1
 
