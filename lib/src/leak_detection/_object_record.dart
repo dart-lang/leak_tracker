@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import '_gc_counter.dart';
-import '_primitives.dart';
-import 'shared/shared_model.dart';
+import '../shared/_primitives.dart';
+import '../shared/shared_model.dart';
 
 /// Object collections to track leaks.
 ///

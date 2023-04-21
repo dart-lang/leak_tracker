@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import '_object_tracker.dart';
-import '_primitives.dart';
+import '../shared/_primitives.dart';
 
 // Values in [FieldNames] and [EventType] should be identical to ones used in
 // https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L23

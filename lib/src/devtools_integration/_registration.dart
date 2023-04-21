@@ -5,7 +5,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import '../_primitives.dart';
+import '../shared/_primitives.dart';
 import '../shared/_util.dart';
 import '../shared/shared_model.dart';
 import 'delivery.dart';

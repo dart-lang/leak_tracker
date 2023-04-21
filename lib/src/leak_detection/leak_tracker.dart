@@ -5,10 +5,10 @@
 import '_dispatcher.dart' as dispatcher;
 import '_leak_checker.dart';
 import '_object_tracker.dart';
-import '_primitives.dart';
-import 'devtools_integration/_registration.dart';
+import '../shared/_primitives.dart';
+import '../devtools_integration/_registration.dart';
 import 'leak_tracker_model.dart';
-import 'shared/shared_model.dart';
+import '../shared/shared_model.dart';
 
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 LeakChecker? _leakChecker;

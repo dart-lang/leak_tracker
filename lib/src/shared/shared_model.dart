@@ -4,7 +4,7 @@
 
 import 'package:collection/collection.dart';
 
-import '../_primitives.dart';
+import '_primitives.dart';
 import '_util.dart';
 
 class ContextKeys {
