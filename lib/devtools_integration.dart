@@ -10,4 +10,4 @@ library devtools_integration;
 export 'src/devtools_integration/delivery.dart';
 export 'src/devtools_integration/messages.dart';
 export 'src/devtools_integration/primitives.dart';
-export 'src/shared_model.dart';
+export 'src/shared/shared_model.dart';

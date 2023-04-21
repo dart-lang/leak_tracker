@@ -7,7 +7,7 @@ import 'dart:developer';
 
 import '../_primitives.dart';
 import '../shared/_util.dart';
-import '../shared_model.dart';
+import '../shared/shared_model.dart';
 import 'delivery.dart';
 import 'messages.dart';
 import 'primitives.dart';
