@@ -112,7 +112,13 @@ class LeakTrackingTestConfig {
     this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
+    this.notGCedAllowList = const <String>{},
+    this.notDisposedAllowList = const <String>{},
   });
+
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  static bool warnForNonSupportedPlatforms = true;
 
   /// When to collect stack trace information.
   ///
@@ -131,4 +137,14 @@ class LeakTrackingTestConfig {
   /// If false, the test will not fail if leaks are
   /// found to allow for analyzing leaks after the test completes.
   final bool failTestOnLeaks;
+
+  /// The set of classes that are allowed to be not garbage collected after disposal.
+  ///
+  /// As returned by `object.runtimeType.toString()`.
+  final Set<String> notGCedAllowList;
+
+  /// The set  of classes that are allowed to be garbage collected without being disposed.
+  ///
+  /// As returned by `object.runtimeType.toString()`.
+  final Set<String> notDisposedAllowList;
 }
