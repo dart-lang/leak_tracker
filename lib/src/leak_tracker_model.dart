@@ -112,6 +112,8 @@ class LeakTrackingTestConfig {
     this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
+    this.notGcedAllowList = const <String>{},
+    this.notDisposedAllowList = const <String>{},
   });
 
   /// If true, warning will be printed when leak tracking is
