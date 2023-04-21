@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/src/leak_tracker.dart';
+import 'package:leak_tracker/src/leak_detection/leak_tracker.dart';
 
 class InstrumentedClass {
   InstrumentedClass() {
