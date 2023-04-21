@@ -114,6 +114,10 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
   });
 
+  /// If true, warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  static bool warnForNonSupportedPlatforms = true;
+
   /// When to collect stack trace information.
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
@@ -131,4 +135,14 @@ class LeakTrackingTestConfig {
   /// If false, the test will not fail if leaks are
   /// found to allow for analyzing leaks after the test completes.
   final bool failTestOnLeaks;
+
+  /// List of classes that are allowed to be not GCed after disposal.
+  ///
+  /// As returned by `object.runtimeType.toString()`.
+  final Set<String> notGcedAllowList;
+
+  /// List of classes that are allowed to be GCed without disposal.
+  ///
+  /// As returned by `object.runtimeType.toString()`.
+  final Set<String> notDisposedAllowList;
 }
