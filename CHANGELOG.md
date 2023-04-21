@@ -1,3 +1,6 @@
+# 4.0.0
+
+* Improve documentation and naming.
 # 3.0.2
 
 * Add members to `LeakTrackingTestConfig`.
