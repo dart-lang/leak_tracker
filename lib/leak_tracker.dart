@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+export 'src/autosnapshotting/autosnapshotting.dart';
 export 'src/leak_detection/leak_tracker.dart';
 export 'src/leak_detection/leak_tracker_model.dart';
 export 'src/leak_detection/matchers.dart';
