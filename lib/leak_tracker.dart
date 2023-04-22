@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 export 'src/autosnapshotting/autosnapshotting.dart';
+export 'src/autosnapshotting/model.dart';
 export 'src/leak_tracking/leak_tracker.dart';
 export 'src/leak_tracking/leak_tracker_model.dart';
 export 'src/leak_tracking/matchers.dart';

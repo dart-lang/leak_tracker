@@ -10,16 +10,18 @@ import 'model.dart';
 
 Timer? _theTimer;
 final _takenSnapshots = <SnapshotRecord>[];
-late AutosnapshottingConfig _config;
+late AutoSnapshottingConfig _config;
 bool _snapshottingIsInProgress = false;
 
 /// Enables auto-snapshotting, based on the value of ProcessInfo.currentRss (dart:io).
 ///
 /// If autosnapshotting is already enabled, resets it.
-/// See [AutosnapshottingConfig] for details.
+/// See [AutoSnapshottingConfig] for details.
 /// Use [stopAutoSnapshotOnMemoryOveruse] to stop auto-snapshotting.
 /// Snapshot operation can cause a delay in the main thread.
-void autoSnapshotOnMemoryOveruse(AutosnapshottingConfig config) {
+void autoSnapshotOnMemoryOveruse({
+  AutoSnapshottingConfig config = const AutoSnapshottingConfig(),
+}) {
   stopAutoSnapshotOnMemoryOveruse();
   _config = config;
   _theTimer = Timer.periodic(config.interval, (_) {

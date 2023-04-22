@@ -37,12 +37,12 @@ typedef SnapshotCallback = void Function(SnapshotRecord record);
 /// The [onSnapshot] callback is called when a snapshot is taken.
 ///
 /// Set [minDelayBetweenSnapshots] to make sure snapshots do not trigger each other.
-class AutosnapshottingConfig {
-  AutosnapshottingConfig({
-    required this.thresholdMb,
-    required this.stepMb,
-    required this.folder,
-    required this.folderSizeLimitMb,
+class AutoSnapshottingConfig {
+  const AutoSnapshottingConfig({
+    this.thresholdMb = 1024, // 1Gb
+    this.stepMb = 512, // 0.5Gb
+    this.folder = '~/Downloads/dart_momory_snapshots',
+    this.folderSizeLimitMb = 10000, // 10Gb
     this.interval = const Duration(minutes: 1),
     this.minDelayBetweenSnapshots = const Duration(minutes: 5),
     this.onSnapshot,
