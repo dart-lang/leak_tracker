@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:io';
+
 import 'package:leak_tracker/src/autosnapshotting/_snapshot.dart';
 import 'package:test/test.dart';
 
@@ -11,7 +13,8 @@ void main() {
 
     final returnedFileName = saveSnapshot(
       'folder',
-      1,
+      rss: ProcessInfo.currentRss,
+      snapshotNumber: 1,
       snapshotter: (fileName) => actualFileName = fileName,
     );
 
