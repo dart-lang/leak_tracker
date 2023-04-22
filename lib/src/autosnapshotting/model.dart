@@ -10,3 +10,6 @@ class SnapshotRecord {
   final int snapshotNumber;
   final int rss;
 }
+
+/// A callback that is called when a snapshot is taken.
+typedef SnapshotHandler = void Function(SnapshotRecord record);
