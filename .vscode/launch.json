@@ -19,6 +19,13 @@
             "program": "lib/main.dart",
         },
         {
+            "name": "autosnapshotting",
+            "cwd": "more_examples/autosnapshotting",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main.dart",
+        },
+        {
             "name": "current test file",
             "request": "launch",
             "type": "dart",
