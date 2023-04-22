@@ -11,3 +11,9 @@ pubspec.lock
 
 **/macos/**/ephemeral/**
 GeneratedPluginRegistrant.swift
+
+# Platforms
+more_examples/**/ios/
+more_examples/**/macos/
+more_examples/**/web/
+more_examples/**/windows/

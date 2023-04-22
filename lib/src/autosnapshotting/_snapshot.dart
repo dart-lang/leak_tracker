@@ -26,5 +26,5 @@ SnapshotRecord saveSnapshot(
 
   snapshotter(fileName);
 
-  return SnapshotRecord(fileName, snapshotNumber, rss);
+  return SnapshotRecord(fileName, snapshotNumber: snapshotNumber, rss: rss);
 }

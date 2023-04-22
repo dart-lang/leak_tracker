@@ -2,31 +2,89 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:ui';
+import 'dart:async';
+import 'dart:io';
+
+import '_snapshot.dart';
+import 'model.dart';
+
+Timer? _theTimer;
+final _takenSnapshots = <SnapshotRecord>[];
+late AutosnapshottingConfig _config;
+bool _snapshottingIsInProgress = false;
 
 /// Enables auto-snapshotting, based on the value of ProcessInfo.currentRss (dart:io).
 ///
 /// If autosnapshotting is already enabled, resets it.
-///
-/// The snapshots will be taken as soon as the value becomes more than [thresholdMb],
-/// and saved to the [folder]. The snapshots will be re-taken when the value
-/// increases more than by [stepMb], till hitting the [folderSizeLimitMb].
-/// The [folder] will be created if it does not exist.
-///
-/// If [stepMb] is null, only one snapshot will be taken.
-///
-/// The method checks the folder size before saving snapshot, so the folder
-/// may become bigger than [folderSizeLimitMb].
-///
+/// See [AutosnapshottingConfig] for details.
 /// Use [stopAutoSnapshotOnMemoryOveruse] to stop auto-snapshotting.
-void autoSnapshotOnMemoryOveruse({
-  required int thresholdMb,
-  required int? stepMb,
-  required String folder,
-  required int folderSizeLimitMb,
-  Duration interval = const Duration(seconds: 1),
-  VoidCallback? onSnapshot,
-}) {}
+/// Snapshot operation can cause a delay in the main thread.
+void autoSnapshotOnMemoryOveruse(AutosnapshottingConfig config) {
+  stopAutoSnapshotOnMemoryOveruse();
+  _config = config;
+  _theTimer = Timer.periodic(config.interval, (_) {
+    if (_snapshottingIsInProgress) return;
+    _snapshottingIsInProgress = true;
+    _maybeTakeSnapshot();
+    _snapshottingIsInProgress = false;
+  });
+}
+
+extension _SizeConversion on int {
+  int mbToBites() => this * 1024 * 1024;
+}
+
+void _stopIfFolderOversized() {
+  final folderSize = Directory(_config.folder)
+      .listSync(recursive: true)
+      .whereType<File>()
+      .map((f) => f.lengthSync())
+      .fold<int>(0, (a, b) => a + b);
+  if (folderSize >= _config.folderSizeLimitMb.mbToBites()) {
+    stopAutoSnapshotOnMemoryOveruse();
+  }
+}
+
+void _maybeTakeSnapshot() {
+  _stopIfFolderOversized();
+
+  final rss = ProcessInfo.currentRss;
+  if (rss < _config.thresholdMb.mbToBites()) {
+    return;
+  }
+
+  final stepMb = _config.stepMb;
+
+  if (_takenSnapshots.isEmpty) {
+    _takeSnapshot(rss: rss);
+    if (stepMb == null) stopAutoSnapshotOnMemoryOveruse();
+    return;
+  }
+
+  if (stepMb == null) {
+    throw StateError(
+      'Autosnapshotting should be off if step is null and there is a snapshot already taken',
+    );
+  }
+
+  // TODO: process steps.
+}
+
+void _takeSnapshot({required int rss}) {
+  final snapshotNumber = _takenSnapshots.length + 1;
+
+  final record = saveSnapshot(
+    _config.folder,
+    rss: rss,
+    snapshotNumber: snapshotNumber,
+  );
+  _takenSnapshots.add(record);
+  _config.onSnapshot?.call(record);
+}
 
 /// Disables auto-snapshotting if it is enabled by [autoSnapshotOnMemoryOveruse].
-void stopAutoSnapshotOnMemoryOveruse() {}
+void stopAutoSnapshotOnMemoryOveruse() {
+  _theTimer?.cancel();
+  _theTimer = null;
+  _takenSnapshots.clear();
+}
