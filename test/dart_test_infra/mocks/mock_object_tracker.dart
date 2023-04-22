@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_detection/_object_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 
 enum EventType {
   started,
