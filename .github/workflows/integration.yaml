@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: macos-latest
+
+    steps:
+      - name: clone the repo
+        uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c
+
+      - name: install Flutter sdk
+        uses: subosito/flutter-action@48cafc24713cca54bbe03cdc3a423187d413aafa
+        with:
+          channel: 'master'
+
+      - name: version
+        run: flutter --version
+
+      - name: cd
+        run: cd more_examples/autosnapshotting
+
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: integration test
+        run: flutter test integration_test/app_test.dart -d macos
