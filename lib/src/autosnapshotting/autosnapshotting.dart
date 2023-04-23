@@ -18,20 +18,27 @@ bool _snapshottingIsInProgress = false;
 /// If autosnapshotting is already enabled, resets it.
 /// See [AutoSnapshottingConfig] for details.
 /// Use [stopAutoSnapshotOnMemoryOveruse] to stop auto-snapshotting.
-/// Snapshot operation can cause a delay in the main thread.
+/// Snapshotting operation may cause a delay in the main thread.
 void autoSnapshotOnMemoryOveruse({
   AutoSnapshottingConfig config = const AutoSnapshottingConfig(),
 }) {
   stopAutoSnapshotOnMemoryOveruse();
-  if (_isFolderOversized()) return;
-
+  _createFolderIfNotExists(config.folder);
   _config = config;
+  _stopIfFolderOversized();
   _theTimer = Timer.periodic(config.interval, (_) {
     if (_snapshottingIsInProgress) return;
     _snapshottingIsInProgress = true;
     _maybeTakeSnapshot();
     _snapshottingIsInProgress = false;
   });
+}
+
+void _createFolderIfNotExists(String folder) {
+  final dir = Directory(folder);
+  if (!dir.existsSync()) {
+    dir.createSync(recursive: true);
+  }
 }
 
 extension _SizeConversion on int {

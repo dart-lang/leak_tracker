@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:path/path.dart' as path;
+
 /// A record of a taken snapshot.
 class SnapshotRecord {
   SnapshotRecord(
@@ -41,10 +43,10 @@ class AutoSnapshottingConfig {
   const AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
     this.stepMb = 512, // 0.5Gb
-    this.folder = '~/Downloads/dart_momory_snapshots',
+    this.folder = 'dart_momory_snapshots',
     this.folderSizeLimitMb = 10000, // 10Gb
-    this.interval = const Duration(minutes: 1),
-    this.minDelayBetweenSnapshots = const Duration(minutes: 5),
+    this.interval = const Duration(seconds: 1),
+    this.minDelayBetweenSnapshots = const Duration(seconds: 10),
     this.onSnapshot,
   });
 
@@ -55,4 +57,6 @@ class AutoSnapshottingConfig {
   final Duration interval;
   final Duration minDelayBetweenSnapshots;
   final SnapshotCallback? onSnapshot;
+
+  String get folderAbsolute => path.absolute(folder);
 }

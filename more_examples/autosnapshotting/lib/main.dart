@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:path/path.dart' as path;
 
 void main() {
   runApp(const MyApp());
@@ -63,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final stepsMb = config.stepMb;
     _configInfo = 'interval: ${config.interval}\n'
         'minDelayBetweenSnapshots: ${config.minDelayBetweenSnapshots}\n'
-        'folder: ${config.folder}\n'
+        'folder: ${config.folderAbsolute}\n'
         'thresholdMb: ${_formatter.format(config.thresholdMb)}\n'
         'folderSizeLimitMb: ${_formatter.format(config.folderSizeLimitMb)}\n'
         'stepMb: ${stepsMb == null ? 'null' : _formatter.format(stepsMb)}\n';
@@ -82,9 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _formatSnapshots() {
     return _snapshots.map((snapshot) {
-      final size = _formatSize(snapshot.rss);
       final time = DateFormat('HH:mm:ss').format(snapshot.timestamp);
-      return '$time : ${snapshot.fileName} : $size';
+      return '$time : ${snapshot.fileName}';
     }).join('/n');
   }
 
@@ -105,10 +105,10 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
-              'Config:\n$_configInfo',
+              '-- Auto-Snapshotting Configuration --\n$_configInfo',
             ),
             Text(
-              'Taken snapshots:\n${_formatSnapshots()}',
+              '-- Taken Snapshots --\n${_formatSnapshots()}',
             ),
           ],
         ),
