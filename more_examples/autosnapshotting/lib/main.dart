@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:path/path.dart' as path;
 
 void main() {
   runApp(const MyApp());
@@ -54,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
       onSnapshot: _handleSnapshot,
       thresholdMb: 400,
       stepMb: 100,
+      folderSizeLimitMb: 500,
     );
 
     _initConfigInfo(config);
@@ -85,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return _snapshots.map((snapshot) {
       final time = DateFormat('HH:mm:ss').format(snapshot.timestamp);
       return '$time : ${snapshot.fileName}';
-    }).join('/n');
+    }).join('\n');
   }
 
   @override

@@ -22,7 +22,8 @@ SnapshotRecord saveSnapshot(
       NativeRuntime.writeHeapSnapshotToFile,
 }) {
   final fileName = path.absolute(
-      path.join(folder, 'snapshot-$pid-$snapshotNumber-rss$rss.json'));
+    path.join(folder, 'snapshot-$pid-$snapshotNumber-rss$rss.json'),
+  );
 
   snapshotter(fileName);
 

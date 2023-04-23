@@ -25,7 +25,6 @@ void autoSnapshotOnMemoryOveruse({
   stopAutoSnapshotOnMemoryOveruse();
   _createFolderIfNotExists(config.folder);
   _config = config;
-  _stopIfFolderOversized();
   _theTimer = Timer.periodic(config.interval, (_) {
     if (_snapshottingIsInProgress) return;
     _snapshottingIsInProgress = true;
@@ -45,12 +44,6 @@ extension _SizeConversion on int {
   int mbToBites() => this * 1024 * 1024;
 }
 
-void _stopIfFolderOversized() {
-  if (_isFolderOversized()) {
-    stopAutoSnapshotOnMemoryOveruse();
-  }
-}
-
 bool _isFolderOversized() {
   final folderSize = Directory(_config.folder)
       .listSync(recursive: true)
@@ -66,8 +59,9 @@ void _maybeTakeSnapshot() {
     return;
   }
 
-  // Folder size validation is havier than rss check, so we do it after reaching size.
-  _stopIfFolderOversized();
+  // Folder size validation is havier than rss check, so we do it after.
+  // We do not stop monitoring, in case user will free some space.
+  if (_isFolderOversized()) return;
 
   final stepMb = _config.stepMb;
 
@@ -77,13 +71,24 @@ void _maybeTakeSnapshot() {
     return;
   }
 
+  assert(_takenSnapshots.isNotEmpty);
+
   if (stepMb == null) {
     throw StateError(
       'Autosnapshotting should be off if step is null and there is a snapshot already taken',
     );
   }
 
-  // TODO: process steps.
+  final nextAllowedSnapshotTime =
+      _takenSnapshots.last.timestamp.add(_config.minDelayBetweenSnapshots);
+  if (nextAllowedSnapshotTime.isAfter(DateTime.now())) {
+    return;
+  }
+
+  final nextThreshold = _takenSnapshots.last.rss + stepMb.mbToBites();
+  if (rss >= nextThreshold) {
+    _takeSnapshot(rss: rss);
+  }
 }
 
 void _takeSnapshot({required int rss}) {
