@@ -36,6 +36,8 @@ class MyHomePage extends StatefulWidget {
 final _allocations = <List<DateTime>>[];
 
 class _MyHomePageState extends State<MyHomePage> {
+  final _formatter = NumberFormat('#,###,000');
+  late final String _configInfo;
   final _snapshots = <SnapshotRecord>[];
 
   void _allocateMemory() {
@@ -47,9 +49,24 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    autoSnapshotOnMemoryOveruse(
-      config: AutoSnapshottingConfig(onSnapshot: _handleSnapshot),
+    final config = AutoSnapshottingConfig(
+      onSnapshot: _handleSnapshot,
+      thresholdMb: 400,
+      stepMb: 100,
     );
+
+    _initConfigInfo(config);
+    autoSnapshotOnMemoryOveruse(config: config);
+  }
+
+  void _initConfigInfo(AutoSnapshottingConfig config) {
+    final stepsMb = config.stepMb;
+    _configInfo = 'interval: ${config.interval}\n'
+        'minDelayBetweenSnapshots: ${config.minDelayBetweenSnapshots}\n'
+        'folder: ${config.folder}\n'
+        'thresholdMb: ${_formatter.format(config.thresholdMb)}\n'
+        'folderSizeLimitMb: ${_formatter.format(config.folderSizeLimitMb)}\n'
+        'stepMb: ${stepsMb == null ? 'null' : _formatter.format(stepsMb)}\n';
   }
 
   void _handleSnapshot(SnapshotRecord record) {
@@ -59,9 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _formatSize(int bytes) {
-    final formatter = NumberFormat('#,###,000');
     final megaBytes = bytes / 1024 / 1024;
-    return '${formatter.format(bytes)} (${formatter.format(megaBytes)} MB)';
+    return '${_formatter.format(bytes)} (${_formatter.format(megaBytes)} MB)';
   }
 
   String _formatSnapshots() {
@@ -87,6 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'Current RSS: ${_formatSize(ProcessInfo.currentRss)}',
               style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            Text(
+              'Config:\n$_configInfo',
             ),
             Text(
               'Taken snapshots:\n${_formatSnapshots()}',

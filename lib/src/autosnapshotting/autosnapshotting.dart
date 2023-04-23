@@ -23,6 +23,8 @@ void autoSnapshotOnMemoryOveruse({
   AutoSnapshottingConfig config = const AutoSnapshottingConfig(),
 }) {
   stopAutoSnapshotOnMemoryOveruse();
+  if (_isFolderOversized()) return;
+
   _config = config;
   _theTimer = Timer.periodic(config.interval, (_) {
     if (_snapshottingIsInProgress) return;
@@ -37,23 +39,28 @@ extension _SizeConversion on int {
 }
 
 void _stopIfFolderOversized() {
+  if (_isFolderOversized()) {
+    stopAutoSnapshotOnMemoryOveruse();
+  }
+}
+
+bool _isFolderOversized() {
   final folderSize = Directory(_config.folder)
       .listSync(recursive: true)
       .whereType<File>()
       .map((f) => f.lengthSync())
       .fold<int>(0, (a, b) => a + b);
-  if (folderSize >= _config.folderSizeLimitMb.mbToBites()) {
-    stopAutoSnapshotOnMemoryOveruse();
-  }
+  return folderSize >= _config.folderSizeLimitMb.mbToBites();
 }
 
 void _maybeTakeSnapshot() {
-  _stopIfFolderOversized();
-
   final rss = ProcessInfo.currentRss;
   if (rss < _config.thresholdMb.mbToBites()) {
     return;
   }
+
+  // Folder size validation is havier than rss check, so we do it after reaching size.
+  _stopIfFolderOversized();
 
   final stepMb = _config.stepMb;
 
