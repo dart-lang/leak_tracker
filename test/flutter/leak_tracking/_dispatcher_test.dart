@@ -6,9 +6,9 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/src/_dispatcher.dart';
+import 'package:leak_tracker/src/leak_tracking/_dispatcher.dart';
 
-import '../dart_test_infra/mocks/mock_object_tracker.dart';
+import '../../dart_test_infra/mocks/mock_object_tracker.dart';
 
 void main() {
   test('dispatchObjectEvent dispatches Flutter SDK instrumentation.', () {

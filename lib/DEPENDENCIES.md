@@ -5,8 +5,7 @@ Dependencies that create loop are markes with `!`.
 
 ```mermaid
 flowchart TD;
-devtools_integration-->shared;
-leak_detection-->devtools_integration;
-leak_detection-->shared;
+devtools_integration.dart-->src;
+leak_tracker.dart-->src;
 ```
 

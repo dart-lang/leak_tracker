@@ -4,9 +4,9 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/_gc_counter.dart';
-import 'package:leak_tracker/src/_object_tracker.dart';
-import 'package:leak_tracker/src/_primitives.dart';
+import 'package:leak_tracker/src/leak_tracking/_gc_counter.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
+import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 
 const String _trackedClass = 'trackedClass';

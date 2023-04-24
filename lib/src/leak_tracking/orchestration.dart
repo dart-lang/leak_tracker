@@ -7,10 +7,10 @@ import 'dart:developer';
 
 import 'package:clock/clock.dart';
 
+import '../shared/shared_model.dart';
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
-import 'shared_model.dart';
 
 /// Asynchronous callback.
 ///

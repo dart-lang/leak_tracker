@@ -4,11 +4,11 @@
 
 import 'package:clock/clock.dart';
 
+import '../shared/_primitives.dart';
+import '../shared/shared_model.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
-import '_primitives.dart';
 import 'leak_tracker_model.dart';
-import 'shared_model.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.

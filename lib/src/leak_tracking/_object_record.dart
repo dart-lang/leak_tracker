@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import '../shared/_primitives.dart';
+import '../shared/shared_model.dart';
 import '_gc_counter.dart';
-import '_primitives.dart';
-import 'shared_model.dart';
 
 /// Object collections to track leaks.
 ///

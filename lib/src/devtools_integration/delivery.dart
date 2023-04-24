@@ -7,7 +7,7 @@ import 'dart:developer';
 
 import 'package:vm_service/vm_service.dart';
 
-import '../_util.dart';
+import '../shared/_util.dart';
 import '_protocol.dart';
 import 'primitives.dart';
 

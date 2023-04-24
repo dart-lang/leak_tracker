@@ -4,7 +4,7 @@
 
 import 'package:test/test.dart';
 
-import 'shared_model.dart';
+import '../shared/shared_model.dart';
 
 /// Checks if the leak collection is empty.
 const Matcher isLeakFree = _IsLeakFree();
