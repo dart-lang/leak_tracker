@@ -1,4 +1,4 @@
-name: CI
+name: integration
 
 on:
   push:
@@ -22,14 +22,11 @@ jobs:
       - name: version
         run: flutter --version
 
-      - name: cd
-        run: cd more_examples/autosnapshotting
-
       - name: flutter pub get
         run: flutter pub get
-
-      - name: pwd
-        run: pwd
+        working-directory: more_examples/autosnapshotting
 
       - name: integration test
         run: flutter test integration_test/app_test.dart -d macos
+        working-directory: more_examples/autosnapshotting
+
