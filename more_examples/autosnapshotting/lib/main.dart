@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
+const memoryThresholdMb = 400;
+const memoryStepMb = 100;
+
 void main() {
   runApp(const MyApp());
 }
@@ -30,30 +33,35 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
 final _allocations = <List<DateTime>>[];
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   final _formatter = NumberFormat('#,###,000');
   late final String _configInfo;
-  final _snapshots = <SnapshotRecord>[];
+  final snapshots = <SnapshotRecord>[];
+  int lastRss = 0;
+  late String snapshotsFolderName;
 
   void _allocateMemory() {
     setState(() {
       _allocations.add(List.generate(1000000, (_) => DateTime.now()));
+      lastRss = ProcessInfo.currentRss;
     });
   }
 
   @override
   void initState() {
     super.initState();
+    snapshotsFolderName = 'snapshots_$pid';
     final config = AutoSnapshottingConfig(
       onSnapshot: _handleSnapshot,
-      thresholdMb: 400,
-      stepMb: 100,
+      thresholdMb: memoryThresholdMb,
+      stepMb: memoryStepMb,
       folderSizeLimitMb: 500,
+      folder: snapshotsFolderName,
     );
 
     _initConfigInfo(config);
@@ -73,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _handleSnapshot(SnapshotRecord record) {
     setState(() {
-      _snapshots.add(record);
+      snapshots.add(record);
     });
   }
 
@@ -83,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _formatSnapshots() {
-    return _snapshots.map((snapshot) {
+    return snapshots.map((snapshot) {
       final time = DateFormat('HH:mm:ss').format(snapshot.timestamp);
       return '$time : ${snapshot.fileName}';
     }).join('\n');

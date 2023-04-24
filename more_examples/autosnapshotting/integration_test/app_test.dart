@@ -8,16 +8,31 @@ import 'package:integration_test/integration_test.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  group('end-to-end test', () {
-    testWidgets('tap on the floating action button, verify counter',
-        (tester) async {
-      app.main();
-      await tester.pumpAndSettle();
-      expect(find.textContaining('RSS'), findsOneWidget);
+  testWidgets('Snapshots are taken after reaching limit', (tester) async {
+    app.main();
+    await tester.pumpAndSettle();
 
+    final pageState =
+        tester.state<app.MyHomePageState>(find.byType(app.MyHomePage));
+    final theButton = find.byTooltip('Allocate more memory');
+
+    // Take first snapshot
+    const firstThreshold = app.memoryThresholdMb * 1024 * 1024;
+    while (pageState.lastRss <= firstThreshold) {
       await tester.tap(find.byTooltip('Allocate more memory'));
-
       await tester.pumpAndSettle();
-    });
+    }
+    await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
+    expect(pageState.snapshots.length, greaterThan(0));
+
+    // Take second threshold
+    final secondThreshold = pageState.lastRss + app.memoryStepMb * 1024 * 1024;
+    final snapshotsLength = pageState.snapshots.length;
+    while (pageState.lastRss <= secondThreshold) {
+      await tester.tap(find.byTooltip('Allocate more memory'));
+      await tester.pumpAndSettle();
+    }
+    await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
+    expect(pageState.snapshots.length, greaterThan(0));
   });
 }
