@@ -55,7 +55,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    snapshotsFolderName = 'snapshots_$pid';
+    snapshotsFolderName = 'snapshots/$pid';
     final config = AutoSnapshottingConfig(
       onSnapshot: _handleSnapshot,
       thresholdMb: memoryThresholdMb,
