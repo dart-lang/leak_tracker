@@ -19,7 +19,7 @@ void main() {
     // Take first snapshot
     const firstThreshold = app.memoryThresholdMb * 1024 * 1024;
     while (pageState.lastRss <= firstThreshold) {
-      await tester.tap(find.byTooltip('Allocate more memory'));
+      await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
     await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
@@ -29,10 +29,10 @@ void main() {
     final secondThreshold = pageState.lastRss + app.memoryStepMb * 1024 * 1024;
     final snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
-      await tester.tap(find.byTooltip('Allocate more memory'));
+      await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
     await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
-    expect(pageState.snapshots.length, greaterThan(0));
+    expect(pageState.snapshots.length, greaterThan(snapshotsLength));
   });
 }
