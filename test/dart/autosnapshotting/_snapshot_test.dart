@@ -16,7 +16,7 @@ void main() {
       rss: ProcessInfo.currentRss,
       snapshotNumber: 1,
       snapshotter: (fileName) => actualFileName = fileName,
-    ).fileName;
+    );
 
     expect(returnedFileName, actualFileName);
     expect(returnedFileName, contains('/snapshot-'));

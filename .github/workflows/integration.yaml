@@ -1,17 +1,14 @@
-name: CI
+name: integration
 
 on:
-  schedule:
-    # “At 00:00 (UTC) on Sunday.”
-    - cron: '0 0 * * 0'
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  ci:
-    runs-on: ubuntu-latest
+  integration:
+    runs-on: macos-latest
 
     steps:
       - name: clone the repo
@@ -27,16 +24,13 @@ jobs:
 
       - name: flutter pub get
         run: flutter pub get
-
-      - name: flutter pub get
-        run: flutter pub get
         working-directory: more_examples/autosnapshotting
 
-      - name: flutter analyze
-        run: flutter analyze
+      - name: flutter packages get
+        run: flutter packages get
+        working-directory: more_examples/autosnapshotting
 
-      - name: dart test
-        run: dart test test/dart
+      - name: integration test
+        run: flutter test integration_test/app_test.dart -d macos
+        working-directory: more_examples/autosnapshotting
 
-      - name: flutter test
-        run: flutter test test/flutter
