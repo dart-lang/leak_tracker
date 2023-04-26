@@ -17,7 +17,7 @@ void main() {
     final theButton = find.byTooltip('Allocate more memory');
 
     // Take first snapshot
-    const firstThreshold = app.memoryThresholdMb * 1024 * 1024;
+    // const firstThreshold = app.memoryThresholdMb * 1024 * 1024;
     //while (pageState.lastRss <= firstThreshold) {
     await tester.tap(theButton);
     await tester.pumpAndSettle();
