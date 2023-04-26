@@ -22,8 +22,11 @@ jobs:
       - name: version
         run: flutter --version
 
-      - name: flutter packages get
-        run: flutter packages get
+      - name: flutter pub get
+        run: flutter pub get
+
+      - name: flutter pub get
+        run: flutter pub get
         working-directory: more_examples/autosnapshotting
 
       - name: integration test
