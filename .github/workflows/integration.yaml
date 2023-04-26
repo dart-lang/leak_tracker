@@ -26,6 +26,10 @@ jobs:
         run: flutter pub get
         working-directory: more_examples/autosnapshotting
 
+      - name: flutter packages get
+        run: flutter packages get
+        working-directory: more_examples/autosnapshotting
+
       - name: integration test
         run: flutter test integration_test/app_test.dart -d macos
         working-directory: more_examples/autosnapshotting
