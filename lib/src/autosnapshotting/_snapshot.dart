@@ -9,20 +9,20 @@ import 'package:path/path.dart' as path;
 
 import 'model.dart';
 
-/// Saves a memory heap snapshot of the current process, to the [folder].
+/// Saves a memory heap snapshot of the current process, to the [directory].
 ///
 /// Returns the name of the file where the snapshot was saved.
 ///
 /// The file name contains process id, snapshot number and current RSS.
 SnapshotRecord saveSnapshot(
-  String folder, {
+  String directory, {
   required int rss,
   required int snapshotNumber,
   void Function(String fileName) snapshotter =
       NativeRuntime.writeHeapSnapshotToFile,
 }) {
   final fileName = path.absolute(
-    path.join(folder, 'snapshot-$pid-$snapshotNumber-rss$rss.json'),
+    path.join(directory, 'snapshot-$pid-$snapshotNumber-rss$rss.json'),
   );
 
   snapshotter(fileName);
