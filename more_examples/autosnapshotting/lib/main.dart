@@ -56,7 +56,7 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    snapshotsFolderName = 'snapshots/$pid';
+    snapshotsFolderName = 'dart_snapshots';
     final config = AutoSnapshottingConfig(
       onSnapshot: _handleSnapshot,
       thresholdMb: memoryThresholdMb,
@@ -72,13 +72,13 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _initConfigInfo(AutoSnapshottingConfig config) {
     final stepsMb = config.stepMb;
-    _configInfo = 'interval: ${config.interval}\n'
-        'minDelayBetweenSnapshots: ${config.minDelayBetweenSnapshots}\n'
+    _configInfo = 'thresholdMb: ${_formatter.format(config.thresholdMb)}\n'
+        'stepMb: ${stepsMb == null ? 'null' : _formatter.format(stepsMb)}\n'
+        'folderSizeLimitMb: ${_formatter.format(config.folderSizeLimitMb)}\n'
         'folder: ${config.folder}\n'
         'folderAbsolute: ${config.folderAbsolute}\n'
-        'thresholdMb: ${_formatter.format(config.thresholdMb)}\n'
-        'folderSizeLimitMb: ${_formatter.format(config.folderSizeLimitMb)}\n'
-        'stepMb: ${stepsMb == null ? 'null' : _formatter.format(stepsMb)}\n';
+        'interval: ${config.interval}\n'
+        'minDelayBetweenSnapshots: ${config.minDelayBetweenSnapshots}\n';
   }
 
   void _handleSnapshot(SnapshotRecord record) {

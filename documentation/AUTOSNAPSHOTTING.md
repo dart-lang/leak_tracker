@@ -10,11 +10,20 @@ The snapshots can be later analysed in DevTools.
 
 TODO (polina-c): add link to DEvTools help section.
 
+## Configure auto-snapshotting
+
+Use the function `autoSnapshotOnMemoryOveruse` to configure auto-snapshotting. We
+recommend to have autosnapshotting off by default, with possibility
+to enable it via command line arguments in case of memory issues.
+
+See example in
+
+
 ## Lumitations
 
-Enabled for: Dart debug and release modes (that are Flutter
+**Enabled for:** Dart debug and release modes (that are Flutter
 debug and profile modes).
-Disabled for: Dart product mode (that is Flutter release mode).
+**Disabled for:** Dart product mode (that is Flutter release mode).
 
 See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436)
 or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).
