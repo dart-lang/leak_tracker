@@ -178,6 +178,8 @@ NOTE: If you are interested in enabling leak tracking for release mode, please, 
 
 ## Instrument your code
 
+### Instrumentation for leak tracking
+
 If you want to catch leaks for objects outside of Flutter Framework
 (that are already instrumented), you need to instrument them.
 
@@ -205,6 +207,10 @@ class InstrumentedClass {
   }
 }
 ```
+
+### Instrumentation for auto-snapshotting
+
+
 
 ## Start/stop leak tracking
 

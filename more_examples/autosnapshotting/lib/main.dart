@@ -6,6 +6,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 const memoryThresholdMb = 400;
 const memoryStepMb = 100;
+const minDelayBetweenSnapshots = Duration(seconds: 5);
 
 void main() {
   runApp(const MyApp());
@@ -62,6 +63,7 @@ class MyHomePageState extends State<MyHomePage> {
       stepMb: memoryStepMb,
       folderSizeLimitMb: 500,
       folder: snapshotsFolderName,
+      minDelayBetweenSnapshots: minDelayBetweenSnapshots,
     );
 
     _initConfigInfo(config);
