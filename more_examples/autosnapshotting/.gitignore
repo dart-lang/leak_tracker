@@ -10,9 +10,6 @@
 .svn/
 migrate_working_dir/
 
-# Platforms
-more_examples/**/macos/
-
 # IntelliJ related
 *.iml
 *.ipr
