@@ -12,7 +12,7 @@ void main() {
     late String actualFileName;
 
     final returnedFileName = saveSnapshot(
-      'folder',
+      'directory',
       rss: ProcessInfo.currentRss,
       snapshotNumber: 1,
       snapshotter: (fileName) => actualFileName = fileName,

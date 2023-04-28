@@ -45,13 +45,13 @@ extension _SizeConversion on int {
   int mbToBytes() => this * 1024 * 1024;
 }
 
-bool _isFolderOversized() {
-  final folderSize = Directory(_config.directory)
+bool _isDirectoryOversized() {
+  final directorySize = Directory(_config.directory)
       .listSync(recursive: true)
       .whereType<File>()
       .map((f) => f.lengthSync())
       .fold<int>(0, (a, b) => a + b);
-  return folderSize >= _config.directorySizeLimitMb.mbToBytes();
+  return directorySize >= _config.directorySizeLimitMb.mbToBytes();
 }
 
 Future<void> _maybeTakeSnapshot() async {
@@ -60,9 +60,9 @@ Future<void> _maybeTakeSnapshot() async {
     return;
   }
 
-  // Folder size validation is heavier than rss check, so we do it after.
+  // Directory size validation is heavier than rss check, so we do it after.
   // We do not stop monitoring, in case user will free some space.
-  if (_isFolderOversized()) return;
+  if (_isDirectoryOversized()) return;
 
   final stepMb = _config.stepMb;
 

@@ -43,7 +43,7 @@ void main() {
     expect(pageState.snapshots.length, greaterThan(snapshotsLength + 1));
 
     //Check the directory limit is respected.
-    while (folderSize(config.directory) <=
+    while (directorySize(config.directory) <=
         config.directorySizeLimitMb.mbToBytes()) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
@@ -58,7 +58,7 @@ void main() {
   });
 }
 
-int folderSize(String path) => Directory(path)
+int directorySize(String path) => Directory(path)
     .listSync(recursive: true)
     .whereType<File>()
     .map((f) => f.lengthSync())
