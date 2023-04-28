@@ -9,6 +9,6 @@ The text below is under construction.
 
 This is a framework for detecting memory issues in Dart and Flutter applications. It enables:
 
-1. [Auto-detection for leaks](documentation/LEAK_TRACKING.md) in applications and tests
+1. [Memory leak auto-detection](documentation/LEAK_TRACKING.md) for applications and tests.
 2. [Auto-snapshotting](documentation/AUTOSNAPSHOTTING.md) in case of memory overuse
-by an application
+by an application.
