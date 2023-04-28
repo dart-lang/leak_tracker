@@ -4,10 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-const memoryThresholdMb = 400;
-const memoryStepMb = 100;
-const minDelayBetweenSnapshots = Duration(seconds: 5);
-
 void main() {
   runApp(const MyApp());
 }
@@ -44,7 +40,7 @@ class MyHomePageState extends State<MyHomePage> {
   late final String _configInfo;
   final snapshots = <SnapshotRecord>[];
   int lastRss = 0;
-  late String snapshotsFolderName;
+  late AutoSnapshottingConfig config;
 
   void _allocateMemory() {
     setState(() {
@@ -56,14 +52,14 @@ class MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    snapshotsFolderName = 'dart_snapshots';
-    final config = AutoSnapshottingConfig(
+
+    config = AutoSnapshottingConfig(
       onSnapshot: _handleSnapshot,
-      thresholdMb: memoryThresholdMb,
-      stepMb: memoryStepMb,
+      thresholdMb: 400,
+      stepMb: 100,
       directorySizeLimitMb: 500,
-      directory: snapshotsFolderName,
-      minDelayBetweenSnapshots: minDelayBetweenSnapshots,
+      directory: 'dart_snapshots',
+      minDelayBetweenSnapshots: const Duration(seconds: 5),
     );
 
     _initConfigInfo(config);

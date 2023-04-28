@@ -29,22 +29,25 @@ typedef SnapshotCallback = void Function(SnapshotRecord record);
 /// increases more than by [stepMb], till hitting the [directorySizeLimitMb].
 /// The [directory] will be created if it does not exist.
 ///
-/// Set [interval] to customize how often to verify memory consumption.
-///
 /// If [stepMb] is null, only one snapshot will be taken.
 ///
-/// The directory size will be checked before saving snapshot, so the directory
-/// may become bigger than [directorySizeLimitMb].
+/// The directory size will be checked before a snapshot is taken and saved,
+/// so the directory may exceed the size specified by [directorySizeLimitMb]
+/// depending on the size of the snapshot.
 ///
 /// The [onSnapshot] callback is called when a snapshot is taken.
 ///
+/// Set [interval] to customize how often to verify memory consumption.
 /// Set [minDelayBetweenSnapshots] to make sure snapshots do not trigger each other.
+/// For example, if [interval] is 1 second and [minDelayBetweenSnapshots] is 5 seconds,
+/// the app will check size every second, but after taking snapshot,
+/// will delay for 5 seconds to allow memory to settle.
 class AutoSnapshottingConfig {
   const AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
     this.stepMb = 512, // 0.5Gb
     this.directory = 'dart_momory_snapshots',
-    this.directorySizeLimitMb = 10000, // 10Gb
+    this.directorySizeLimitMb = 10240, // 10Gb
     this.interval = const Duration(seconds: 1),
     this.minDelayBetweenSnapshots = const Duration(seconds: 10),
     this.onSnapshot,

@@ -20,10 +20,11 @@ void main() {
 
     final pageState =
         tester.state<app.MyHomePageState>(find.byType(app.MyHomePage));
+    final config = pageState.config;
     final theButton = find.byTooltip('Allocate more memory');
 
     // Take first snapshot
-    final firstThreshold = app.memoryThresholdMb.mbToBytes();
+    final firstThreshold = config.thresholdMb.mbToBytes();
     while (pageState.lastRss <= firstThreshold) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
@@ -32,8 +33,8 @@ void main() {
     expect(pageState.snapshots.length, greaterThan(0));
 
     //Take second threshold
-    final secondThreshold = pageState.lastRss + app.memoryStepMb.mbToBytes();
-    final snapshotsLength = pageState.snapshots.length;
+    final secondThreshold = pageState.lastRss + config.stepMb!.mbToBytes();
+    int snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
@@ -42,15 +43,18 @@ void main() {
     expect(pageState.snapshots.length, greaterThan(snapshotsLength + 1));
 
     //Check the directory limit is respected.
-    while (folderSize(pageState.directory) <=
-        app.directorySizeLimitMb.mbToBytes()) {
+    while (folderSize(config.directory) <=
+        config.directorySizeLimitMb.mbToBytes()) {
+      await tester.tap(theButton);
+      await tester.pumpAndSettle();
+      await tester.runAsync(() => Future.delayed(const Duration(seconds: 1)));
+    }
+    snapshotsLength = pageState.snapshots.length;
+    for (var _ in Iterable.generate(10)) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    while (pageState.lastRss <= secondThreshold) {
-      await tester.tap(theButton);
-      await tester.pumpAndSettle();
-    }
+    expect(pageState.snapshots.length, snapshotsLength);
   });
 }
 
