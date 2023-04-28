@@ -23,10 +23,12 @@ class SnapshotRecord {
 /// A callback that is called when a snapshot is taken.
 typedef SnapshotCallback = void Function(SnapshotRecord record);
 
-/// Configures auto-snapshotting, based on the value of ProcessInfo.currentRss (dart:io).
+/// Configures auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
-/// The snapshots will be taken as soon as the value becomes more than [thresholdMb],
-/// and saved to the [directory]. The snapshots will be re-taken when the value
+/// Automatic snapshots will begin to be taken when the rss value is exceeds [thresholdMb].
+/// The snapshots will be saved to [directory].
+///
+/// The snapshots will be re-taken when the value
 /// increases more than by [stepMb], till hitting the [directorySizeLimitMb].
 /// The [directory] will be created if it does not exist.
 ///
@@ -54,14 +56,31 @@ class AutoSnapshottingConfig {
     this.onSnapshot,
   });
 
+  /// The rss value in Mb that will trigger the first snapshot.
   final int thresholdMb;
+
+  /// The value by which the rss value should increase to take another snapshot.
   final int? stepMb;
+
+  /// The directory where snapshots will be saved.
+  ///
+  /// If the directory does not exist, it will be created.
+  ///
+  /// If the path is relative, it will be relative to the current working directory.
   final String directory;
+
   final int directorySizeLimitMb;
+
+  /// How often to verify memory consumption.
   final Duration interval;
+
+  /// How long to wait after taking a snapshot before taking another one.
   final Duration minDelayBetweenSnapshots;
+
+  /// A callback that is called when a snapshot is taken.
   final SnapshotCallback? onSnapshot;
 
+  /// The absolute path to the [directory].
   String get directoryAbsolute => path.absolute(directory);
 
   @override
