@@ -1,4 +1,4 @@
-Coming soon! See https://github.com/flutter/devtools/issues/3951.
+Coming soon! See https://github.com/flutter/devtools/issues/5606.
 
 The text below is under construction.
 
