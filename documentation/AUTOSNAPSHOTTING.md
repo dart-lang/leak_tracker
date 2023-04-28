@@ -22,9 +22,8 @@ See [example](../more_examples/autosnapshotting/).
 
 ## Limitations
 
-* **Enabled for:** Flutter
-debug and profile modes (that are Dart debug and release modes).
-* **Disabled for:** Flutter release mode (that is Dart product mode).
+* **Enabled for:** Flutter debug and profile modes (that equivalent to Dart debug and release modes).
+* **Disabled for:** Flutter release mode (that equivalent to Dart product mode).
 
 See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436)
 or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).

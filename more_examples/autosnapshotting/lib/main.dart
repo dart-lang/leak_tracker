@@ -61,8 +61,8 @@ class MyHomePageState extends State<MyHomePage> {
       onSnapshot: _handleSnapshot,
       thresholdMb: memoryThresholdMb,
       stepMb: memoryStepMb,
-      folderSizeLimitMb: 500,
-      folder: snapshotsFolderName,
+      directorySizeLimitMb: 500,
+      directory: snapshotsFolderName,
       minDelayBetweenSnapshots: minDelayBetweenSnapshots,
     );
 
@@ -74,8 +74,8 @@ class MyHomePageState extends State<MyHomePage> {
     final stepsMb = config.stepMb;
     _configInfo = 'thresholdMb: ${_formatter.format(config.thresholdMb)}\n'
         'stepMb: ${stepsMb == null ? 'null' : _formatter.format(stepsMb)}\n'
-        'folderSizeLimitMb: ${_formatter.format(config.folderSizeLimitMb)}\n'
-        'folder: ${config.folder}\n'
+        'folderSizeLimitMb: ${_formatter.format(config.directorySizeLimitMb)}\n'
+        'folder: ${config.directory}\n'
         'folderAbsolute: ${config.folderAbsolute}\n'
         'interval: ${config.interval}\n'
         'minDelayBetweenSnapshots: ${config.minDelayBetweenSnapshots}\n';

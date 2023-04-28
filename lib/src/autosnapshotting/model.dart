@@ -25,16 +25,16 @@ typedef SnapshotCallback = void Function(SnapshotRecord record);
 /// Configures auto-snapshotting, based on the value of ProcessInfo.currentRss (dart:io).
 ///
 /// The snapshots will be taken as soon as the value becomes more than [thresholdMb],
-/// and saved to the [folder]. The snapshots will be re-taken when the value
-/// increases more than by [stepMb], till hitting the [folderSizeLimitMb].
-/// The [folder] will be created if it does not exist.
+/// and saved to the [directory]. The snapshots will be re-taken when the value
+/// increases more than by [stepMb], till hitting the [directorySizeLimitMb].
+/// The [directory] will be created if it does not exist.
 ///
 /// Set [interval] to customize how often to verify memory consumption.
 ///
 /// If [stepMb] is null, only one snapshot will be taken.
 ///
-/// The folder size will be chaecked before saving snapshot, so the folder
-/// may become bigger than [folderSizeLimitMb].
+/// The directory size will be checked before saving snapshot, so the directory
+/// may become bigger than [directorySizeLimitMb].
 ///
 /// The [onSnapshot] callback is called when a snapshot is taken.
 ///
@@ -43,8 +43,8 @@ class AutoSnapshottingConfig {
   const AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
     this.stepMb = 512, // 0.5Gb
-    this.folder = 'dart_momory_snapshots',
-    this.folderSizeLimitMb = 10000, // 10Gb
+    this.directory = 'dart_momory_snapshots',
+    this.directorySizeLimitMb = 10000, // 10Gb
     this.interval = const Duration(seconds: 1),
     this.minDelayBetweenSnapshots = const Duration(seconds: 10),
     this.onSnapshot,
@@ -52,11 +52,11 @@ class AutoSnapshottingConfig {
 
   final int thresholdMb;
   final int? stepMb;
-  final String folder;
-  final int folderSizeLimitMb;
+  final String directory;
+  final int directorySizeLimitMb;
   final Duration interval;
   final Duration minDelayBetweenSnapshots;
   final SnapshotCallback? onSnapshot;
 
-  String get folderAbsolute => path.absolute(folder);
+  String get folderAbsolute => path.absolute(directory);
 }
