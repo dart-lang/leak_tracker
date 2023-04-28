@@ -29,14 +29,8 @@ typedef SnapshotCallback = void Function(SnapshotRecord record);
 /// The snapshots will be saved to [directory].
 ///
 /// The snapshots will be re-taken when the value
-/// increases more than by [stepMb], till hitting the [directorySizeLimitMb].
-/// The [directory] will be created if it does not exist.
-///
-/// If [stepMb] is null, only one snapshot will be taken.
-///
-/// The directory size will be checked before a snapshot is taken and saved,
-/// so the directory may exceed the size specified by [directorySizeLimitMb]
-/// depending on the size of the snapshot.
+/// increases more than by [stepMb], until the size of [directory] exceeds
+/// [directorySizeLimitMb].
 ///
 /// The [onSnapshot] callback is called when a snapshot is taken.
 ///
@@ -49,7 +43,7 @@ class AutoSnapshottingConfig {
   const AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
     this.stepMb = 512, // 0.5Gb
-    this.directory = 'dart_momory_snapshots',
+    this.directory = 'dart_memory_snapshots',
     this.directorySizeLimitMb = 10240, // 10Gb
     this.interval = const Duration(seconds: 1),
     this.minDelayBetweenSnapshots = const Duration(seconds: 10),
@@ -60,6 +54,8 @@ class AutoSnapshottingConfig {
   final int thresholdMb;
 
   /// The value by which the rss value should increase to take another snapshot.
+  ///
+  /// If [stepMb] is null, only one snapshot will be taken.
   final int? stepMb;
 
   /// The directory where snapshots will be saved.
@@ -69,6 +65,11 @@ class AutoSnapshottingConfig {
   /// If the path is relative, it will be relative to the current working directory.
   final String directory;
 
+  /// The size limit for the [directory] in Mb.
+  ///
+  /// The directory size will be checked before a snapshot is taken and saved,
+  /// so the directory may exceed the size specified by [directorySizeLimitMb]
+  /// depending on the size of the snapshot.
   final int directorySizeLimitMb;
 
   /// How often to verify memory consumption.
