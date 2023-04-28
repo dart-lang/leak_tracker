@@ -5,7 +5,7 @@ The text below is under construction.
 
 # Memory Leak Tracking
 
-Memory leak tracking auto-detects certain tip[es of memory leaks in Dart and Flutter applications and tests.
+Memory leak tracking auto-detects certain types of memory leaks in Dart and Flutter applications and tests.
 
 ## Quick start to track leaks for Flutter
 
