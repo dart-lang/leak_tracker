@@ -41,7 +41,7 @@ final _allocations = <List<DateTime>>[];
 
 class MyHomePageState extends State<MyHomePage> {
   final _formatter = NumberFormat('#,###,000');
-  final snapshots = <SnapshotRecord>[];
+  final snapshots = <SnapshotInfo>[];
   int lastRss = 0;
   late AutoSnapshottingConfig config;
 
@@ -68,7 +68,7 @@ class MyHomePageState extends State<MyHomePage> {
     autoSnapshotOnMemoryOveruse(config: config);
   }
 
-  void _handleSnapshot(SnapshotRecord record) {
+  void _handleSnapshot(SnapshotInfo record) {
     setState(() {
       snapshots.add(record);
     });

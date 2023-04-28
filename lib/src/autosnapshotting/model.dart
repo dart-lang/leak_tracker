@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 /// A record of a taken snapshot.
-class SnapshotRecord {
-  SnapshotRecord(
+class SnapshotInfo {
+  SnapshotInfo(
     this.fileName, {
     required this.snapshotNumber,
     required this.rss,
@@ -21,7 +21,7 @@ class SnapshotRecord {
 }
 
 /// A callback that is called when a snapshot is taken.
-typedef SnapshotCallback = void Function(SnapshotRecord record);
+typedef SnapshotCallback = void Function(SnapshotInfo record);
 
 /// Configures auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///

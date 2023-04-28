@@ -14,7 +14,7 @@ import 'model.dart';
 /// Returns the name of the file where the snapshot was saved.
 ///
 /// The file name contains process id, snapshot number and current RSS.
-SnapshotRecord saveSnapshot(
+SnapshotInfo saveSnapshot(
   String directory, {
   required int rss,
   required int snapshotNumber,
@@ -27,5 +27,5 @@ SnapshotRecord saveSnapshot(
 
   snapshotter(fileName);
 
-  return SnapshotRecord(fileName, snapshotNumber: snapshotNumber, rss: rss);
+  return SnapshotInfo(fileName, snapshotNumber: snapshotNumber, rss: rss);
 }

@@ -9,7 +9,7 @@ import '_snapshot.dart';
 import 'model.dart';
 
 Timer? timer;
-final _takenSnapshots = <SnapshotRecord>[];
+final _takenSnapshots = <SnapshotInfo>[];
 late AutoSnapshottingConfig _config;
 bool _snapshottingIsInProgress = false;
 
