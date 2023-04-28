@@ -37,7 +37,6 @@ final _allocations = <List<DateTime>>[];
 
 class MyHomePageState extends State<MyHomePage> {
   final _formatter = NumberFormat('#,###,000');
-  late final String _configInfo;
   final snapshots = <SnapshotRecord>[];
   int lastRss = 0;
   late AutoSnapshottingConfig config;
@@ -62,19 +61,7 @@ class MyHomePageState extends State<MyHomePage> {
       minDelayBetweenSnapshots: const Duration(seconds: 5),
     );
 
-    _initConfigInfo(config);
     autoSnapshotOnMemoryOveruse(config: config);
-  }
-
-  void _initConfigInfo(AutoSnapshottingConfig config) {
-    final stepsMb = config.stepMb;
-    _configInfo = 'thresholdMb: ${_formatter.format(config.thresholdMb)}\n'
-        'stepMb: ${stepsMb == null ? 'null' : _formatter.format(stepsMb)}\n'
-        'folderSizeLimitMb: ${_formatter.format(config.directorySizeLimitMb)}\n'
-        'folder: ${config.directory}\n'
-        'folderAbsolute: ${config.folderAbsolute}\n'
-        'interval: ${config.interval}\n'
-        'minDelayBetweenSnapshots: ${config.minDelayBetweenSnapshots}\n';
   }
 
   void _handleSnapshot(SnapshotRecord record) {
@@ -112,7 +99,7 @@ class MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
-              '-- Auto-Snapshotting Configuration --\n$_configInfo',
+              '-- Auto-Snapshotting Configuration --\n$config',
             ),
             Text(
               '-- Taken Snapshots --\n${_formatSnapshots()}',

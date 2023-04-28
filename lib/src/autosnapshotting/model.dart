@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 /// A record of a taken snapshot.
@@ -62,4 +63,16 @@ class AutoSnapshottingConfig {
   final SnapshotCallback? onSnapshot;
 
   String get folderAbsolute => path.absolute(directory);
+
+  @override
+  String toString() {
+    final formatter = NumberFormat('#,###,000');
+    return 'thresholdMb: ${formatter.format(thresholdMb)}\n'
+        'stepMb: ${stepMb == null ? 'null' : formatter.format(stepMb)}\n'
+        'folderSizeLimitMb: ${formatter.format(directorySizeLimitMb)}\n'
+        'folder: $directory\n'
+        'folderAbsolute: $folderAbsolute\n'
+        'interval: $interval\n'
+        'minDelayBetweenSnapshots: $minDelayBetweenSnapshots\n';
+  }
 }
