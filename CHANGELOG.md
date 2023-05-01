@@ -1,3 +1,7 @@
+# 4.0.2
+
+* Improve documentation.
+
 # 4.0.1
 
 * Autosnapshotting.
