@@ -8,8 +8,13 @@ import 'package:autosnapshotting/main.dart' as app;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
+// Prerequisite:
+// flutter create --platforms=macos .
+
 // Run:
 // flutter test integration_test/app_test.dart -d macos
+
+const _testDirRoot = 'test_dart_snapshots';
 
 extension _SizeConversion on int {
   int mbToBytes() => this * 1024 * 1024;
@@ -19,7 +24,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Snapshots are taken after reaching limit', (tester) async {
-    app.main();
+    app.main([], snapshotDirectory: '$_testDirRoot/$pid');
     await tester.pumpAndSettle();
 
     final pageState =
@@ -44,7 +49,7 @@ void main() {
       await tester.pumpAndSettle();
     }
     await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
-    expect(pageState.snapshots.length, greaterThan(snapshotsLength + 1));
+    expect(pageState.snapshots.length, snapshotsLength + 1);
 
     // Check the directory limit is respected.
     while (directorySize(config.directory) <=
@@ -59,6 +64,10 @@ void main() {
       await tester.pumpAndSettle();
     }
     expect(pageState.snapshots.length, snapshotsLength);
+  });
+
+  tearDownAll(() {
+    Directory(_testDirRoot).deleteSync(recursive: true);
   });
 }
 
