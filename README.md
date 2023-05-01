@@ -13,4 +13,6 @@ This is a framework for detecting memory issues in Dart and Flutter applications
 2. [Auto-snapshotting](doc/AUTOSNAPSHOT.md) in case of memory overuse
 by an application.
 
-See memory leak troubleshooting guidance [here](doc/TROUBLESHOOT.md).
+Documentation:
+1. [Understand leak tracking concepts](doc/CONCEPTS.md)
+2. [Troubleshoot memory leaks](doc/TROUBLESHOOT.md)

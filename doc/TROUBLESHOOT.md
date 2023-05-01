@@ -4,9 +4,13 @@ The text below is under construction.
 
 TODO: separate information for tests and applications.
 
-# Memory Leak Troubleshooting
+# Troubleshoot Memory Leaks
 
-This page describes how to troubleshoot memory leaks. See leak detection guidance [here](DETECT.md).
+This page describes how to troubleshoot memory leaks. See other information on memory leaks [here](../README.md).
+
+To understand root cause of a memroy leak, gather additional information.
+
+For non
 
 ## Collect callstack
 
