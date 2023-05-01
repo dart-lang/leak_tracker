@@ -40,3 +40,7 @@ jobs:
 
       - name: flutter test
         run: flutter test test/flutter
+
+      - name: integration test
+        run: flutter test integration_test/app_test.dart -d flutter-tester
+        working-directory: more_examples/autosnapshotting
