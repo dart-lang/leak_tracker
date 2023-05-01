@@ -10,7 +10,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  ci:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +28,10 @@ jobs:
       - name: flutter pub get
         run: flutter pub get
 
+      - name: flutter pub get
+        run: flutter pub get
+        working-directory: more_examples/autosnapshotting
+
       - name: flutter analyze
         run: flutter analyze
 
@@ -36,3 +40,7 @@ jobs:
 
       - name: flutter test
         run: flutter test test/flutter
+
+      - name: integration test
+        run: flutter test integration_test/app_test.dart -d flutter-tester
+        working-directory: more_examples/autosnapshotting

@@ -6,7 +6,7 @@ Dependencies that create loop are markes with `!`.
 ```mermaid
 flowchart TD;
 devtools_integration-->shared;
-leak_detection-->devtools_integration;
-leak_detection-->shared;
+leak_tracking-->devtools_integration;
+leak_tracking-->shared;
 ```
 
