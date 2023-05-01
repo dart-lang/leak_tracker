@@ -25,7 +25,7 @@ typedef SnapshotCallback = void Function(SnapshotInfo record);
 
 /// Configures auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
-/// Automatic snapshots will begin to be taken when the rss value is exceeds [thresholdMb].
+/// Automatic snapshots will begin to be taken when the rss value exceeds [thresholdMb].
 /// The snapshots will be saved to [directory].
 ///
 /// The snapshots will be re-taken when the value
