@@ -7,6 +7,8 @@ The text below is under construction.
 
 # Memory Leak Tracker
 
+TODO: after merge, replace links with absolute, to make them working on pub.dev
+
 This is a framework for detecting memory issues in Dart and Flutter applications. It enables:
 
 1. [Memory leak auto-detection](doc/DETECT.md) for applications and tests.
@@ -16,3 +18,5 @@ by an application.
 Documentation:
 1. [Understand leak tracking concepts](doc/CONCEPTS.md)
 2. [Troubleshoot memory leaks](doc/TROUBLESHOOT.md)
+
+[leak_tracker on pub.dev](https://pub.dev/packages/leak_tracker)
