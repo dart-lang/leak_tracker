@@ -16,4 +16,4 @@ GeneratedPluginRegistrant.swift
 more_examples/**/ios/
 more_examples/**/web/
 more_examples/**/windows/
-more_examples/**/macos/
+more_examples/minimal_flutter/macos/
