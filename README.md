@@ -7,7 +7,7 @@ The text below is under construction.
 
 # Memory Leak Tracker
 
-TODO: after merge, replace links with absolute, to make them working on pub.dev
+TODO: replace links with absolute, to make them working on pub.dev
 
 This is a framework for detecting memory issues in Dart and Flutter applications. It enables:
 
