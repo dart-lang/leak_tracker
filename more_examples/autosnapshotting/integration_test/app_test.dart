@@ -36,7 +36,7 @@ void main() {
     await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
     expect(pageState.snapshots.length, greaterThan(0));
 
-    //Take second threshold
+    // Take second threshold
     final secondThreshold = pageState.lastRss + config.stepMb!.mbToBytes();
     int snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
@@ -46,7 +46,7 @@ void main() {
     await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
     expect(pageState.snapshots.length, greaterThan(snapshotsLength + 1));
 
-    //Check the directory limit is respected.
+    // Check the directory limit is respected.
     while (directorySize(config.directory) <=
         config.directorySizeLimitMb.mbToBytes()) {
       await tester.tap(theButton);
