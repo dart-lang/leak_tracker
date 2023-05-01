@@ -2,7 +2,7 @@ Coming soon! See https://github.com/flutter/devtools/issues/5606.
 
 The text below is under construction.
 
-# Auto Snapshotting
+# Auto-Snapshotting
 
 Dart and Flutter applications can be confugured to automatically save
 memory heap snapshots to hard drive, in case of memory overuse.
