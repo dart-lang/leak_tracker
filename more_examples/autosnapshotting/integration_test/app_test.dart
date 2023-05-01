@@ -8,11 +8,14 @@ import 'package:autosnapshotting/main.dart' as app;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-// Prerequisite:
+// Prerequisite to run for macos:
 // flutter create --platforms=macos .
 
-// Run:
+// Run for macos:
 // flutter test integration_test/app_test.dart -d macos
+
+// Fun headless:
+// flutter test integration_test/app_test.dart -d flutter-tester
 
 const _testDirRoot = 'test_dart_snapshots';
 
