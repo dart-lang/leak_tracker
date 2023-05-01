@@ -4,6 +4,8 @@
 
 # Conventional directory for build outputs.
 build/
+.flutter-plugins
+.flutter-plugins-dependencies
 
 # Omit committing pubspec.lock for library packages; see
 # https://dart.dev/guides/libraries/private-files#pubspeclock.
@@ -16,4 +18,4 @@ GeneratedPluginRegistrant.swift
 more_examples/**/ios/
 more_examples/**/web/
 more_examples/**/windows/
-more_examples/minimal_flutter/macos/
+more_examples/**/macos/
