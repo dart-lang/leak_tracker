@@ -2,6 +2,8 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 The text below is under construction.
 
+TODO: separate information for tests and applications.
+
 # Memory Leak Troubleshooting
 
 This page describes how to troubleshoot memory leaks. See leak detection guidance [here](DETECT.md).
