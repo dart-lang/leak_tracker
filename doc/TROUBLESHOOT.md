@@ -46,8 +46,7 @@ Temporarily setup stacktrace collection for your test:
 
 ### In applications
 
-There are options to enable stacktrace collection
-for troubleshooting, in applications:
+There are options to enable stacktrace collection in applications:
 
 1. By passing `stackTraceCollectionConfig`
 to `withLeakTracking` or `enableLeakTracking`.
