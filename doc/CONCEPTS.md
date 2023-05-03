@@ -39,7 +39,7 @@ the following types of leaks:
    myField = null;
         ```
 
-### Disposed and GCed late (GCed-late){#gced-late}
+### Disposed and GCed late (GCed-late) <a id='gced-late'></a>
 
 - **Definition**: an object was disposed and then GCed,
    but GC happened later than expected. This means the retaining path was

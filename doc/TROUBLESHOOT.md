@@ -8,17 +8,17 @@ TODO: separate information for tests and applications.
 
 This page describes how to troubleshoot memory leaks. See other information on memory leaks [here](../README.md).
 
-To understand root cause of a memroy leak, gather additional information.
+To understand the root cause of a memroy leak, you may want to gather additional information.
 
 - **not-disposed**:
 
     - **Allocation call-stack** helps to detect
-        owner of the object, that is responsible for the object disposal.
+        the owner of the object that is responsible for the object's disposal.
 
 - **not-GCed or GCed-late**:
 
-    - **Allocation and disposal call-stacks**: help to understand lifecicle of the
-        object that may help to see where the object is held from garbage collection.
+    - **Allocation and disposal call-stacks**: helps to understand lifecycle of the
+        object which may reveal where the object is being held from garbage collection.
 
     - **Other lifecycle events**: TODO: add content
 
