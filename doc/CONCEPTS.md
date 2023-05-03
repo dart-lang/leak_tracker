@@ -11,57 +11,54 @@ Before reading about leak tracking, understand [Dart memory concepts](https://do
 
 ## Addressed leak types
 
-The leak tracker can catch only certain types of leaks, in particular,
-related to timing of disposal and garbage collection.
-With proper memory management, this tool assumes that,
-an object's disposal and garbage collection occur in quick succession.
-That is, the object should be garbage collected
-during next garbage collection cycle after disposal.
+The leak tracker catches leaks related to the timing of object disposal and garbage collection (GC). When memory is being managed properly, an object's disposal and GC should occur in quick succession. After disposal, an object should be garbage collected during the next GC cycle. The tool uses this assumption to catch cases that do not follow this pattern.
 
-By monitoring disposal and Garbage Collect events, the tool detects
-different types of leaks:
+By monitoring disposal and GC events, the tool detects
+the following types of leaks:
 
-- **Not disposed, but GCed (not-disposed)**:
+### Not disposed, but GCed (not-disposed)
 
-    - **Definition**: a disposable object was GCed,
-       without being disposed first. This means that the object's disposable content
-       is using memory after the object is no longer needed.
+- **Definition**: a disposable object was GCed,
+   without being disposed first. This means that the object's disposable content
+   is using memory after the object is no longer needed.
 
-    - **Fix**: invoke `dispose()` for the object to free up the memory.
+- **Fix**: invoke `dispose()` for the object to free up the memory.
 
-- **Disposed, but not GCed (not-GCed)**:
-    - **Definition**: an object was disposed,
-       but not GCed after certain number of GC events. This means that
-       a reference to the object is preventing it from being
-       garbage collected after it's no longer needed.
+### Disposed, but not GCed (not-GCed)
 
-    - **Fix**: To fix the leak, assign all reachable references
-       of the object to null after disposal:
+- **Definition**: an object was disposed,
+   but not GCed after certain number of GC events. This means that
+   a reference to the object is preventing it from being
+   garbage collected after it's no longer needed.
 
-        ```
-        myField.dispose();
-        myField = null;
+- **Fix**: To fix the leak, assign all reachable references
+   of the object to null after disposal:
+
+   ```
+   myField.dispose();
+   myField = null;
         ```
 
-- **Disposed and GCed late (GCed-late)**:
-    - **Definition**: an object was disposed and then GCed,
-       but GC happened later than expected. This means the retaining path was
-       holding the object in memory for some period, but then disappeared.
+### Disposed and GCed late (GCed-late){#gced-late}
 
-    - **Fix**: the same as for **not-GCed**
+- **Definition**: an object was disposed and then GCed,
+   but GC happened later than expected. This means the retaining path was
+   holding the object in memory for some period, but then disappeared.
 
-- **Disposed, but not GCed, without path (not-GCed-without-path)**:
-    - **Definition**: an object
-       was disposed and not GCed when expected, but retaining path
-       is not detected,
-       that means that the object will be most likely GCed in
-       the next GC cycle,
-       and the leak will convert to **GCed-late** leak.
+- **Fix**: the same as for **not-GCed**
 
-    - **Fix**: please,
-    [create issue](https://github.com/dart-lang/leak_tracker/issues)
-    if you see this type of leaks, as it means
-    something is wrong with the tool.
+### Disposed, but not GCed, without path (not-GCed-without-path)
+
+- **Definition**: an object
+   was disposed and not GCed when expected, but retaining path
+   is not detected; that means that the object will be most likely GCed in
+   the next GC cycle,
+   and the leak will convert to [GCed-late](#gced-late) leak.
+
+- **Fix**: please,
+[create an issue](https://github.com/dart-lang/leak_tracker/issues)
+if you see this type of leak, as it means
+something is wrong with the tool.
 
 ## Culprits and victims
 
