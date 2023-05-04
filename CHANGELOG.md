@@ -1,3 +1,7 @@
+# 5.0.0
+
+* Migrate from auto-snapshotting to usage-tracking.
+
 # 4.0.3
 
 * Fix broken documentation link.
