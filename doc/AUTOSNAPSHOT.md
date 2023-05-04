@@ -22,7 +22,6 @@ to enable it via command line arguments in case of memory issues.
 
 See [example](../more_examples/autosnapshotting/).
 
-
 ## Limitations
 
 * **Enabled for:** Flutter debug and profile modes (equivalent to Dart debug and release modes).
