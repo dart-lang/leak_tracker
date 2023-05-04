@@ -2,13 +2,22 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 The text below is under construction.
 
-TODO: separate information for tests and applications.
-
-# Troubleshoot Memory Leaks
+# Troubleshoot memory leaks
 
 This page describes how to troubleshoot memory leaks. See other information on memory leaks [here](../README.md).
 
-To understand the root cause of a memroy leak, you may want to gather additional information.
+If leak tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
+switch to [more complicated troubleshooting](#more-complicated-cases).
+
+## Known simple cases
+
+### 1. The test holds a disposed object
+
+TODO: add steps.
+
+## More complicated cases
+
+To understand the root cause of a memory leak, you may want to gather additional information.
 
 - **not-disposed**:
 
