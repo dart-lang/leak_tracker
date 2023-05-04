@@ -10,7 +10,7 @@ Dart and Flutter applications can be confugured to automatically save
 memory heap snapshots to hard drive, in case of memory overuse.
 The snapshots can be later analysed in DevTools.
 
-TODO (polina-c): add link to DEvTools help section.
+TODO (polina-c): add link to DevTools help section.
 
 https://user-images.githubusercontent.com/12115586/234953319-6f864d25-9854-4126-b4d6-8e114b9045ff.mov
 
@@ -21,6 +21,7 @@ recommend to have autosnapshotting off by default, with possibility
 to enable it via command line arguments in case of memory issues.
 
 See [example](../more_examples/autosnapshotting/).
+
 
 ## Limitations
 
