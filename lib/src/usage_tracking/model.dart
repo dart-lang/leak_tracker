@@ -23,6 +23,16 @@ class SnapshotInfo {
 /// A callback that is called when a snapshot is taken.
 typedef SnapshotCallback = void Function(SnapshotInfo record);
 
+class UageTrackingConfig {
+  UageTrackingConfig(this.autoSnapshottingConfig, this.interval);
+
+  /// Configuration for snapshotting.
+  final AutoSnapshottingConfig? autoSnapshottingConfig;
+
+  /// How often to verify memory consumption.
+  final Duration interval;
+}
+
 /// Configures auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
 /// Automatic snapshots will begin to be taken when the rss value exceeds [thresholdMb].
@@ -53,7 +63,8 @@ class AutoSnapshottingConfig {
   /// The rss value in Mb that will trigger the first snapshot.
   final int thresholdMb;
 
-  /// The value by which the rss value should increase to take another snapshot.
+  /// The value by which the rss value should increase, since
+  /// previous snapshot, to take another snapshot.
   ///
   /// If [stepMb] is null, only one snapshot will be taken.
   final int? stepMb;
@@ -71,9 +82,6 @@ class AutoSnapshottingConfig {
   /// so the directory may exceed the size specified by [directorySizeLimitMb]
   /// depending on the size of the snapshot.
   final int directorySizeLimitMb;
-
-  /// How often to verify memory consumption.
-  final Duration interval;
 
   /// How long to wait after taking a snapshot before taking another one.
   final Duration minDelayBetweenSnapshots;
