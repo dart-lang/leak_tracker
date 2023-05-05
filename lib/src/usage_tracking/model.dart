@@ -49,12 +49,12 @@ typedef UsageCallback = void Function(UsageInfo record);
 ///
 /// Set [interval] to customize how often to verify memory usage.
 class UageTrackingConfig {
-  UageTrackingConfig({
+  const UageTrackingConfig({
     this.deltaMb = 128,
     this.onUsageEvent,
     this.autoSnapshottingConfig,
     this.interval = const Duration(seconds: 1),
-  });
+  }) : assert(onUsageEvent != null || autoSnapshottingConfig != null);
 
   /// Configuration for snapshotting.
   final AutoSnapshottingConfig? autoSnapshottingConfig;
