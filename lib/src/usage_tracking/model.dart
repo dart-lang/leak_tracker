@@ -23,14 +23,50 @@ class SnapshotInfo {
 /// A callback that is called when a snapshot is taken.
 typedef SnapshotCallback = void Function(SnapshotInfo record);
 
+/// A record of a memory usage event.
+class UsageInfo {
+  UsageInfo({
+    required this.delta,
+    required this.period,
+    required this.rss,
+    DateTime? timestamp,
+  }) : timestamp = timestamp ?? DateTime.now();
+
+  final int delta;
+  final Duration period;
+  final int rss;
+  final DateTime timestamp;
+}
+
+/// A callback that is called for memory usage event.
+typedef UsageCallback = void Function(UsageInfo record);
+
+/// Configures memory usage tracking.
+///
+/// [onUsageEvent] will be triggered when rss value changes
+/// more then by [deltaMb] since previous [onUsageEvent].
+/// First [onUsageEvent] will be triggered immediately.
+///
+/// Set [interval] to customize how often to verify memory usage.
 class UageTrackingConfig {
-  UageTrackingConfig(this.autoSnapshottingConfig, this.interval);
+  UageTrackingConfig({
+    this.deltaMb = 128,
+    this.onUsageEvent,
+    this.autoSnapshottingConfig,
+    this.interval = const Duration(seconds: 1),
+  });
 
   /// Configuration for snapshotting.
   final AutoSnapshottingConfig? autoSnapshottingConfig;
 
-  /// How often to verify memory consumption.
+  /// How often to verify memory usage.
   final Duration interval;
+
+  /// A callback that is called when a snapshot is taken.
+  final UsageInfo? onUsageEvent;
+
+  /// Change in memory usage to trigger an [onUsageEvent].
+  final int deltaMb;
 }
 
 /// Configures auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
@@ -39,23 +75,19 @@ class UageTrackingConfig {
 /// The snapshots will be saved to [directory].
 ///
 /// The snapshots will be re-taken when the value
-/// increases more than by [stepMb], until the size of [directory] exceeds
+/// increases more than by [increaseMb] since previous snapshot,
+/// until the size of [directory] exceeds
 /// [directorySizeLimitMb].
 ///
 /// The [onSnapshot] callback is called when a snapshot is taken.
 ///
-/// Set [interval] to customize how often to verify memory consumption.
 /// Set [minDelayBetweenSnapshots] to make sure snapshots do not trigger each other.
-/// For example, if [interval] is 1 second and [minDelayBetweenSnapshots] is 5 seconds,
-/// the app will check size every second, but after taking snapshot,
-/// will delay for 5 seconds to allow memory to settle.
 class AutoSnapshottingConfig {
   const AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
-    this.stepMb = 512, // 0.5Gb
+    this.increaseMb = 512, // 0.5Gb
     this.directory = 'dart_memory_snapshots',
     this.directorySizeLimitMb = 10240, // 10Gb
-    this.interval = const Duration(seconds: 1),
     this.minDelayBetweenSnapshots = const Duration(seconds: 10),
     this.onSnapshot,
   });
@@ -66,8 +98,8 @@ class AutoSnapshottingConfig {
   /// The value by which the rss value should increase, since
   /// previous snapshot, to take another snapshot.
   ///
-  /// If [stepMb] is null, only one snapshot will be taken.
-  final int? stepMb;
+  /// If [increaseMb] is null, only one snapshot will be taken.
+  final int? increaseMb;
 
   /// The directory where snapshots will be saved.
   ///
@@ -96,11 +128,10 @@ class AutoSnapshottingConfig {
   String toString() {
     final formatter = NumberFormat('#,###,000');
     return 'thresholdMb: ${formatter.format(thresholdMb)}\n'
-        'stepMb: ${stepMb == null ? 'null' : formatter.format(stepMb)}\n'
+        'stepMb: ${increaseMb == null ? 'null' : formatter.format(increaseMb)}\n'
         'directorySizeLimitMb: ${formatter.format(directorySizeLimitMb)}\n'
         'directory: $directory\n'
         'directoryAbsolute: $directoryAbsolute\n'
-        'interval: $interval\n'
         'minDelayBetweenSnapshots: $minDelayBetweenSnapshots\n';
   }
 }

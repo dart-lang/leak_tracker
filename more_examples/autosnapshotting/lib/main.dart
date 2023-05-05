@@ -65,7 +65,7 @@ class MyHomePageState extends State<MyHomePage> {
     config = AutoSnapshottingConfig(
       onSnapshot: _handleSnapshot,
       thresholdMb: 400,
-      stepMb: 100,
+      increaseMb: 100,
       directorySizeLimitMb: 500,
       directory: widget.snapshotDirectory ?? 'dart_snapshots',
       minDelayBetweenSnapshots: const Duration(seconds: 5),

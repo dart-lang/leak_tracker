@@ -45,7 +45,7 @@ void main() {
     expect(pageState.snapshots.length, greaterThan(0));
 
     // Take second threshold
-    final secondThreshold = pageState.lastRss + config.stepMb!.mbToBytes();
+    final secondThreshold = pageState.lastRss + config.increaseMb!.mbToBytes();
     int snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
       await tester.tap(theButton);

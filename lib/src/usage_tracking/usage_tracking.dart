@@ -64,7 +64,7 @@ Future<void> _maybeTakeSnapshot() async {
   // We do not stop monitoring, in case user will free some space.
   if (_isDirectoryOversized()) return;
 
-  final stepMb = _config.stepMb;
+  final stepMb = _config.increaseMb;
 
   if (_takenSnapshots.isEmpty) {
     _takeSnapshot(rss: rss);
