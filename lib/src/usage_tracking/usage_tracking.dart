@@ -9,10 +9,8 @@ import '_snapshot.dart';
 import 'model.dart';
 
 Timer? timer;
-final _takenSnapshots = <SnapshotInfo>[];
+
 late UageTrackingConfig _config;
-bool _snapshottingIsInProgress = false;
-late int previousRss;
 
 /// Enables memory usage tracking, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
@@ -22,18 +20,23 @@ late int previousRss;
 /// Snapshotting operation may cause a delay in the main thread.
 void trackMemoryUsage(UageTrackingConfig config) {
   stopMemoryUsageTracking();
+  _config = config;
+  if (config.isNoOp) return;
+
   final directory = config.autoSnapshottingConfig?.directory;
   if (directory != null) {
     _createDirectoryIfNotExists(directory);
   }
-  _config = config;
+
   _triggerFirstUsageEvent();
   timer = Timer.periodic(config.interval, (_) {
     if (_snapshottingIsInProgress) return;
+
     _snapshottingIsInProgress = true;
     unawaited(
       _maybeTakeSnapshot().then((_) => _snapshottingIsInProgress = false),
     );
+
     _maybeTriggerUsageEvent();
   });
 }
@@ -44,9 +47,12 @@ void _maybeTriggerUsageEvent() {
 }
 
 void _triggerFirstUsageEvent() {
+  final rss = ProcessInfo.currentRss;
   _config.onUsageEvent?.call(
-    UsageInfo(delta: null, period: null, rss: ProcessInfo.currentRss),
+    UsageInfo(delta: null, period: null, rss: rss),
   );
+  _previousRss = rss;
+  _previousRssTimestamp = DateTime.now();
 }
 
 /// Stops memory usage tracking if it is started by [trackMemoryUsage].
@@ -74,56 +80,4 @@ bool _isDirectoryOversized(AutoSnapshottingConfig config) {
       .map((f) => f.lengthSync())
       .fold<int>(0, (a, b) => a + b);
   return directorySize >= config.directorySizeLimitMb.mbToBytes();
-}
-
-Future<void> _maybeTakeSnapshot() async {
-  final config = _config.autoSnapshottingConfig;
-  if (config == null) return;
-  final rss = ProcessInfo.currentRss;
-  if (rss < config.thresholdMb.mbToBytes()) {
-    return;
-  }
-
-  // Directory size validation is heavier than rss check, so we do it after.
-  // We do not stop monitoring, in case user will free some space.
-  if (_isDirectoryOversized(config)) return;
-
-  final stepMb = config.increaseMb;
-
-  if (_takenSnapshots.isEmpty) {
-    _takeSnapshot(config, rss: rss);
-    if (stepMb == null) stopMemoryUsageTracking();
-    return;
-  }
-
-  assert(_takenSnapshots.isNotEmpty);
-
-  if (stepMb == null) {
-    throw StateError(
-      'Autosnapshotting should be off if step is null and there is a snapshot already taken',
-    );
-  }
-
-  final nextAllowedSnapshotTime =
-      _takenSnapshots.last.timestamp.add(config.minDelayBetweenSnapshots);
-  if (nextAllowedSnapshotTime.isAfter(DateTime.now())) {
-    return;
-  }
-
-  final nextThreshold = _takenSnapshots.last.rss + stepMb.mbToBytes();
-  if (rss >= nextThreshold) {
-    _takeSnapshot(config, rss: rss);
-  }
-}
-
-void _takeSnapshot(AutoSnapshottingConfig config, {required int rss}) {
-  final snapshotNumber = _takenSnapshots.length + 1;
-
-  final record = saveSnapshot(
-    config.directory,
-    rss: rss,
-    snapshotNumber: snapshotNumber,
-  );
-  _takenSnapshots.add(record);
-  config.onSnapshot?.call(record);
 }

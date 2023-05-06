@@ -54,27 +54,40 @@ typedef UsageCallback = void Function(UsageInfo info);
 
 /// Configures memory usage tracking.
 ///
-/// [onUsageEvent] will be triggered when rss value changes
-/// more then by [deltaMb] since previous [onUsageEvent].
-/// First [onUsageEvent] will be triggered immediately.
-///
 /// Set [interval] to customize how often to verify memory usage.
 class UageTrackingConfig {
   const UageTrackingConfig({
-    this.deltaMb = 128,
-    this.onUsageEvent,
+    this.usageEventsConfig,
     this.autoSnapshottingConfig,
     this.interval = const Duration(seconds: 1),
-  }) : assert(onUsageEvent != null || autoSnapshottingConfig != null);
+  });
 
   /// Configuration for snapshotting.
   final AutoSnapshottingConfig? autoSnapshottingConfig;
 
+  /// Configuration for usage events.
+  final UsageEventsConfig? usageEventsConfig;
+
   /// How often to verify memory usage.
   final Duration interval;
 
+  bool get isNoOp =>
+      autoSnapshottingConfig == null && usageEventsConfig == null;
+}
+
+/// Configures memory usage tracking.
+///
+/// [onUsageEvent] will be triggered when rss value changes
+/// more then by [deltaMb] since previous [onUsageEvent].
+/// First [onUsageEvent] will be triggered immediately.
+class UsageEventsConfig {
+  const UsageEventsConfig(
+    this.onUsageEvent, {
+    this.deltaMb = 128,
+  });
+
   /// A callback that is called when a snapshot is taken.
-  final UsageCallback? onUsageEvent;
+  final UsageCallback onUsageEvent;
 
   /// Change in memory usage to trigger [onUsageEvent].
   final int deltaMb;
