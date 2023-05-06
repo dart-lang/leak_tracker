@@ -21,7 +21,7 @@ class SnapshotInfo {
 }
 
 /// A callback that is called when a snapshot is taken.
-typedef SnapshotCallback = void Function(SnapshotInfo record);
+typedef SnapshotCallback = void Function(SnapshotInfo info);
 
 /// A record of a memory usage event.
 class UsageInfo {
@@ -32,14 +32,25 @@ class UsageInfo {
     DateTime? timestamp,
   }) : timestamp = timestamp ?? DateTime.now();
 
-  final int delta;
-  final Duration period;
+  /// Difference with previouse rss value.
+  ///
+  /// Equals to [null] for first event.
+  final int? delta;
+
+  /// Time since previous event.
+  ///
+  /// Equals to [null] for first event.
+  final Duration? period;
+
+  /// RSS memory usage.
   final int rss;
+
+  ///
   final DateTime timestamp;
 }
 
 /// A callback that is called for memory usage event.
-typedef UsageCallback = void Function(UsageInfo record);
+typedef UsageCallback = void Function(UsageInfo info);
 
 /// Configures memory usage tracking.
 ///
@@ -63,13 +74,13 @@ class UageTrackingConfig {
   final Duration interval;
 
   /// A callback that is called when a snapshot is taken.
-  final UsageInfo? onUsageEvent;
+  final UsageCallback? onUsageEvent;
 
-  /// Change in memory usage to trigger an [onUsageEvent].
+  /// Change in memory usage to trigger [onUsageEvent].
   final int deltaMb;
 }
 
-/// Configures auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
+/// Configures auto-snapshotting, based on the value of `ProcessInfo.currentRss` (dart:io).
 ///
 /// Automatic snapshots will begin to be taken when the rss value exceeds [thresholdMb].
 /// The snapshots will be saved to [directory].

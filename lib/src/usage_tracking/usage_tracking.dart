@@ -12,27 +12,48 @@ Timer? timer;
 final _takenSnapshots = <SnapshotInfo>[];
 late UageTrackingConfig _config;
 bool _snapshottingIsInProgress = false;
+late int previousRss;
 
-/// Enables auto-snapshotting, based on the value of [ProcessInfo.currentRss] (dart:io).
+/// Enables memory usage tracking, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
-/// If auto-snapshotting is already enabled, resets it.
-/// See [AutoSnapshottingConfig] for details.
-/// Use [stopAutoSnapshotOnMemoryOveruse] to stop auto-snapshotting.
+/// If tracking is already enabled, resets it.
+/// See [UageTrackingConfig] for details.
+/// Use [stopMemoryUsageTracking] to stop auto-snapshotting.
 /// Snapshotting operation may cause a delay in the main thread.
-void trackUsage(UageTrackingConfig config) {
-  stopAutoSnapshotOnMemoryOveruse();
+void trackMemoryUsage(UageTrackingConfig config) {
+  stopMemoryUsageTracking();
   final directory = config.autoSnapshottingConfig?.directory;
   if (directory != null) {
     _createDirectoryIfNotExists(directory);
   }
   _config = config;
+  _triggerFirstUsageEvent();
   timer = Timer.periodic(config.interval, (_) {
     if (_snapshottingIsInProgress) return;
     _snapshottingIsInProgress = true;
     unawaited(
       _maybeTakeSnapshot().then((_) => _snapshottingIsInProgress = false),
     );
+    _maybeTriggerUsageEvent();
   });
+}
+
+void _maybeTriggerUsageEvent() {
+  final handler = _config.onUsageEvent;
+  if (handler == null) return;
+}
+
+void _triggerFirstUsageEvent() {
+  _config.onUsageEvent?.call(
+    UsageInfo(delta: null, period: null, rss: ProcessInfo.currentRss),
+  );
+}
+
+/// Stops memory usage tracking if it is started by [trackMemoryUsage].
+void stopMemoryUsageTracking() {
+  timer?.cancel();
+  timer = null;
+  _takenSnapshots.clear();
 }
 
 void _createDirectoryIfNotExists(String directory) {
@@ -71,7 +92,7 @@ Future<void> _maybeTakeSnapshot() async {
 
   if (_takenSnapshots.isEmpty) {
     _takeSnapshot(config, rss: rss);
-    if (stepMb == null) stopAutoSnapshotOnMemoryOveruse();
+    if (stepMb == null) stopMemoryUsageTracking();
     return;
   }
 
@@ -105,11 +126,4 @@ void _takeSnapshot(AutoSnapshottingConfig config, {required int rss}) {
   );
   _takenSnapshots.add(record);
   config.onSnapshot?.call(record);
-}
-
-/// Disables auto-snapshotting if it is enabled by [trackUsage].
-void stopAutoSnapshotOnMemoryOveruse() {
-  timer?.cancel();
-  timer = null;
-  _takenSnapshots.clear();
 }

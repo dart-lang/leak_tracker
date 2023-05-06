@@ -71,7 +71,7 @@ class MyHomePageState extends State<MyHomePage> {
       minDelayBetweenSnapshots: const Duration(seconds: 5),
     );
 
-    trackUsage(config: config);
+    trackMemoryUsage(config: config);
   }
 
   void _handleSnapshot(SnapshotInfo record) {
