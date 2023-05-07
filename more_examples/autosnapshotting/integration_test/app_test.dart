@@ -36,7 +36,8 @@ void main() {
     final theButton = find.byTooltip('Allocate more memory');
 
     // Take first snapshot
-    final firstThreshold = config.thresholdMb.mbToBytes();
+    final firstThreshold =
+        config.autoSnapshottingConfig!.thresholdMb.mbToBytes();
     while (pageState.lastRss <= firstThreshold) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
@@ -45,7 +46,8 @@ void main() {
     expect(pageState.snapshots.length, greaterThan(0));
 
     // Take second threshold
-    final secondThreshold = pageState.lastRss + config.increaseMb!.mbToBytes();
+    final secondThreshold = pageState.lastRss +
+        config.autoSnapshottingConfig!.increaseMb!.mbToBytes();
     int snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
       await tester.tap(theButton);
@@ -55,8 +57,8 @@ void main() {
     expect(pageState.snapshots.length, snapshotsLength + 1);
 
     // Check the directory limit is respected.
-    while (directorySize(config.directory) <=
-        config.directorySizeLimitMb.mbToBytes()) {
+    while (directorySize(config.autoSnapshottingConfig!.directory) <=
+        config.autoSnapshottingConfig!.directorySizeLimitMb.mbToBytes()) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
       await tester.runAsync(() => Future.delayed(const Duration(seconds: 1)));

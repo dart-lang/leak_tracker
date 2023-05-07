@@ -16,7 +16,7 @@ class AutoSnapshotter {
   final AutoSnapshottingConfig config;
 
   bool _snapshottingIsInProgress = false;
-  SnapshotInfo? _previousSnapshot;
+  SnapshotEvent? _previousSnapshot;
   bool _noSnapshotsAnyMore = false;
 
   Future<void> autoSnapshot() async {
@@ -91,7 +91,7 @@ class AutoSnapshotter {
 /// Returns the name of the file where the snapshot was saved.
 ///
 /// The file name contains process id, snapshot number and current RSS.
-SnapshotInfo saveSnapshot(
+SnapshotEvent saveSnapshot(
   String directory, {
   required int rss,
   required int snapshotNumber,
@@ -104,5 +104,5 @@ SnapshotInfo saveSnapshot(
 
   snapshotter(fileName);
 
-  return SnapshotInfo(fileName, snapshotNumber: snapshotNumber, rss: rss);
+  return SnapshotEvent(fileName, snapshotNumber: snapshotNumber, rss: rss);
 }

@@ -6,11 +6,12 @@ import 'dart:async';
 import 'dart:io';
 
 import '_snapshot.dart';
+import '_usage_event.dart';
 import 'model.dart';
 
 Timer? timer;
-
-late UageTrackingConfig _config;
+AutoSnapshotter? autoSnapshotter;
+UsageEventCreator? usageEventCreator;
 
 /// Enables memory usage tracking, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
@@ -20,51 +21,28 @@ late UageTrackingConfig _config;
 /// Snapshotting operation may cause a delay in the main thread.
 void trackMemoryUsage(UageTrackingConfig config) {
   stopMemoryUsageTracking();
-  _config = config;
   if (config.isNoOp) return;
 
-  final directory = config.autoSnapshottingConfig?.directory;
-  if (directory != null) {
-    _createDirectoryIfNotExists(directory);
+  if (config.autoSnapshottingConfig != null) {
+    autoSnapshotter = AutoSnapshotter(config.autoSnapshottingConfig!);
   }
 
-  _triggerFirstUsageEvent();
-  timer = Timer.periodic(config.interval, (_) {
-    if (_snapshottingIsInProgress) return;
+  if (config.usageEventsConfig != null) {
+    usageEventCreator = UsageEventCreator(config.usageEventsConfig!);
+    usageEventCreator!.createFirstUsageEvent();
+  }
 
-    _snapshottingIsInProgress = true;
-    unawaited(
-      _maybeTakeSnapshot().then((_) => _snapshottingIsInProgress = false),
-    );
-
-    _maybeTriggerUsageEvent();
+  timer = Timer.periodic(config.interval, (_) async {
+    usageEventCreator?.mayBeCreateUsageEvent();
+    await autoSnapshotter?.autoSnapshot();
   });
-}
-
-void _maybeTriggerUsageEvent() {
-  final handler = _config.onUsageEvent;
-  if (handler == null) return;
-}
-
-void _triggerFirstUsageEvent() {
-  final rss = ProcessInfo.currentRss;
-  _config.onUsageEvent?.call(
-    UsageInfo(delta: null, period: null, rss: rss),
-  );
-  _previousRss = rss;
-  _previousRssTimestamp = DateTime.now();
 }
 
 /// Stops memory usage tracking if it is started by [trackMemoryUsage].
 void stopMemoryUsageTracking() {
   timer?.cancel();
   timer = null;
-  _takenSnapshots.clear();
-}
 
-void _createDirectoryIfNotExists(String directory) {
-  final dir = Directory(directory);
-  if (!dir.existsSync()) {
-    dir.createSync(recursive: true);
-  }
+  autoSnapshotter = null;
+  usageEventCreator = null;
 }

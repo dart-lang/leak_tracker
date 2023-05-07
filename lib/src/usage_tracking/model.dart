@@ -6,8 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 /// A record of a taken snapshot.
-class SnapshotInfo {
-  SnapshotInfo(
+class SnapshotEvent {
+  SnapshotEvent(
     this.fileName, {
     required this.snapshotNumber,
     required this.rss,
@@ -21,11 +21,11 @@ class SnapshotInfo {
 }
 
 /// A callback that is called when a snapshot is taken.
-typedef SnapshotCallback = void Function(SnapshotInfo info);
+typedef SnapshotCallback = void Function(SnapshotEvent event);
 
 /// A record of a memory usage event.
-class UsageInfo {
-  UsageInfo({
+class MemoryUsageEvent {
+  MemoryUsageEvent({
     required this.delta,
     required DateTime? previousEventTime,
     required this.rss,
@@ -54,7 +54,7 @@ class UsageInfo {
 }
 
 /// A callback that is called for memory usage event.
-typedef UsageCallback = void Function(UsageInfo info);
+typedef UsageCallback = void Function(MemoryUsageEvent event);
 
 /// Configures memory usage tracking.
 ///

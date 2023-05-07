@@ -47,9 +47,9 @@ final _allocations = <List<DateTime>>[];
 
 class MyHomePageState extends State<MyHomePage> {
   final _formatter = NumberFormat('#,###,000');
-  final snapshots = <SnapshotInfo>[];
+  final snapshots = <SnapshotEvent>[];
   int lastRss = 0;
-  late AutoSnapshottingConfig config;
+  late UageTrackingConfig config;
 
   void _allocateMemory() {
     setState(() {
@@ -62,19 +62,21 @@ class MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    config = AutoSnapshottingConfig(
-      onSnapshot: _handleSnapshot,
-      thresholdMb: 400,
-      increaseMb: 100,
-      directorySizeLimitMb: 500,
-      directory: widget.snapshotDirectory ?? 'dart_snapshots',
-      minDelayBetweenSnapshots: const Duration(seconds: 5),
+    config = UageTrackingConfig(
+      autoSnapshottingConfig: AutoSnapshottingConfig(
+        onSnapshot: _handleSnapshot,
+        thresholdMb: 400,
+        increaseMb: 100,
+        directorySizeLimitMb: 500,
+        directory: widget.snapshotDirectory ?? 'dart_snapshots',
+        minDelayBetweenSnapshots: const Duration(seconds: 5),
+      ),
     );
 
-    trackMemoryUsage(config: config);
+    trackMemoryUsage(config);
   }
 
-  void _handleSnapshot(SnapshotInfo record) {
+  void _handleSnapshot(SnapshotEvent record) {
     setState(() {
       snapshots.add(record);
     });

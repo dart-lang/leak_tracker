@@ -12,10 +12,10 @@ class UsageEventCreator {
 
   final UsageEventsConfig config;
 
-  late UsageInfo _previousInfo;
+  late MemoryUsageEvent _previousEvent;
 
   void createFirstUsageEvent() => _triggerEvent(
-        UsageInfo(
+        MemoryUsageEvent(
           delta: null,
           previousEventTime: null,
           rss: ProcessInfo.currentRss,
@@ -24,21 +24,21 @@ class UsageEventCreator {
 
   void mayBeCreateUsageEvent() {
     final rss = ProcessInfo.currentRss;
-    final delta = (rss - _previousInfo.rss).abs();
+    final delta = (rss - _previousEvent.rss).abs();
 
     if (delta < config.deltaMb.mbToBytes()) return;
 
     _triggerEvent(
-      UsageInfo(
+      MemoryUsageEvent(
         delta: delta,
-        previousEventTime: _previousInfo.timestamp,
+        previousEventTime: _previousEvent.timestamp,
         rss: ProcessInfo.currentRss,
       ),
     );
   }
 
-  void _triggerEvent(UsageInfo info) {
-    _previousInfo = info;
-    config.onUsageEvent(info);
+  void _triggerEvent(MemoryUsageEvent event) {
+    _previousEvent = event;
+    config.onUsageEvent(event);
   }
 }
