@@ -110,7 +110,7 @@ class MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.headlineMedium,
             ),
             Text(
-              '-- Auto-Snapshotting Configuration --\n$config',
+              '-- Auto-Snapshotting Configuration --\n${config.autoSnapshottingConfig}',
             ),
             Text(
               '-- Taken Snapshots --\n${_formatSnapshots()}',

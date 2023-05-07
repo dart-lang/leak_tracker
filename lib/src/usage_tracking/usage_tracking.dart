@@ -23,8 +23,14 @@ void trackMemoryUsage(UageTrackingConfig config) {
   stopMemoryUsageTracking();
   if (config.isNoOp) return;
 
-  if (config.autoSnapshottingConfig != null) {
-    autoSnapshotter = AutoSnapshotter(config.autoSnapshottingConfig!);
+  final autosnapshotting = config.autoSnapshottingConfig;
+  if (autosnapshotting != null) {
+    final dir = Directory(autosnapshotting.directory);
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
+    print('!!!! ${autosnapshotting.directory}');
+    autoSnapshotter = AutoSnapshotter(autosnapshotting);
   }
 
   if (config.usageEventsConfig != null) {
