@@ -8,14 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
+late String _snapshotDirectory;
+
 void main(List<String> args, {String? snapshotDirectory}) {
-  runApp(MyApp(snapshotDirectory: snapshotDirectory));
+  _snapshotDirectory = snapshotDirectory ?? 'dart_snapshots';
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, this.snapshotDirectory});
-
-  final String? snapshotDirectory;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +26,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(
+      home: const MyHomePage(
         title: 'Autosnapshotting Demo',
-        snapshotDirectory: snapshotDirectory,
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, this.snapshotDirectory});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final String? snapshotDirectory;
 
   @override
   State<MyHomePage> createState() => MyHomePageState();
@@ -68,7 +67,7 @@ class MyHomePageState extends State<MyHomePage> {
         thresholdMb: 400,
         increaseMb: 100,
         directorySizeLimitMb: 500,
-        directory: widget.snapshotDirectory ?? 'dart_snapshots',
+        directory: _snapshotDirectory,
         minDelayBetweenSnapshots: const Duration(seconds: 5),
       ),
     );
