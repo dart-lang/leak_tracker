@@ -14,7 +14,7 @@ import 'package:integration_test/integration_test.dart';
 // Run for macos:
 // flutter test integration_test/app_test.dart -d macos
 
-// Fun headless:
+// Run headless:
 // flutter test integration_test/app_test.dart -d flutter-tester
 
 const _testDirRoot = 'test_dart_snapshots';
