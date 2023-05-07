@@ -22,7 +22,7 @@ const _testDirRoot = 'test_dart_snapshots';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Snapshots are taken after reaching limit', (tester) async {
+  testWidgets('Snapshots are not taken after reaching limit', (tester) async {
     app.main([], snapshotDirectory: '$_testDirRoot/$pid');
     await tester.pumpAndSettle();
 
