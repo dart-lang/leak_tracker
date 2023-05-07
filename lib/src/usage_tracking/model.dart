@@ -27,10 +27,14 @@ typedef SnapshotCallback = void Function(SnapshotInfo info);
 class UsageInfo {
   UsageInfo({
     required this.delta,
-    required this.period,
+    required DateTime? previousEventTime,
     required this.rss,
     DateTime? timestamp,
-  }) : timestamp = timestamp ?? DateTime.now();
+  }) : timestamp = timestamp ?? DateTime.now() {
+    if (previousEventTime != null) {
+      period = this.timestamp.difference(previousEventTime);
+    }
+  }
 
   /// Difference with previouse rss value.
   ///
@@ -40,7 +44,7 @@ class UsageInfo {
   /// Time since previous event.
   ///
   /// Equals to [null] for first event.
-  final Duration? period;
+  late Duration? period;
 
   /// RSS memory usage.
   final int rss;

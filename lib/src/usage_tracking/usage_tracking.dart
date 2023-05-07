@@ -68,16 +68,3 @@ void _createDirectoryIfNotExists(String directory) {
     dir.createSync(recursive: true);
   }
 }
-
-extension _SizeConversion on int {
-  int mbToBytes() => this * 1024 * 1024;
-}
-
-bool _isDirectoryOversized(AutoSnapshottingConfig config) {
-  final directorySize = Directory(config.directory)
-      .listSync(recursive: true)
-      .whereType<File>()
-      .map((f) => f.lengthSync())
-      .fold<int>(0, (a, b) => a + b);
-  return directorySize >= config.directorySizeLimitMb.mbToBytes();
-}
