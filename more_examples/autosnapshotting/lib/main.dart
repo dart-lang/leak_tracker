@@ -10,6 +10,11 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 late String _snapshotDirectory;
 
+extension SizeConversion on int {
+  int mbToBytes() => this * 1024 * 1024;
+  int bytesToMB() => (this / 1024 / 1024).round();
+}
+
 void main(List<String> args, {String? snapshotDirectory}) {
   _snapshotDirectory = snapshotDirectory ?? 'dart_snapshots';
   runApp(const MyApp());
@@ -47,6 +52,7 @@ final _allocations = <List<DateTime>>[];
 class MyHomePageState extends State<MyHomePage> {
   final _formatter = NumberFormat('#,###,000');
   final snapshots = <SnapshotEvent>[];
+  final usageEvents = <MemoryUsageEvent>[];
   int lastRss = 0;
   late UageTrackingConfig config;
 
@@ -63,27 +69,36 @@ class MyHomePageState extends State<MyHomePage> {
 
     config = UageTrackingConfig(
       autoSnapshottingConfig: AutoSnapshottingConfig(
-        onSnapshot: _handleSnapshot,
+        onSnapshot: _handleSnapshotEvent,
         thresholdMb: 400,
         increaseMb: 100,
         directorySizeLimitMb: 500,
         directory: _snapshotDirectory,
         minDelayBetweenSnapshots: const Duration(seconds: 5),
       ),
+      usageEventsConfig: UsageEventsConfig(
+        _handleUsageEvent,
+        deltaMb: 100,
+      ),
     );
 
     trackMemoryUsage(config);
   }
 
-  void _handleSnapshot(SnapshotEvent record) {
+  void _handleSnapshotEvent(SnapshotEvent event) {
     setState(() {
-      snapshots.add(record);
+      snapshots.add(event);
+    });
+  }
+
+  void _handleUsageEvent(MemoryUsageEvent event) {
+    setState(() {
+      usageEvents.add(event);
     });
   }
 
   String _formatSize(int bytes) {
-    final megaBytes = bytes / 1024 / 1024;
-    return '${_formatter.format(bytes)} (${_formatter.format(megaBytes)} MB)';
+    return '${_formatter.format(bytes)} (${_formatter.format(bytes.bytesToMB())} MB)';
   }
 
   String _formatSnapshots() {
@@ -95,6 +110,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    const space = SizedBox(height: 20);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -109,9 +125,15 @@ class MyHomePageState extends State<MyHomePage> {
               'Current RSS: ${_formatSize(ProcessInfo.currentRss)}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            space,
             Text(
-              '-- Auto-Snapshotting Configuration --\n${config.autoSnapshottingConfig}',
+              '-- Configuration --\n$config',
             ),
+            space,
+            Text(
+              '-- Usage Events (MB) --\n${usageEvents.map((e) => _formatter.format(e.rss.bytesToMB())).join('; ')}',
+            ),
+            space,
             Text(
               '-- Taken Snapshots --\n${_formatSnapshots()}',
             ),

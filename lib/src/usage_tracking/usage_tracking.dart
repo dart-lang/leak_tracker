@@ -29,7 +29,6 @@ void trackMemoryUsage(UageTrackingConfig config) {
     if (!dir.existsSync()) {
       dir.createSync(recursive: true);
     }
-    print('!!!! ${autosnapshotting.directory}');
     autoSnapshotter = AutoSnapshotter(autosnapshotting);
   }
 

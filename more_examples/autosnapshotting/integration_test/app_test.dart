@@ -19,10 +19,6 @@ import 'package:integration_test/integration_test.dart';
 
 const _testDirRoot = 'test_dart_snapshots';
 
-extension _SizeConversion on int {
-  int mbToBytes() => this * 1024 * 1024;
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
@@ -68,7 +64,9 @@ void main() {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    expect(pageState.snapshots.length, snapshotsLength);
+    expect(pageState.snapshots, hasLength(snapshotsLength));
+
+    expect(pageState.usageEvents.length, inInclusiveRange(4, 12));
   });
 
   tearDownAll(() {

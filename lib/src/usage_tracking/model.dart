@@ -77,6 +77,13 @@ class UageTrackingConfig {
 
   bool get isNoOp =>
       autoSnapshottingConfig == null && usageEventsConfig == null;
+
+  @override
+  String toString() {
+    return 'interval: $interval\n'
+        '$usageEventsConfig\n'
+        '$autoSnapshottingConfig';
+  }
 }
 
 /// Configures memory usage tracking.
@@ -95,6 +102,12 @@ class UsageEventsConfig {
 
   /// Change in memory usage to trigger [onUsageEvent].
   final int deltaMb;
+
+  @override
+  String toString() {
+    final formatter = NumberFormat('#,###,000');
+    return 'usageEvent.deltaMb: ${formatter.format(deltaMb)}';
+  }
 }
 
 /// Configures auto-snapshotting, based on the value of `ProcessInfo.currentRss` (dart:io).
@@ -156,10 +169,10 @@ class AutoSnapshottingConfig {
   String toString() {
     final formatter = NumberFormat('#,###,000');
     return 'thresholdMb: ${formatter.format(thresholdMb)}\n'
-        'stepMb: ${increaseMb == null ? 'null' : formatter.format(increaseMb)}\n'
+        'autosnapshot.increaseMb: ${increaseMb == null ? 'null' : formatter.format(increaseMb)}\n'
         'directorySizeLimitMb: ${formatter.format(directorySizeLimitMb)}\n'
         'directory: $directory\n'
         'directoryAbsolute: $directoryAbsolute\n'
-        'minDelayBetweenSnapshots: $minDelayBetweenSnapshots\n';
+        'minDelayBetweenSnapshots: $minDelayBetweenSnapshots';
   }
 }
