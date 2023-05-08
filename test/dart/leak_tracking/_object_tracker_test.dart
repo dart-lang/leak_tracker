@@ -10,12 +10,16 @@ import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 
 const String _trackedClass = 'trackedClass';
+const _disposalTimeBuffer = Duration(milliseconds: 100);
 
 void main() {
   group('$ObjectTracker handles duplicates', () {
     late ObjectTracker tracker;
 
     setUp(() {
+      tracker = ObjectTracker(
+        disposalTimeBuffer: _disposalTimeBuffer,
+      );
       // finalizerBuilder = _MockFinalizerBuilder();
       // gcCounter = _MockGcCounter();
       // tracker = ObjectTracker(
@@ -40,7 +44,6 @@ void main() {
     late _MockFinalizerBuilder finalizerBuilder;
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
-    const disposalTimeBuffer = Duration(milliseconds: 100);
 
     void verifyOneLeakIsRegistered(Object object, LeakType type) {
       var summary = tracker.leaksSummary();
@@ -85,7 +88,7 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
-        disposalTimeBuffer: disposalTimeBuffer,
+        disposalTimeBuffer: _disposalTimeBuffer,
       );
     });
 
@@ -109,7 +112,7 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(disposalTimeBuffer * 1000);
+      time = time.add(_disposalTimeBuffer * 1000);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer * 1000;
 
       // Verify no leaks.
@@ -150,7 +153,7 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(disposalTimeBuffer);
+      time = time.add(_disposalTimeBuffer);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // Verify leak is registered.
@@ -249,7 +252,6 @@ void main() {
     late _MockFinalizerBuilder finalizerBuilder;
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
-    const disposalTimeBuffer = Duration(milliseconds: 100);
 
     /// Emulates GC.
     void gc(Object object) {
@@ -266,7 +268,7 @@ void main() {
           classesToCollectStackTraceOnStart: {'String'},
           classesToCollectStackTraceOnDisposal: {'String'},
         ),
-        disposalTimeBuffer: disposalTimeBuffer,
+        disposalTimeBuffer: _disposalTimeBuffer,
       );
     });
 
@@ -286,7 +288,7 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(disposalTimeBuffer);
+      time = time.add(_disposalTimeBuffer);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // GC and verify leak contains callstacks.
