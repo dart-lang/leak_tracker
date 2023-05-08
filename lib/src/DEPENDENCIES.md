@@ -8,5 +8,6 @@ flowchart TD;
 devtools_integration-->shared;
 leak_tracking-->devtools_integration;
 leak_tracking-->shared;
+usage_tracking-->shared;
 ```
 

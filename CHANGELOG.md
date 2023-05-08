@@ -1,3 +1,8 @@
+# 5.0.0
+
+* Migrate from auto-snapshotting to usage-tracking.
+* Improve leak debugging UX.
+
 # 4.0.3
 
 * Fix broken documentation link.

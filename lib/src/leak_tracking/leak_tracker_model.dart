@@ -104,7 +104,7 @@ class LeakTrackingConfiguration {
 
 /// Configuration for leak tracking in unit tests.
 ///
-/// The configuration is needed only for test debugging,
+/// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
@@ -112,8 +112,22 @@ class LeakTrackingTestConfig {
     this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
-    this.notGCedAllowList = const <String>{},
-    this.notDisposedAllowList = const <String>{},
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+    this.pauseOnNotGCedLeaks = true,
+  });
+
+  /// Creates a new instance of [LeakTrackingFlutterTestConfig].
+  const LeakTrackingTestConfig.debug({
+    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(
+      collectStackTraceOnStart: true,
+      collectStackTraceOnDisposal: true,
+    ),
+    this.onLeaks,
+    this.failTestOnLeaks = true,
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+    this.pauseOnNotGCedLeaks = false,
   });
 
   /// If true, a warning will be printed when leak tracking is
@@ -138,13 +152,25 @@ class LeakTrackingTestConfig {
   /// found to allow for analyzing leaks after the test completes.
   final bool failTestOnLeaks;
 
-  /// The set of classes that are allowed to be not garbage collected after disposal.
+  /// Classes that are allowed to be not garbage collected after disposal.
   ///
-  /// As returned by `object.runtimeType.toString()`.
-  final Set<String> notGCedAllowList;
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to be not GCed.
+  ///
+  /// If number of instances is [null], any number of instances is allowed.
+  final Map<String, int?> notGCedAllowList;
 
-  /// The set  of classes that are allowed to be garbage collected without being disposed.
+  /// Classes that are allowed to be garbage collected without being disposed.
   ///
-  /// As returned by `object.runtimeType.toString()`.
-  final Set<String> notDisposedAllowList;
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to be not disposed.
+  ///
+  /// If number of instances is [null], any number of instances is allowed.
+  final Map<String, int?> notDisposedAllowList;
+
+  /// If true, the test will pause when a not-GCed leak is found.
+  ///
+  /// Before pausing, the test will print steps to resolve the leaks
+  /// to debug console.
+  final bool pauseOnNotGCedLeaks;
 }

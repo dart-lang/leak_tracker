@@ -4,7 +4,7 @@
 
 import 'dart:io';
 
-import 'package:leak_tracker/src/autosnapshotting/_snapshot.dart';
+import 'package:leak_tracker/src/usage_tracking/_snapshot.dart';
 import 'package:test/test.dart';
 
 void main() {

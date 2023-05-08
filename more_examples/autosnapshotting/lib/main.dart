@@ -8,14 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
+late String _snapshotDirectory;
+
+extension SizeConversion on int {
+  static const _bytesInMB = 1024 * 1024;
+  int mbToBytes() => this * _bytesInMB;
+  int bytesToMB() => (this / _bytesInMB).round();
+}
+
 void main(List<String> args, {String? snapshotDirectory}) {
-  runApp(MyApp(snapshotDirectory: snapshotDirectory));
+  _snapshotDirectory = snapshotDirectory ?? 'dart_snapshots';
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, this.snapshotDirectory});
-
-  final String? snapshotDirectory;
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,19 +32,17 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: MyHomePage(
+      home: const MyHomePage(
         title: 'Autosnapshotting Demo',
-        snapshotDirectory: snapshotDirectory,
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, this.snapshotDirectory});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final String? snapshotDirectory;
 
   @override
   State<MyHomePage> createState() => MyHomePageState();
@@ -47,9 +52,10 @@ final _allocations = <List<DateTime>>[];
 
 class MyHomePageState extends State<MyHomePage> {
   final _formatter = NumberFormat('#,###,000');
-  final snapshots = <SnapshotInfo>[];
+  final snapshots = <SnapshotEvent>[];
+  final usageEvents = <MemoryUsageEvent>[];
   int lastRss = 0;
-  late AutoSnapshottingConfig config;
+  late UageTrackingConfig config;
 
   void _allocateMemory() {
     setState(() {
@@ -62,27 +68,38 @@ class MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    config = AutoSnapshottingConfig(
-      onSnapshot: _handleSnapshot,
-      thresholdMb: 400,
-      stepMb: 100,
-      directorySizeLimitMb: 500,
-      directory: widget.snapshotDirectory ?? 'dart_snapshots',
-      minDelayBetweenSnapshots: const Duration(seconds: 5),
+    config = UageTrackingConfig(
+      autoSnapshottingConfig: AutoSnapshottingConfig(
+        onSnapshot: _handleSnapshotEvent,
+        thresholdMb: 400,
+        increaseMb: 100,
+        directorySizeLimitMb: 500,
+        directory: _snapshotDirectory,
+        minDelayBetweenSnapshots: const Duration(seconds: 5),
+      ),
+      usageEventsConfig: UsageEventsConfig(
+        _handleUsageEvent,
+        deltaMb: 100,
+      ),
     );
 
-    autoSnapshotOnMemoryOveruse(config: config);
+    trackMemoryUsage(config);
   }
 
-  void _handleSnapshot(SnapshotInfo record) {
+  void _handleSnapshotEvent(SnapshotEvent event) {
     setState(() {
-      snapshots.add(record);
+      snapshots.add(event);
+    });
+  }
+
+  void _handleUsageEvent(MemoryUsageEvent event) {
+    setState(() {
+      usageEvents.add(event);
     });
   }
 
   String _formatSize(int bytes) {
-    final megaBytes = bytes / 1024 / 1024;
-    return '${_formatter.format(bytes)} (${_formatter.format(megaBytes)} MB)';
+    return '${_formatter.format(bytes)} (${_formatter.format(bytes.bytesToMB())} MB)';
   }
 
   String _formatSnapshots() {
@@ -94,6 +111,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    const space = SizedBox(height: 20);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -108,9 +126,15 @@ class MyHomePageState extends State<MyHomePage> {
               'Current RSS: ${_formatSize(ProcessInfo.currentRss)}',
               style: Theme.of(context).textTheme.headlineMedium,
             ),
+            space,
             Text(
-              '-- Auto-Snapshotting Configuration --\n$config',
+              '-- Configuration --\n$config',
             ),
+            space,
+            Text(
+              '-- Usage Events (MB) --\n${usageEvents.map((e) => _formatter.format(e.rss.bytesToMB())).join('; ')}',
+            ),
+            space,
             Text(
               '-- Taken Snapshots --\n${_formatSnapshots()}',
             ),

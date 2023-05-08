@@ -14,19 +14,15 @@ import 'package:integration_test/integration_test.dart';
 // Run for macos:
 // flutter test integration_test/app_test.dart -d macos
 
-// Fun headless:
+// Run headless:
 // flutter test integration_test/app_test.dart -d flutter-tester
 
 const _testDirRoot = 'test_dart_snapshots';
 
-extension _SizeConversion on int {
-  int mbToBytes() => this * 1024 * 1024;
-}
-
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('Snapshots are taken after reaching limit', (tester) async {
+  testWidgets('Snapshots are not taken after reaching limit', (tester) async {
     app.main([], snapshotDirectory: '$_testDirRoot/$pid');
     await tester.pumpAndSettle();
 
@@ -36,7 +32,8 @@ void main() {
     final theButton = find.byTooltip('Allocate more memory');
 
     // Take first snapshot
-    final firstThreshold = config.thresholdMb.mbToBytes();
+    final firstThreshold =
+        config.autoSnapshottingConfig!.thresholdMb.mbToBytes();
     while (pageState.lastRss <= firstThreshold) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
@@ -45,7 +42,8 @@ void main() {
     expect(pageState.snapshots.length, greaterThan(0));
 
     // Take second threshold
-    final secondThreshold = pageState.lastRss + config.stepMb!.mbToBytes();
+    final secondThreshold = pageState.lastRss +
+        config.autoSnapshottingConfig!.increaseMb!.mbToBytes();
     int snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
       await tester.tap(theButton);
@@ -55,8 +53,8 @@ void main() {
     expect(pageState.snapshots.length, snapshotsLength + 1);
 
     // Check the directory limit is respected.
-    while (directorySize(config.directory) <=
-        config.directorySizeLimitMb.mbToBytes()) {
+    while (directorySize(config.autoSnapshottingConfig!.directory) <=
+        config.autoSnapshottingConfig!.directorySizeLimitMb.mbToBytes()) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
       await tester.runAsync(() => Future.delayed(const Duration(seconds: 1)));
@@ -66,7 +64,9 @@ void main() {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    expect(pageState.snapshots.length, snapshotsLength);
+    expect(pageState.snapshots, hasLength(snapshotsLength));
+
+    expect(pageState.usageEvents.length, inInclusiveRange(4, 12));
   });
 
   tearDownAll(() {
