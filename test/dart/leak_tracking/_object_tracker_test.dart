@@ -15,28 +15,30 @@ const _disposalTimeBuffer = Duration(milliseconds: 100);
 void main() {
   group('$ObjectTracker handles duplicates', () {
     late ObjectTracker tracker;
+    IdentityHashCode mockCoder(Object object) => 1;
 
     setUp(() {
       tracker = ObjectTracker(
         disposalTimeBuffer: _disposalTimeBuffer,
+        coder: mockCoder,
       );
-      // finalizerBuilder = _MockFinalizerBuilder();
-      // gcCounter = _MockGcCounter();
-      // tracker = ObjectTracker(
-      //   stackTraceCollectionConfig: const StackTraceCollectionConfig(),
-      //   finalizerBuilder: finalizerBuilder.build,
-      //   gcCounter: gcCounter,
-      //   disposalTimeBuffer: disposalTimeBuffer,
-      // );
     });
 
-    test('uses finalizer.', () {
-      // const theObject = '-';
-      // tracker.startTracking(theObject, context: null, trackedClass: '');
-      // expect(
-      //   finalizerBuilder.finalizer.attached,
-      //   contains(theObject),
-      // );
+    test('without failures.', () {
+      final object1 = [1, 2, 3];
+      final object2 = ['-'];
+
+      tracker.startTracking(
+        object1,
+        context: null,
+        trackedClass: _trackedClass,
+      );
+
+      tracker.startTracking(
+        object2,
+        context: null,
+        trackedClass: _trackedClass,
+      );
     });
   });
 
