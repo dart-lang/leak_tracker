@@ -178,7 +178,7 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(disposalTimeBuffer);
+      time = time.add(_disposalTimeBuffer);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // GC and verify leak is registered.
@@ -204,7 +204,7 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(disposalTimeBuffer);
+      time = time.add(_disposalTimeBuffer);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       withClock(Clock.fixed(time), () {
@@ -234,7 +234,7 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(disposalTimeBuffer);
+      time = time.add(_disposalTimeBuffer);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // Verify context for the collected nonGCed.
