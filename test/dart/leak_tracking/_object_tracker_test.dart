@@ -12,49 +12,49 @@ import 'package:test/test.dart';
 const String _trackedClass = 'trackedClass';
 
 void main() {
-  late _MockFinalizerBuilder finalizerBuilder;
-  late _MockGcCounter gcCounter;
-  late ObjectTracker tracker;
-  const disposalTimeBuffer = Duration(milliseconds: 100);
-
-  void verifyOneLeakIsRegistered(Object object, LeakType type) {
-    var summary = tracker.leaksSummary();
-    expect(summary.total, 1);
-
-    // Second leak summary should be the same.
-    summary = tracker.leaksSummary();
-    expect(summary.total, 1);
-
-    var leaks = tracker.collectLeaks();
-    expect(summary.totals[type], 1);
-
-    expect(leaks.total, 1);
-    final theLeak = leaks.byType[type]!.single;
-    expect(theLeak.type, object.runtimeType.toString());
-    expect(theLeak.code, identityHashCode(object));
-    expect(theLeak.trackedClass, _trackedClass);
-
-    // Second leak collection should not return results.
-    summary = tracker.leaksSummary();
-    leaks = tracker.collectLeaks();
-    expect(summary.total, 0);
-    expect(leaks.total, 0);
-  }
-
-  void verifyNoLeaks() {
-    final summary = tracker.leaksSummary();
-    final leaks = tracker.collectLeaks();
-
-    expect(summary.total, 0);
-    expect(leaks.total, 0);
-  }
-
-  /// Emulates GC.
-  void gc(Object object) {
-    finalizerBuilder.finalizer.finalize(identityHashCode(object));
-  }
-
   group('$ObjectTracker default', () {
+    late _MockFinalizerBuilder finalizerBuilder;
+    late _MockGcCounter gcCounter;
+    late ObjectTracker tracker;
+    const disposalTimeBuffer = Duration(milliseconds: 100);
+
+    void verifyOneLeakIsRegistered(Object object, LeakType type) {
+      var summary = tracker.leaksSummary();
+      expect(summary.total, 1);
+
+      // Second leak summary should be the same.
+      summary = tracker.leaksSummary();
+      expect(summary.total, 1);
+
+      var leaks = tracker.collectLeaks();
+      expect(summary.totals[type], 1);
+
+      expect(leaks.total, 1);
+      final theLeak = leaks.byType[type]!.single;
+      expect(theLeak.type, object.runtimeType.toString());
+      expect(theLeak.code, identityHashCode(object));
+      expect(theLeak.trackedClass, _trackedClass);
+
+      // Second leak collection should not return results.
+      summary = tracker.leaksSummary();
+      leaks = tracker.collectLeaks();
+      expect(summary.total, 0);
+      expect(leaks.total, 0);
+    }
+
+    void verifyNoLeaks() {
+      final summary = tracker.leaksSummary();
+      final leaks = tracker.collectLeaks();
+
+      expect(summary.total, 0);
+      expect(leaks.total, 0);
+    }
+
+    /// Emulates GC.
+    void gc(Object object) {
+      finalizerBuilder.finalizer.finalize(identityHashCode(object));
+    }
+
     setUp(() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
@@ -223,6 +223,16 @@ void main() {
   });
 
   group('$ObjectTracker with stack traces', () {
+    late _MockFinalizerBuilder finalizerBuilder;
+    late _MockGcCounter gcCounter;
+    late ObjectTracker tracker;
+    const disposalTimeBuffer = Duration(milliseconds: 100);
+
+    /// Emulates GC.
+    void gc(Object object) {
+      finalizerBuilder.finalizer.finalize(identityHashCode(object));
+    }
+
     setUp(() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
