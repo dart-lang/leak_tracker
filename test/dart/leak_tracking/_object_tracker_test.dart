@@ -12,6 +12,30 @@ import 'package:test/test.dart';
 const String _trackedClass = 'trackedClass';
 
 void main() {
+  group('$ObjectTracker handles duplicates', () {
+    late ObjectTracker tracker;
+
+    setUp(() {
+      // finalizerBuilder = _MockFinalizerBuilder();
+      // gcCounter = _MockGcCounter();
+      // tracker = ObjectTracker(
+      //   stackTraceCollectionConfig: const StackTraceCollectionConfig(),
+      //   finalizerBuilder: finalizerBuilder.build,
+      //   gcCounter: gcCounter,
+      //   disposalTimeBuffer: disposalTimeBuffer,
+      // );
+    });
+
+    test('uses finalizer.', () {
+      // const theObject = '-';
+      // tracker.startTracking(theObject, context: null, trackedClass: '');
+      // expect(
+      //   finalizerBuilder.finalizer.attached,
+      //   contains(theObject),
+      // );
+    });
+  });
+
   group('$ObjectTracker default', () {
     late _MockFinalizerBuilder finalizerBuilder;
     late _MockGcCounter gcCounter;
@@ -59,7 +83,6 @@ void main() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
       tracker = ObjectTracker(
-        stackTraceCollectionConfig: const StackTraceCollectionConfig(),
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
         disposalTimeBuffer: disposalTimeBuffer,
