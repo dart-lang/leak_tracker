@@ -11,8 +11,9 @@ import 'package:leak_tracker/leak_tracker.dart';
 late String _snapshotDirectory;
 
 extension SizeConversion on int {
-  int mbToBytes() => this * 1024 * 1024;
-  int bytesToMB() => (this / 1024 / 1024).round();
+  static const _bytesInMB = 1024 * 1024;
+  int mbToBytes() => this * _bytesInMB;
+  int bytesToMB() => (this / _bytesInMB).round();
 }
 
 void main(List<String> args, {String? snapshotDirectory}) {

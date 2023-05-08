@@ -20,8 +20,7 @@ Use the function `trackMemoryUsage` to configure usage events and auto-snapshott
 
 See [example](../more_examples/autosnapshotting/).
 
-We
-recommend to have auto-snapshotting off by default, with possibility
+We recommend to have auto-snapshotting off by default, with possibility
 to enable it via command line arguments in case of reported memory issues.
 
 ## Analyse snapshots
@@ -32,7 +31,7 @@ TODO (polina-c): add link to DevTools help section.
 
 ### By platform
 
-USage tracking does not work for web platform.
+Usage tracking does not work for web platform.
 
 ### By build mode
 
