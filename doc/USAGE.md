@@ -36,7 +36,7 @@ Usage tracking does not work for web platform.
 ### By build mode
 
 While usage tracking events are available for all modes, auto-snapshotting
-is on or off depending on build mode:
+is on or off depending on the build mode:
 
 * **Enabled for:** Flutter debug and profile modes (equivalent to Dart debug and release modes).
 * **Disabled for:** Flutter release mode (equivalent to Dart product mode).
