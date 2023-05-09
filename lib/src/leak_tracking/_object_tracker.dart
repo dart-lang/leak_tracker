@@ -215,16 +215,18 @@ class ObjectTracker implements LeakProvider {
   bool _checkForDuplicate(int code) {
     if (!_objects.notGCed.containsKey(code)) return false;
     if (_objects.duplicates.contains(code)) return true;
+
     _objects.duplicates.add(code);
     _objects.notGCed.remove(code);
     _objects.notGCedDisposedOk.remove(code);
     _objects.notGCedDisposedLate.remove(code);
     _objects.notGCedDisposedLateCollected.remove(code);
-    _finalizer.detach(code);
+
     if (_objects.duplicates.length > _maxAllowedDuplicates) {
       throw 'Too many duplicates, Please, file a bug '
           'to https://github.com/dart-lang/leak_tracker/issues.';
     }
+
     return true;
   }
 
