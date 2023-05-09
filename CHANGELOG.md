@@ -2,6 +2,7 @@
 
 * Migrate from auto-snapshotting to usage-tracking.
 * Improve leak debugging UX.
+* Fix failures in case of duplicates.
 
 # 4.0.3
 

@@ -5,14 +5,19 @@
 /// Result of [identityHashCode].
 typedef IdentityHashCode = int;
 
+/// Finilizer builder to mock standard [identityHashCode].
+typedef IdentityHashCoder = IdentityHashCode Function(Object object);
+
+int standardIdentityHashCoder(Object object) => identityHashCode(object);
+
 typedef ObjectGcCallback = void Function(Object code);
 
-/// Finilizer builder to mock finalizer.
+/// Finilizer builder to mock standard [Finalizer].
 typedef FinalizerBuilder = Finalizer<Object> Function(
   ObjectGcCallback onObjectGc,
 );
 
-Finalizer<Object> buildFinalizer(ObjectGcCallback onObjectGc) =>
+Finalizer<Object> buildStandardFinalizer(ObjectGcCallback onObjectGc) =>
     Finalizer<Object>(onObjectGc);
 
 String fullClassName({
