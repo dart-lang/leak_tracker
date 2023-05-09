@@ -18,15 +18,19 @@ import 'leak_tracker_model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    required this.stackTraceCollectionConfig,
+    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
     required this.disposalTimeBuffer,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
+    IdentityHashCoder? coder,
   }) {
+    _coder = coder ?? standardIdentityHashCoder;
     finalizerBuilder ??= buildStandardFinalizer;
     _finalizer = finalizerBuilder(_onOobjectGarbageCollected);
     _gcCounter = gcCounter ?? GcCounter();
   }
+
+  late IdentityHashCoder _coder;
 
   /// Time to allow the disposal invoker to release the reference to the object.
   final Duration disposalTimeBuffer;
@@ -47,13 +51,13 @@ class ObjectTracker implements LeakProvider {
     required String trackedClass,
   }) {
     throwIfDisposed();
-    final code = identityHashCode(object);
+    final code = _coder(object);
     if (_checkForDuplicate(code)) return;
 
     _finalizer.attach(object, code);
 
     final record = ObjectRecord(
-      identityHashCode(object),
+      _coder(object),
       context,
       object.runtimeType,
       trackedClass,
@@ -115,7 +119,7 @@ class ObjectTracker implements LeakProvider {
     required Map<String, dynamic>? context,
   }) {
     throwIfDisposed();
-    final code = identityHashCode(object);
+    final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredObject(object, code)) return;
 
@@ -137,7 +141,7 @@ class ObjectTracker implements LeakProvider {
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
     throwIfDisposed();
-    final code = identityHashCode(object);
+    final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
     if (_checkForNotRegisteredObject(object, code)) return;
     final record = _notGCed(code);

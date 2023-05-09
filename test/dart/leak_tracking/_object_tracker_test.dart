@@ -79,6 +79,11 @@ void main() {
       expect(leaks.total, 0);
     }
 
+    /// Emulates GC.
+    void gc(Object object) {
+      finalizerBuilder.finalizer.finalize(identityHashCode(object));
+    }
+
     setUp(() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
@@ -86,7 +91,6 @@ void main() {
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
         disposalTimeBuffer: _disposalTimeBuffer,
-        stackTraceCollectionConfig: const StackTraceCollectionConfig(),
       );
     });
 
@@ -129,7 +133,7 @@ void main() {
         context: null,
         trackedClass: 'trackedClass',
       );
-      finalizerBuilder.gc(theObject);
+      gc(theObject);
 
       // Verify not-disposal is registered.
       verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
@@ -181,7 +185,7 @@ void main() {
 
       // GC and verify leak is registered.
       withClock(Clock.fixed(time), () {
-        finalizerBuilder.gc(theObject);
+        gc(theObject);
         verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
@@ -210,7 +214,7 @@ void main() {
         verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
 
         // GC and verify gcedLate leak is registered.
-        finalizerBuilder.gc(theObject);
+        gc(theObject);
         verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
@@ -251,6 +255,11 @@ void main() {
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
 
+    /// Emulates GC.
+    void gc(Object object) {
+      finalizerBuilder.finalizer.finalize(identityHashCode(object));
+    }
+
     setUp(() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
@@ -286,7 +295,7 @@ void main() {
 
       // GC and verify leak contains callstacks.
       withClock(Clock.fixed(time), () {
-        finalizerBuilder.gc(theObject);
+        gc(theObject);
         final theLeak =
             tracker.collectLeaks().byType[LeakType.gcedLate]!.single;
 
@@ -327,9 +336,6 @@ class _MockFinalizerBuilder {
   _MockFinalizer build(ObjectGcCallback onGc) {
     return finalizer = _MockFinalizer(onGc);
   }
-
-  // Emulates gc for the [object].
-  void gc(Object object) => finalizer.finalize(identityHashCode(Object));
 }
 
 class _MockGcCounter implements GcCounter {
