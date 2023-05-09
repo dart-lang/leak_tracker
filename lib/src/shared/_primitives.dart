@@ -12,7 +12,7 @@ int standardIdentityHashCoder(Object object) => identityHashCode(object);
 
 typedef ObjectGcCallback = void Function(Object code);
 
-/// Finilizer builder to mock standard finalizer.
+/// Finilizer builder to mock standard [Finalizer].
 typedef FinalizerBuilder = Finalizer<Object> Function(
   ObjectGcCallback onObjectGc,
 );
