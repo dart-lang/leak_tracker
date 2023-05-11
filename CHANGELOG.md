@@ -1,7 +1,7 @@
 # 6.0.0
 
 * Fix typo in public API.
-* Add assersion for negative delay between snapshot.
+* Add assersion for negative delay between snapshots.
 
 # 5.0.0
 
