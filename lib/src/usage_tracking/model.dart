@@ -59,8 +59,8 @@ typedef UsageCallback = void Function(MemoryUsageEvent event);
 /// Configures memory usage tracking.
 ///
 /// Set [interval] to customize how often to verify memory usage.
-class UageTrackingConfig {
-  const UageTrackingConfig({
+class UsageTrackingConfig {
+  const UsageTrackingConfig({
     this.usageEventsConfig,
     this.autoSnapshottingConfig,
     this.interval = const Duration(seconds: 1),

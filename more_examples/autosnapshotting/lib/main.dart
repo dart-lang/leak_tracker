@@ -55,7 +55,7 @@ class MyHomePageState extends State<MyHomePage> {
   final snapshots = <SnapshotEvent>[];
   final usageEvents = <MemoryUsageEvent>[];
   int lastRss = 0;
-  late UageTrackingConfig config;
+  late UsageTrackingConfig config;
 
   void _allocateMemory() {
     setState(() {
@@ -68,7 +68,7 @@ class MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    config = UageTrackingConfig(
+    config = UsageTrackingConfig(
       autoSnapshottingConfig: AutoSnapshottingConfig(
         onSnapshot: _handleSnapshotEvent,
         thresholdMb: 400,
