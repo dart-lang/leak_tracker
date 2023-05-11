@@ -124,14 +124,22 @@ class UsageEventsConfig {
 ///
 /// Set [minDelayBetweenSnapshots] to make sure snapshots do not trigger each other.
 class AutoSnapshottingConfig {
-  const AutoSnapshottingConfig({
+  AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
     this.increaseMb = 512, // 0.5Gb
     this.directory = 'dart_memory_snapshots',
     this.directorySizeLimitMb = 10240, // 10Gb
     this.minDelayBetweenSnapshots = const Duration(seconds: 10),
     this.onSnapshot,
-  });
+  }) {
+    if (minDelayBetweenSnapshots <= Duration.zero) {
+      throw ArgumentError.value(
+        minDelayBetweenSnapshots,
+        'minDelayBetweenSnapshots',
+        'must be positive',
+      );
+    }
+  }
 
   /// The rss value in Mb that will trigger the first snapshot.
   final int thresholdMb;
