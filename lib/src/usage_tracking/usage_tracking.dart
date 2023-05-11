@@ -16,10 +16,10 @@ UsageEventCreator? usageEventCreator;
 /// Enables memory usage tracking, based on the value of [ProcessInfo.currentRss] (dart:io).
 ///
 /// If tracking is already enabled, resets it.
-/// See [UageTrackingConfig] for details.
+/// See [UsageTrackingConfig] for details.
 /// Use [stopMemoryUsageTracking] to stop auto-snapshotting.
 /// Snapshotting operation may cause a delay in the main thread.
-void trackMemoryUsage(UageTrackingConfig config) {
+void trackMemoryUsage(UsageTrackingConfig config) {
   stopMemoryUsageTracking();
   if (config.isNoOp) return;
 

@@ -1,3 +1,8 @@
+# 6.0.0
+
+* Fix typo in public API.
+* Add assersion for negative delay between snapshots.
+
 # 5.0.0
 
 * Migrate from auto-snapshotting to usage-tracking.
