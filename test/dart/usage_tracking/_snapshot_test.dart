@@ -8,7 +8,7 @@ import 'package:leak_tracker/src/usage_tracking/_snapshot.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('test', () {
+  test('saveSnapshot invokes snapshotter', () {
     late String actualFileName;
 
     final returnedFileName = saveSnapshot(
