@@ -73,8 +73,8 @@ Future<Leaks> withLeakTracking(
   DartAsyncCallback callback, {
   bool shouldThrowOnLeaks = true,
   Duration? timeoutForFinalGarbageCollection,
-  StackTraceCollectionConfig stackTraceCollectionConfig =
-      const StackTraceCollectionConfig(),
+  LeakDiagnosticsConfig stackTraceCollectionConfig =
+      const LeakDiagnosticsConfig(),
   AsyncCodeRunner? asyncCodeRunner,
 }) async {
   enableLeakTracking(

@@ -13,13 +13,14 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
-/// Configuration of stack trace collection.
+/// Configuration for diagnostics.
 ///
-/// Stacktrace collection can seriously affect performance and memory footprint.
-/// So, it is recommended to have it disabled for leak detection and to enable it
+/// Stacktrace and retaining path collection can seriously affect performance and memory footprint.
+/// So, it is recommended to have them disabled for leak detection and to enable them
 /// only for leak troubleshooting.
-class StackTraceCollectionConfig {
-  const StackTraceCollectionConfig({
+class LeakDiagnosticsConfig {
+  const LeakDiagnosticsConfig({
+    this.collectRetainingPathForNonGCed = false,
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
     this.collectStackTraceOnStart = false,
@@ -44,11 +45,13 @@ class StackTraceCollectionConfig {
   /// If true, stack trace will be collected on disposal for all tracked classes.
   final bool collectStackTraceOnDisposal;
 
-  bool shouldCollectOnStart(String classname) =>
+  final bool collectRetainingPathForNonGCed;
+
+  bool shouldCollectStackTraceOnStart(String classname) =>
       collectStackTraceOnStart ||
       classesToCollectStackTraceOnStart.contains(classname);
 
-  bool shouldCollectOnDisposal(String classname) =>
+  bool shouldCollectStackTraceOnDisposal(String classname) =>
       collectStackTraceOnDisposal ||
       classesToCollectStackTraceOnDisposal.contains(classname);
 }
@@ -60,7 +63,7 @@ class LeakTrackingConfiguration {
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
+    this.stackTraceCollectionConfig = const LeakDiagnosticsConfig(),
   });
 
   /// The leak tracker:
@@ -69,8 +72,8 @@ class LeakTrackingConfiguration {
   /// - will assume the methods `dispose` are completed
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
-    StackTraceCollectionConfig stackTraceCollectionConfig =
-        const StackTraceCollectionConfig(),
+    LeakDiagnosticsConfig stackTraceCollectionConfig =
+        const LeakDiagnosticsConfig(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -79,7 +82,7 @@ class LeakTrackingConfiguration {
           stackTraceCollectionConfig: stackTraceCollectionConfig,
         );
 
-  final StackTraceCollectionConfig stackTraceCollectionConfig;
+  final LeakDiagnosticsConfig stackTraceCollectionConfig;
 
   /// Period to check for leaks.
   ///
@@ -109,7 +112,7 @@ class LeakTrackingConfiguration {
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
   const LeakTrackingTestConfig({
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
+    this.stackTraceCollectionConfig = const LeakDiagnosticsConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
@@ -119,9 +122,10 @@ class LeakTrackingTestConfig {
 
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
   const LeakTrackingTestConfig.debug({
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(
+    this.stackTraceCollectionConfig = const LeakDiagnosticsConfig(
       collectStackTraceOnStart: true,
       collectStackTraceOnDisposal: true,
+      collectRetainingPathForNonGCed: true,
     ),
     this.onLeaks,
     this.failTestOnLeaks = true,
@@ -138,7 +142,7 @@ class LeakTrackingTestConfig {
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
-  final StackTraceCollectionConfig stackTraceCollectionConfig;
+  final LeakDiagnosticsConfig stackTraceCollectionConfig;
 
   /// Handler to obtain details about collected leaks.
   ///
