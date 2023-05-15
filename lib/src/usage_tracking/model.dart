@@ -31,7 +31,9 @@ class MemoryUsageEvent {
     required this.rss,
     DateTime? timestamp,
   }) : timestamp = timestamp ?? DateTime.now() {
-    if (previousEventTime != null) {
+    if (previousEventTime == null) {
+      period = null;
+    } else {
       period = this.timestamp.difference(previousEventTime);
     }
   }
