@@ -1,3 +1,8 @@
+
+# 6.0.1
+
+* Fix for MemoryUsageEvent constructor.
+
 # 6.0.0
 
 * Fix typo in public API.
