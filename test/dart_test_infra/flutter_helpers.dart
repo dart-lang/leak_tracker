@@ -33,7 +33,7 @@ Future<void> withFlutterLeakTracking(
     final Leaks leaks = await withLeakTracking(
       () async => callback(),
       asyncCodeRunner: asyncCodeRunner,
-      stackTraceCollectionConfig: stackTraceCollectionConfig,
+      leakDiagnosticConfig: stackTraceCollectionConfig,
       shouldThrowOnLeaks: false,
       timeoutForFinalGarbageCollection: timeoutForFinalGarbageCollection,
     );
