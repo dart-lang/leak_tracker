@@ -16,8 +16,8 @@ import 'package:leak_tracker/leak_tracker.dart';
 Future<void> withFlutterLeakTracking(
   DartAsyncCallback callback, {
   required WidgetTester? tester,
-  LeakDiagnosticsConfig stackTraceCollectionConfig =
-      const LeakDiagnosticsConfig(),
+  LeakDiagnosticConfig stackTraceCollectionConfig =
+      const LeakDiagnosticConfig(),
   Duration? timeoutForFinalGarbageCollection,
   void Function(Leaks foundLeaks)? leaksObtainer,
 }) async {

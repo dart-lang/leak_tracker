@@ -18,7 +18,7 @@ import 'leak_tracker_model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    this.stackTraceCollectionConfig = const LeakDiagnosticsConfig(),
+    this.stackTraceCollectionConfig = const LeakDiagnosticConfig(),
     required this.disposalTimeBuffer,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
@@ -43,7 +43,7 @@ class ObjectTracker implements LeakProvider {
 
   bool disposed = false;
 
-  final LeakDiagnosticsConfig stackTraceCollectionConfig;
+  final LeakDiagnosticConfig stackTraceCollectionConfig;
 
   void startTracking(
     Object object, {
