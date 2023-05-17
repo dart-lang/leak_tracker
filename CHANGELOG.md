@@ -1,3 +1,6 @@
+# 6.0.2
+
+* Fixes to support g3.
 
 # 6.0.1
 
