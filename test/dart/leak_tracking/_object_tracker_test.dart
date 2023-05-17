@@ -258,7 +258,7 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
-        stackTraceCollectionConfig: const LeakDiagnosticConfig(
+        leakDiagnosticConfig: LeakDiagnosticConfig(
           classesToCollectStackTraceOnStart: {'String'},
           classesToCollectStackTraceOnDisposal: {'String'},
         ),

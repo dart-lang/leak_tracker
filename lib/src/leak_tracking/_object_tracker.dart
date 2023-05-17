@@ -18,12 +18,14 @@ import 'leak_tracker_model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    this.stackTraceCollectionConfig = const LeakDiagnosticConfig(),
+    LeakDiagnosticConfig? leakDiagnosticConfig,
     required this.disposalTimeBuffer,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
   }) {
+    this.leakDiagnosticConfig =
+        leakDiagnosticConfig ?? const LeakDiagnosticConfig.empty();
     _coder = coder ?? standardIdentityHashCoder;
     finalizerBuilder ??= buildStandardFinalizer;
     _finalizer = finalizerBuilder(_onOobjectGarbageCollected);
@@ -43,7 +45,7 @@ class ObjectTracker implements LeakProvider {
 
   bool disposed = false;
 
-  final LeakDiagnosticConfig stackTraceCollectionConfig;
+  late LeakDiagnosticConfig leakDiagnosticConfig;
 
   void startTracking(
     Object object, {
@@ -63,7 +65,7 @@ class ObjectTracker implements LeakProvider {
       trackedClass,
     );
 
-    if (stackTraceCollectionConfig
+    if (leakDiagnosticConfig
         .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
@@ -126,7 +128,7 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.mergeContext(context);
 
-    if (stackTraceCollectionConfig
+    if (leakDiagnosticConfig
         .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
