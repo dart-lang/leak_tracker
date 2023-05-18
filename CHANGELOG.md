@@ -1,6 +1,13 @@
 # 7.0.0
 
 * Enable collection of retaining path.
+# 6.0.3
+
+* Separate testing.
+
+# 6.0.2
+
+* Fixes to support g3.
 
 # 6.0.1
 
