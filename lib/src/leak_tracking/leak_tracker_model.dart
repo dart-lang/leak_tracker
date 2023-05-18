@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:developer';
+
 import '../shared/shared_model.dart';
 
 /// Handler to collect leak summary.
@@ -19,38 +21,13 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// So, it is recommended to have them disabled for leak detection and to enable them
 /// only for leak troubleshooting.
 class LeakDiagnosticConfig {
-  LeakDiagnosticConfig({
+  const LeakDiagnosticConfig({
     this.collectRetainingPathForNonGCed = false,
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
     this.collectStackTraceOnStart = false,
     this.collectStackTraceOnDisposal = false,
-  }) {
-    _checkMode();
-  }
-
-  const LeakDiagnosticConfig.empty()
-      : collectRetainingPathForNonGCed = false,
-        classesToCollectStackTraceOnStart = const {},
-        classesToCollectStackTraceOnDisposal = const {},
-        collectStackTraceOnStart = false,
-        collectStackTraceOnDisposal = false;
-
-  void _checkMode() {
-    if (collectRetainingPathForNonGCed) {
-      var isReleaseMode = true;
-      assert(() {
-        isReleaseMode = false;
-        return true;
-      }());
-
-      if (isReleaseMode) {
-        throw AssertionError(
-          'collectRetainingPathForNonGCed is not supported in release mode.',
-        );
-      }
-    }
-  }
+  });
 
   /// Set of classes to collect callstack on tracking start.
   ///
@@ -91,7 +68,7 @@ class LeakTrackingConfiguration {
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig.empty(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
   /// The leak tracker:
@@ -100,8 +77,7 @@ class LeakTrackingConfiguration {
   /// - will assume the methods `dispose` are completed
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
-    LeakDiagnosticConfig leakDiagnosticConfig =
-        const LeakDiagnosticConfig.empty(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,

@@ -18,14 +18,12 @@ import 'leak_tracker_model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    LeakDiagnosticConfig? leakDiagnosticConfig,
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     required this.disposalTimeBuffer,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
   }) {
-    this.leakDiagnosticConfig =
-        leakDiagnosticConfig ?? const LeakDiagnosticConfig.empty();
     _coder = coder ?? standardIdentityHashCoder;
     finalizerBuilder ??= buildStandardFinalizer;
     _finalizer = finalizerBuilder(_onOobjectGarbageCollected);
@@ -45,7 +43,7 @@ class ObjectTracker implements LeakProvider {
 
   bool disposed = false;
 
-  late LeakDiagnosticConfig leakDiagnosticConfig;
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 
   void startTracking(
     Object object, {

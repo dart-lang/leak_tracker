@@ -14,7 +14,7 @@ import '../../dart_test_infra/data/dart_classes.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
-  test('Retaining path is reported for not GCed leaks.', () async {
+  test('Retaining path is reported in debug mode.', () async {
     late InstrumentedClass notGCedObject;
     final leaks = await withLeakTracking(
       () async {
