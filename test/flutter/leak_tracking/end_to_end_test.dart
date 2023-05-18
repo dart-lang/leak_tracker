@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/testing.dart';
 
 import '../../dart_test_infra/data/dart_classes.dart';
 import '../../flutter_test_infra/flutter_classes.dart';
