@@ -9,6 +9,7 @@ import '../shared/shared_model.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/retaining_path.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
@@ -151,7 +152,7 @@ class ObjectTracker implements LeakProvider {
   @override
   Future<LeakSummary> leaksSummary() async {
     throwIfDisposed();
-    _checkForNewNotGCedLeaks();
+    await _checkForNewNotGCedLeaks();
 
     return LeakSummary({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks.length,
@@ -160,8 +161,11 @@ class ObjectTracker implements LeakProvider {
     });
   }
 
-  void _checkForNewNotGCedLeaks() {
+  Future<void> _checkForNewNotGCedLeaks() async {
     _objects.assertIntegrity();
+
+    final List<int>? objectsToGetPath =
+        leakDiagnosticConfig.collectRetainingPathForNonGCed ? [] : null;
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
@@ -169,18 +173,27 @@ class ObjectTracker implements LeakProvider {
           .isNotGCedLeak(_gcCounter.gcCount, now, disposalTimeBuffer)) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
+        objectsToGetPath?.add(code);
       }
     }
+
+    await _maybeAddRetainingPath(objectsToGetPath);
 
     _objects.assertIntegrity();
   }
 
-  // void _maybeAddRetainingPath(int code) async {
-  //   if (!leakDiagnosticConfig.collectRetainingPathForNonGCed) return;
-  //   final record = _objects.notGCed[code]!;
-  //   final path = 'the path';
-  //   record.setContext(ContextKeys.retainingPath, path);
-  // }
+  Future<void> _maybeAddRetainingPath(List<int>? objectsToGetPath) async {
+    if (objectsToGetPath == null) return;
+
+    final pathObtainers = objectsToGetPath.map((code) async {
+      final record = _objects.notGCed[code]!;
+      record.setContext(
+        ContextKeys.retainingPath,
+        await obtainRetainingPath(record.type, record.code),
+      );
+    });
+    await Future.wait(pathObtainers);
+  }
 
   ObjectRecord _notGCed(int code) {
     final result = _objects.notGCed[code];
@@ -193,7 +206,7 @@ class ObjectTracker implements LeakProvider {
   @override
   Future<Leaks> collectLeaks() async {
     throwIfDisposed();
-    _checkForNewNotGCedLeaks();
+    await _checkForNewNotGCedLeaks();
 
     final result = Leaks({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks
