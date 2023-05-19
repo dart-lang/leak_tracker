@@ -47,15 +47,15 @@ void main() {
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
 
-    void verifyOneLeakIsRegistered(Object object, LeakType type) {
-      var summary = tracker.leaksSummary();
+    void verifyOneLeakIsRegistered(Object object, LeakType type) async {
+      var summary = await tracker.leaksSummary();
       expect(summary.total, 1);
 
       // Second leak summary should be the same.
-      summary = tracker.leaksSummary();
+      summary = await tracker.leaksSummary();
       expect(summary.total, 1);
 
-      var leaks = tracker.collectLeaks();
+      var leaks = await tracker.collectLeaks();
       expect(summary.totals[type], 1);
 
       expect(leaks.total, 1);
@@ -65,15 +65,15 @@ void main() {
       expect(theLeak.trackedClass, _trackedClass);
 
       // Second leak collection should not return results.
-      summary = tracker.leaksSummary();
-      leaks = tracker.collectLeaks();
+      summary = await tracker.leaksSummary();
+      leaks = await tracker.collectLeaks();
       expect(summary.total, 0);
       expect(leaks.total, 0);
     }
 
-    void verifyNoLeaks() {
-      final summary = tracker.leaksSummary();
-      final leaks = tracker.collectLeaks();
+    void verifyNoLeaks() async {
+      final summary = await tracker.leaksSummary();
+      final leaks = await tracker.collectLeaks();
 
       expect(summary.total, 0);
       expect(leaks.total, 0);
@@ -214,7 +214,7 @@ void main() {
       });
     });
 
-    test('collects context accurately.', () {
+    test('collects context accurately.', () async {
       // Define object and time.
       const theObject = '-';
       var time = DateTime(2000);
@@ -235,8 +235,8 @@ void main() {
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // Verify context for the collected nonGCed.
-      withClock(Clock.fixed(time), () {
-        final leaks = tracker.collectLeaks();
+      await withClock(Clock.fixed(time), () async {
+        final leaks = await tracker.collectLeaks();
         final context = leaks.notGCed.first.context!;
         for (final i in Iterable.generate(3)) {
           expect(context[i.toString()], i);
@@ -266,7 +266,7 @@ void main() {
       );
     });
 
-    test('collects stack traces.', () {
+    test('collects stack traces.', () async {
       // Define object and time.
       const theObject = '-';
       var time = DateTime(2000);
@@ -286,10 +286,10 @@ void main() {
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // GC and verify leak contains callstacks.
-      withClock(Clock.fixed(time), () {
+      await withClock(Clock.fixed(time), () async {
         finalizerBuilder.gc(theObject);
         final theLeak =
-            tracker.collectLeaks().byType[LeakType.gcedLate]!.single;
+            (await tracker.collectLeaks()).byType[LeakType.gcedLate]!.single;
 
         expect(theLeak.context, hasLength(2));
         final start = theLeak.context!['start'].toString();

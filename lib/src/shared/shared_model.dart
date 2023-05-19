@@ -38,8 +38,8 @@ class _JsonFields {
 }
 
 abstract class LeakProvider {
-  LeakSummary leaksSummary();
-  Leaks collectLeaks();
+  Future<LeakSummary> leaksSummary();
+  Future<Leaks> collectLeaks();
 }
 
 /// Statistical information about found leaks.

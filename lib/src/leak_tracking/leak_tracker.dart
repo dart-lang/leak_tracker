@@ -150,8 +150,8 @@ void dispatchObjectTrace({
 }
 
 /// Checks for leaks and outputs [LeakSummary] as configured.
-LeakSummary checkLeaks() {
-  LeakSummary? result;
+Future<LeakSummary> checkLeaks() async {
+  Future<LeakSummary>? result;
 
   assert(() {
     // TODO(polina-c): get checker as result when tuples are released.
@@ -161,15 +161,15 @@ LeakSummary checkLeaks() {
     return true;
   }());
 
-  return result ?? LeakSummary({});
+  return await (result ?? Future.value(LeakSummary({})));
 }
 
 /// Returns details of the leaks collected since last invocation.
 ///
 /// The same object may be reported as leaked twice: first
 /// as non GCed, and then as GCed late.
-Leaks collectLeaks() {
-  Leaks? result;
+Future<Leaks> collectLeaks() async {
+  Future<Leaks>? result;
 
   assert(() {
     final tracker = _theObjectTracker();
@@ -178,5 +178,5 @@ Leaks collectLeaks() {
     return true;
   }());
 
-  return result ?? Leaks({});
+  return await (result ?? Future.value(Leaks({})));
 }

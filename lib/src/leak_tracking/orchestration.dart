@@ -95,7 +95,7 @@ Future<Leaks> withLeakTracking(
       ),
     );
 
-    final leaks = collectLeaks();
+    final leaks = await collectLeaks();
 
     if (leaks.total > 0 && shouldThrowOnLeaks) {
       // `expect` should not be used here, because, when the method is used

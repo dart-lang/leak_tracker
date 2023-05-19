@@ -192,7 +192,7 @@ void main() {
     expect(listened.store, isEmpty);
 
     // Check leaks and make sure they signaled one time.
-    checker.checkLeaks();
+    await checker.checkLeaks();
     stdout.checkStoreAndClear([_SummaryValues.nonZero]);
     devtools.checkStoreAndClear([_SummaryValues.nonZero]);
     listened.checkStoreAndClear([_SummaryValues.nonZero]);
@@ -245,8 +245,8 @@ class _MockLeakProvider implements LeakProvider {
   LeakSummary value = LeakSummary({});
 
   @override
-  LeakSummary leaksSummary() => value;
+  Future<LeakSummary> leaksSummary() async => value;
 
   @override
-  Leaks collectLeaks() => throw UnimplementedError();
+  Future<Leaks> collectLeaks() async => throw UnimplementedError();
 }

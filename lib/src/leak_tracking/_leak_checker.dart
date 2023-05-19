@@ -22,8 +22,9 @@ class LeakChecker {
     required this.devToolsSink,
   }) {
     final period = checkPeriod;
-    _timer =
-        period == null ? null : Timer.periodic(period, (_) => checkLeaks());
+    _timer = period == null
+        ? null
+        : Timer.periodic(period, (_) async => await checkLeaks());
   }
 
   late final Timer? _timer;
@@ -51,8 +52,8 @@ class LeakChecker {
   final LeakProvider leakProvider;
 
   /// Checks leaks, if there are new ones, send notifications.
-  LeakSummary checkLeaks() {
-    final summary = leakProvider.leaksSummary();
+  Future<LeakSummary> checkLeaks() async {
+    final summary = await leakProvider.leaksSummary();
 
     if (!summary.matches(_previousResult)) {
       onLeaks?.call(summary);
