@@ -47,18 +47,18 @@ void main() {
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
 
-    void verifyOneLeakIsRegistered(Object object, LeakType type) async {
+    Future<void> verifyOneLeakIsRegistered(Object object, LeakType type) async {
       var summary = await tracker.leaksSummary();
       expect(summary.total, 1);
 
       // Second leak summary should be the same.
       summary = await tracker.leaksSummary();
       expect(summary.total, 1);
-
-      var leaks = await tracker.collectLeaks();
       expect(summary.totals[type], 1);
 
+      var leaks = await tracker.collectLeaks();
       expect(leaks.total, 1);
+
       final theLeak = leaks.byType[type]!.single;
       expect(theLeak.type, object.runtimeType.toString());
       expect(theLeak.code, identityHashCode(object));
@@ -118,7 +118,7 @@ void main() {
       });
     });
 
-    test('tracks ${LeakType.notDisposed}.', () {
+    test('tracks ${LeakType.notDisposed}.', () async {
       // Define object.
       const theObject = '-';
 
@@ -131,10 +131,10 @@ void main() {
       finalizerBuilder.gc(theObject);
 
       // Verify not-disposal is registered.
-      verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
+      await verifyOneLeakIsRegistered(theObject, LeakType.notDisposed);
     });
 
-    test('tracks ${LeakType.notGCed}.', () {
+    test('tracks ${LeakType.notGCed}.', () async {
       // Define object and time.
       const theObject = '-';
       var time = DateTime(2000);
@@ -154,12 +154,12 @@ void main() {
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // Verify leak is registered.
-      withClock(Clock.fixed(time), () {
-        verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+      await withClock(Clock.fixed(time), () async {
+        await verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
       });
     });
 
-    test('tracks ${LeakType.gcedLate}.', () {
+    test('tracks ${LeakType.gcedLate}.', () async {
       // Define object and time.
       const theObject = '-';
       var time = DateTime(2000);
@@ -179,13 +179,13 @@ void main() {
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
       // GC and verify leak is registered.
-      withClock(Clock.fixed(time), () {
+      await withClock(Clock.fixed(time), () async {
         finalizerBuilder.gc(theObject);
-        verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+        await verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
 
-    test('tracks ${LeakType.gcedLate} lifecycle accurately.', () {
+    test('tracks ${LeakType.gcedLate} lifecycle accurately.', () async {
       // Define object and time.
       const theObject = '-';
       var time = DateTime(2000);
@@ -204,13 +204,13 @@ void main() {
       time = time.add(_disposalTimeBuffer);
       gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
 
-      withClock(Clock.fixed(time), () {
+      await withClock(Clock.fixed(time), () async {
         // Verify notGCed leak is registered.
-        verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+        await verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
 
         // GC and verify gcedLate leak is registered.
         finalizerBuilder.gc(theObject);
-        verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+        await verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
       });
     });
 
