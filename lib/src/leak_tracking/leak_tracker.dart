@@ -142,9 +142,7 @@ void dispatchObjectTrace({
   Map<String, dynamic>? context,
 }) {
   assert(() {
-    final tracker = _theObjectTracker();
-    tracker.addContext(object, context: context);
-
+    _theObjectTracker().addContext(object, context: context);
     return true;
   }());
 }
@@ -172,11 +170,24 @@ Future<Leaks> collectLeaks() async {
   Future<Leaks>? result;
 
   assert(() {
-    final tracker = _theObjectTracker();
-    result = tracker.collectLeaks();
-
+    result = _theObjectTracker().collectLeaks();
     return true;
   }());
 
   return await (result ?? Future.value(Leaks({})));
+}
+
+/// Returns details of the leaks collected since last invocation.
+///
+/// The same object may be reported as leaked twice: first
+/// as non GCed, and then as GCed late.
+Future<void> checkNonGCed() async {
+  Future<void>? result;
+
+  assert(() {
+    result = _theObjectTracker().checkNonGCed();
+    return true;
+  }());
+
+  await (result ?? Future.value());
 }

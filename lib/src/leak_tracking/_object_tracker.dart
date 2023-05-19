@@ -177,14 +177,14 @@ class ObjectTracker implements LeakProvider {
       }
     }
 
-    await _maybeAddRetainingPath(objectsToGetPath);
+    if (objectsToGetPath != null && objectsToGetPath.isNotEmpty) {
+      await _addRetainingPath(objectsToGetPath);
+    }
 
     _objects.assertIntegrity();
   }
 
-  Future<void> _maybeAddRetainingPath(List<int>? objectsToGetPath) async {
-    if (objectsToGetPath == null) return;
-
+  Future<void> _addRetainingPath(List<int> objectsToGetPath) async {
     final pathObtainers = objectsToGetPath.map((code) async {
       final record = _objects.notGCed[code]!;
       record.setContext(
@@ -201,6 +201,12 @@ class ObjectTracker implements LeakProvider {
       throw 'The object with code $code is not registered for tracking.';
     }
     return result;
+  }
+
+  @override
+  Future<void> checkNonGCed() async {
+    throwIfDisposed();
+    await _checkForNewNotGCedLeaks();
   }
 
   @override

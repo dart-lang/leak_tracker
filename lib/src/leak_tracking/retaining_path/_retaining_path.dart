@@ -10,6 +10,14 @@ import 'package:vm_service/vm_service.dart';
 import '_service.dart';
 import '_vm_service_wrapper.dart';
 
+// Future<void> tryFindClass(Type type) async {
+//   await _connect();
+
+//   final classes = await _service.getClassList(_isolateId);
+//   final className = _className(type);
+//   return classes.firstWhereOrNull((c) => c.name == className);
+// }
+
 Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
   await _connect();
 
@@ -60,15 +68,20 @@ class _ObjectFingerprint {
 Future<String?> _targetId(_ObjectFingerprint object) async {
   final classes = await findClasses(object.type.toString());
 
+  print('Found ${classes.length} classes with name ${object.type}');
+
   for (final theClass in classes) {
     final instances =
         (await _service.getInstances(_isolateId, theClass.id!, 10000000))
                 .instances ??
             <ObjRef>[];
+
+    print('Found ${instances.length} instances of class ${theClass.name}');
     final result = instances.firstWhereOrNull(
       (objRef) =>
           objRef is InstanceRef && objRef.identityHashCode == object.code,
     );
+    print('Found instance: $result');
     if (result != null) return result.id;
   }
 
@@ -76,9 +89,31 @@ Future<String?> _targetId(_ObjectFingerprint object) async {
 }
 
 Future<List<ClassRef>> findClasses(String runtimeClassName) async {
-  final classes = await _service.getClassList(_isolateId);
-  return classes.classes
-          ?.where((ref) => runtimeClassName == ref.name)
-          .toList() ??
-      [];
+  var classes = await _service.getClassList(_isolateId);
+
+  // In the beginning list of classes is empty.
+  while (classes.classes?.isEmpty ?? true) {
+    await Future.delayed(const Duration(milliseconds: 100));
+    classes = await _service.getClassList(_isolateId);
+  }
+
+  print('Found ${classes.classes?.length} classes in heap snapshot');
+
+  var result =
+      classes.classes?.where((ref) => runtimeClassName == ref.name).toList() ??
+          [];
+
+  while (result.isEmpty) {
+    print('Looking for classes with name $runtimeClassName');
+    await Future.delayed(const Duration(milliseconds: 100));
+    classes = await _service.getClassList(_isolateId);
+
+    result = classes.classes
+            ?.where((ref) => runtimeClassName == ref.name)
+            .toList() ??
+        [];
+  }
+
+  print('Found ${result.length} classes with name $runtimeClassName');
+  return result;
 }

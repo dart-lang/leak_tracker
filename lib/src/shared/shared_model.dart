@@ -40,6 +40,7 @@ class _JsonFields {
 abstract class LeakProvider {
   Future<LeakSummary> leaksSummary();
   Future<Leaks> collectLeaks();
+  Future<void> checkNonGCed();
 }
 
 /// Statistical information about found leaks.

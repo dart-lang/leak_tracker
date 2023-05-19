@@ -87,21 +87,27 @@ Future<Leaks> withLeakTracking(
     await callback();
 
     asyncCodeRunner ??= (action) => action();
+    await checkNonGCed();
+    late Leaks leaks;
 
     await asyncCodeRunner(
-      () async => await _forceGC(
-        gcCycles: gcCountBuffer,
-        timeout: timeoutForFinalGarbageCollection,
-      ),
+      () async {
+        await checkNonGCed();
+
+        await _forceGC(
+          gcCycles: gcCountBuffer,
+          timeout: timeoutForFinalGarbageCollection,
+        );
+
+        leaks = await collectLeaks();
+
+        if (leaks.total > 0 && shouldThrowOnLeaks) {
+          // `expect` should not be used here, because, when the method is used
+          // from Flutter, the packages `test` and `flutter_test` conflict.
+          throw MemoryLeaksDetectedError(leaks);
+        }
+      },
     );
-
-    final leaks = await collectLeaks();
-
-    if (leaks.total > 0 && shouldThrowOnLeaks) {
-      // `expect` should not be used here, because, when the method is used
-      // from Flutter, the packages `test` and `flutter_test` conflict.
-      throw MemoryLeaksDetectedError(leaks);
-    }
 
     return leaks;
   } finally {
