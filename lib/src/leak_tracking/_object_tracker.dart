@@ -175,6 +175,13 @@ class ObjectTracker implements LeakProvider {
     _objects.assertIntegrity();
   }
 
+  // void _maybeAddRetainingPath(int code) async {
+  //   if (!leakDiagnosticConfig.collectRetainingPathForNonGCed) return;
+  //   final record = _objects.notGCed[code]!;
+  //   final path = 'the path';
+  //   record.setContext(ContextKeys.retainingPath, path);
+  // }
+
   ObjectRecord _notGCed(int code) {
     final result = _objects.notGCed[code];
     if (result == null) {

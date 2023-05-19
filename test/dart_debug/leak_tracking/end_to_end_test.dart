@@ -22,6 +22,9 @@ void main() {
         // Dispose reachable instance.
         notGCedObject.dispose();
       },
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectRetainingPathForNonGCed: true,
+      ),
       shouldThrowOnLeaks: false,
     );
 

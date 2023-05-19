@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:developer';
-
 import '../shared/shared_model.dart';
 
 /// Handler to collect leak summary.
@@ -49,6 +47,7 @@ class LeakDiagnosticConfig {
 
   /// If true, retaining path will be collected for non-GCed objects.
   ///
+  /// The collection of retaining path a blocking asyncronous call.
   /// In release mode this flag does not work.
   final bool collectRetainingPathForNonGCed;
 
@@ -77,7 +76,7 @@ class LeakTrackingConfiguration {
   /// - will assume the methods `dispose` are completed
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -116,7 +115,7 @@ class LeakTrackingConfiguration {
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
   LeakTrackingTestConfig({
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig.empty(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
@@ -132,7 +131,7 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
   }) {
     this.leakDiagnosticConfig = leakDiagnosticConfig ??
-        LeakDiagnosticConfig(
+        const LeakDiagnosticConfig(
           collectStackTraceOnStart: true,
           collectStackTraceOnDisposal: true,
           collectRetainingPathForNonGCed: true,

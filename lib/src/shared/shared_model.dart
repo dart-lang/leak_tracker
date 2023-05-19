@@ -10,6 +10,7 @@ import '_util.dart';
 class ContextKeys {
   static const startCallstack = 'start';
   static const disposalCallstack = 'disposal';
+  static const retainingPath = 'path';
 }
 
 enum LeakType {

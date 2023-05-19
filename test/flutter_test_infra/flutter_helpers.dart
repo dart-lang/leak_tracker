@@ -18,7 +18,7 @@ Future<void> withFlutterLeakTracking(
   DartAsyncCallback callback, {
   required WidgetTester? tester,
   LeakDiagnosticConfig stackTraceCollectionConfig =
-      const LeakDiagnosticConfig.empty(),
+      const LeakDiagnosticConfig(),
   Duration? timeoutForFinalGarbageCollection,
   void Function(Leaks foundLeaks)? leaksObtainer,
 }) async {
