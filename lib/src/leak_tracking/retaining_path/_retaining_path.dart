@@ -5,10 +5,13 @@
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 import 'package:vm_service/vm_service.dart';
 
 import '_service.dart';
 import '_vm_service_wrapper.dart';
+
+final _log = Logger('MyClassName');
 
 Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
   await _connect();
@@ -19,11 +22,14 @@ Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
     throw Exception('Could not find object in heap');
   }
 
-  return await _service.getRetainingPath(
+  _log.info('Requesting retaining path.');
+  final result = await _service.getRetainingPath(
     theObject.isolateId,
     theObject.itemId,
     100000,
   );
+  _log.info('Recieved retaining path.');
+  return result;
 }
 
 final List<String> _isolateIds = [];
@@ -54,16 +60,18 @@ Future<void> _connect() async {
 /// Depending on environment, isolates may have different names,
 /// and there can be one or two. Sometimes the second one appears with latency
 Future<void> _getIdForTwoIsolates() async {
+  _log.info('Waiting for two isolates to be available.');
   final stopwatch = Stopwatch()..start();
-  while (_isolateIds.length < 2) {
+  while (_isolateIds.length < 2 &&
+      stopwatch.elapsed < const Duration(seconds: 2)) {
     await _service
         .forEachIsolate((IsolateRef r) async => _isolateIds.add(r.id!));
-    if (stopwatch.elapsed > const Duration(seconds: 2)) return;
     if (_isolateIds.length < 2) {
       _isolateIds.clear();
       await Future.delayed(const Duration(milliseconds: 100));
     }
   }
+  _log.info('Number of isolates: ${_isolateIds.length}');
 }
 
 class _ObjectFingerprint {
