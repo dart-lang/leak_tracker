@@ -38,6 +38,9 @@ jobs:
       - name: dart test
         run: dart test test/dart
 
+      - name: dart debug test
+        run: dart test test/dart_debug --debug
+
       - name: flutter test
         run: flutter test test/flutter
 
