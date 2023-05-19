@@ -209,5 +209,3 @@ ${leaks.map((e) => e.toYaml('$indent    ')).join()}
     return '>\n$indent$text';
   }
 }
-
-class RetainingPath {}
