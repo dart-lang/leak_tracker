@@ -31,8 +31,8 @@ Future<void> _connect() async {
 
   final info = await Service.getInfo();
   if (info.serverWebSocketUri == null) {
-    throw Exception(
-      'Run your application or tests in debug or profile mode to troubleshoot leaks.',
+    throw StateError(
+      'Leak troubleshooting is not available in release mode. Run your application or test in debug or profile mode.',
     );
   }
 
