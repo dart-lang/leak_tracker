@@ -5,5 +5,5 @@
 import '../../../leak_tracker.dart';
 
 Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
-  throw UnimplementedError();
+  return RetainingPath();
 }
