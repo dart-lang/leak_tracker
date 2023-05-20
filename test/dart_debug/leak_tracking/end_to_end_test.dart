@@ -13,10 +13,6 @@ import '../../dart_test_infra/data/dart_classes.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
-  Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
-  });
-
   test('Retaining path is reported in debug mode.', () async {
     late InstrumentedClass notGCedObject;
     final leaks = await withLeakTracking(
