@@ -5,6 +5,7 @@
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/testing.dart';
 import 'package:test/test.dart';
+import 'package:vm_service/vm_service.dart';
 
 import '../../dart_test_infra/data/dart_classes.dart';
 
@@ -32,5 +33,9 @@ void main() {
     final theLeak = leaks.notGCed.first;
     expect(theLeak.trackedClass, contains(InstrumentedClass.library));
     expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+    expect(
+      theLeak.context![ContextKeys.retainingPath].runtimeType,
+      RetainingPath,
+    );
   });
 }
