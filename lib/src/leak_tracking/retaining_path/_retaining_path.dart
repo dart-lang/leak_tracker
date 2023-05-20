@@ -58,18 +58,22 @@ Future<void> _connect() async {
 /// Waits for two isolates to be available.
 ///
 /// Depending on environment, isolates may have different names,
-/// and there can be one or two. Sometimes the second one appears with latency
+/// and there can be one or two. Sometimes the second one appears with latency.
 Future<void> _getIdForTwoIsolates() async {
   _log.info('Waiting for two isolates to be available.');
+  const isolatesToGet = 2;
   final stopwatch = Stopwatch()..start();
-  while (_isolateIds.length < 2 &&
+  while (_isolateIds.length < isolatesToGet &&
       stopwatch.elapsed < const Duration(seconds: 2)) {
+    _isolateIds.clear();
     await _service
         .forEachIsolate((IsolateRef r) async => _isolateIds.add(r.id!));
-    if (_isolateIds.length < 2) {
-      _isolateIds.clear();
+    if (_isolateIds.length < isolatesToGet) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
+  }
+  if (_isolateIds.isEmpty) {
+    throw StateError('Could not connect to isolates.');
   }
   _log.info('Number of isolates: ${_isolateIds.length}');
 }

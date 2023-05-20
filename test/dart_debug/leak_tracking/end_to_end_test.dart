@@ -4,7 +4,6 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/testing.dart';
-import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 import '../../dart_test_infra/data/dart_classes.dart';
