@@ -50,26 +50,26 @@ void main() {
 
   test('Retaining path cannot be collected in release mode.', () async {
     late InstrumentedClass notGCedObject;
-    final leaks = await withLeakTracking(
-      () async {
-        notGCedObject = InstrumentedClass();
-        // Dispose reachable instance.
-        notGCedObject.dispose();
-      },
-      shouldThrowOnLeaks: false,
-      leakDiagnosticConfig: const LeakDiagnosticConfig(
-        collectRetainingPathForNonGCed: true,
+    Future<void> test() => withLeakTracking(
+          () async {
+            notGCedObject = InstrumentedClass();
+            // Dispose reachable instance.
+            notGCedObject.dispose();
+          },
+          shouldThrowOnLeaks: false,
+          leakDiagnosticConfig: const LeakDiagnosticConfig(
+            collectRetainingPathForNonGCed: true,
+          ),
+        );
+
+    expect(
+      () async => await test(),
+      throwsA(
+        predicate(
+          (e) => e is StateError && e.message.contains('--debug'),
+        ),
       ),
     );
-
-    // should fail
-
-    expect(() => expect(leaks, isLeakFree), throwsException);
-    expect(leaks.total, 1);
-
-    final theLeak = leaks.notGCed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
   });
 
   test('$isLeakFree succeeds.', () async {
