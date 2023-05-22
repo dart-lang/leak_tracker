@@ -42,7 +42,8 @@ Future<void> _connect() async {
   final info = await Service.getInfo();
   if (info.serverWebSocketUri == null) {
     throw StateError(
-      'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug".',
+      'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
+      '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
     );
   }
 
