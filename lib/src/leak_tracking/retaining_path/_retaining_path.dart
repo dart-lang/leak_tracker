@@ -9,7 +9,6 @@ import 'package:logging/logging.dart';
 import 'package:vm_service/vm_service.dart';
 
 import '_service.dart';
-import '_vm_service_wrapper.dart';
 
 final _log = Logger('MyClassName');
 
@@ -33,7 +32,7 @@ Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
 }
 
 final List<String> _isolateIds = [];
-late VmServiceWrapper _service;
+late VmService _service;
 bool _connected = false;
 
 Future<void> _connect() async {
@@ -68,8 +67,8 @@ Future<void> _getIdForTwoIsolates() async {
   final stopwatch = Stopwatch()..start();
   while (_isolateIds.length < isolatesToGet && stopwatch.elapsed < watingTime) {
     _isolateIds.clear();
-    await _service
-        .forEachIsolate((IsolateRef r) async => _isolateIds.add(r.id!));
+    await forEachIsolate(
+        _service, (IsolateRef r) async => _isolateIds.add(r.id!));
     if (_isolateIds.length < isolatesToGet) {
       await Future.delayed(const Duration(milliseconds: 100));
     }

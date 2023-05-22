@@ -4,22 +4,20 @@
 
 import 'dart:async';
 
+import 'package:vm_service/vm_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
-import '_vm_service_wrapper.dart';
-
-Future<VmServiceWrapper> connectWithWebSocket(
+Future<VmService> connectWithWebSocket(
   Uri uri,
   void Function(Object? error) onError,
 ) async {
   final ws = WebSocketChannel.connect(uri);
   final stream = ws.stream.handleError(onError);
-  final service = VmServiceWrapper.fromNewVmService(
+  final service = VmService(
     stream,
     (String message) {
       ws.sink.add(message);
     },
-    uri,
   );
 
   if (ws.closeCode != null) {
@@ -28,4 +26,18 @@ Future<VmServiceWrapper> connectWithWebSocket(
   }
 
   return service;
+}
+
+/// Executes `callback` for each isolate, and waiting for all callbacks to
+/// finish before completing.
+Future<void> forEachIsolate(
+  VmService service,
+  Future<void> Function(IsolateRef) callback,
+) async {
+  final vm = await service.getVM();
+  final futures = <Future>[];
+  for (final isolate in vm.isolates ?? []) {
+    futures.add(callback(isolate));
+  }
+  await Future.wait(futures);
 }
