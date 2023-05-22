@@ -124,19 +124,16 @@ class LeakTrackingTestConfig {
 
   /// Creates a new instance of [LeakTrackingFlutterTestConfig] for debugging leaks.
   LeakTrackingTestConfig.debug({
-    LeakDiagnosticConfig? leakDiagnosticConfig,
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
+      collectStackTraceOnStart: true,
+      collectStackTraceOnDisposal: true,
+      collectRetainingPathForNonGCed: true,
+    ),
     this.onLeaks,
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
-  }) {
-    this.leakDiagnosticConfig = leakDiagnosticConfig ??
-        const LeakDiagnosticConfig(
-          collectStackTraceOnStart: true,
-          collectStackTraceOnDisposal: true,
-          collectRetainingPathForNonGCed: true,
-        );
-  }
+  });
 
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.

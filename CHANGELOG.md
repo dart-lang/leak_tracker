@@ -1,6 +1,7 @@
 # 7.0.0
 
 * Enable collection of retaining path.
+
 # 6.0.3
 
 * Separate testing.
