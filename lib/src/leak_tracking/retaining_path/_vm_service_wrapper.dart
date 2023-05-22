@@ -14,12 +14,6 @@ import '_json_to_service_cache.dart';
 import '_vm_service_private_extensions.dart';
 
 class VmServiceWrapper implements VmService {
-  VmServiceWrapper(
-    this._vmService,
-    this._connectedUri, {
-    this.trackFutures = false,
-  });
-
   VmServiceWrapper.fromNewVmService(
     Stream<dynamic> /*String|List<int>*/ inStream,
     void Function(String message) writeMessage,
@@ -34,7 +28,6 @@ class VmServiceWrapper implements VmService {
       log: log,
       disposeHandler: disposeHandler,
     );
-    //unawaited(_initSupportedProtocols());
   }
 
   late final VmService _vmService;
