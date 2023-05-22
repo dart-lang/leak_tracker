@@ -56,16 +56,17 @@ Future<void> _connect() async {
   _connected = true;
 }
 
-/// Waits for two isolates to be available.
+/// Tries to wait for two isolates to be available.
 ///
-/// Depending on environment, isolates may have different names,
+/// Depending on environment (command line / IDE, Flutter / Dart), isolates may have different names,
 /// and there can be one or two. Sometimes the second one appears with latency.
+/// And sometimes there are two isolates with name 'main'.
 Future<void> _getIdForTwoIsolates() async {
   _log.info('Waiting for two isolates to be available.');
   const isolatesToGet = 2;
+  const watingTime = Duration(seconds: 2);
   final stopwatch = Stopwatch()..start();
-  while (_isolateIds.length < isolatesToGet &&
-      stopwatch.elapsed < const Duration(seconds: 2)) {
+  while (_isolateIds.length < isolatesToGet && stopwatch.elapsed < watingTime) {
     _isolateIds.clear();
     await _service
         .forEachIsolate((IsolateRef r) async => _isolateIds.add(r.id!));
