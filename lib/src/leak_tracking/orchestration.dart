@@ -87,12 +87,15 @@ Future<Leaks> withLeakTracking(
     await callback();
 
     asyncCodeRunner ??= (action) => action();
-    await checkNonGCed();
     late Leaks leaks;
 
     await asyncCodeRunner(
       () async {
-        await checkNonGCed();
+        if (leakDiagnosticConfig.collectRetainingPathForNonGCed) {
+          // This early check is needed to collect retaing pathes before forced GC,
+          // because pathes are unavailable for GCed objects.
+          await checkNonGCed();
+        }
 
         await _forceGC(
           gcCycles: gcCountBuffer,
