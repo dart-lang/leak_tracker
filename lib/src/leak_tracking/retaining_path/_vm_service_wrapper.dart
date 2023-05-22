@@ -102,78 +102,7 @@ class VmServiceWrapper implements VmService {
   }
 
   @override
-  Future<ScriptList> getScripts(String isolateId) {
-    return _trackFuture('getScripts', _vmService.getScripts(isolateId));
-  }
-
-  @override
-  Future<ClassList> getClassList(String isolateId) {
-    return _trackFuture('getClassList', _vmService.getClassList(isolateId));
-  }
-
-  @override
-  Future<SourceReport> getSourceReport(
-    String isolateId,
-    List<String> reports, {
-    String? scriptId,
-    int? tokenPos,
-    int? endTokenPos,
-    bool? forceCompile,
-    bool? reportLines,
-    List<String>? libraryFilters,
-  }) async {
-    return _trackFuture(
-      'getSourceReport',
-      _vmService.getSourceReport(
-        isolateId,
-        reports,
-        scriptId: scriptId,
-        tokenPos: tokenPos,
-        endTokenPos: endTokenPos,
-        forceCompile: forceCompile,
-        reportLines: reportLines,
-        libraryFilters: libraryFilters,
-      ),
-    );
-  }
-
-  @override
-  Future<Stack> getStack(String isolateId, {int? limit}) async {
-    return _trackFuture(
-      'getStack',
-      _vmService.getStack(isolateId, limit: limit),
-    );
-  }
-
-  @override
   Future<VM> getVM() => _trackFuture('getVM', _vmService.getVM());
-
-  @override
-  Future<Timeline> getVMTimeline({
-    int? timeOriginMicros,
-    int? timeExtentMicros,
-  }) async {
-    return _trackFuture(
-      'getVMTimeline',
-      _vmService.getVMTimeline(
-        timeOriginMicros: timeOriginMicros,
-        timeExtentMicros: timeExtentMicros,
-      ),
-    );
-  }
-
-  @override
-  Future<TimelineFlags> getVMTimelineFlags() {
-    return _trackFuture('getVMTimelineFlags', _vmService.getVMTimelineFlags());
-  }
-
-  @override
-  Future<Timestamp> getVMTimelineMicros() async {
-    return _trackFuture(
-      'getVMTimelineMicros',
-      _vmService.getVMTimelineMicros(),
-    );
-  }
 
   @override
   Future<Version> getVersion() async {
