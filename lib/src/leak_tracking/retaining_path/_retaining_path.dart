@@ -68,7 +68,9 @@ Future<void> _getIdForTwoIsolates() async {
   while (_isolateIds.length < isolatesToGet && stopwatch.elapsed < watingTime) {
     _isolateIds.clear();
     await forEachIsolate(
-        _service, (IsolateRef r) async => _isolateIds.add(r.id!));
+      _service,
+      (IsolateRef r) async => _isolateIds.add(r.id!),
+    );
     if (_isolateIds.length < isolatesToGet) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
