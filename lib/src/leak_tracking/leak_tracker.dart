@@ -177,10 +177,11 @@ Future<Leaks> collectLeaks() async {
   return await (result ?? Future.value(Leaks({})));
 }
 
-/// Returns details of the leaks collected since last invocation.
+/// Checks for new not GCed leaks.
 ///
-/// The same object may be reported as leaked twice: first
-/// as non GCed, and then as GCed late.
+/// Invoke this method to detect the leaks earlier, when
+/// the leaked objects are not GCed yet,
+/// to obtain retaining path.
 Future<void> checkNonGCed() async {
   Future<void>? result;
 
