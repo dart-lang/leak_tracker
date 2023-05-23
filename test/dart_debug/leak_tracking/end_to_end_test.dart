@@ -14,10 +14,10 @@ void main() {
   tearDown(() => disableLeakTracking());
 
   test('Retaining path is reported in debug mode.', () async {
-    late InstrumentedClass notGCedObject;
+    late LeakTrackedClass notGCedObject;
     final leaks = await withLeakTracking(
       () async {
-        notGCedObject = InstrumentedClass();
+        notGCedObject = LeakTrackedClass();
         // Dispose reachable instance.
         notGCedObject.dispose();
       },
@@ -31,8 +31,8 @@ void main() {
     expect(leaks.total, 1);
 
     final theLeak = leaks.notGCed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+    expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
+    expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
     expect(
       theLeak.context![ContextKeys.retainingPath].runtimeType,
       RetainingPath,

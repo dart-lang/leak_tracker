@@ -6,9 +6,9 @@ import 'package:flutter/widgets.dart';
 
 import '../dart_test_infra/data/dart_classes.dart';
 
-final notGcedStorage = <InstrumentedClass>[];
+final notGcedStorage = <LeakTrackedClass>[];
 
-InstrumentedClass notGCed = InstrumentedClass();
+LeakTrackedClass notGCed = LeakTrackedClass();
 
 class StatelessLeakingWidget extends StatelessWidget {
   StatelessLeakingWidget({
@@ -17,11 +17,11 @@ class StatelessLeakingWidget extends StatelessWidget {
     this.notDisposed = true,
   }) {
     if (notGCed) {
-      notGcedStorage.add(InstrumentedClass()..dispose());
+      notGcedStorage.add(LeakTrackedClass()..dispose());
     }
     if (notDisposed) {
       // ignore: unused_local_variable
-      final notDisposedObject = InstrumentedClass();
+      final notDisposedObject = LeakTrackedClass();
     }
   }
 

@@ -16,7 +16,7 @@ void main() {
   test('Not disposed object reported.', () async {
     final leaks = await withLeakTracking(
       () async {
-        InstrumentedClass();
+        LeakTrackedClass();
       },
       shouldThrowOnLeaks: false,
     );
@@ -25,15 +25,15 @@ void main() {
     expect(leaks.total, 1);
 
     final theLeak = leaks.notDisposed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+    expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
+    expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
   });
 
   test('Not GCed object reported.', () async {
-    late InstrumentedClass notGCedObject;
+    late LeakTrackedClass notGCedObject;
     final leaks = await withLeakTracking(
       () async {
-        notGCedObject = InstrumentedClass();
+        notGCedObject = LeakTrackedClass();
         // Dispose reachable instance.
         notGCedObject.dispose();
       },
@@ -44,15 +44,15 @@ void main() {
     expect(leaks.total, 1);
 
     final theLeak = leaks.notGCed.first;
-    expect(theLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+    expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
+    expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
   });
 
   test('Retaining path cannot be collected in release mode.', () async {
-    late InstrumentedClass notGCedObject;
+    late LeakTrackedClass notGCedObject;
     Future<void> test() => withLeakTracking(
           () async {
-            notGCedObject = InstrumentedClass();
+            notGCedObject = LeakTrackedClass();
             // Dispose reachable instance.
             notGCedObject.dispose();
           },

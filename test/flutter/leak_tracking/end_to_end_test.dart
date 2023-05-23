@@ -2,7 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/material.dart';
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/testing.dart';
@@ -15,39 +16,56 @@ import '../../flutter_test_infra/flutter_helpers.dart';
 ///
 /// Can serve as examples for regression leak-testing for Flutter widgets.
 void main() {
-  testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
+  group('Leak tracker catches that', () {
+    // These tests cannot run inside other tests because test nesting is forbidden.
+    // So, `expect` happens outside the tests, in `tearDown`.
     late Leaks leaks;
 
-    await expectLater(
-      () async => await withFlutterLeakTracking(
-        () async {
-          await tester.pumpWidget(StatelessLeakingWidget());
-        },
-        tester,
-        LeakTrackingTestConfig(
-          onLeaks: (foundLeaks) => leaks = foundLeaks,
-        ),
-      ),
-      throwsA(contains('Expected: leak free')),
-    );
-
-    expect(() => expect(leaks, isLeakFree), throwsException);
-    expect(leaks.total, 2);
-
-    final notDisposedLeak = leaks.notDisposed.first;
-    expect(
-      notDisposedLeak.trackedClass,
-      contains(InstrumentedClass.library),
-    );
-    expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
-
-    final notGcedLeak = leaks.notDisposed.first;
-    expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
-    expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
-  });
-
-  testWidgetsWithLeakTracking('Leak-free code in pumpWidget passes.',
+    testWidgetsWithLeakTracking(
+      '$StatelessLeakingWidget leaks',
       (WidgetTester tester) async {
-    await tester.pumpWidget(const MaterialApp(home: Scaffold()));
+        await tester.pumpWidget(StatelessLeakingWidget());
+      },
+      leakTrackingConfig: LeakTrackingTestConfig(
+        onLeaks: (Leaks theLeaks) {
+          leaks = theLeaks;
+        },
+        failTestOnLeaks: false,
+      ),
+    );
+
+    tearDown(
+      () => _verifyLeaks(leaks, expectedNotDisposed: 1, expectedNotGCed: 1),
+    );
   });
+}
+
+/// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].
+void _verifyLeaks(
+  Leaks leaks, {
+  int expectedNotDisposed = 0,
+  int expectedNotGCed = 0,
+}) {
+  const String linkToLeakTracker = 'https://github.com/dart-lang/leak_tracker';
+
+  expect(
+    () => expect(leaks, isLeakFree),
+    throwsA(
+      predicate((Object? e) {
+        return e is TestFailure && e.toString().contains(linkToLeakTracker);
+      }),
+    ),
+  );
+
+  _verifyLeakList(leaks.notDisposed, expectedNotDisposed);
+  _verifyLeakList(leaks.notGCed, expectedNotGCed);
+}
+
+void _verifyLeakList(List<LeakReport> list, int expectedCount) {
+  expect(list.length, expectedCount);
+
+  for (final LeakReport leak in list) {
+    expect(leak.trackedClass, contains(LeakTrackedClass.library));
+    expect(leak.trackedClass, contains('$LeakTrackedClass'));
+  }
 }
