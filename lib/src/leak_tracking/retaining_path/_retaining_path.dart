@@ -10,7 +10,7 @@ import 'package:vm_service/vm_service.dart';
 
 import '_service.dart';
 
-final _log = Logger('MyClassName');
+final _log = Logger('_retaining_path.dart');
 
 Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
   await _connect();
@@ -92,10 +92,11 @@ Future<_ItemInIsolate?> _objectInIsolate(_ObjectFingerprint object) async {
   final classes = await _findClasses(object.type.toString());
 
   for (final theClass in classes) {
+    const pathLengthLimit = 10000000;
     final instances = (await _service.getInstances(
           theClass.isolateId,
           theClass.itemId,
-          10000000,
+          pathLengthLimit,
         ))
             .instances ??
         <ObjRef>[];
