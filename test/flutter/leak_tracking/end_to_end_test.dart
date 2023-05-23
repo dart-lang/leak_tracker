@@ -21,7 +21,7 @@ void main() {
   testWidgets('Leaks in pumpWidget are detected.', (WidgetTester tester) async {
     late Leaks leaks;
 
-    expect(
+    await expectLater(
       () async => await withFlutterLeakTracking(
         () async {
           await tester.pumpWidget(StatelessLeakingWidget());
@@ -31,27 +31,22 @@ void main() {
           onLeaks: (foundLeaks) => leaks = foundLeaks,
         ),
       ),
-      throwsA(
-        predicate((e) {
-          expect(e.toString(), contains('Expected: leak free'));
-          expect(() => expect(leaks, isLeakFree), throwsException);
-          expect(leaks.total, 2);
-
-          final notDisposedLeak = leaks.notDisposed.first;
-          expect(
-            notDisposedLeak.trackedClass,
-            contains(InstrumentedClass.library),
-          );
-          expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
-
-          final notGcedLeak = leaks.notDisposed.first;
-          expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
-          expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
-
-          return true;
-        }),
-      ),
+      throwsA(contains('Expected: leak free')),
     );
+
+    expect(() => expect(leaks, isLeakFree), throwsException);
+    expect(leaks.total, 2);
+
+    final notDisposedLeak = leaks.notDisposed.first;
+    expect(
+      notDisposedLeak.trackedClass,
+      contains(InstrumentedClass.library),
+    );
+    expect(notDisposedLeak.trackedClass, contains('$InstrumentedClass'));
+
+    final notGcedLeak = leaks.notDisposed.first;
+    expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
+    expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
   });
 
   testWidgets('Leak-free code in pumpWidget passes.',
