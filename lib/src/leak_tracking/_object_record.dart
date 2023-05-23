@@ -87,7 +87,10 @@ class ObjectRecord {
 
   final IdentityHashCode code;
   Map<String, dynamic>? context;
+
+  /// Type of the tracked object.
   final Type type;
+
   final String trackedClass;
 
   DateTime? _disposalTime;

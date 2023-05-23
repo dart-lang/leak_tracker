@@ -9,6 +9,7 @@ import '../shared/shared_model.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/_retaining_path.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
@@ -18,7 +19,7 @@ import 'leak_tracker_model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     required this.disposalTimeBuffer,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
@@ -43,7 +44,7 @@ class ObjectTracker implements LeakProvider {
 
   bool disposed = false;
 
-  final StackTraceCollectionConfig stackTraceCollectionConfig;
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 
   void startTracking(
     Object object, {
@@ -63,8 +64,8 @@ class ObjectTracker implements LeakProvider {
       trackedClass,
     );
 
-    if (stackTraceCollectionConfig
-        .shouldCollectOnStart(object.runtimeType.toString())) {
+    if (leakDiagnosticConfig
+        .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
 
@@ -126,8 +127,8 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.mergeContext(context);
 
-    if (stackTraceCollectionConfig
-        .shouldCollectOnDisposal(object.runtimeType.toString())) {
+    if (leakDiagnosticConfig
+        .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
 
@@ -149,9 +150,9 @@ class ObjectTracker implements LeakProvider {
   }
 
   @override
-  LeakSummary leaksSummary() {
+  Future<LeakSummary> leaksSummary() async {
     throwIfDisposed();
-    _checkForNewNotGCedLeaks();
+    await _checkForNewNotGCedLeaks();
 
     return LeakSummary({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks.length,
@@ -160,8 +161,11 @@ class ObjectTracker implements LeakProvider {
     });
   }
 
-  void _checkForNewNotGCedLeaks() {
+  Future<void> _checkForNewNotGCedLeaks() async {
     _objects.assertIntegrity();
+
+    final List<int>? objectsToGetPath =
+        leakDiagnosticConfig.collectRetainingPathForNonGCed ? [] : null;
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
@@ -169,10 +173,26 @@ class ObjectTracker implements LeakProvider {
           .isNotGCedLeak(_gcCounter.gcCount, now, disposalTimeBuffer)) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
+        objectsToGetPath?.add(code);
       }
     }
 
+    if (objectsToGetPath != null && objectsToGetPath.isNotEmpty) {
+      await _addRetainingPath(objectsToGetPath);
+    }
+
     _objects.assertIntegrity();
+  }
+
+  Future<void> _addRetainingPath(List<int> objectsToGetPath) async {
+    final pathObtainers = objectsToGetPath.map((code) async {
+      final record = _objects.notGCed[code]!;
+      record.setContext(
+        ContextKeys.retainingPath,
+        await obtainRetainingPath(record.type, record.code),
+      );
+    });
+    await Future.wait(pathObtainers);
   }
 
   ObjectRecord _notGCed(int code) {
@@ -184,9 +204,15 @@ class ObjectTracker implements LeakProvider {
   }
 
   @override
-  Leaks collectLeaks() {
+  Future<void> checkNonGCed() async {
     throwIfDisposed();
-    _checkForNewNotGCedLeaks();
+    await _checkForNewNotGCedLeaks();
+  }
+
+  @override
+  Future<Leaks> collectLeaks() async {
+    throwIfDisposed();
+    await _checkForNewNotGCedLeaks();
 
     final result = Leaks({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks

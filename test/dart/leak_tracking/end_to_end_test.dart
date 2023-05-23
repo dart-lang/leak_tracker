@@ -10,8 +10,6 @@ import 'package:test/test.dart';
 import '../../dart_test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
-///
-/// Can serve as examples for regression leak-testing for Flutter widgets.
 void main() {
   tearDown(() => disableLeakTracking());
 
@@ -48,6 +46,30 @@ void main() {
     final theLeak = leaks.notGCed.first;
     expect(theLeak.trackedClass, contains(InstrumentedClass.library));
     expect(theLeak.trackedClass, contains('$InstrumentedClass'));
+  });
+
+  test('Retaining path cannot be collected in release mode.', () async {
+    late InstrumentedClass notGCedObject;
+    Future<void> test() => withLeakTracking(
+          () async {
+            notGCedObject = InstrumentedClass();
+            // Dispose reachable instance.
+            notGCedObject.dispose();
+          },
+          shouldThrowOnLeaks: false,
+          leakDiagnosticConfig: const LeakDiagnosticConfig(
+            collectRetainingPathForNonGCed: true,
+          ),
+        );
+
+    expect(
+      () async => await test(),
+      throwsA(
+        predicate(
+          (e) => e is StateError && e.message.contains('--debug'),
+        ),
+      ),
+    );
   });
 
   test('$isLeakFree succeeds.', () async {

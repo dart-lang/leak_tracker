@@ -36,7 +36,7 @@ void enableLeakTracking({
   bool resetIfAlreadyEnabled = false,
 }) {
   assert(() {
-    final theConfig = config ??= const LeakTrackingConfiguration();
+    final theConfig = config ??= LeakTrackingConfiguration();
     if (_objectTracker.value != null) {
       if (!resetIfAlreadyEnabled) {
         throw StateError('Leak tracking is already enabled.');
@@ -45,7 +45,7 @@ void enableLeakTracking({
     }
 
     final newTracker = ObjectTracker(
-      stackTraceCollectionConfig: theConfig.stackTraceCollectionConfig,
+      leakDiagnosticConfig: theConfig.leakDiagnosticConfig,
       disposalTimeBuffer: theConfig.disposalTimeBuffer,
     );
 
@@ -142,16 +142,14 @@ void dispatchObjectTrace({
   Map<String, dynamic>? context,
 }) {
   assert(() {
-    final tracker = _theObjectTracker();
-    tracker.addContext(object, context: context);
-
+    _theObjectTracker().addContext(object, context: context);
     return true;
   }());
 }
 
 /// Checks for leaks and outputs [LeakSummary] as configured.
-LeakSummary checkLeaks() {
-  LeakSummary? result;
+Future<LeakSummary> checkLeaks() async {
+  Future<LeakSummary>? result;
 
   assert(() {
     // TODO(polina-c): get checker as result when tuples are released.
@@ -161,22 +159,36 @@ LeakSummary checkLeaks() {
     return true;
   }());
 
-  return result ?? LeakSummary({});
+  return await (result ?? Future.value(LeakSummary({})));
 }
 
 /// Returns details of the leaks collected since last invocation.
 ///
 /// The same object may be reported as leaked twice: first
 /// as non GCed, and then as GCed late.
-Leaks collectLeaks() {
-  Leaks? result;
+Future<Leaks> collectLeaks() async {
+  Future<Leaks>? result;
 
   assert(() {
-    final tracker = _theObjectTracker();
-    result = tracker.collectLeaks();
-
+    result = _theObjectTracker().collectLeaks();
     return true;
   }());
 
-  return result ?? Leaks({});
+  return await (result ?? Future.value(Leaks({})));
+}
+
+/// Checks for new not GCed leaks.
+///
+/// Invoke this method to detect the leaks earlier, when
+/// the leaked objects are not GCed yet,
+/// to obtain retaining path.
+Future<void> checkNonGCed() async {
+  Future<void>? result;
+
+  assert(() {
+    result = _theObjectTracker().checkNonGCed();
+    return true;
+  }());
+
+  await (result ?? Future.value());
 }

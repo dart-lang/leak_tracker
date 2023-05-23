@@ -10,6 +10,7 @@ import '_util.dart';
 class ContextKeys {
   static const startCallstack = 'start';
   static const disposalCallstack = 'disposal';
+  static const retainingPath = 'path';
 }
 
 enum LeakType {
@@ -37,8 +38,9 @@ class _JsonFields {
 }
 
 abstract class LeakProvider {
-  LeakSummary leaksSummary();
-  Leaks collectLeaks();
+  Future<LeakSummary> leaksSummary();
+  Future<Leaks> collectLeaks();
+  Future<void> checkNonGCed();
 }
 
 /// Statistical information about found leaks.

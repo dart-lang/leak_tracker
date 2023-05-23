@@ -13,13 +13,14 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
-/// Configuration of stack trace collection.
+/// Configuration for diagnostics.
 ///
-/// Stacktrace collection can seriously affect performance and memory footprint.
-/// So, it is recommended to have it disabled for leak detection and to enable it
+/// Stacktrace and retaining path collection can seriously affect performance and memory footprint.
+/// So, it is recommended to have them disabled for leak detection and to enable them
 /// only for leak troubleshooting.
-class StackTraceCollectionConfig {
-  const StackTraceCollectionConfig({
+class LeakDiagnosticConfig {
+  const LeakDiagnosticConfig({
+    this.collectRetainingPathForNonGCed = false,
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
     this.collectStackTraceOnStart = false,
@@ -44,23 +45,29 @@ class StackTraceCollectionConfig {
   /// If true, stack trace will be collected on disposal for all tracked classes.
   final bool collectStackTraceOnDisposal;
 
-  bool shouldCollectOnStart(String classname) =>
+  /// If true, retaining path will be collected for non-GCed objects.
+  ///
+  /// The collection of retaining path a blocking asyncronous call.
+  /// In release mode this flag does not work.
+  final bool collectRetainingPathForNonGCed;
+
+  bool shouldCollectStackTraceOnStart(String classname) =>
       collectStackTraceOnStart ||
       classesToCollectStackTraceOnStart.contains(classname);
 
-  bool shouldCollectOnDisposal(String classname) =>
+  bool shouldCollectStackTraceOnDisposal(String classname) =>
       collectStackTraceOnDisposal ||
       classesToCollectStackTraceOnDisposal.contains(classname);
 }
 
 class LeakTrackingConfiguration {
-  const LeakTrackingConfiguration({
+  LeakTrackingConfiguration({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
   /// The leak tracker:
@@ -69,17 +76,16 @@ class LeakTrackingConfiguration {
   /// - will assume the methods `dispose` are completed
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
-    StackTraceCollectionConfig stackTraceCollectionConfig =
-        const StackTraceCollectionConfig(),
+    LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
           disposalTimeBuffer: const Duration(),
-          stackTraceCollectionConfig: stackTraceCollectionConfig,
+          leakDiagnosticConfig: leakDiagnosticConfig,
         );
 
-  final StackTraceCollectionConfig stackTraceCollectionConfig;
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Period to check for leaks.
   ///
@@ -108,26 +114,25 @@ class LeakTrackingConfiguration {
 /// not for regular test runs.
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
-  const LeakTrackingTestConfig({
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(),
+  LeakTrackingTestConfig({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
-    this.pauseOnNotGCedLeaks = true,
   });
 
-  /// Creates a new instance of [LeakTrackingFlutterTestConfig].
-  const LeakTrackingTestConfig.debug({
-    this.stackTraceCollectionConfig = const StackTraceCollectionConfig(
+  /// Creates a new instance of [LeakTrackingFlutterTestConfig] for debugging leaks.
+  LeakTrackingTestConfig.debug({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnStart: true,
       collectStackTraceOnDisposal: true,
+      collectRetainingPathForNonGCed: true,
     ),
     this.onLeaks,
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
-    this.pauseOnNotGCedLeaks = false,
   });
 
   /// If true, a warning will be printed when leak tracking is
@@ -138,7 +143,7 @@ class LeakTrackingTestConfig {
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
-  final StackTraceCollectionConfig stackTraceCollectionConfig;
+  late LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Handler to obtain details about collected leaks.
   ///
@@ -167,10 +172,4 @@ class LeakTrackingTestConfig {
   ///
   /// If number of instances is [null], any number of instances is allowed.
   final Map<String, int?> notDisposedAllowList;
-
-  /// If true, the test will pause when a not-GCed leak is found.
-  ///
-  /// Before pausing, the test will print steps to resolve the leaks
-  /// to debug console.
-  final bool pauseOnNotGCedLeaks;
 }
