@@ -113,10 +113,16 @@ Future<_ItemInIsolate?> _objectInIsolate(_ObjectFingerprint object) async {
   return null;
 }
 
+/// Represents an item in an isolate.
+///
+/// It can be class or object.
 class _ItemInIsolate {
   _ItemInIsolate({required this.isolateId, required this.itemId});
 
+  /// Id of the isolate.
   final String isolateId;
+
+  /// Id of the item in the isolate.
   final String itemId;
 }
 
@@ -126,10 +132,16 @@ Future<List<_ItemInIsolate>> _findClasses(String runtimeClassName) async {
   for (final isolateId in _isolateIds) {
     var classes = await _service.getClassList(isolateId);
 
+    const watingTime = Duration(seconds: 2);
+    final stopwatch = Stopwatch()..start();
+
     // In the beginning list of classes may be empty.
-    while (classes.classes?.isEmpty ?? true) {
+    while (classes.classes?.isEmpty ?? true && stopwatch.elapsed < watingTime) {
       await Future.delayed(const Duration(milliseconds: 100));
       classes = await _service.getClassList(isolateId);
+    }
+    if (classes.classes?.isEmpty ?? true) {
+      throw StateError('Could not get list of classes.');
     }
 
     final filtered =
