@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:vm_service/vm_service.dart';
+
 /// Compares two maps for element-by-element equality.
 ///
 /// Copied from
@@ -38,6 +40,10 @@ String contextToString(Object? object) {
   // of a message from matcher.
   if (object is StackTrace) {
     return object.toString().replaceAll(' ', '_');
+  }
+
+  if (object is RetainingPath) {
+    return 'I am a\nretaining path';
   }
 
   return object.toString();

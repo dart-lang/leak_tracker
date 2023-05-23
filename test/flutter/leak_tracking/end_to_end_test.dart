@@ -15,10 +15,11 @@ import '../../flutter_test_infra/flutter_helpers.dart';
 /// Tests for non-mocked public API of leak tracker.
 ///
 /// Can serve as examples for regression leak-testing for Flutter widgets.
+///
+/// The tests cannot run inside other tests because test nesting is forbidden.
+/// So, `expect` happens outside the tests, in `tearDown`.
 void main() {
   group('Leak tracker catches that', () {
-    // These tests cannot run inside other tests because test nesting is forbidden.
-    // So, `expect` happens outside the tests, in `tearDown`.
     late Leaks leaks;
 
     testWidgetsWithLeakTracking(
@@ -38,6 +39,19 @@ void main() {
       () => _verifyLeaks(leaks, expectedNotDisposed: 1, expectedNotGCed: 1),
     );
   });
+
+  testWidgetsWithLeakTracking(
+    '$StatelessLeakingWidget leaks',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(StatelessLeakingWidget());
+    },
+    leakTrackingConfig: const LeakTrackingTestConfig(
+      leakDiagnosticConfig: LeakDiagnosticConfig(
+        collectRetainingPathForNonGCed: true,
+        collectStackTraceOnDisposal: true,
+      ),
+    ),
+  );
 }
 
 /// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].
