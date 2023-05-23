@@ -26,8 +26,10 @@ void main() {
         () async {
           await tester.pumpWidget(StatelessLeakingWidget());
         },
-        tester: tester,
-        leaksObtainer: (foundLeaks) => leaks = foundLeaks,
+        tester,
+        LeakTrackingTestConfig(
+          onLeaks: (foundLeaks) => leaks = foundLeaks,
+        ),
       ),
       throwsA(
         predicate((e) {
@@ -45,36 +47,6 @@ void main() {
           final notGcedLeak = leaks.notDisposed.first;
           expect(notGcedLeak.trackedClass, contains(InstrumentedClass.library));
           expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
-
-          return true;
-        }),
-      ),
-    );
-  });
-
-  test('Not disposed members are cought.', () async {
-    late Leaks leaks;
-
-    expect(
-      () async => await withFlutterLeakTracking(
-        () async {
-          // ignore: unused_local_variable
-          Object? notDisposer = ValueNotifierNotDisposer();
-          notDisposer = null;
-        },
-        tester: null,
-        leaksObtainer: (foundLeaks) => leaks = foundLeaks,
-      ),
-      throwsA(
-        predicate((e) {
-          expect(e.toString(), contains('Expected: leak free'));
-
-          expect(() => expect(leaks, isLeakFree), throwsException);
-          expect(leaks.total, 1);
-
-          final theLeak = leaks.notDisposed.first;
-          expect(theLeak.trackedClass, contains('foundation.dart'));
-          expect(theLeak.trackedClass, contains('ValueNotifier<'));
 
           return true;
         }),
