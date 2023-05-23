@@ -34,21 +34,6 @@ T cast<T>(value) {
   );
 }
 
-String contextToString(Object? object) {
-  // Spaces need to be removed from stacktrace
-  // because otherwise test framework changes formatting
-  // of a message from matcher.
-  if (object is StackTrace) {
-    return object.toString().replaceAll(' ', '_');
-  }
-
-  if (object is RetainingPath) {
-    return 'I am a\nretaining path';
-  }
-
-  return object.toString();
-}
-
 void printToConsole(Object message) {
   // ignore: avoid_print, dart:io is not available in web
   print('leak_tracker: $message');
