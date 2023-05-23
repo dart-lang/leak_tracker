@@ -7,7 +7,7 @@ import 'dart:developer';
 
 import 'package:vm_service/vm_service.dart';
 
-import '../shared/_util.dart';
+import '../leak_tracking/_formatting.dart';
 import '_protocol.dart';
 import 'primitives.dart';
 

@@ -41,7 +41,7 @@ void main() {
   });
 
   testWidgetsWithLeakTracking(
-    '$StatelessLeakingWidget leaks',
+    'temp test',
     (WidgetTester tester) async {
       await tester.pumpWidget(StatelessLeakingWidget());
     },

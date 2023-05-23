@@ -4,6 +4,7 @@
 
 import 'package:collection/collection.dart';
 
+import '../leak_tracking/_formatting.dart';
 import '_primitives.dart';
 import '_util.dart';
 

@@ -23,11 +23,60 @@ String contextToString(Object? object) {
 String _retainingPathToString(RetainingPath retainingPath) {
   final StringBuffer buffer = StringBuffer();
   buffer.writeln(
-    'Chain of references from app root, that retain the object from garbage collection:',
+    'Chain of references from app root,\nwhich retains the object from garbage collection:',
   );
   for (final RetainingObject item in retainingPath.elements ?? []) {
-    buffer.writeln(
-        '${item.parentField},${item.parentMapKey},${item.parentListIndex}, ${item.value}, ${item.toJson()}');
+    buffer.writeln(_retainingObjectToString(item));
   }
   return buffer.toString();
+}
+
+enum RetainingObjectProperty {
+  lib([
+    ['value', 'class', 'library', 'name'],
+    ['value', 'class', 'library', 'uri'],
+  ]),
+  type([]),
+  ;
+
+  const RetainingObjectProperty(this.pathes);
+
+  final List<List<String>> pathes;
+}
+
+String _retainingObjectToString(RetainingObject object) {
+  final json = object.toJson();
+
+  final lib = property(RetainingObjectProperty.lib, json);
+  final type = property(RetainingObjectProperty.type, json);
+  final location =
+      object.parentField ?? object.parentMapKey ?? object.parentListIndex;
+
+  return '$lib, $type, $location';
+}
+
+String? property(
+  RetainingObjectProperty property,
+  Map<String, dynamic> json,
+) {
+  for (final path in property.pathes) {
+    final value = _valueByPath(json, path);
+    if (value != null) {
+      return value;
+    }
+  }
+  return null;
+}
+
+String? _valueByPath(Map<String, dynamic> json, List<String> path) {
+  var parent = json;
+  for (final String key in path.sublist(0, path.length - 1)) {
+    final child = parent[key];
+    if (child is Map<String, dynamic>) {
+      parent = child;
+    } else {
+      return null;
+    }
+  }
+  return parent[path.last];
 }
