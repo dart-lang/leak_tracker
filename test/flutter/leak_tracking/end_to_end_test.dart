@@ -11,9 +11,6 @@ import '../../dart_test_infra/data/dart_classes.dart';
 import '../../flutter_test_infra/flutter_classes.dart';
 import '../../flutter_test_infra/flutter_helpers.dart';
 
-/// Normally 300 milliseconds are ok, but sometimes test environment is slow.
-const _gcTimeout = Duration(milliseconds: 10000);
-
 /// Tests for non-mocked public API of leak tracker.
 ///
 /// Can serve as examples for regression leak-testing for Flutter widgets.
@@ -49,14 +46,8 @@ void main() {
     expect(notGcedLeak.trackedClass, contains('$InstrumentedClass'));
   });
 
-  testWidgets('Leak-free code in pumpWidget passes.',
+  testWidgetsWithLeakTracking('Leak-free code in pumpWidget passes.',
       (WidgetTester tester) async {
-    await withLeakTracking(
-      () async {
-        await tester.pumpWidget(const MaterialApp(home: Scaffold()));
-      },
-      timeoutForFinalGarbageCollection: _gcTimeout,
-      asyncCodeRunner: (action) async => tester.runAsync(action),
-    );
+    await tester.pumpWidget(const MaterialApp(home: Scaffold()));
   });
 }

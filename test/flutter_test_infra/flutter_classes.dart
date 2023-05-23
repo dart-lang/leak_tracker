@@ -11,11 +11,22 @@ final notGcedStorage = <InstrumentedClass>[];
 InstrumentedClass notGCed = InstrumentedClass();
 
 class StatelessLeakingWidget extends StatelessWidget {
-  StatelessLeakingWidget({super.key}) {
-    // ignore: unused_local_variable
-    final notDisposed = InstrumentedClass();
-    notGcedStorage.add(InstrumentedClass()..dispose());
+  StatelessLeakingWidget({
+    super.key,
+    this.notGCed = true,
+    this.notDisposed = true,
+  }) {
+    if (notGCed) {
+      notGcedStorage.add(InstrumentedClass()..dispose());
+    }
+    if (notDisposed) {
+      // ignore: unused_local_variable
+      final notDisposedObject = InstrumentedClass();
+    }
   }
+
+  final bool notGCed;
+  final bool notDisposed;
 
   @override
   Widget build(BuildContext context) {

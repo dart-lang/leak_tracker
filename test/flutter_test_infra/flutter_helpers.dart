@@ -4,7 +4,7 @@
 
 // Content of this file is copied from
 // https://github.com/flutter/flutter/blob/master/packages/flutter/test/foundation/leak_tracking.dart
-// to test new features will work for Flutter.
+// to test that new versions will work for Flutter Framework.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
