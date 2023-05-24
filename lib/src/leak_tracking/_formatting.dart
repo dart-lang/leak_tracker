@@ -23,9 +23,9 @@ String contextToString(Object? object) {
 String _retainingPathToString(RetainingPath retainingPath) {
   final StringBuffer buffer = StringBuffer();
   buffer.writeln(
-    'Chain of references from app root,\nwhich retains the object from garbage collection:',
+    'References, retaining object from garbage collection.',
   );
-  for (final RetainingObject item in retainingPath.elements ?? []) {
+  for (final RetainingObject item in retainingPath.elements?.reversed ?? []) {
     buffer.writeln(_retainingObjectToString(item));
   }
   return buffer.toString();
@@ -35,8 +35,13 @@ enum RetainingObjectProperty {
   lib([
     ['value', 'class', 'library', 'name'],
     ['value', 'class', 'library', 'uri'],
+    ['value', 'declaredType', 'class', 'library', 'name'],
+    ['value', 'declaredType', 'class', 'library', 'uri'],
   ]),
-  type([]),
+  type([
+    ['value', 'class', 'name'],
+    ['value', 'declaredType', 'class', 'name'],
+  ]),
   ;
 
   const RetainingObjectProperty(this.pathes);
@@ -47,12 +52,21 @@ enum RetainingObjectProperty {
 String _retainingObjectToString(RetainingObject object) {
   final json = object.toJson();
 
+  var result = property(RetainingObjectProperty.type, json) ?? '';
+
   final lib = property(RetainingObjectProperty.lib, json);
-  final type = property(RetainingObjectProperty.type, json);
+  if (lib != null) {
+    result = '$lib/$result';
+  }
+
   final location =
       object.parentField ?? object.parentMapKey ?? object.parentListIndex;
 
-  return '$lib, $type, $location';
+  if (location != null) {
+    result = '$result:$location';
+  }
+
+  return result;
 }
 
 String? property(
@@ -61,7 +75,7 @@ String? property(
 ) {
   for (final path in property.pathes) {
     final value = _valueByPath(json, path);
-    if (value != null) {
+    if (value != null && value != '') {
       return value;
     }
   }
