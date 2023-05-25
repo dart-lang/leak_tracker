@@ -4,6 +4,8 @@
 
 import 'package:vm_service/vm_service.dart';
 
+import '../shared/_util.dart';
+
 /// Converts item in leak tracking context to string.
 String contextToString(Object? object) {
   return switch (object) {
@@ -73,7 +75,7 @@ String? property(
 ) {
   for (final path in property.paths) {
     final value = _valueByPath(json, path);
-    if (value != null && value != '') {
+    if (value.isNullOrEmpty) {
       return value;
     }
   }
@@ -82,7 +84,7 @@ String? property(
 
 String? _valueByPath(Map<String, dynamic> json, List<String> path) {
   var parent = json;
-  for (final String key in path.sublist(0, path.length - 1)) {
+  for (final key in path.sublist(0, path.length - 1)) {
     final child = parent[key];
     if (child is Map<String, dynamic>) {
       parent = child;
