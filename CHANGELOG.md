@@ -1,3 +1,7 @@
+# 7.0.1
+
+* Format retaining path nicely.
+
 # 7.0.0
 
 * Enable collection of retaining path.
