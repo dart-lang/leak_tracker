@@ -39,19 +39,6 @@ void main() {
       () => _verifyLeaks(leaks, expectedNotDisposed: 1, expectedNotGCed: 1),
     );
   });
-
-  testWidgetsWithLeakTracking(
-    'temp test',
-    (WidgetTester tester) async {
-      await tester.pumpWidget(StatelessLeakingWidget());
-    },
-    leakTrackingConfig: const LeakTrackingTestConfig(
-      leakDiagnosticConfig: LeakDiagnosticConfig(
-        collectRetainingPathForNonGCed: true,
-        collectStackTraceOnDisposal: true,
-      ),
-    ),
-  );
 }
 
 /// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].
