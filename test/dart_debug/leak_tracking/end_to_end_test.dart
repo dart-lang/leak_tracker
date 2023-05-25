@@ -13,7 +13,7 @@ import '../../dart_test_infra/data/dart_classes.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
-  test('Retaining path is reported in debug mode.', () async {
+  test('Retaining path for not GCed object is reported.', () async {
     late LeakTrackedClass notGCedObject;
     final leaks = await withLeakTracking(
       () async {
@@ -21,14 +21,26 @@ void main() {
         // Dispose reachable instance.
         notGCedObject.dispose();
       },
+      shouldThrowOnLeaks: false,
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectRetainingPathForNonGCed: true,
       ),
-      shouldThrowOnLeaks: false,
     );
 
-    expect(() => expect(leaks, isLeakFree), throwsException);
     expect(leaks.total, 1);
+    expect(
+      () => expect(leaks, isLeakFree),
+      throwsA(
+        predicate(
+          (e) {
+            return e is TestFailure &&
+                e.toString().contains(
+                      'leak_tracker/test/dart_test_infra/data/dart_classes.dart/LeakTrackedClass',
+                    );
+          },
+        ),
+      ),
+    );
 
     final theLeak = leaks.notGCed.first;
     expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
