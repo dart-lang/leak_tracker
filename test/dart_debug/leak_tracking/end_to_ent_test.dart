@@ -33,7 +33,6 @@ void main() {
       throwsA(
         predicate(
           (e) {
-            print(e.toString());
             return e is TestFailure &&
                 e.toString().contains(
                       'leak_tracker/test/dart_test_infra/data/dart_classes.dart/LeakTrackedClass',
