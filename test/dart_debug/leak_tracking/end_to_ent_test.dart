@@ -13,7 +13,7 @@ import '../../dart_test_infra/data/dart_classes.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
-  test('Retaining path for not GCed object reported.', () async {
+  test('Retaining path for not GCed object is reported.', () async {
     late LeakTrackedClass notGCedObject;
     final leaks = await withLeakTracking(
       () async {
@@ -31,10 +31,14 @@ void main() {
     expect(
       () => expect(leaks, isLeakFree),
       throwsA(
-        predicate((e) {
-          print(e);
-          return true;
-        }),
+        predicate(
+          (e) {
+            print(e.toString());
+            return e.toString().contains(
+                  'leak_tracker/test/dart_test_infra/data/dart_classes.dart/LeakTrackedClass',
+                );
+          },
+        ),
       ),
     );
 

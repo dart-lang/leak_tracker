@@ -41,6 +41,7 @@ enum RetainingObjectProperty {
   type([
     ['value', 'class', 'name'],
     ['value', 'declaredType', 'class', 'name'],
+    ['value', 'type'],
   ]),
   ;
 
