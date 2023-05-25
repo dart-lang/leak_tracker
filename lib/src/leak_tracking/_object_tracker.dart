@@ -6,6 +6,7 @@ import 'package:clock/clock.dart';
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
+import '_finalizer.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import 'leak_tracker_model.dart';
@@ -36,7 +37,7 @@ class ObjectTracker implements LeakProvider {
   /// Time to allow the disposal invoker to release the reference to the object.
   final Duration disposalTimeBuffer;
 
-  late Finalizer<Object> _finalizer;
+  late FinalizerWrapper _finalizer;
 
   late GcCounter _gcCounter;
 

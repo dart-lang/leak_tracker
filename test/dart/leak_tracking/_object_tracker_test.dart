@@ -4,6 +4,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_finalizer.dart';
 import 'package:leak_tracker/src/leak_tracking/_gc_counter.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/shared/_primitives.dart';
@@ -250,8 +251,6 @@ void main() {
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
 
-    /// Emulates GC.
-
     setUp(() {
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
@@ -304,8 +303,8 @@ void main() {
   });
 }
 
-class _MockFinalizer implements Finalizer<Object> {
-  _MockFinalizer(this.onGc);
+class _MockFinalizerWrapper implements FinalizerWrapper {
+  _MockFinalizerWrapper(this.onGc);
 
   final ObjectGcCallback onGc;
   final attached = <Object>{};
@@ -316,21 +315,18 @@ class _MockFinalizer implements Finalizer<Object> {
     attached.add(value);
   }
 
-  @override
-  void detach(Object detach) {}
-
   void finalize(Object code) => onGc(code);
 }
 
 class _MockFinalizerBuilder {
-  late final _MockFinalizer finalizer;
+  late final _MockFinalizerWrapper finalizer;
 
   void gc(Object object) {
     finalizer.finalize(identityHashCode(object));
   }
 
-  _MockFinalizer build(ObjectGcCallback onGc) {
-    return finalizer = _MockFinalizer(onGc);
+  _MockFinalizerWrapper build(ObjectGcCallback onGc) {
+    return finalizer = _MockFinalizerWrapper(onGc);
   }
 }
 
