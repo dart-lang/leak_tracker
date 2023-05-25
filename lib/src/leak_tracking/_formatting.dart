@@ -31,6 +31,7 @@ String _retainingPathToString(RetainingPath retainingPath) {
   return buffer.toString();
 }
 
+/// Proprties of [RetainingObject] that are needed in the object's formatting.
 enum RetainingObjectProperty {
   lib([
     ['value', 'class', 'library', 'name'],
@@ -47,6 +48,7 @@ enum RetainingObjectProperty {
 
   const RetainingObjectProperty(this.pathes);
 
+  /// Itemizes possible paths in [RetainingObject.toJson] to get the value of a property.
   final List<List<String>> pathes;
 }
 
