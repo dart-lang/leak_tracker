@@ -6,26 +6,22 @@ import 'package:vm_service/vm_service.dart';
 
 /// Converts item in leak tracking context to string.
 String contextToString(Object? object) {
-  // Spaces need to be removed from stacktrace
-  // because otherwise test framework changes formatting
-  // of a message from matcher.
-  if (object is StackTrace) {
-    return object.toString().replaceAll(' ', '_');
-  }
-
-  if (object is RetainingPath) {
-    return _retainingPathToString(object);
-  }
-
-  return object.toString();
+  return switch (object) {
+    // Spaces need to be removed from stacktrace
+    // because otherwise test framework changes formatting
+    // of a message from matcher.
+    StackTrace() => object.toString().replaceAll(' ', '_'),
+    RetainingPath() => _retainingPathToString(object),
+    _ => object.toString(),
+  };
 }
 
 String _retainingPathToString(RetainingPath retainingPath) {
   final StringBuffer buffer = StringBuffer();
   buffer.writeln(
-    'References, retaining object from garbage collection.',
+    'References that retain the object from garbage collection.',
   );
-  for (final RetainingObject item in retainingPath.elements?.reversed ?? []) {
+  for (final item in retainingPath.elements?.reversed ?? <RetainingObject>[]) {
     buffer.writeln(_retainingObjectToString(item));
   }
   return buffer.toString();
@@ -43,13 +39,12 @@ enum RetainingObjectProperty {
     ['value', 'class', 'name'],
     ['value', 'declaredType', 'class', 'name'],
     ['value', 'type'],
-  ]),
-  ;
+  ]);
 
-  const RetainingObjectProperty(this.pathes);
+  const RetainingObjectProperty(this.paths);
 
   /// Itemizes possible paths in [RetainingObject.toJson] to get the value of a property.
-  final List<List<String>> pathes;
+  final List<List<String>> paths;
 }
 
 String _retainingObjectToString(RetainingObject object) {
@@ -76,7 +71,7 @@ String? property(
   RetainingObjectProperty property,
   Map<String, dynamic> json,
 ) {
-  for (final path in property.pathes) {
+  for (final path in property.paths) {
     final value = _valueByPath(json, path);
     if (value != null && value != '') {
       return value;
