@@ -5,7 +5,7 @@
 // Content of this file is copied from
 // https://github.com/flutter/flutter/blob/master/packages/flutter/test/foundation/leak_tracking.dart
 // to test that new versions work well for Flutter Framework.
-// This code should be removed after `testWidgets` start supporting leak tracking.
+// TODO(polina-c): This code should be removed after `testWidgets` start supporting leak tracking.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
