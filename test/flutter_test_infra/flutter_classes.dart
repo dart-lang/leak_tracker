@@ -6,24 +6,30 @@ import 'package:flutter/widgets.dart';
 
 import '../dart_test_infra/data/dart_classes.dart';
 
-final notGcedStorage = <InstrumentedClass>[];
+final notGcedStorage = <LeakTrackedClass>[];
 
-InstrumentedClass notGCed = InstrumentedClass();
+LeakTrackedClass notGCed = LeakTrackedClass();
 
 class StatelessLeakingWidget extends StatelessWidget {
-  StatelessLeakingWidget({super.key}) {
-    // ignore: unused_local_variable
-    final notDisposed = InstrumentedClass();
-    notGcedStorage.add(InstrumentedClass()..dispose());
+  StatelessLeakingWidget({
+    super.key,
+    this.notGCed = true,
+    this.notDisposed = true,
+  }) {
+    if (notGCed) {
+      notGcedStorage.add(LeakTrackedClass()..dispose());
+    }
+    if (notDisposed) {
+      // ignore: unused_local_variable
+      final notDisposedObject = LeakTrackedClass();
+    }
   }
+
+  final bool notGCed;
+  final bool notDisposed;
 
   @override
   Widget build(BuildContext context) {
     return const Placeholder();
   }
-}
-
-/// The class creates and does not dispose ValueNotifier.
-class ValueNotifierNotDisposer {
-  final ValueNotifier<bool> valueNotifier = ValueNotifier<bool>(false);
 }

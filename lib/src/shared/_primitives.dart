@@ -10,16 +10,6 @@ typedef IdentityHashCoder = IdentityHashCode Function(Object object);
 
 int standardIdentityHashCoder(Object object) => identityHashCode(object);
 
-typedef ObjectGcCallback = void Function(Object code);
-
-/// Finilizer builder to mock standard [Finalizer].
-typedef FinalizerBuilder = Finalizer<Object> Function(
-  ObjectGcCallback onObjectGc,
-);
-
-Finalizer<Object> buildStandardFinalizer(ObjectGcCallback onObjectGc) =>
-    Finalizer<Object>(onObjectGc);
-
 String fullClassName({
   required String library,
   required String shortClassName,

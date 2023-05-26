@@ -32,17 +32,6 @@ T cast<T>(value) {
   );
 }
 
-String contextToString(Object? object) {
-  // Spaces need to be removed from stacktrace
-  // because otherwise test framework changes formatting
-  // of a message from matcher.
-  if (object is StackTrace) {
-    return object.toString().replaceAll(' ', '_');
-  }
-
-  return object.toString();
-}
-
 void printToConsole(Object message) {
   // ignore: avoid_print, dart:io is not available in web
   print('leak_tracker: $message');
@@ -50,4 +39,8 @@ void printToConsole(Object message) {
 
 extension SizeConversion on int {
   int mbToBytes() => this * 1024 * 1024;
+}
+
+extension StringChecks on String? {
+  bool get isNullOrEmpty => this == null || this == '';
 }

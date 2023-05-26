@@ -4,11 +4,11 @@
 
 import 'package:leak_tracker/src/leak_tracking/leak_tracker.dart';
 
-class InstrumentedClass {
-  InstrumentedClass() {
+class LeakTrackedClass {
+  LeakTrackedClass() {
     dispatchObjectCreated(
       library: library,
-      className: '$InstrumentedClass',
+      className: '$LeakTrackedClass',
       object: this,
     );
   }

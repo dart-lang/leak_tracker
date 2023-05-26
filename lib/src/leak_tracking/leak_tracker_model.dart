@@ -114,7 +114,7 @@ class LeakTrackingConfiguration {
 /// not for regular test runs.
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingFlutterTestConfig].
-  LeakTrackingTestConfig({
+  const LeakTrackingTestConfig({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.onLeaks,
     this.failTestOnLeaks = true,
@@ -143,7 +143,7 @@ class LeakTrackingTestConfig {
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
-  late LeakDiagnosticConfig leakDiagnosticConfig;
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Handler to obtain details about collected leaks.
   ///
