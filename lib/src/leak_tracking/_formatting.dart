@@ -95,9 +95,6 @@ String? _valueByPath(Map<String, dynamic> json, List<String> path) {
 
   // [path.last] contains the key for actual value.
   final value = parent[path.last];
-  if (value == null) {
-    return null;
-  }
 
-  return value.toString();
+  return value?.toString();
 }
