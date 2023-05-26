@@ -41,6 +41,9 @@ enum RetainingObjectProperty {
     ['value', 'class', 'name'],
     ['value', 'declaredType', 'class', 'name'],
     ['value', 'type'],
+  ]),
+  func([
+    ['value', 'closureFunction', 'owner', 'name'],
   ]);
 
   const RetainingObjectProperty(this.paths);
@@ -53,6 +56,11 @@ String _retainingObjectToString(RetainingObject object) {
   final json = object.toJson();
 
   var result = property(RetainingObjectProperty.type, json) ?? '';
+
+  if (result == '_Closure') {
+    final func = property(RetainingObjectProperty.func, json);
+    result += '(in $func)';
+  }
 
   final lib = property(RetainingObjectProperty.lib, json);
   if (lib != null) {

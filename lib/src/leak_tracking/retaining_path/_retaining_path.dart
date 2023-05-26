@@ -22,6 +22,7 @@ Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
   }
 
   _log.info('Requesting retaining path.');
+
   final result = await _service.getRetainingPath(
     theObject.isolateId,
     theObject.itemId,
