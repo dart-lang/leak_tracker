@@ -75,7 +75,7 @@ String? property(
 ) {
   for (final path in property.paths) {
     final value = _valueByPath(json, path);
-    if (value.isNullOrEmpty) {
+    if (!value.isNullOrEmpty) {
       return value;
     }
   }
@@ -92,5 +92,12 @@ String? _valueByPath(Map<String, dynamic> json, List<String> path) {
       return null;
     }
   }
-  return parent[path.last];
+
+  // [path.last] contains the key for actual value.
+  final value = parent[path.last];
+  if (value == null) {
+    return null;
+  }
+
+  return value.toString();
 }
