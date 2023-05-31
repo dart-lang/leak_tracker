@@ -3,10 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_tracking/_formatting.dart';
 import 'package:leak_tracker/testing.dart';
 import 'package:test/test.dart';
-import 'package:vm_service/vm_service.dart';
 
 import '../../dart_test_infra/data/dart_classes.dart';
 
@@ -25,10 +23,10 @@ void main() {
       ),
     );
 
-    const expectedRetainingPath = [
-      'leak_tracker/test/dart_test_infra/data/dart_classes.dart/_notGCedObjects',
+    const expectedRetainingPathTails = [
+      '/leak_tracker/test/dart_test_infra/data/dart_classes.dart/_notGCedObjects',
       'dart.core/_GrowableList:0',
-      'leak_tracker/test/dart_test_infra/data/dart_classes.dart/LeakTrackedClass',
+      '/leak_tracker/test/dart_test_infra/data/dart_classes.dart/LeakTrackedClass',
     ];
 
     expect(leaks.total, 1);
@@ -40,7 +38,7 @@ void main() {
             if (e is! TestFailure) {
               throw 'Unexpected exception type: ${e.runtimeType}';
             }
-            verifyRetainignPath(expectedRetainingPath, e.message!);
+            _verifyRetainignPath(expectedRetainingPathTails, e.message!);
             return true;
           },
         ),
@@ -53,12 +51,26 @@ void main() {
   });
 }
 
-void verifyRetainignPath(
-    List<String> expectedRetainingPath, String actualMessage) {
-  int previousIndex = 0;
-  for (var i = 0; i < expectedRetainingPath.length; i++) {
-    final index = actualMessage.indexOf('${expectedRetainingPath[i]}\n');
+void _verifyRetainignPath(
+  List<String> expectedRetainingPathTails,
+  String actualMessage,
+) {
+  int? previousIndex;
+  for (var item in expectedRetainingPathTails) {
+    final index = actualMessage.indexOf('$item\n');
+    if (previousIndex == null) {
+      previousIndex = index;
+      continue;
+    }
+
     expect(index > previousIndex, true);
+    final stringBetweenItems = actualMessage.substring(previousIndex, index);
+    expect(
+      RegExp('^').allMatches(stringBetweenItems).length,
+      1,
+      reason:
+          'There should be only one line break between items in retaining path.',
+    );
     previousIndex = index;
   }
 }
