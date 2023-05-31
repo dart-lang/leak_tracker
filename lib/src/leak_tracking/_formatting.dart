@@ -13,12 +13,12 @@ String contextToString(Object? object) {
     // because otherwise test framework changes formatting
     // of a message from matcher.
     StackTrace() => object.toString().replaceAll(' ', '_'),
-    RetainingPath() => retainingPathToString(object),
+    RetainingPath() => _retainingPathToString(object),
     _ => object.toString(),
   };
 }
 
-String retainingPathToString(RetainingPath retainingPath) {
+String _retainingPathToString(RetainingPath retainingPath) {
   final StringBuffer buffer = StringBuffer();
   buffer.writeln(
     'References that retain the object from garbage collection.',
