@@ -37,7 +37,9 @@ To understand the root cause of a memory leak, you may want to gather additional
 By default, the leak tracker does not gather the information, because the collection may
 impact performance and memory footprint.
 
-For tests, temporary pass instanse of `LeakTrackingTestConfig` to the test:
+**Tests**
+
+For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig` to the test:
 
 ```
   testWidgets('My test', (WidgetTester tester) async {
@@ -45,10 +47,12 @@ For tests, temporary pass instanse of `LeakTrackingTestConfig` to the test:
   }, leakTrackingConfig: LeakTrackingTestConfig.debug());
 ```
 
-For application, the options are:
+**Applications**
+
+For collecting debugging information in your running application, the options are:
 
 1. Pass `LeakTrackingConfiguration` to `enableLeakTracking`
-2. Use interactive UI in DevTools > Memory > Leaks
+2. Use the interactive UI in DevTools > Memory > Leaks
 
 TODO: link DevTools documentation with explanation
 
@@ -61,6 +65,6 @@ instances of the context will be alive while at least one of the closures is ali
 
 TODO: add example
 
-Such cases are hard to troubleshoot. One way to fix them is to convert all closures
-that use the leaked type, to named methods.
+Such cases are hard to troubleshoot. One way to fix them is to convert all closures,
+which reference the leaked type, to named methods.
 

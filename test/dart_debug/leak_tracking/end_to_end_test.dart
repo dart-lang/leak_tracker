@@ -38,7 +38,7 @@ void main() {
             if (e is! TestFailure) {
               throw 'Unexpected exception type: ${e.runtimeType}';
             }
-            _verifyRetainignPath(expectedRetainingPathTails, e.message!);
+            _verifyRetainingPath(expectedRetainingPathTails, e.message!);
             return true;
           },
         ),
@@ -51,7 +51,7 @@ void main() {
   });
 }
 
-void _verifyRetainignPath(
+void _verifyRetainingPath(
   List<String> expectedRetainingPathTails,
   String actualMessage,
 ) {

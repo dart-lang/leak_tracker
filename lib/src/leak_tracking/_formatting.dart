@@ -66,7 +66,7 @@ String _retainingObjectToString(RetainingObject object) {
   if (result == '_Closure') {
     final func = property(RetainingObjectProperty.closureOwner, json);
     if (func != null) {
-      result += '(in $func)';
+      result = '$result (in $func)';
     }
   }
 
