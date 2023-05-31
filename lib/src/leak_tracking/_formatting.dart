@@ -41,6 +41,15 @@ enum RetainingObjectProperty {
     ['value', 'class', 'name'],
     ['value', 'declaredType', 'class', 'name'],
     ['value', 'type'],
+  ]),
+  closureOwner([
+    ['value', 'closureFunction', 'owner', 'name'],
+  ]),
+  globalVarUri([
+    ['value', 'location', 'script', 'uri'],
+  ]),
+  globalVarName([
+    ['value', 'name'],
   ]);
 
   const RetainingObjectProperty(this.paths);
@@ -54,6 +63,13 @@ String _retainingObjectToString(RetainingObject object) {
 
   var result = property(RetainingObjectProperty.type, json) ?? '';
 
+  if (result == '_Closure') {
+    final func = property(RetainingObjectProperty.closureOwner, json);
+    if (func != null) {
+      result = '$result (in $func)';
+    }
+  }
+
   final lib = property(RetainingObjectProperty.lib, json);
   if (lib != null) {
     result = '$lib/$result';
@@ -64,6 +80,12 @@ String _retainingObjectToString(RetainingObject object) {
 
   if (location != null) {
     result = '$result:$location';
+  }
+
+  if (result == 'dart.core/_Type') {
+    final globalVarUri = property(RetainingObjectProperty.globalVarUri, json);
+    final globalVarName = property(RetainingObjectProperty.globalVarName, json);
+    result = '$globalVarUri/$globalVarName';
   }
 
   return result;

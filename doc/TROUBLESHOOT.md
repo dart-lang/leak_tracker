@@ -15,7 +15,7 @@ switch to [more complicated troubleshooting](#more-complicated-cases).
 
 TODO: add steps.
 
-## More complicated cases
+## Collect additional information
 
 To understand the root cause of a memory leak, you may want to gather additional information.
 
@@ -33,41 +33,38 @@ To understand the root cause of a memory leak, you may want to gather additional
 
     - **Retaining path**: shows which objects hold the leaked one from garbage collection.
 
-## Collect stacktrace
 
-By default, the leak tracker does not collect stacktraces, because the collection may
+By default, the leak tracker does not gather the information, because the collection may
 impact performance and memory footprint.
 
-### In tests
+**Tests**
 
-Temporarily setup stacktrace collection for your test:
+For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig` to the test:
 
 ```
   testWidgets('My test', (WidgetTester tester) async {
     ...
-  },
-  leakTrackingConfig: LeakTrackingTestConfig(
-    stackTraceCollectionConfig: StackTraceCollectionConfig(
-      classesToCollectStackTraceOnStart: {'MyClass'},
-    )
-  ));
+  }, leakTrackingConfig: LeakTrackingTestConfig.debug());
 ```
 
-### In applications
+**Applications**
 
-There are options to enable stacktrace collection in applications:
+For collecting debugging information in your running application, the options are:
 
-1. By passing `stackTraceCollectionConfig` to `enableLeakTracking`.
-
-https://user-images.githubusercontent.com/12115586/208321882-ecb96152-3aa7-4671-800e-f2eb8c18149e.mov
-
-2. Using interactive UI in DevTools > Memory > Leaks.
+1. Pass `LeakTrackingConfiguration` to `enableLeakTracking`
+2. Use the interactive UI in DevTools > Memory > Leaks
 
 TODO: link DevTools documentation with explanation
 
-## Check retaining pathes
+## Known complicated cases
 
-Open DevTools > Memory > Leaks, wait for not-GCed leaks to be caught,
-and click 'Analyze and Download'.
+### 1. More than one closure context
 
-TODO: add details
+If a method contains more than one closures, they share the context and thus all
+instances of the context will be alive while at least one of the closures is alive.
+
+TODO: add example
+
+Such cases are hard to troubleshoot. One way to fix them is to convert all closures,
+which reference the leaked type, to named methods.
+

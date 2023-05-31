@@ -22,17 +22,19 @@ Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
   }
 
   _log.info('Requesting retaining path.');
-  final result = await _service.getRetainingPath(
+
+  final result = await _theService.getRetainingPath(
     theObject.isolateId,
     theObject.itemId,
     100000,
   );
+
   _log.info('Recieved retaining path.');
   return result;
 }
 
 final List<String> _isolateIds = [];
-late VmService _service;
+late VmService _theService;
 bool _connected = false;
 
 Future<void> _connect() async {
@@ -46,10 +48,10 @@ Future<void> _connect() async {
     );
   }
 
-  _service = await connectWithWebSocket(info.serverWebSocketUri!, (error) {
+  _theService = await connectWithWebSocket(info.serverWebSocketUri!, (error) {
     throw error ?? Exception('Error connecting to service protocol');
   });
-  await _service.getVersion();
+  await _theService.getVersion();
   await _getIdForTwoIsolates();
 
   _connected = true;
@@ -68,7 +70,7 @@ Future<void> _getIdForTwoIsolates() async {
   while (_isolateIds.length < isolatesToGet && stopwatch.elapsed < watingTime) {
     _isolateIds.clear();
     await forEachIsolate(
-      _service,
+      _theService,
       (IsolateRef r) async => _isolateIds.add(r.id!),
     );
     if (_isolateIds.length < isolatesToGet) {
@@ -93,7 +95,7 @@ Future<_ItemInIsolate?> _objectInIsolate(_ObjectFingerprint object) async {
 
   for (final theClass in classes) {
     const pathLengthLimit = 10000000;
-    final instances = (await _service.getInstances(
+    final instances = (await _theService.getInstances(
           theClass.isolateId,
           theClass.itemId,
           pathLengthLimit,
@@ -130,7 +132,7 @@ Future<List<_ItemInIsolate>> _findClasses(String runtimeClassName) async {
   final result = <_ItemInIsolate>[];
 
   for (final isolateId in _isolateIds) {
-    var classes = await _service.getClassList(isolateId);
+    var classes = await _theService.getClassList(isolateId);
 
     const watingTime = Duration(seconds: 2);
     final stopwatch = Stopwatch()..start();
@@ -138,7 +140,7 @@ Future<List<_ItemInIsolate>> _findClasses(String runtimeClassName) async {
     // In the beginning list of classes may be empty.
     while (classes.classes?.isEmpty ?? true && stopwatch.elapsed < watingTime) {
       await Future.delayed(const Duration(milliseconds: 100));
-      classes = await _service.getClassList(isolateId);
+      classes = await _theService.getClassList(isolateId);
     }
     if (classes.classes?.isEmpty ?? true) {
       throw StateError('Could not get list of classes.');

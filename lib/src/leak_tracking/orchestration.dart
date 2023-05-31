@@ -70,12 +70,14 @@ class MemoryLeaksDetectedError extends StateError {
 /// });
 /// ```
 Future<Leaks> withLeakTracking(
-  DartAsyncCallback callback, {
+  DartAsyncCallback? callback, {
   bool shouldThrowOnLeaks = true,
   Duration? timeoutForFinalGarbageCollection,
   LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
   AsyncCodeRunner? asyncCodeRunner,
 }) async {
+  if (callback == null) return Leaks({});
+
   enableLeakTracking(
     resetIfAlreadyEnabled: true,
     config: LeakTrackingConfiguration.passive(
@@ -85,6 +87,7 @@ Future<Leaks> withLeakTracking(
 
   try {
     await callback();
+    callback = null;
 
     asyncCodeRunner ??= (action) => action();
     late Leaks leaks;

@@ -1,3 +1,7 @@
+# 7.0.2
+
+* Improve retaining path formatting.
+
 # 7.0.1
 
 * Format retaining path nicely.

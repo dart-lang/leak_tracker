@@ -19,3 +19,11 @@ class LeakTrackedClass {
     dispatchObjectDisposed(object: this);
   }
 }
+
+final _notGCedObjects = <LeakTrackedClass>[];
+
+class LeakingClass {
+  LeakingClass() {
+    _notGCedObjects.add(LeakTrackedClass()..dispose());
+  }
+}
