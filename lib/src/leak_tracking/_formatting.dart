@@ -42,13 +42,13 @@ enum RetainingObjectProperty {
     ['value', 'declaredType', 'class', 'name'],
     ['value', 'type'],
   ]),
-  func([
+  closureOwner([
     ['value', 'closureFunction', 'owner', 'name'],
   ]),
-  staticFieldUri([
+  globalVarUri([
     ['value', 'location', 'script', 'uri'],
   ]),
-  staticFieldName([
+  globalVarName([
     ['value', 'name'],
   ]);
 
@@ -64,7 +64,7 @@ String _retainingObjectToString(RetainingObject object) {
   var result = property(RetainingObjectProperty.type, json) ?? '';
 
   if (result == '_Closure') {
-    final func = property(RetainingObjectProperty.func, json);
+    final func = property(RetainingObjectProperty.closureOwner, json);
     if (func != null) {
       result += '(in $func)';
     }
@@ -83,9 +83,9 @@ String _retainingObjectToString(RetainingObject object) {
   }
 
   if (result == 'dart.core/_Type') {
-    final staticUri = property(RetainingObjectProperty.staticFieldUri, json);
-    final staticName = property(RetainingObjectProperty.staticFieldName, json);
-    result = '$staticUri/$staticName';
+    final globalVarUri = property(RetainingObjectProperty.globalVarUri, json);
+    final globalVarName = property(RetainingObjectProperty.globalVarName, json);
+    result = '$globalVarUri/$globalVarName';
   }
 
   return result;
