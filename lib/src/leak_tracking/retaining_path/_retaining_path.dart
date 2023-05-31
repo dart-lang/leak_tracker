@@ -25,15 +25,11 @@ Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
 
   await Future.delayed(const Duration(milliseconds: 1000));
 
-  await _theService.checkRequests();
-
   final result = await _theService.getRetainingPath(
     theObject.isolateId,
     theObject.itemId,
     100000,
   );
-
-  await _theService.checkRequests();
 
   _log.info('Recieved retaining path.');
   return result;
