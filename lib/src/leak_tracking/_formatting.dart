@@ -44,6 +44,12 @@ enum RetainingObjectProperty {
   ]),
   func([
     ['value', 'closureFunction', 'owner', 'name'],
+  ]),
+  staticFieldUri([
+    ['value', 'location', 'script', 'uri'],
+  ]),
+  staticFieldName([
+    ['value', 'name'],
   ]);
 
   const RetainingObjectProperty(this.paths);
@@ -74,6 +80,12 @@ String _retainingObjectToString(RetainingObject object) {
 
   if (location != null) {
     result = '$result:$location';
+  }
+
+  if (result == 'dart.core/_Type') {
+    final staticUri = property(RetainingObjectProperty.staticFieldUri, json);
+    final staticName = property(RetainingObjectProperty.staticFieldName, json);
+    result = '$staticUri/$staticName';
   }
 
   return result;
