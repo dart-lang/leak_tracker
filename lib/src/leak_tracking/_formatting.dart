@@ -59,7 +59,9 @@ String _retainingObjectToString(RetainingObject object) {
 
   if (result == '_Closure') {
     final func = property(RetainingObjectProperty.func, json);
-    result += '(in $func)';
+    if (func != null) {
+      result += '(in $func)';
+    }
   }
 
   final lib = property(RetainingObjectProperty.lib, json);
