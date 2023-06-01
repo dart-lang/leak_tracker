@@ -2,85 +2,29 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:developer';
+import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:logging/logging.dart';
 import 'package:vm_service/vm_service.dart';
 
-import '_service.dart';
-
-final _log = Logger('_retaining_path.dart');
+import '_connection.dart';
 
 Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
-  await _connect();
+  final connection = await connect();
 
   final fp = _ObjectFingerprint(type, code);
-  final theObject = await _objectInIsolate(fp);
+  final theObject = await _objectInIsolate(connection, fp);
   if (theObject == null) {
     throw Exception('Could not find object in heap');
   }
 
-  _log.info('Requesting retaining path.');
-
-  final result = await _theService.getRetainingPath(
+  final result = await connection.service.getRetainingPath(
     theObject.isolateId,
     theObject.itemId,
     100000,
   );
 
-  _log.info('Recieved retaining path.');
   return result;
-}
-
-final List<String> _isolateIds = [];
-late VmService _theService;
-bool _connected = false;
-
-Future<void> _connect() async {
-  if (_connected) return;
-
-  final info = await Service.getInfo();
-  if (info.serverWebSocketUri == null) {
-    throw StateError(
-      'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
-      '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
-    );
-  }
-
-  _theService = await connectWithWebSocket(info.serverWebSocketUri!, (error) {
-    throw error ?? Exception('Error connecting to service protocol');
-  });
-  await _theService.getVersion();
-  await _getIdForTwoIsolates();
-
-  _connected = true;
-}
-
-/// Tries to wait for two isolates to be available.
-///
-/// Depending on environment (command line / IDE, Flutter / Dart), isolates may have different names,
-/// and there can be one or two. Sometimes the second one appears with latency.
-/// And sometimes there are two isolates with name 'main'.
-Future<void> _getIdForTwoIsolates() async {
-  _log.info('Waiting for two isolates to be available.');
-  const isolatesToGet = 2;
-  const watingTime = Duration(seconds: 2);
-  final stopwatch = Stopwatch()..start();
-  while (_isolateIds.length < isolatesToGet && stopwatch.elapsed < watingTime) {
-    _isolateIds.clear();
-    await forEachIsolate(
-      _theService,
-      (IsolateRef r) async => _isolateIds.add(r.id!),
-    );
-    if (_isolateIds.length < isolatesToGet) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-  }
-  if (_isolateIds.isEmpty) {
-    throw StateError('Could not connect to isolates.');
-  }
-  _log.info('Number of isolates: ${_isolateIds.length}');
 }
 
 class _ObjectFingerprint {
@@ -90,12 +34,15 @@ class _ObjectFingerprint {
   final int code;
 }
 
-Future<_ItemInIsolate?> _objectInIsolate(_ObjectFingerprint object) async {
-  final classes = await _findClasses(object.type.toString());
+Future<_ItemInIsolate?> _objectInIsolate(
+  Connection connection,
+  _ObjectFingerprint object,
+) async {
+  final classes = await _findClasses(connection, object.type.toString());
 
   for (final theClass in classes) {
     const pathLengthLimit = 10000000;
-    final instances = (await _theService.getInstances(
+    final instances = (await connection.service.getInstances(
           theClass.isolateId,
           theClass.itemId,
           pathLengthLimit,
@@ -128,11 +75,14 @@ class _ItemInIsolate {
   final String itemId;
 }
 
-Future<List<_ItemInIsolate>> _findClasses(String runtimeClassName) async {
+Future<List<_ItemInIsolate>> _findClasses(
+  Connection connection,
+  String runtimeClassName,
+) async {
   final result = <_ItemInIsolate>[];
 
-  for (final isolateId in _isolateIds) {
-    var classes = await _theService.getClassList(isolateId);
+  for (final isolateId in connection.isolates) {
+    var classes = await connection.service.getClassList(isolateId);
 
     const watingTime = Duration(seconds: 2);
     final stopwatch = Stopwatch()..start();
@@ -140,7 +90,7 @@ Future<List<_ItemInIsolate>> _findClasses(String runtimeClassName) async {
     // In the beginning list of classes may be empty.
     while (classes.classes?.isEmpty ?? true && stopwatch.elapsed < watingTime) {
       await Future.delayed(const Duration(milliseconds: 100));
-      classes = await _theService.getClassList(isolateId);
+      classes = await connection.service.getClassList(isolateId);
     }
     if (classes.classes?.isEmpty ?? true) {
       throw StateError('Could not get list of classes.');
