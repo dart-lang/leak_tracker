@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:leak_tracker/src/leak_tracking/retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
@@ -23,6 +24,7 @@ void main() {
 
   setUp(() {
     _logs.clear();
+    disconnect();
   });
 
   tearDownAll(() async {

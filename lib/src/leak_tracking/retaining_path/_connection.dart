@@ -20,6 +20,8 @@ class Connection {
 
 Completer<Connection>? _completer;
 
+void disconnect() => _completer = null;
+
 Future<Connection> connect() async {
   if (_completer != null) {
     return await _completer!.future;
