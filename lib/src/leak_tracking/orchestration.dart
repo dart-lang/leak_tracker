@@ -55,7 +55,7 @@ class MemoryLeaksDetectedError extends StateError {
 /// });
 /// ```
 ///
-/// If you use [withLeakTracking] inside [testWidget], pass [tester.runAsync]
+/// If you use [withLeakTracking] inside `testWidget`, pass `tester.runAsync`
 /// as [asyncCodeRunner] to run asynchronous leak detection after the
 /// test code execution:
 ///
@@ -89,8 +89,8 @@ Future<Leaks> withLeakTracking(
     await callback();
     callback = null;
 
-    asyncCodeRunner ??= (action) => action();
-    late Leaks leaks;
+    asyncCodeRunner ??= (action) async => await action();
+    Leaks? leaks;
 
     await asyncCodeRunner(
       () async {
@@ -107,15 +107,17 @@ Future<Leaks> withLeakTracking(
 
         leaks = await collectLeaks();
 
-        if (leaks.total > 0 && shouldThrowOnLeaks) {
+        if ((leaks?.total ?? 0) > 0 && shouldThrowOnLeaks) {
           // `expect` should not be used here, because, when the method is used
           // from Flutter, the packages `test` and `flutter_test` conflict.
-          throw MemoryLeaksDetectedError(leaks);
+          throw MemoryLeaksDetectedError(leaks!);
         }
       },
     );
 
-    return leaks;
+    // `tester.runAsync` does not throw in case of errors, but collect them other way.
+    if (leaks == null) throw StateError('Leaks collection failed.');
+    return leaks!;
   } finally {
     disableLeakTracking();
   }

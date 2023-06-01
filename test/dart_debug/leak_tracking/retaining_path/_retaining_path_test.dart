@@ -35,7 +35,7 @@ void main() {
     final instance = MyClass();
 
     final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
-    expect(path.elements, isNotEmpty);
+    expect(path!.elements, isNotEmpty);
   });
 
   test('Connection is happening just once', () async {

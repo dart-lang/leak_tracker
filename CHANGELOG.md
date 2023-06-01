@@ -1,3 +1,7 @@
+# 7.0.4
+
+* Fix path collection.
+
 # 7.0.3
 
 * Fix connection issue.
