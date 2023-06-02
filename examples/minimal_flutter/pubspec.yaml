@@ -8,7 +8,7 @@ dependencies:
   flutter:
     sdk: flutter
   leak_tracker:
-    path: ../..
+    path: ../../pkgs/leak_tracker
 
 dev_dependencies:
   flutter_test:
