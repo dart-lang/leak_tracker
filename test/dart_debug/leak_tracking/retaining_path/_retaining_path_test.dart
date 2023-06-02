@@ -54,4 +54,21 @@ void main() {
       hasLength(1),
     );
   });
+
+  test('Connection is happening just once', () async {
+    final instance1 = MyClass();
+    final instance2 = MyClass();
+
+    final obtainers = [
+      obtainRetainingPath(MyClass, identityHashCode(instance1)),
+      obtainRetainingPath(MyClass, identityHashCode(instance2)),
+    ];
+
+    await Future.wait(obtainers);
+
+    expect(
+      _logs.where((item) => item == 'Connecting to vm service protocol...'),
+      hasLength(1),
+    );
+  });
 }
