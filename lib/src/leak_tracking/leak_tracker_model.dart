@@ -113,7 +113,7 @@ class LeakTrackingConfiguration {
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
 class LeakTrackingTestConfig {
-  /// Creates a new instance of [LeakTrackingFlutterTestConfig].
+  /// Creates a new instance of [LeakTrackingTestConfig].
   const LeakTrackingTestConfig({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.onLeaks,
@@ -122,11 +122,28 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
   });
 
-  /// Creates a new instance of [LeakTrackingFlutterTestConfig] for debugging leaks.
+  /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
+  ///
+  /// This configuration will collect stack traces on start and disposal,
+  /// and retaining path for notGCed objects.
   LeakTrackingTestConfig.debug({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnStart: true,
       collectStackTraceOnDisposal: true,
+      collectRetainingPathForNonGCed: true,
+    ),
+    this.onLeaks,
+    this.failTestOnLeaks = true,
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+  });
+
+  /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
+  ///
+  /// This configuration will not collect stack traces,
+  /// and will collect retaining path for notGCed objects.
+  LeakTrackingTestConfig.retainingPath({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectRetainingPathForNonGCed: true,
     ),
     this.onLeaks,

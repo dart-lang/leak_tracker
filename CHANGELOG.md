@@ -1,3 +1,8 @@
+# 7.0.4
+
+* Fix path collection.
+* Create constructor to collect path.
+
 # 7.0.3
 
 * Fix connection issue.

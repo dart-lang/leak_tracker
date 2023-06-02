@@ -9,14 +9,12 @@ import 'package:vm_service/vm_service.dart';
 
 import '_connection.dart';
 
-Future<RetainingPath> obtainRetainingPath(Type type, int code) async {
+Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
   final connection = await connect();
 
   final fp = _ObjectFingerprint(type, code);
   final theObject = await _objectInIsolate(connection, fp);
-  if (theObject == null) {
-    throw Exception('Could not find object in heap');
-  }
+  if (theObject == null) return null;
 
   final result = await connection.service.getRetainingPath(
     theObject.isolateId,
