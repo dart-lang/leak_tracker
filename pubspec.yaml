@@ -23,6 +23,6 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  layerlens:
+  layerlens: ^1.0.11
   integration_test:
     sdk: flutter
