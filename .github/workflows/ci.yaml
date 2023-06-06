@@ -25,24 +25,24 @@ jobs:
       - name: version
         run: flutter --version
 
-      - name: flutter pub get
+      - name: pub get autosnapshotting
         run: flutter pub get
         working-directory: examples/autosnapshotting
 
-      - name: flutter pub get
+      - name: pub get minimal_flutter
         run: flutter pub get
         working-directory: examples/minimal_flutter
 
-      - name: flutter pub get
-        run: flutter pub get
+      - name: pub get leak_tracker
+        run: dart pub get
         working-directory: pkgs/leak_tracker
 
-      - name: flutter pub get
+      - name: pub get leak_tracker_flutter_test
         run: flutter pub get
         working-directory: pkgs/leak_tracker_flutter_test
 
-      - name: flutter pub get
-        run: flutter pub get
+      - name: pub get leak_tracker_testing
+        run: dart pub get
         working-directory: pkgs/leak_tracker_testing
 
       - name: flutter analyze
