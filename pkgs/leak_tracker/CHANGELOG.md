@@ -1,6 +1,6 @@
 # 7.0.5
 
-* Convert to multi-packege.
+* Convert to multi-package.
 
 # 7.0.4
 
