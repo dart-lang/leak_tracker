@@ -29,9 +29,6 @@ jobs:
         run: flutter pub get
         working-directory: examples/autosnapshotting
 
-      - name: flutter pub get
-        run: flutter pub get
-
       - name: flutter analyze
         run: flutter analyze
 
