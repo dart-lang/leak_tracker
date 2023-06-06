@@ -9,25 +9,25 @@ set -ex
 
 pushd examples/autosnapshotting
 flutter pub get
-# flutter analyze
+flutter analyze  --fatal-infos
 popd
 
 pushd examples/minimal_flutter
 flutter pub get
-# flutter analyze
+flutter analyze --fatal-infos
 popd
 
 pushd pkgs/leak_tracker
 dart pub get
-# dart analyze
+dart analyze --fatal-infos
 popd
 
 pushd pkgs/leak_tracker_flutter_test
 flutter pub get
-# flutter analyze
+flutter analyze --fatal-infos
 popd
 
 pushd pkgs/leak_tracker_testing
 flutter pub get
-# dart analyze
+dart analyze --fatal-infos
 popd
