@@ -7,27 +7,27 @@
 # Fast fail the script on failures.
 set -ex
 
-pushd examples/autosnapshotting
+cd examples/autosnapshotting
 flutter pub get
 flutter analyze  --fatal-infos
-popd
+cd -
 
-pushd examples/minimal_flutter
+cd examples/minimal_flutter
 flutter pub get
 flutter analyze --fatal-infos
-popd
+cd -
 
-pushd pkgs/leak_tracker
+cd pkgs/leak_tracker
 dart pub get
 dart analyze --fatal-infos
-popd
+cd -
 
-pushd pkgs/leak_tracker_flutter_test
+cd pkgs/leak_tracker_flutter_test
 flutter pub get
 flutter analyze --fatal-infos
-popd
+cd -
 
-pushd pkgs/leak_tracker_testing
+cd pkgs/leak_tracker_testing
 flutter pub get
 dart analyze --fatal-infos
-popd
+cd -
