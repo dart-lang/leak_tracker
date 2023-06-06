@@ -14,8 +14,9 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  leak_tracker:
-    path: ../leak_tracker
+  leak_tracker: ^7.0.4
+  leak_tracker_testing:
+    path: ../leak_tracker_testing
   layerlens:
   meta: ^1.8.0
 
