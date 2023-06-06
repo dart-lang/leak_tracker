@@ -20,3 +20,6 @@ dev_dependencies:
   layerlens:
   meta: ^1.8.0
 
+dependency_overrides:
+  leak_tracker:
+    path: ../leak_tracker
