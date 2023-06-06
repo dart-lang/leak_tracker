@@ -24,9 +24,9 @@ void main() {
     );
 
     const expectedRetainingPathTails = [
-      '/leak_tracker/test/dart_test_infra/data/dart_classes.dart/_notGCedObjects',
+      '/leak_tracker/test/test_infra/data/dart_classes.dart/_notGCedObjects',
       'dart.core/_GrowableList:0',
-      '/leak_tracker/test/dart_test_infra/data/dart_classes.dart/LeakTrackedClass',
+      '/leak_tracker/test/test_infra/data/dart_classes.dart/LeakTrackedClass',
     ];
 
     expect(leaks.total, 1);
