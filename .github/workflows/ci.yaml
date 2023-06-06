@@ -26,7 +26,7 @@ jobs:
         run: flutter --version
 
       - name: analyze
-        run: tool/analyze.sh
+        run: ./tool/analyze.sh
 
       - name: dart release test
         run: dart test test/release
