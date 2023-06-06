@@ -1,6 +1,6 @@
 name: leak_tracker_flutter_test
 version: 0.0.1
-description: Leak tracking tests that depend on Flutter framework.
+description: Tests for leak_tracker that depend on Flutter framework.
 repository: https://github.com/dart-lang/leak_tracker
 
 environment:
