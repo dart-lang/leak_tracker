@@ -19,7 +19,8 @@ dependencies:
 dev_dependencies:
   flutter_lints: ^2.0.0
   layerlens:
-  leak_tracker_testing: ^1.0.0
+  leak_tracker_testing:
+    path: ../leak_tracker_testing
   integration_test:
     sdk: flutter
   test: ^1.16.0
