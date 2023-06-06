@@ -5,7 +5,7 @@
 import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 
-import '../../dart_test_infra/utils.dart';
+import '../../test_infra/utils.dart';
 
 void main() {
   for (final link in Links.values) {

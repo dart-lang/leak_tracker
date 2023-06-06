@@ -7,7 +7,7 @@ import 'package:leak_tracker/testing.dart';
 
 import 'package:test/test.dart';
 
-import '../../dart_test_infra/data/dart_classes.dart';
+import '../../test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 void main() {

@@ -9,8 +9,8 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/testing.dart';
 
 import '../../dart_test_infra/data/dart_classes.dart';
-import '../../flutter_test_infra/flutter_classes.dart';
-import '../../flutter_test_infra/flutter_helpers.dart';
+import '../../test_infra/flutter_classes.dart';
+import '../../test_infra/flutter_helpers.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 ///

@@ -2,9 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:leak_tracker/leak_tracker.dart';
 import 'package:test/test.dart';
-
-import 'shared/shared_model.dart';
 
 /// Checks if the leak collection is empty.
 const Matcher isLeakFree = _IsLeakFree();

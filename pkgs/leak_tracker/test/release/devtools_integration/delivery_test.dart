@@ -6,7 +6,7 @@ import 'package:leak_tracker/devtools_integration.dart';
 import 'package:leak_tracker/src/devtools_integration/_protocol.dart';
 import 'package:test/test.dart';
 
-import '../../dart_test_infra/data/messages.dart';
+import '../../test_infra/data/messages.dart';
 
 void main() {
   final messagesByChannel = {

@@ -4,7 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../dart_test_infra/data/dart_classes.dart';
+import 'dart_classes.dart';
 
 final notGcedStorage = <LeakTrackedClass>[];
 
