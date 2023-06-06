@@ -23,5 +23,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   layerlens:
+  leak_tracker_testing: ^1.0.0
   integration_test:
     sdk: flutter
+  test: ^1.16.0

@@ -3,7 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/src/shared/shared_model.dart';
-import 'package:leak_tracker/src/testing/matchers.dart';
+import 'package:leak_tracker_testing/leak_tracker_testing.dart';
+
 import 'package:test/test.dart';
 
 final _leaks = Leaks({
