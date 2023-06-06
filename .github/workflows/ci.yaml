@@ -25,6 +25,9 @@ jobs:
       - name: version
         run: flutter --version
 
+      - name: pub get root
+        run: dart pub get
+
       - name: pub get autosnapshotting
         run: flutter pub get
         working-directory: examples/autosnapshotting
