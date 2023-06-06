@@ -29,6 +29,22 @@ jobs:
         run: flutter pub get
         working-directory: examples/autosnapshotting
 
+      - name: flutter pub get
+        run: flutter pub get
+        working-directory: examples/minimal_flutter
+
+      - name: flutter pub get
+        run: flutter pub get
+        working-directory: pkgs/leak_tracker
+
+      - name: flutter pub get
+        run: flutter pub get
+        working-directory: pkgs/leak_tracker_flutter_test
+
+      - name: flutter pub get
+        run: flutter pub get
+        working-directory: pkgs/leak_tracker_testing
+
       - name: flutter analyze
         run: flutter analyze
 
