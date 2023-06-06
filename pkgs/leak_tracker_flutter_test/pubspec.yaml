@@ -12,7 +12,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
-  leak_tracker: ^7.0.4
-  layerlens:
   integration_test:
     sdk: flutter
+  leak_tracker: ^7.0.4
+  layerlens:
+  meta: ^1.8.0
+

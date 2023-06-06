@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/src/leak_tracking/_dispatcher.dart';
 
+import 'test_infra/mock_object_tracker.dart';
+
 void main() {
   test('dispatchObjectEvent dispatches Flutter SDK instrumentation.', () {
     final tracker = MockObjectTracker();

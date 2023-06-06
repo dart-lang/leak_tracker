@@ -1,6 +1,6 @@
 name: leak_tracker_test
 version: 0.0.1
-description: Leak tracking code intended for testing only.
+description: Leak tracking code intended for usage in tests.
 repository: https://github.com/dart-lang/leak_tracker
 
 environment:
@@ -11,11 +11,5 @@ dependencies:
   test: ^1.16.0
 
 dev_dependencies:
-  flutter:
-    sdk: flutter
   flutter_lints: ^2.0.0
-  flutter_test:
-    sdk: flutter
   layerlens:
-  integration_test:
-    sdk: flutter
