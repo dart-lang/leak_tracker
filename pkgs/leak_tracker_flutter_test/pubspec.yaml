@@ -1,5 +1,4 @@
 name: leak_tracker_flutter_test
-version: 0.0.1
 description: Tests for leak_tracker that depend on Flutter framework.
 publish_to: none
 
