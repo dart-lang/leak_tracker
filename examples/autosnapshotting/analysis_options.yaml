@@ -1,1 +1,1 @@
-include: ../../analysis_options.yaml
+include: ../../pkgs/leak_tracker/analysis_options.yaml
