@@ -1,0 +1,24 @@
+name: leak_tracker_flutter_test
+description: Tests for leak_tracker that depend on Flutter framework.
+publish_to: none
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dev_dependencies:
+  flutter:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  leak_tracker: ^7.0.4
+  leak_tracker_testing:
+    path: ../leak_tracker_testing
+  layerlens:
+  meta: ^1.8.0
+
+dependency_overrides:
+  leak_tracker:
+    path: ../leak_tracker

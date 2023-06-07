@@ -25,25 +25,21 @@ jobs:
       - name: version
         run: flutter --version
 
-      - name: flutter pub get
-        run: flutter pub get
+      - name: analyze
+        run: sh ./tool/analyze.sh
 
-      - name: flutter pub get
-        run: flutter pub get
-        working-directory: more_examples/autosnapshotting
-
-      - name: flutter analyze
-        run: flutter analyze
-
-      - name: dart test
-        run: dart test test/dart
+      - name: dart release test
+        run: dart test test/release
+        working-directory: pkgs/leak_tracker
 
       - name: dart debug test
-        run: dart test test/dart_debug --debug
+        run: dart test test/debug --debug
+        working-directory: pkgs/leak_tracker
 
       - name: flutter test
-        run: flutter test test/flutter
+        run: flutter test
+        working-directory: pkgs/leak_tracker_flutter_test
 
       - name: integration test
         run: flutter test integration_test/app_test.dart -d flutter-tester
-        working-directory: more_examples/autosnapshotting
+        working-directory: examples/autosnapshotting

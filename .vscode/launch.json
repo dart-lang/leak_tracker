@@ -6,21 +6,21 @@
     "configurations": [
         {
             "name": "example",
-            "cwd": "example",
+            "cwd": "pkgs/leak_tracker/example",
             "request": "launch",
             "type": "dart",
             "program": "main.dart",
         },
         {
             "name": "minimal_flutter",
-            "cwd": "more_examples/minimal_flutter",
+            "cwd": "examples/minimal_flutter",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
         },
         {
             "name": "autosnapshotting",
-            "cwd": "more_examples/autosnapshotting",
+            "cwd": "examples/autosnapshotting",
             "request": "launch",
             "type": "dart",
             "program": "lib/main.dart",
