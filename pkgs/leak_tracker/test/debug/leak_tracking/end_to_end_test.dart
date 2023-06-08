@@ -12,6 +12,20 @@ import '../../test_infra/data/dart_classes.dart';
 void main() {
   tearDown(() => disableLeakTracking());
 
+  test('Stack trace does not contain leak tracker calls.', () async {
+    final leaks = await withLeakTracking(
+      () async {
+        LeakingClass();
+      },
+      shouldThrowOnLeaks: false,
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectStackTraceOnStart: true,
+        collectStackTraceOnDisposal: true,
+      ),
+    );
+    print(leaks);
+  });
+
   test('Retaining path for not GCed object is reported.', () async {
     final leaks = await withLeakTracking(
       () async {

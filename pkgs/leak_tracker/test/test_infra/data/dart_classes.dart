@@ -24,6 +24,10 @@ final _notGCedObjects = <LeakTrackedClass>[];
 
 class LeakingClass {
   LeakingClass() {
+    // Not gced:
     _notGCedObjects.add(LeakTrackedClass()..dispose());
+
+    // Not disposed:
+    LeakTrackedClass();
   }
 }
