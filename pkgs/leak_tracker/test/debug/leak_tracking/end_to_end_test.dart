@@ -29,7 +29,7 @@ void main() {
       '/leak_tracker/test/test_infra/data/dart_classes.dart/LeakTrackedClass',
     ];
 
-    expect(leaks.total, 1);
+    expect(leaks.total, 2);
     expect(
       () => expect(leaks, isLeakFree),
       throwsA(
