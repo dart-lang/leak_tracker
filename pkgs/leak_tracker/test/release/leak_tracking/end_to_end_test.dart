@@ -98,7 +98,6 @@ void main() {
       expect(leaks, isLeakFree);
     } catch (error) {
       const traceHeaders = ['start: >', 'disposal: >'];
-
       final lines = error.toString().split('\n').asMap();
 
       for (final header in traceHeaders) {

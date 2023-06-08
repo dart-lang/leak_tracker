@@ -19,7 +19,7 @@ String contextToString(Object? object) {
 String _formatStackTrace(StackTrace stackTrace) {
   var result = stackTrace.toString();
 
-  result = _removeLeakTrackingLines(result);
+  result = removeLeakTrackingLines(result);
 
   // Remove spaces.
   // Spaces need to be removed from stacktrace
@@ -31,7 +31,7 @@ String _formatStackTrace(StackTrace stackTrace) {
 }
 
 /// Removes top lines that relate to leak_tracker.
-String _removeLeakTrackingLines(String stackTrace) {
+String removeLeakTrackingLines(String stackTrace) {
   final lines = stackTrace.split('\n');
   var firstUserCode = 0;
   while (firstUserCode < lines.length &&
