@@ -66,7 +66,6 @@ void main() {
           expect(leaks, isLeakFree);
         } catch (error) {
           const traceHeaders = ['start: >', 'disposal: >'];
-          const leakTrackerLine = '(package:leak_tracker/';
 
           final lines = error.toString().split('\n').asMap();
 
@@ -78,7 +77,8 @@ void main() {
               if (i + 1 >= lines.length) continue;
               final line = lines[i + 1]!;
 
-              expect(line, isNot(contains(leakTrackerLine)));
+              const leakTrackerStackTraceFragment = '(package:leak_tracker/';
+              expect(line, isNot(contains(leakTrackerStackTraceFragment)));
             }
           }
         }

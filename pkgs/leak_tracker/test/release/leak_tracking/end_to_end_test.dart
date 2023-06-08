@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import 'package:test/test.dart';
@@ -97,7 +98,6 @@ void main() {
       expect(leaks, isLeakFree);
     } catch (error) {
       const traceHeaders = ['start: >', 'disposal: >'];
-      const leakTrackerLine = '(package:leak_tracker/';
 
       final lines = error.toString().split('\n').asMap();
 
@@ -109,7 +109,7 @@ void main() {
           if (i + 1 >= lines.length) continue;
           final line = lines[i + 1]!;
 
-          expect(line, isNot(contains(leakTrackerLine)));
+          expect(line, isNot(contains(leakTrackerStackTraceFragment)));
         }
       }
     }

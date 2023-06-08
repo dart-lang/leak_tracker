@@ -4,6 +4,7 @@
 
 import 'package:vm_service/vm_service.dart';
 
+import '../shared/_primitives.dart';
 import '../shared/_util.dart';
 
 /// Converts item in leak tracking context to string.
@@ -31,12 +32,10 @@ String _formatStackTrace(StackTrace stackTrace) {
 
 /// Removes top lines that relate to leak_tracker.
 String _removeLeakTrackingLines(String stackTrace) {
-  const leakTrackerFragment = '(package:leak_tracker/';
-
   final lines = stackTrace.split('\n');
   var firstUserCode = 0;
   while (firstUserCode < lines.length &&
-      lines[firstUserCode].contains(leakTrackerFragment)) {
+      lines[firstUserCode].contains(leakTrackerStackTraceFragment)) {
     firstUserCode++;
   }
   lines.removeRange(0, firstUserCode);
