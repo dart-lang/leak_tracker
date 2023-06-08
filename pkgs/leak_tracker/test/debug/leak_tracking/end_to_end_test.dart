@@ -23,7 +23,6 @@ void main() {
         collectStackTraceOnDisposal: true,
       ),
     );
-    print(leaks);
   });
 
   test('Retaining path for not GCed object is reported.', () async {
