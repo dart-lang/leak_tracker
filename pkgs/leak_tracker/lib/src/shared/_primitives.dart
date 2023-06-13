@@ -10,6 +10,9 @@ typedef IdentityHashCoder = IdentityHashCode Function(Object object);
 
 int standardIdentityHashCoder(Object object) => identityHashCode(object);
 
+/// Fragment to detect leak tracker invocation in callstack.
+const leakTrackerStackTraceFragment = '(package:leak_tracker/';
+
 String fullClassName({
   required String library,
   required String shortClassName,

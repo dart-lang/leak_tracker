@@ -4,18 +4,42 @@
 
 import 'package:vm_service/vm_service.dart';
 
+import '../shared/_primitives.dart';
 import '../shared/_util.dart';
 
 /// Converts item in leak tracking context to string.
 String contextToString(Object? object) {
   return switch (object) {
-    // Spaces need to be removed from stacktrace
-    // because otherwise test framework changes formatting
-    // of a message from matcher.
-    StackTrace() => object.toString().replaceAll(' ', '_'),
+    StackTrace() => _formatStackTrace(object),
     RetainingPath() => _retainingPathToString(object),
     _ => object.toString(),
   };
+}
+
+String _formatStackTrace(StackTrace stackTrace) {
+  var result = stackTrace.toString();
+
+  result = removeLeakTrackingLines(result);
+
+  // Remove spaces.
+  // Spaces need to be removed from stacktrace
+  // because otherwise test framework changes formatting
+  // of a message from matcher.
+  result = result.replaceAll(' ', '_');
+
+  return result;
+}
+
+/// Removes top lines that relate to leak_tracker.
+String removeLeakTrackingLines(String stackTrace) {
+  final lines = stackTrace.split('\n');
+  var firstUserCode = 0;
+  while (firstUserCode < lines.length &&
+      lines[firstUserCode].contains(leakTrackerStackTraceFragment)) {
+    firstUserCode++;
+  }
+  lines.removeRange(0, firstUserCode);
+  return lines.join('\n');
 }
 
 String _retainingPathToString(RetainingPath retainingPath) {

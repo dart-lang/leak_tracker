@@ -39,6 +39,52 @@ void main() {
       () => _verifyLeaks(leaks, expectedNotDisposed: 1, expectedNotGCed: 1),
     );
   });
+
+  group('Stack trace does not start with leak tracker calls.', () {
+    late Leaks leaks;
+
+    testWidgetsWithLeakTracking(
+      '$StatelessLeakingWidget',
+      (WidgetTester tester) async {
+        await tester.pumpWidget(StatelessLeakingWidget());
+      },
+      leakTrackingConfig: LeakTrackingTestConfig(
+        onLeaks: (Leaks theLeaks) {
+          leaks = theLeaks;
+        },
+        failTestOnLeaks: false,
+        leakDiagnosticConfig: const LeakDiagnosticConfig(
+          collectStackTraceOnStart: true,
+          collectStackTraceOnDisposal: true,
+        ),
+      ),
+    );
+
+    tearDown(
+      () {
+        try {
+          expect(leaks, isLeakFree);
+        } catch (error) {
+          const traceHeaders = ['start: >', 'disposal: >'];
+
+          final lines = error.toString().split('\n').asMap();
+
+          for (final header in traceHeaders) {
+            final headerInexes =
+                lines.keys.where((i) => lines[i]!.endsWith(header));
+            expect(headerInexes, isNotEmpty);
+            for (final i in headerInexes) {
+              if (i + 1 >= lines.length) continue;
+              final line = lines[i + 1]!;
+
+              const leakTrackerStackTraceFragment = '(package:leak_tracker/';
+              expect(line, isNot(contains(leakTrackerStackTraceFragment)));
+            }
+          }
+        }
+      },
+    );
+  });
 }
 
 /// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].

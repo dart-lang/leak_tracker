@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import 'package:test/test.dart';
@@ -79,5 +80,37 @@ void main() {
     );
 
     expect(leaks, isLeakFree);
+  });
+
+  test('Stack trace does not start with leak tracker calls.', () async {
+    final leaks = await withLeakTracking(
+      () async {
+        LeakingClass();
+      },
+      shouldThrowOnLeaks: false,
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectStackTraceOnStart: true,
+        collectStackTraceOnDisposal: true,
+      ),
+    );
+
+    try {
+      expect(leaks, isLeakFree);
+    } catch (error) {
+      const traceHeaders = ['start: >', 'disposal: >'];
+      final lines = error.toString().split('\n').asMap();
+
+      for (final header in traceHeaders) {
+        final headerInexes =
+            lines.keys.where((i) => lines[i]!.endsWith(header));
+        expect(headerInexes, isNotEmpty);
+        for (final i in headerInexes) {
+          if (i + 1 >= lines.length) continue;
+          final line = lines[i + 1]!;
+
+          expect(line, isNot(contains(leakTrackerStackTraceFragment)));
+        }
+      }
+    }
   });
 }
