@@ -61,7 +61,7 @@ class LeakDiagnosticConfig {
 }
 
 class LeakTrackingConfiguration {
-  LeakTrackingConfiguration({
+  const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
     this.onLeaks,
