@@ -11,9 +11,9 @@ const libName = 'libName';
 const _json = <String, dynamic>{
   'value': {
     'class': {
-      'library': {'name': libName}
-    }
-  }
+      'library': {'name': libName},
+    },
+  },
 };
 
 void main() {

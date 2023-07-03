@@ -15,7 +15,7 @@ final _leaks = Leaks({
       code: 1,
       type: 'type',
     ),
-  ]
+  ],
 });
 
 void main() {

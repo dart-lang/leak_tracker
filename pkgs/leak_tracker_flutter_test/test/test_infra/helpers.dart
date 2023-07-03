@@ -131,7 +131,7 @@ class LeakCleaner {
       for (LeakType leakType in leaks.byType.keys)
         leakType: leaks.byType[leakType]!
             .where((LeakReport leak) => _shouldReportLeak(leakType, leak))
-            .toList()
+            .toList(),
     });
     return result;
   }
