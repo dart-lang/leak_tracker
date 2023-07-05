@@ -13,7 +13,7 @@ void main() {
     for (var c in Channel.values)
       c: messages
           .where((m) => envelopeByType(m.runtimeType).channel == c)
-          .toList()
+          .toList(),
   };
 
   setUpAll(() {
