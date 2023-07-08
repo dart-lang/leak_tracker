@@ -163,7 +163,7 @@ void _verifyLeakList(
     if (shouldContainDebugInfo) {
       expect(leak.context, isNotEmpty);
     } else {
-      expect(leak.context ?? [], isEmpty);
+      expect(leak.context ?? <String, dynamic>{}, isEmpty);
     }
     expect(leak.trackedClass, contains(LeakTrackedClass.library));
     expect(leak.trackedClass, contains('$LeakTrackedClass'));
