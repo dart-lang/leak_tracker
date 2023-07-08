@@ -47,6 +47,14 @@ For collecting debugging information in tests, temporarily pass an instance of `
   }, leakTrackingConfig: LeakTrackingTestConfig.debug());
 ```
 
+Or, you can temporarily set global flag, to make all tests collecting debug information:
+
+```
+setUpAll(() {
+  collectDebugInformationForLeaks = true;
+});
+```
+
 **Applications**
 
 For collecting debugging information in your running application, the options are:

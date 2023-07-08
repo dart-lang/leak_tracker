@@ -4,6 +4,9 @@
 
 import '../shared/shared_model.dart';
 
+/// If true, the leak tracker will collect debug information for leaks.
+bool collectDebugInformationForLeaks = false;
+
 /// Handler to collect leak summary.
 typedef LeakSummaryCallback = void Function(LeakSummary);
 

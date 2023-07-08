@@ -124,6 +124,9 @@ Future<Leaks> withLeakTracking(
 }
 
 /// Forces garbage collection by aggressive memory allocation.
+///
+/// The package cannot use the methos `forceGC` in the package `leak+tracker-testing`,
+/// because of G3 limitations for test only code.
 Future<void> _forceGC({required int gcCycles, Duration? timeout}) async {
   final start = clock.now();
   final barrier = reachabilityBarrier;
