@@ -100,7 +100,8 @@ void main() {
         }
       }
 
-      print('myClassRef: $myClassRef, myListRef: $myListRef');
+      print('myClassRef: $myClassRef');
+      print('myListRef: $myListRef');
 
       // To make sure [myList] is not const.
       myList.add(6);
