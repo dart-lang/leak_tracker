@@ -67,17 +67,17 @@ TODO: link DevTools documentation with explanation
 ## Verify object references
 
 If you expect an object to be not referenced at some point,
-you may temporary add assertion for this, and collect retaining path, if the object is held:
+but tot sure, you can validate it by temporary adding assertion:
 
 ```
 final ref = WeakReference(myObject);
 myObject = null;
 await forceGC();
 if (ref.target == null) {
-  throw StateError('Validated that myObject is not held by another object');
+  throw StateError('Validated that myObject is not held from garbage collection.');
 } else {
-  print(await retainingPath(ref));
-  throw StateError('myObject is reachable from root. See output for the retaining path');
+  print(await formattedRetainingPath(ref));
+  throw StateError('myObject is reachable from root. See console output for the retaining path.');
 }
 ```
 
