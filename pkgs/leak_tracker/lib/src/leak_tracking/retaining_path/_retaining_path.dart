@@ -44,8 +44,8 @@ Future<_ItemInIsolate?> _objectInIsolate(
     // TODO(polina-c): remove when issue is fixed
     // https://github.com/dart-lang/sdk/issues/52893
     if (theClass.name == 'TypeParameters') continue;
+    print('looking for ${theClass.name}');
 
-    print('requesting getInstances for ${theClass.name}');
     final instances = (await connection.service.getInstances(
           theClass.isolateId,
           theClass.itemId,
@@ -54,12 +54,10 @@ Future<_ItemInIsolate?> _objectInIsolate(
             .instances ??
         <ObjRef>[];
 
-    final result = instances.firstWhereOrNull(
-      (objRef) =>
-          objRef is InstanceRef && objRef.identityHashCode == object.code,
-    );
+    final result = instances.firstWhereOrNull((ObjRef objRef) =>
+        objRef is InstanceRef && objRef.identityHashCode == object.code);
     if (result != null) {
-      throw ('found!!!!');
+      throw ('found!!!! for ${theClass.name}');
 
       return _ItemInIsolate(isolateId: theClass.isolateId, itemId: result.id!);
     }
@@ -80,7 +78,7 @@ class _ItemInIsolate {
   /// Id of the item in the isolate.
   final String itemId;
 
-  /// Name of the item, for debugging purposes
+  /// Name of the item, for debugging purposes.
   final String? name;
 }
 

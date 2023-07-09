@@ -40,11 +40,44 @@ void main() {
 
   test('Path type with generic arg is found.', () async {
     final instance = <int>[1, 2, 3, 4, 5];
-
     final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
-    print(instance);
     expect(path!.elements, isNotEmpty);
   });
+
+  test(
+    'Instance of array is found.',
+    () async {
+      final myClass = MyClass();
+      final instance = <int>[1, 2, 3, 4, 5];
+
+      final connection = await connect();
+      print(connection.isolates.length);
+      final isolateId = connection.isolates[0];
+      var classList = await connection.service.getClassList(isolateId);
+
+      // In the beginning list of classes may be empty.
+      while (classList.classes?.isEmpty ?? true) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        classList = await connection.service.getClassList(isolateId);
+      }
+      if (classList.classes?.isEmpty ?? true) {
+        throw StateError('Could not get list of classes.');
+      }
+
+      final classes = classList.classes!;
+
+      final path = await obtainRetainingPath(
+          instance.runtimeType, identityHashCode(instance));
+      print(instance);
+      instance.add(7);
+      expect(path!.elements, isNotEmpty);
+
+      // To make sure instance is not const.
+      instance.add(6);
+      instance.add(7);
+    },
+    timeout: const Timeout(Duration(minutes: 20)),
+  );
 
   test('Connection is happening just once', () async {
     final instance1 = MyClass();
