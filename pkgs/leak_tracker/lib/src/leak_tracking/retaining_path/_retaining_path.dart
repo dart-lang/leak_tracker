@@ -17,7 +17,7 @@ Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
   if (theObject == null) return null;
 
   final result = await connection.service.getRetainingPath(
-    theObject.isolateId,
+    theObject.isolateInfo.id,
     theObject.itemId,
     100000,
   );
@@ -47,7 +47,7 @@ Future<_ItemInIsolate?> _objectInIsolate(
     print('looking for ${theClass.name}');
 
     final instances = (await connection.service.getInstances(
-          theClass.isolateId,
+          theClass.isolateInfo.id,
           theClass.itemId,
           pathLengthLimit,
         ))
@@ -59,7 +59,8 @@ Future<_ItemInIsolate?> _objectInIsolate(
     if (result != null) {
       throw ('found!!!! for ${theClass.name}');
 
-      return _ItemInIsolate(isolateId: theClass.isolateId, itemId: result.id!);
+      return _ItemInIsolate(
+          isolateInfo: theClass.isolateInfo, itemId: result.id!);
     }
   }
   throw ('not found!!!!');
@@ -70,10 +71,10 @@ Future<_ItemInIsolate?> _objectInIsolate(
 ///
 /// It can be class or object.
 class _ItemInIsolate {
-  _ItemInIsolate({required this.isolateId, required this.itemId, this.name});
+  _ItemInIsolate({required this.isolateInfo, required this.itemId, this.name});
 
-  /// Id of the isolate.
-  final String isolateId;
+  /// The isolate.
+  final IsolateInfo isolateInfo;
 
   /// Id of the item in the isolate.
   final String itemId;
@@ -88,8 +89,8 @@ Future<List<_ItemInIsolate>> _findClasses(
 ) async {
   final result = <_ItemInIsolate>[];
 
-  for (final isolateId in connection.isolates) {
-    var classes = await connection.service.getClassList(isolateId);
+  for (final isolateInfo in connection.isolates) {
+    var classes = await connection.service.getClassList(isolateInfo.id);
 
     const watingTime = Duration(seconds: 2);
     final stopwatch = Stopwatch()..start();
@@ -97,7 +98,7 @@ Future<List<_ItemInIsolate>> _findClasses(
     // In the beginning list of classes may be empty.
     while (classes.classes?.isEmpty ?? true && stopwatch.elapsed < watingTime) {
       await Future.delayed(const Duration(milliseconds: 100));
-      classes = await connection.service.getClassList(isolateId);
+      classes = await connection.service.getClassList(isolateInfo.id);
     }
     if (classes.classes?.isEmpty ?? true) {
       throw StateError('Could not get list of classes.');
@@ -113,7 +114,7 @@ Future<List<_ItemInIsolate>> _findClasses(
       filtered.map(
         (classRef) => _ItemInIsolate(
           itemId: classRef.id!,
-          isolateId: isolateId,
+          isolateInfo: isolateInfo,
           name: classRef.name,
         ),
       ),

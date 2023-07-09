@@ -4,10 +4,12 @@
 
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:leak_tracker/src/leak_tracking/retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
+import 'package:vm_service/vm_service.dart' hide LogRecord;
 
 class MyClass {
   MyClass();
@@ -44,37 +46,67 @@ void main() {
     expect(path!.elements, isNotEmpty);
   });
 
+  ObjRef? _find(List<ObjRef> instances, int code) {
+    return instances.firstWhereOrNull(
+      (ObjRef objRef) =>
+          objRef is InstanceRef && objRef.identityHashCode == code,
+    );
+  }
+
   test(
     'Instance of array is found.',
     () async {
       final myClass = MyClass();
-      final instance = <int>[1, 2, 3, 4, 5];
+      ObjRef? myClassRef;
+
+      final myList = <int>[1, 2, 3, 4, 5];
+      ObjRef? myListRef;
 
       final connection = await connect();
-      print(connection.isolates.length);
-      final isolateId = connection.isolates[0];
-      var classList = await connection.service.getClassList(isolateId);
+      print(connection.isolates.map((i) => '${i.name}-${i.id}'));
 
-      // In the beginning list of classes may be empty.
-      while (classList.classes?.isEmpty ?? true) {
-        await Future.delayed(const Duration(milliseconds: 100));
-        classList = await connection.service.getClassList(isolateId);
+      for (final isolate in connection.isolates) {
+        var classList = await connection.service.getClassList(isolate.id);
+        // In the beginning list of classes may be empty.
+        while (classList.classes?.isEmpty ?? true) {
+          await Future.delayed(const Duration(milliseconds: 100));
+          classList = await connection.service.getClassList(isolate.id);
+        }
+        if (classList.classes?.isEmpty ?? true) {
+          throw StateError('Could not get list of classes.');
+        }
+
+        final classes = classList.classes!;
+
+        for (final theClass in classes) {
+          const pathLengthLimit = 10000000;
+
+          // TODO(polina-c): remove when issue is fixed
+          // https://github.com/dart-lang/sdk/issues/52893
+          if (theClass.name == 'TypeParameters') continue;
+
+          final instances = (await connection.service.getInstances(
+                isolate.id,
+                theClass.id!,
+                pathLengthLimit,
+              ))
+                  .instances ??
+              <ObjRef>[];
+
+          myClassRef ??= _find(instances, identityHashCode(myClass));
+          myListRef ??= _find(instances, identityHashCode(myList));
+
+          if (myClassRef != null && myListRef != null) {
+            throw 'Found both instances!!!';
+          }
+        }
       }
-      if (classList.classes?.isEmpty ?? true) {
-        throw StateError('Could not get list of classes.');
-      }
 
-      final classes = classList.classes!;
+      print('myClassRef: $myClassRef, myListRef: $myListRef');
 
-      final path = await obtainRetainingPath(
-          instance.runtimeType, identityHashCode(instance));
-      print(instance);
-      instance.add(7);
-      expect(path!.elements, isNotEmpty);
-
-      // To make sure instance is not const.
-      instance.add(6);
-      instance.add(7);
+      // To make sure [myList] is not const.
+      myList.add(6);
+      myList.add(7);
     },
     timeout: const Timeout(Duration(minutes: 20)),
   );
