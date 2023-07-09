@@ -31,10 +31,18 @@ void main() {
     await subscription.cancel();
   });
 
-  test('$MyClass instance can be found.', () async {
+  test('Path for $MyClass instance is found.', () async {
     final instance = MyClass();
 
     final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
+    expect(path!.elements, isNotEmpty);
+  });
+
+  test('Path type with generic arg is found.', () async {
+    final instance = <int>[1, 2, 3, 4, 5];
+
+    final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
+    print(instance);
     expect(path!.elements, isNotEmpty);
   });
 

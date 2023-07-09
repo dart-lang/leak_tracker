@@ -53,10 +53,12 @@ Future<_ItemInIsolate?> _objectInIsolate(
           objRef is InstanceRef && objRef.identityHashCode == object.code,
     );
     if (result != null) {
+      throw ('found!!!!');
+
       return _ItemInIsolate(isolateId: theClass.isolateId, itemId: result.id!);
     }
   }
-
+  throw ('not found!!!!');
   return null;
 }
 
@@ -94,8 +96,12 @@ Future<List<_ItemInIsolate>> _findClasses(
       throw StateError('Could not get list of classes.');
     }
 
-    final filtered =
-        classes.classes?.where((ref) => runtimeClassName == ref.name) ?? [];
+    // final filtered = classes.classes
+    //         ?.where((ref) => (ref.name?.contains('List') ?? false)) ??
+    //     [];
+
+    final filtered = classes.classes ?? [];
+
     result.addAll(
       filtered.map(
         (classRef) =>

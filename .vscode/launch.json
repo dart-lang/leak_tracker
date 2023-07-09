@@ -12,6 +12,12 @@
             "program": "main.dart",
         },
         {
+            "name": "pub_get",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "sh tool/pub_get.sh",
+        },
+        {
             "name": "minimal_flutter",
             "cwd": "examples/minimal_flutter",
             "request": "launch",
