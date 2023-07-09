@@ -59,7 +59,7 @@ void main() {
       final myClass = MyClass();
       ObjRef? myClassRef;
 
-      final myList = <int>[1, 2, 3, 4, 5];
+      final myList = <DateTime>[DateTime.now(), DateTime.now()];
       ObjRef? myListRef;
 
       final connection = await connect();
@@ -79,6 +79,7 @@ void main() {
         final classes = classList.classes!;
 
         for (final theClass in classes) {
+          print('Checking class ${theClass.name}...');
           // TODO(polina-c): remove when issue is fixed
           // https://github.com/dart-lang/sdk/issues/52893
           if (theClass.name == 'TypeParameters') continue;
@@ -92,7 +93,13 @@ void main() {
               <ObjRef>[];
 
           myClassRef ??= _find(instances, identityHashCode(myClass));
-          myListRef ??= _find(instances, identityHashCode(myList));
+
+          if (myListRef == null) {
+            myListRef = _find(instances, identityHashCode(myList));
+            if (myListRef != null) {
+              print('Found myListRef in ${theClass.name}.');
+            }
+          }
 
           if (myClassRef != null && myListRef != null) {
             throw 'Found both instances!!!';
@@ -104,8 +111,7 @@ void main() {
       print('myListRef: $myListRef');
 
       // To make sure [myList] is not const.
-      myList.add(6);
-      myList.add(7);
+      myList.add(DateTime.now());
     },
     timeout: const Timeout(Duration(minutes: 20)),
   );
