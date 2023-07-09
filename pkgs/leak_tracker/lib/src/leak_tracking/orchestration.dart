@@ -8,9 +8,11 @@ import 'dart:developer';
 import 'package:clock/clock.dart';
 
 import '../shared/shared_model.dart';
+import '_formatting.dart';
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/_retaining_path.dart';
 
 /// Asynchronous callback.
 ///
@@ -145,4 +147,18 @@ Future<void> _forceGC({required int gcCycles, Duration? timeout}) async {
     await Future.delayed(const Duration());
     allocateMemory();
   }
+}
+
+/// Returns nicely formatted retaining path for the [ref.target].
+///
+/// If the object is garbage collected or not retained, returns null.
+Future<String?> retainingPath(WeakReference ref) async {
+  if (ref.target == null) return null;
+  final path = await obtainRetainingPath(
+    ref.target.runtimeType,
+    identityHashCode(ref.target),
+  );
+
+  if (path == null) return null;
+  return retainingPathToString(path);
 }

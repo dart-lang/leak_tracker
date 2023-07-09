@@ -12,6 +12,12 @@ import 'dart:developer';
 ///
 /// Use [timeout] to limit waitning time.
 /// Use [fullGcCycles] to force multiple garbage collections.
+///
+/// The methot is useable for testing in combination with [WeakReference] to ensure
+/// an object is not held by another object from garbage collection.
+///
+/// For code example see ../../test/gc_test.dart.
+/// TODO(polina-c): add link to GitHub when this code gets merged.
 Future<void> forceGC({
   Duration? timeout,
   int fullGcCycles = 1,
