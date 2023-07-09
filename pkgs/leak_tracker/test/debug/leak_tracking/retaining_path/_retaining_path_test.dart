@@ -79,8 +79,6 @@ void main() {
         final classes = classList.classes!;
 
         for (final theClass in classes) {
-          const pathLengthLimit = 10000000;
-
           // TODO(polina-c): remove when issue is fixed
           // https://github.com/dart-lang/sdk/issues/52893
           if (theClass.name == 'TypeParameters') continue;
@@ -88,7 +86,7 @@ void main() {
           final instances = (await connection.service.getInstances(
                 isolate.id,
                 theClass.id!,
-                pathLengthLimit,
+                1000000000000,
               ))
                   .instances ??
               <ObjRef>[];
