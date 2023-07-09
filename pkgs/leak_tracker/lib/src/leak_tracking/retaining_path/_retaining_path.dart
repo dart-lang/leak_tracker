@@ -40,6 +40,12 @@ Future<_ItemInIsolate?> _objectInIsolate(
 
   for (final theClass in classes) {
     const pathLengthLimit = 10000000;
+
+    // TODO(polina-c): remove when issue is fixed
+    // https://github.com/dart-lang/sdk/issues/52893
+    if (theClass.name == 'TypeParameters') continue;
+
+    print('requesting getInstances for ${theClass.name}');
     final instances = (await connection.service.getInstances(
           theClass.isolateId,
           theClass.itemId,
@@ -66,13 +72,16 @@ Future<_ItemInIsolate?> _objectInIsolate(
 ///
 /// It can be class or object.
 class _ItemInIsolate {
-  _ItemInIsolate({required this.isolateId, required this.itemId});
+  _ItemInIsolate({required this.isolateId, required this.itemId, this.name});
 
   /// Id of the isolate.
   final String isolateId;
 
   /// Id of the item in the isolate.
   final String itemId;
+
+  /// Name of the item, for debugging purposes
+  final String? name;
 }
 
 Future<List<_ItemInIsolate>> _findClasses(
@@ -104,8 +113,11 @@ Future<List<_ItemInIsolate>> _findClasses(
 
     result.addAll(
       filtered.map(
-        (classRef) =>
-            _ItemInIsolate(itemId: classRef.id!, isolateId: isolateId),
+        (classRef) => _ItemInIsolate(
+          itemId: classRef.id!,
+          isolateId: isolateId,
+          name: classRef.name,
+        ),
       ),
     );
   }
