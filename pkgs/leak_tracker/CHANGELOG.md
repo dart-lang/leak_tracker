@@ -1,3 +1,7 @@
+# 7.0.6
+
+* Add helpers for troubleshooting.
+
 # 7.0.5
 
 * Convert to multi-package.
