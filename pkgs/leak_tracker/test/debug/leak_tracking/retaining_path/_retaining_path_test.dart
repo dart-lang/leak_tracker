@@ -66,13 +66,13 @@ void main() {
       print(connection.isolates.map((i) => '${i.name}-${i.id}'));
 
       for (final isolate in connection.isolates) {
-        await connection.service.requestHeapSnapshot(isolate.id);
+        await HeapSnapshotGraph.getSnapshot(connection.service, isolate);
 
-        var classList = await connection.service.getClassList(isolate.id);
+        var classList = await connection.service.getClassList(isolate.id!);
         // In the beginning list of classes may be empty.
         while (classList.classes?.isEmpty ?? true) {
           await Future.delayed(const Duration(milliseconds: 100));
-          classList = await connection.service.getClassList(isolate.id);
+          classList = await connection.service.getClassList(isolate.id!);
         }
         if (classList.classes?.isEmpty ?? true) {
           throw StateError('Could not get list of classes.');
@@ -87,7 +87,7 @@ void main() {
           if (theClass.name == 'TypeParameters') continue;
 
           final instances = (await connection.service.getInstances(
-                isolate.id,
+                isolate.id!,
                 theClass.id!,
                 1000000000000,
               ))

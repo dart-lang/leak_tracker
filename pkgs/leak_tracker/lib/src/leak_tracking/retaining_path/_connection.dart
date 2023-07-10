@@ -14,15 +14,8 @@ final _log = Logger('_connection.dart');
 class Connection {
   Connection(this.service, this.isolates);
 
-  final List<IsolateInfo> isolates;
+  final List<IsolateRef> isolates;
   final VmService service;
-}
-
-class IsolateInfo {
-  IsolateInfo({required this.id, required this.name});
-
-  final String id;
-  final String name;
 }
 
 Completer<Connection>? _completer;
@@ -64,10 +57,10 @@ Future<Connection> connect() async {
 /// Depending on environment (command line / IDE, Flutter / Dart), isolates may have different names,
 /// and there can be one or two. Sometimes the second one appears with latency.
 /// And sometimes there are two isolates with name 'main'.
-Future<List<IsolateInfo>> _getTwoIsolates(VmService service) async {
+Future<List<IsolateRef>> _getTwoIsolates(VmService service) async {
   _log.info('Started loading isolates...');
 
-  final result = <IsolateInfo>[];
+  final result = <IsolateRef>[];
 
   const isolatesToGet = 2;
   const watingTime = Duration(seconds: 2);
@@ -76,7 +69,7 @@ Future<List<IsolateInfo>> _getTwoIsolates(VmService service) async {
     result.clear();
     await _forEachIsolate(
       service,
-      (IsolateRef r) async => result.add(IsolateInfo(id: r.id!, name: r.name!)),
+      (IsolateRef r) async => result.add(r),
     );
     if (result.length < isolatesToGet) {
       await Future.delayed(const Duration(milliseconds: 100));
