@@ -54,7 +54,7 @@ void main() {
   }
 
   test(
-    'Instance of array is found.',
+    'Instance of list is found.',
     () async {
       final myClass = MyClass();
       ObjRef? myClassRef;
