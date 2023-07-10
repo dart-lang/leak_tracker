@@ -66,6 +66,8 @@ void main() {
       print(connection.isolates.map((i) => '${i.name}-${i.id}'));
 
       for (final isolate in connection.isolates) {
+        await connection.service.requestHeapSnapshot(isolate.id);
+
         var classList = await connection.service.getClassList(isolate.id);
         // In the beginning list of classes may be empty.
         while (classList.classes?.isEmpty ?? true) {
