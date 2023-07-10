@@ -40,7 +40,7 @@ void main() {
     expect(path!.elements, isNotEmpty);
   });
 
-  test('Path type with generic arg is found.', () async {
+  test('Path for type with generic arg is found.', () async {
     final instance = <int>[1, 2, 3, 4, 5];
     final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
     expect(path!.elements, isNotEmpty);
