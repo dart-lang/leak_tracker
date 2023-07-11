@@ -1,3 +1,7 @@
+# 7.0.7
+
+* Protect from identityHashCode equal to 0.
+
 # 7.0.6
 
 * Add helpers for troubleshooting.
