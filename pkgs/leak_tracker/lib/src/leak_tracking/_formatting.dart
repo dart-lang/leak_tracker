@@ -11,7 +11,7 @@ import '../shared/_util.dart';
 String contextToString(Object? object) {
   return switch (object) {
     StackTrace() => _formatStackTrace(object),
-    RetainingPath() => _retainingPathToString(object),
+    RetainingPath() => retainingPathToString(object),
     _ => object.toString(),
   };
 }
@@ -42,7 +42,7 @@ String removeLeakTrackingLines(String stackTrace) {
   return lines.join('\n');
 }
 
-String _retainingPathToString(RetainingPath retainingPath) {
+String retainingPathToString(RetainingPath retainingPath) {
   final StringBuffer buffer = StringBuffer();
   buffer.writeln(
     'References that retain the object from garbage collection.',

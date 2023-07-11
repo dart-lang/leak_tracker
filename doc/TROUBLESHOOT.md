@@ -9,11 +9,11 @@ This page describes how to troubleshoot memory leaks. See other information on m
 If leak tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
 switch to [more complicated troubleshooting](#more-complicated-cases).
 
-## Known simple cases
+## Check known simple cases
 
 ### 1. The test holds a disposed object
 
-TODO: add steps.
+TODO: add example and steps.
 
 ## Collect additional information
 
@@ -44,7 +44,15 @@ For collecting debugging information in tests, temporarily pass an instance of `
 ```
   testWidgets('My test', (WidgetTester tester) async {
     ...
-  }, leakTrackingConfig: LeakTrackingTestConfig.debug());
+  }, leakTrackingTestConfig: LeakTrackingTestConfig.debug());
+```
+
+Or, you can temporarily set global flag, to make all tests collecting debug information:
+
+```
+setUpAll(() {
+  collectDebugInformationForLeaks = true;
+});
 ```
 
 **Applications**
@@ -55,6 +63,27 @@ For collecting debugging information in your running application, the options ar
 2. Use the interactive UI in DevTools > Memory > Leaks
 
 TODO: link DevTools documentation with explanation
+
+## Verify object references
+
+If you expect an object to be not referenced at some point,
+but not sure, you can validate it by temporaryly adding assertion.
+
+```
+final ref = WeakReference(myObject);
+myObject = null;
+await forceGC();
+if (ref.target == null) {
+  throw StateError('Validated that myObject is not held from garbage collection.');
+} else {
+  print(await formattedRetainingPath(ref));
+  throw StateError('myObject is reachable from root. See console output for the retaining path.');
+}
+```
+
+IMPORTANT: this code will not work in release mode, so
+you need to run it with flag `--debug` or `--profile`, or,
+if it is test, by clicking `Debug` near your test name in IDE.
 
 ## Known complicated cases
 

@@ -5,12 +5,12 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:clock/clock.dart';
-
 import '../shared/shared_model.dart';
+import '_formatting.dart';
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/_retaining_path.dart';
 
 /// Asynchronous callback.
 ///
@@ -100,8 +100,8 @@ Future<Leaks> withLeakTracking(
           await checkNonGCed();
         }
 
-        await _forceGC(
-          gcCycles: gcCountBuffer,
+        await forceGC(
+          fullGcCycles: gcCountBuffer,
           timeout: timeoutForFinalGarbageCollection,
         );
 
@@ -124,22 +124,57 @@ Future<Leaks> withLeakTracking(
 }
 
 /// Forces garbage collection by aggressive memory allocation.
-Future<void> _forceGC({required int gcCycles, Duration? timeout}) async {
-  final start = clock.now();
-  final barrier = reachabilityBarrier;
+///
+/// Verifies that garbage collection happened using [reachabilityBarrier].
+/// Does not work in web and in release mode.
+///
+/// Use [timeout] to limit waiting time.
+/// Use [fullGcCycles] to force multiple garbage collections.
+///
+/// The method is helpful for testing in combination with [WeakReference] to ensure
+/// an object is not held by another object from garbage collection.
+///
+/// For code example see
+/// https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md
+Future<void> forceGC({
+  Duration? timeout,
+  int fullGcCycles = 1,
+}) async {
+  final Stopwatch? stopwatch = timeout == null ? null : (Stopwatch()..start());
+  final int barrier = reachabilityBarrier;
 
-  final storage = <List<DateTime>>[];
+  final List<List<DateTime>> storage = <List<DateTime>>[];
 
   void allocateMemory() {
-    storage.add(Iterable.generate(10000, (_) => DateTime.now()).toList());
-    if (storage.length > 100) storage.removeAt(0);
+    storage.add(
+      Iterable<DateTime>.generate(10000, (_) => DateTime.now()).toList(),
+    );
+    if (storage.length > 100) {
+      storage.removeAt(0);
+    }
   }
 
-  while (reachabilityBarrier < barrier + gcCycles) {
-    if (timeout != null && clock.now().difference(start) > timeout) {
+  while (reachabilityBarrier < barrier + fullGcCycles) {
+    if ((stopwatch?.elapsed ?? Duration.zero) > (timeout ?? Duration.zero)) {
       throw TimeoutException('forceGC timed out', timeout);
     }
-    await Future.delayed(const Duration());
+    await Future<void>.delayed(Duration.zero);
     allocateMemory();
   }
+}
+
+/// Returns nicely formatted retaining path for the [ref.target].
+///
+/// If the object is garbage collected or not retained, returns null.
+///
+/// Does not work in web and in release mode.
+Future<String?> formattedRetainingPath(WeakReference ref) async {
+  if (ref.target == null) return null;
+  final path = await obtainRetainingPath(
+    ref.target.runtimeType,
+    identityHashCode(ref.target),
+  );
+
+  if (path == null) return null;
+  return retainingPathToString(path);
 }

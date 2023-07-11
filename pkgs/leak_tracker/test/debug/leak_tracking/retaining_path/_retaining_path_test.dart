@@ -13,6 +13,10 @@ class MyClass {
   MyClass();
 }
 
+class MyArgClass<T> {
+  MyArgClass();
+}
+
 final _logs = <String>[];
 late StreamSubscription<LogRecord> subscription;
 
@@ -31,10 +35,22 @@ void main() {
     await subscription.cancel();
   });
 
-  test('$MyClass instance can be found.', () async {
+  test('Path for $MyClass instance is found.', () async {
     final instance = MyClass();
 
-    final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
+    final path = await obtainRetainingPath(
+      instance.runtimeType,
+      identityHashCode(instance),
+    );
+    expect(path!.elements, isNotEmpty);
+  });
+
+  test('Path for class with generic arg is found.', () async {
+    final instance = MyArgClass<String>();
+    final path = await obtainRetainingPath(
+      instance.runtimeType,
+      identityHashCode(instance),
+    );
     expect(path!.elements, isNotEmpty);
   });
 
