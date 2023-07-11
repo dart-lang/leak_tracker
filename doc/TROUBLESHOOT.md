@@ -67,7 +67,7 @@ TODO: link DevTools documentation with explanation
 ## Verify object references
 
 If you expect an object to be not referenced at some point,
-but tot sure, you can validate it by temporary adding assertion:
+but not sure, you can validate it by temporary adding assertion.
 
 ```
 final ref = WeakReference(myObject);
@@ -80,6 +80,10 @@ if (ref.target == null) {
   throw StateError('myObject is reachable from root. See console output for the retaining path.');
 }
 ```
+
+IMPORTANT: this code will not work in release mode, so
+you need to run it with flag `--debug` or `--profile`, or,
+if it is test, by clicking `Debug` near your test name in IDE.
 
 ## Known complicated cases
 
