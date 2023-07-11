@@ -128,10 +128,10 @@ Future<Leaks> withLeakTracking(
 /// Verifies that garbage collection happened using [reachabilityBarrier].
 /// Does not work in web and in release mode.
 ///
-/// Use [timeout] to limit waitning time.
+/// Use [timeout] to limit waiting time.
 /// Use [fullGcCycles] to force multiple garbage collections.
 ///
-/// The methot is useable for testing in combination with [WeakReference] to ensure
+/// The method is helpful for testing in combination with [WeakReference] to ensure
 /// an object is not held by another object from garbage collection.
 ///
 /// For code example see
