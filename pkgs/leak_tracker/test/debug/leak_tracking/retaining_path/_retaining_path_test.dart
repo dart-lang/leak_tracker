@@ -39,7 +39,9 @@ void main() {
     final instance = MyClass();
 
     final path = await obtainRetainingPath(
-        instance.runtimeType, identityHashCode(instance));
+      instance.runtimeType,
+      identityHashCode(instance),
+    );
     expect(path!.elements, isNotEmpty);
   });
 

@@ -5,11 +5,17 @@
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:test/test.dart';
 
-void main() {
-  test('formattedRetainingPath returns path', () async {
-    final Object myObject = <int>[1, 2, 3, 4, 5];
-    final path = await formattedRetainingPath(WeakReference(myObject));
+class MyClass {
+  MyClass();
 
-    print(path);
+  final Stopwatch stopwatch = Stopwatch();
+  WeakReference<Stopwatch> get ref => WeakReference(stopwatch);
+}
+
+void main() {
+  final myObject = MyClass();
+  test('formattedRetainingPath returns path', () async {
+    final path = await formattedRetainingPath(myObject.ref);
+    expect(path, contains('_test.dart/MyClass:stopwatch'));
   });
 }
