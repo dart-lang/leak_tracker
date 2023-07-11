@@ -17,7 +17,7 @@ Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
   if (theObject == null) return null;
 
   final result = await connection.service.getRetainingPath(
-    theObject.isolateId,
+    theObject.isolateRef.id!,
     theObject.itemId,
     100000,
   );
@@ -30,20 +30,30 @@ class _ObjectFingerprint {
 
   final Type type;
   final int code;
+
+  String get typeNameWithoutArgs {
+    final name = type.toString();
+    final index = name.indexOf('<');
+    if (index == -1) return name;
+    return name.substring(0, index);
+  }
 }
 
 Future<_ItemInIsolate?> _objectInIsolate(
   Connection connection,
   _ObjectFingerprint object,
 ) async {
-  final classes = await _findClasses(connection, object.type.toString());
+  final classes = await _findClasses(connection, object.typeNameWithoutArgs);
 
   for (final theClass in classes) {
-    const pathLengthLimit = 10000000;
+    // TODO(polina-c): remove when issue is fixed
+    // https://github.com/dart-lang/sdk/issues/52893
+    if (theClass.name == 'TypeParameters') continue;
+
     final instances = (await connection.service.getInstances(
-          theClass.isolateId,
+          theClass.isolateRef.id!,
           theClass.itemId,
-          pathLengthLimit,
+          1000000000,
         ))
             .instances ??
         <ObjRef>[];
@@ -53,7 +63,10 @@ Future<_ItemInIsolate?> _objectInIsolate(
           objRef is InstanceRef && objRef.identityHashCode == object.code,
     );
     if (result != null) {
-      return _ItemInIsolate(isolateId: theClass.isolateId, itemId: result.id!);
+      return _ItemInIsolate(
+        isolateRef: theClass.isolateRef,
+        itemId: result.id!,
+      );
     }
   }
 
@@ -64,13 +77,16 @@ Future<_ItemInIsolate?> _objectInIsolate(
 ///
 /// It can be class or object.
 class _ItemInIsolate {
-  _ItemInIsolate({required this.isolateId, required this.itemId});
+  _ItemInIsolate({required this.isolateRef, required this.itemId, this.name});
 
-  /// Id of the isolate.
-  final String isolateId;
+  /// The isolate.
+  final IsolateRef isolateRef;
 
   /// Id of the item in the isolate.
   final String itemId;
+
+  /// Name of the item, for debugging purposes.
+  final String? name;
 }
 
 Future<List<_ItemInIsolate>> _findClasses(
@@ -79,8 +95,8 @@ Future<List<_ItemInIsolate>> _findClasses(
 ) async {
   final result = <_ItemInIsolate>[];
 
-  for (final isolateId in connection.isolates) {
-    var classes = await connection.service.getClassList(isolateId);
+  for (final isolate in connection.isolates) {
+    var classes = await connection.service.getClassList(isolate.id!);
 
     const watingTime = Duration(seconds: 2);
     final stopwatch = Stopwatch()..start();
@@ -88,7 +104,7 @@ Future<List<_ItemInIsolate>> _findClasses(
     // In the beginning list of classes may be empty.
     while (classes.classes?.isEmpty ?? true && stopwatch.elapsed < watingTime) {
       await Future.delayed(const Duration(milliseconds: 100));
-      classes = await connection.service.getClassList(isolateId);
+      classes = await connection.service.getClassList(isolate.id!);
     }
     if (classes.classes?.isEmpty ?? true) {
       throw StateError('Could not get list of classes.');
@@ -96,10 +112,14 @@ Future<List<_ItemInIsolate>> _findClasses(
 
     final filtered =
         classes.classes?.where((ref) => runtimeClassName == ref.name) ?? [];
+
     result.addAll(
       filtered.map(
-        (classRef) =>
-            _ItemInIsolate(itemId: classRef.id!, isolateId: isolateId),
+        (classRef) => _ItemInIsolate(
+          itemId: classRef.id!,
+          isolateRef: isolate,
+          name: classRef.name,
+        ),
       ),
     );
   }

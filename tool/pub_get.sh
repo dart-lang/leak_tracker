@@ -7,24 +7,22 @@
 # Fast fail the script on failures.
 set -ex
 
-sh ./tool/pub_get.sh
-
 cd examples/autosnapshotting
-flutter analyze  --fatal-infos
+flutter pub get
 cd -
 
 cd examples/minimal_flutter
-flutter analyze --fatal-infos
+flutter pub get
 cd -
 
 cd pkgs/leak_tracker
-dart analyze --fatal-infos
+dart pub get
 cd -
 
 cd pkgs/leak_tracker_flutter_test
-flutter analyze --fatal-infos
+flutter pub get
 cd -
 
 cd pkgs/leak_tracker_testing
-dart analyze --fatal-infos
+flutter pub get
 cd -

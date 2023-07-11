@@ -4,3 +4,5 @@ To run them locally:
 ```
 dart test --debug test/dart_debug
 ```
+
+Or click 'Debug' near the test name in your IDE.

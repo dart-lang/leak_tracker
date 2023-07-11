@@ -10,7 +10,7 @@ class GcCounter {
   int get gcCount => reachabilityBarrier;
 }
 
-/// Delta of GC time, enough for a non reachable object to be GCed.
+/// Delta of GC cycles, enough for a non reachable object to be GCed.
 ///
 /// Theoretically, 2 should be enough, however it gives false positives
 /// if there is no activity in the application for ~5 minutes.
