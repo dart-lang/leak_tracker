@@ -67,7 +67,7 @@ TODO: link DevTools documentation with explanation
 ## Verify object references
 
 If you expect an object to be not referenced at some point,
-but not sure, you can validate it by temporary adding assertion.
+but not sure, you can validate it by temporaryly adding assertion.
 
 ```
 final ref = WeakReference(myObject);
