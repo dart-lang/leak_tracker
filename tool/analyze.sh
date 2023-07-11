@@ -7,7 +7,7 @@
 # Fast fail the script on failures.
 set -ex
 
-sh pub_get.sh
+sh ./tool/pub_get.sh
 
 cd examples/autosnapshotting
 flutter analyze  --fatal-infos
