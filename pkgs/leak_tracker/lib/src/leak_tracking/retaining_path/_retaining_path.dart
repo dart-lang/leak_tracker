@@ -30,37 +30,47 @@ class _ObjectFingerprint {
 
   final Type type;
   final int code;
+
+  String get typeNameWithoutArgs {
+    final name = type.toString();
+    final index = name.indexOf('<');
+    if (index == -1) return name;
+    return name.substring(0, index);
+  }
 }
 
 Future<_ItemInIsolate?> _objectInIsolate(
   Connection connection,
   _ObjectFingerprint object,
 ) async {
-  final classes = await _findClasses(connection, object.type.toString());
+  final classes = await _findClasses(connection, object.typeNameWithoutArgs);
 
   for (final theClass in classes) {
-    const pathLengthLimit = 10000000;
-
     // TODO(polina-c): remove when issue is fixed
     // https://github.com/dart-lang/sdk/issues/52893
     if (theClass.name == 'TypeParameters') continue;
-    print('looking for ${theClass.name}');
 
     final instances = (await connection.service.getInstances(
           theClass.isolateRef.id!,
           theClass.itemId,
-          pathLengthLimit,
+          1000000000,
         ))
             .instances ??
         <ObjRef>[];
 
-    final result = instances.firstWhereOrNull((ObjRef objRef) =>
-        objRef is InstanceRef && objRef.identityHashCode == object.code);
+    final result = instances.firstWhereOrNull(
+      (objRef) =>
+          objRef is InstanceRef && objRef.identityHashCode == object.code,
+    );
     if (result != null) {
-      throw 'found!!!! for ${theClass.name}';
+      return _ItemInIsolate(
+        isolateRef: theClass.isolateRef,
+        itemId: result.id!,
+      );
     }
   }
-  throw 'not found!!!!';
+
+  return null;
 }
 
 /// Represents an item in an isolate.
@@ -100,11 +110,8 @@ Future<List<_ItemInIsolate>> _findClasses(
       throw StateError('Could not get list of classes.');
     }
 
-    // final filtered = classes.classes
-    //         ?.where((ref) => (ref.name?.contains('List') ?? false)) ??
-    //     [];
-
-    final filtered = classes.classes ?? [];
+    final filtered =
+        classes.classes?.where((ref) => runtimeClassName == ref.name) ?? [];
 
     result.addAll(
       filtered.map(

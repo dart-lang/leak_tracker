@@ -5,8 +5,6 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:clock/clock.dart';
-
 import '../shared/shared_model.dart';
 import '_formatting.dart';
 import '_gc_counter.dart';

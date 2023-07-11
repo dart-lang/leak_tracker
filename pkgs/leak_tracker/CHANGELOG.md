@@ -1,6 +1,7 @@
 # 7.0.6
 
 * Add helpers for troubleshooting.
+* Handle generic arguments for retaining path detection.
 
 # 7.0.5
 
