@@ -9,7 +9,13 @@ import 'package:vm_service/vm_service.dart';
 
 import '_connection.dart';
 
+/// Obtains retainig path for an object.
+///
+/// Does not work for objects that have [identityHashCode] equal to 0.
+/// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
 Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
+  assert(code != 0);
+
   final connection = await connect();
 
   final fp = _ObjectFingerprint(type, code);
@@ -26,7 +32,7 @@ Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
 }
 
 class _ObjectFingerprint {
-  _ObjectFingerprint(this.type, this.code);
+  _ObjectFingerprint(this.type, this.code) : assert(code != 0);
 
   final Type type;
   final int code;

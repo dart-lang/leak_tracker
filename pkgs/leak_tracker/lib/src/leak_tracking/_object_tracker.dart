@@ -54,6 +54,7 @@ class ObjectTracker implements LeakProvider {
   }) {
     throwIfDisposed();
     final code = _coder(object);
+    assert(code != 0);
     if (_checkForDuplicate(code)) return;
 
     _finalizer.attach(object, code);
