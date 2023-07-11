@@ -15,6 +15,10 @@ class MyClass {
   MyClass();
 }
 
+class MyArgClass<T> {
+  MyArgClass();
+}
+
 final _logs = <String>[];
 late StreamSubscription<LogRecord> subscription;
 
@@ -40,7 +44,7 @@ void main() {
     expect(path!.elements, isNotEmpty);
   });
 
-  test('Path for type with generic arg is found.', () async {
+  test('Path for list is found.', () async {
     final instance = <int>[1, 2, 3, 4, 5];
     final path = await obtainRetainingPath(MyClass, identityHashCode(instance));
     expect(path!.elements, isNotEmpty);
@@ -58,6 +62,9 @@ void main() {
     () async {
       final myClass = MyClass();
       ObjRef? myClassRef;
+
+      final myArgClass = MyArgClass<String>();
+      ObjRef? myArgClassRef;
 
       final myList = <DateTime>[DateTime.now(), DateTime.now()];
       ObjRef? myListRef;
@@ -103,14 +110,24 @@ void main() {
             }
           }
 
-          if (myClassRef != null && myListRef != null) {
-            throw 'Found both instances!!!';
+          if (myArgClassRef == null) {
+            myArgClassRef = _find(instances, identityHashCode(myArgClass));
+            if (myArgClassRef != null) {
+              print('Found myArgClassRef in ${theClass.name}.');
+            }
+          }
+
+          if (myClassRef != null &&
+              myListRef != null &&
+              myArgClassRef != null) {
+            throw 'Found all instances!!!';
           }
         }
       }
 
-      print('myClassRef: $myClassRef');
-      print('myListRef: $myListRef');
+      print('myClassRef: $myClassRef\n');
+      print('myArgClassRef: $myArgClassRef\n');
+      print('myListRef: $myListRef\n');
 
       // To make sure [myList] is not const.
       myList.add(DateTime.now());
