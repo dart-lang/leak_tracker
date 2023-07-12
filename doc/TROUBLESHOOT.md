@@ -82,8 +82,9 @@ if (ref.target == null) {
 ```
 
 IMPORTANT: this code will not work in release mode, so
-you need to run it with flag `--debug` or `--profile`, or,
-if it is test, by clicking `Debug` near your test name in IDE.
+you need to run it with flag `--debug` or `--profile`
+([not available](https://github.com/flutter/flutter/issues/127331) for Flutter tests),
+or, if it is a test, by clicking `Debug` near the test name in IDE.
 
 ## Known complicated cases
 

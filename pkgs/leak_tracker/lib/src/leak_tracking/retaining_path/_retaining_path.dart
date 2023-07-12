@@ -9,6 +9,10 @@ import 'package:vm_service/vm_service.dart';
 
 import '_connection.dart';
 
+/// Obtains retainig path for an object.
+///
+/// Does not work for objects that have [identityHashCode] equal to 0.
+/// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
 Future<RetainingPath?> obtainRetainingPath(
   Connection connection,
   Type type,
@@ -28,7 +32,7 @@ Future<RetainingPath?> obtainRetainingPath(
 }
 
 class _ObjectFingerprint {
-  _ObjectFingerprint(this.type, this.code);
+  _ObjectFingerprint(this.type, this.code) : assert(code > 0);
 
   final Type type;
   final int code;
@@ -41,6 +45,11 @@ class _ObjectFingerprint {
   }
 }
 
+/// Finds and object in an isolate.
+///
+/// This method will NOT find objects, that have [identityHashCode] equal to 0
+/// in result of `getInstances`.
+/// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
 Future<_ItemInIsolate?> _objectInIsolate(
   Connection connection,
   _ObjectFingerprint object,
@@ -60,6 +69,9 @@ Future<_ItemInIsolate?> _objectInIsolate(
             .instances ??
         <ObjRef>[];
 
+    if (instances.isEmpty) continue;
+    assert(_refIsIdentifiable(instances.first));
+
     final result = instances.firstWhereOrNull(
       (objRef) =>
           objRef is InstanceRef && objRef.identityHashCode == object.code,
@@ -73,6 +85,10 @@ Future<_ItemInIsolate?> _objectInIsolate(
   }
 
   return null;
+}
+
+bool _refIsIdentifiable(ObjRef ref) {
+  return ref is InstanceRef && (ref.identityHashCode ?? 0) > 0;
 }
 
 /// Represents an item in an isolate.
