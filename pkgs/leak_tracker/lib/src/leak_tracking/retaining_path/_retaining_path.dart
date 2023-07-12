@@ -9,9 +9,11 @@ import 'package:vm_service/vm_service.dart';
 
 import '_connection.dart';
 
-Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
-  final connection = await connect();
-
+Future<RetainingPath?> obtainRetainingPath(
+  Connection connection,
+  Type type,
+  int code,
+) async {
   final fp = _ObjectFingerprint(type, code);
   final theObject = await _objectInIsolate(connection, fp);
   if (theObject == null) return null;

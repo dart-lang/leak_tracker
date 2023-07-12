@@ -10,6 +10,7 @@ import '_formatting.dart';
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/_connection.dart';
 import 'retaining_path/_retaining_path.dart';
 
 /// Asynchronous callback.
@@ -170,10 +171,13 @@ Future<void> forceGC({
 /// Does not work in web and in release mode.
 Future<String?> formattedRetainingPath(WeakReference ref) async {
   if (ref.target == null) return null;
+  final connection = await connect();
   final path = await obtainRetainingPath(
+    connection,
     ref.target.runtimeType,
     identityHashCode(ref.target),
   );
+  disconnect();
 
   if (path == null) return null;
   return retainingPathToString(path);
