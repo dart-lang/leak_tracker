@@ -49,7 +49,7 @@ void main() {
     late Leaks leaks;
 
     setUp(
-      () => LeakTrackerGlobalFlags.collectDebugInformationForLeaks = true,
+      () => LeakTrackerGlobalSettings.collectDebugInformationForLeaks = true,
     );
 
     testWidgetsWithLeakTracking(

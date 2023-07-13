@@ -5,8 +5,8 @@
 import '../shared/shared_model.dart';
 
 // ignore: avoid_classes_with_only_static_members, as it is ok for enum-like classes.
-/// Global flags for leak tracker.
-class LeakTrackerGlobalFlags {
+/// Global settings for leak tracker.
+class LeakTrackerGlobalSettings {
   /// If true, the leak tracker will collect debug information for leaks.
   static bool collectDebugInformationForLeaks = false;
 
