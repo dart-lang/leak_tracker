@@ -1,6 +1,6 @@
 # 7.0.8
 
-* Disconnect from service after obtaining retaining pathes.
+* Disconnect from service after obtaining retaining paths.
 
 # 7.0.7
 

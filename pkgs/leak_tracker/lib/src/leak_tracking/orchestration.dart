@@ -96,8 +96,8 @@ Future<Leaks> withLeakTracking(
     await asyncCodeRunner(
       () async {
         if (leakDiagnosticConfig.collectRetainingPathForNonGCed) {
-          // This early check is needed to collect retaing pathes before forced GC,
-          // because pathes are unavailable for GCed objects.
+          // This early check is needed to collect retaing paths before forced GC,
+          // because paths are unavailable for GCed objects.
           await checkNonGCed();
         }
 
