@@ -4,8 +4,16 @@
 
 import '../shared/shared_model.dart';
 
-/// If true, the leak tracker will collect debug information for leaks.
-bool collectDebugInformationForLeaks = false;
+// ignore: avoid_classes_with_only_static_members, as it is ok for enum-like classes.
+/// Global flags for leak tracker.
+class LeakTrackerGlobalFlags {
+  /// If true, the leak tracker will collect debug information for leaks.
+  static bool collectDebugInformationForLeaks = false;
+
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  static bool warnForNonSupportedPlatforms = true;
+}
 
 /// Handler to collect leak summary.
 typedef LeakSummaryCallback = void Function(LeakSummary);
@@ -162,10 +170,6 @@ class LeakTrackingTestConfig {
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
   });
-
-  /// If true, a warning will be printed when leak tracking is
-  /// requested for a non-supported platform.
-  static bool warnForNonSupportedPlatforms = true;
 
   /// When to collect stack trace information.
   ///

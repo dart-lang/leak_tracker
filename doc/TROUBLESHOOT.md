@@ -51,7 +51,7 @@ Or, you can temporarily set global flag, to make all tests collecting debug info
 
 ```
 setUpAll(() {
-  collectDebugInformationForLeaks = true;
+  LeakTrackerGlobalFlags.collectDebugInformationForLeaks = true;
 });
 ```
 
