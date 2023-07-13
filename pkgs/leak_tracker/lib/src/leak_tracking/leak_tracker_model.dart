@@ -115,6 +115,8 @@ class LeakTrackingConfiguration {
 ///
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
+// TODO(polina-c): update helpers to respect allow lists defined in this class
+// https://github.com/flutter/devtools/issues/5606
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingTestConfig].
   const LeakTrackingTestConfig({
