@@ -1,6 +1,6 @@
 # 1.0.1
 
-* Upgrade leak tracker.
+* Set version of leak_tracker to `any`.
 
 # 1.0.0
 
