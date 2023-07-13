@@ -37,33 +37,42 @@ void main() {
 
   test('Path for $MyClass instance is found.', () async {
     final instance = MyClass();
+    final connection = await connect();
 
     final path = await obtainRetainingPath(
+      connection,
       instance.runtimeType,
       identityHashCode(instance),
     );
+    disconnect();
     expect(path!.elements, isNotEmpty);
   });
 
   test('Path for class with generic arg is found.', () async {
     final instance = MyArgClass<String>();
+    final connection = await connect();
+
     final path = await obtainRetainingPath(
+      connection,
       instance.runtimeType,
       identityHashCode(instance),
     );
+    disconnect();
     expect(path!.elements, isNotEmpty);
   });
 
   test('Connection is happening just once', () async {
     final instance1 = MyClass();
     final instance2 = MyClass();
+    final connection = await connect();
 
     final obtainers = [
-      obtainRetainingPath(MyClass, identityHashCode(instance1)),
-      obtainRetainingPath(MyClass, identityHashCode(instance2)),
+      obtainRetainingPath(connection, MyClass, identityHashCode(instance1)),
+      obtainRetainingPath(connection, MyClass, identityHashCode(instance2)),
     ];
 
     await Future.wait(obtainers);
+    disconnect();
 
     expect(
       _logs.where((item) => item == 'Connecting to vm service protocol...'),

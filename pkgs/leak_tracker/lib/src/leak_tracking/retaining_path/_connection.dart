@@ -41,9 +41,7 @@ Future<Connection> connect() async {
     );
   }
 
-  final service = await _connectWithWebSocket(uri, (error) {
-    throw error ?? Exception('Error connecting to service protocol');
-  });
+  final service = await _connectWithWebSocket(uri, _handleError);
   await service.getVersion(); // Warming up and validating the connection.
   final isolates = await _getTwoIsolates(service);
 
@@ -51,6 +49,8 @@ Future<Connection> connect() async {
   completer.complete(result);
   return result;
 }
+
+void _handleError(Object? error) => throw error ?? Exception('Unknown error');
 
 /// Tries to wait for two isolates to be available.
 ///

@@ -10,6 +10,7 @@ import '_finalizer.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/_connection.dart';
 import 'retaining_path/_retaining_path.dart';
 
 /// Keeps collection of object records until
@@ -187,14 +188,17 @@ class ObjectTracker implements LeakProvider {
   }
 
   Future<void> _addRetainingPath(List<int> objectsToGetPath) async {
+    final connection = await connect();
     final pathSetters = objectsToGetPath.map((code) async {
       final record = _objects.notGCed[code]!;
-      final path = await obtainRetainingPath(record.type, record.code);
+      final path =
+          await obtainRetainingPath(connection, record.type, record.code);
       if (path != null) {
         record.setContext(ContextKeys.retainingPath, path);
       }
     });
     await Future.wait(pathSetters);
+    disconnect();
   }
 
   ObjectRecord _notGCed(int code) {

@@ -97,4 +97,3 @@ TODO: add example
 
 Such cases are hard to troubleshoot. One way to fix them is to convert all closures,
 which reference the leaked type, to named methods.
-

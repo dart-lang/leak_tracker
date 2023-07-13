@@ -10,6 +10,7 @@ import '_formatting.dart';
 import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
+import 'retaining_path/_connection.dart';
 import 'retaining_path/_retaining_path.dart';
 
 /// Asynchronous callback.
@@ -95,8 +96,8 @@ Future<Leaks> withLeakTracking(
     await asyncCodeRunner(
       () async {
         if (leakDiagnosticConfig.collectRetainingPathForNonGCed) {
-          // This early check is needed to collect retaing pathes before forced GC,
-          // because pathes are unavailable for GCed objects.
+          // This early check is needed to collect retaing paths before forced GC,
+          // because paths are unavailable for GCed objects.
           await checkNonGCed();
         }
 
@@ -173,10 +174,13 @@ Future<void> forceGC({
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
 Future<String?> formattedRetainingPath(WeakReference ref) async {
   if (ref.target == null) return null;
+  final connection = await connect();
   final path = await obtainRetainingPath(
+    connection,
     ref.target.runtimeType,
     identityHashCode(ref.target),
   );
+  disconnect();
 
   if (path == null) return null;
   return retainingPathToString(path);

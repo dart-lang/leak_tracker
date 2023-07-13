@@ -13,11 +13,11 @@ import '_connection.dart';
 ///
 /// Does not work for objects that have [identityHashCode] equal to 0.
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
-Future<RetainingPath?> obtainRetainingPath(Type type, int code) async {
-  assert(code > 0);
-
-  final connection = await connect();
-
+Future<RetainingPath?> obtainRetainingPath(
+  Connection connection,
+  Type type,
+  int code,
+) async {
   final fp = _ObjectFingerprint(type, code);
   final theObject = await _objectInIsolate(connection, fp);
   if (theObject == null) return null;
