@@ -4,8 +4,16 @@
 
 import '../shared/shared_model.dart';
 
-/// If true, the leak tracker will collect debug information for leaks.
-bool collectDebugInformationForLeaks = false;
+// ignore: avoid_classes_with_only_static_members, as it is ok for enum-like classes.
+/// Global settings for leak tracker.
+class LeakTrackerGlobalSettings {
+  /// If true, the leak tracker will collect debug information for leaks.
+  static bool collectDebugInformationForLeaks = false;
+
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  static bool warnForNonSupportedPlatforms = true;
+}
 
 /// Handler to collect leak summary.
 typedef LeakSummaryCallback = void Function(LeakSummary);
@@ -115,6 +123,8 @@ class LeakTrackingConfiguration {
 ///
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
+// TODO(polina-c): update helpers to respect allow lists defined in this class
+// https://github.com/flutter/devtools/issues/5606
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingTestConfig].
   const LeakTrackingTestConfig({
@@ -123,6 +133,8 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
   });
 
   /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
@@ -139,6 +151,8 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
   });
 
   /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
@@ -153,11 +167,9 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
   });
-
-  /// If true, a warning will be printed when leak tracking is
-  /// requested for a non-supported platform.
-  static bool warnForNonSupportedPlatforms = true;
 
   /// When to collect stack trace information.
   ///
@@ -192,4 +204,10 @@ class LeakTrackingTestConfig {
   ///
   /// If number of instances is [null], any number of instances is allowed.
   final Map<String, int?> notDisposedAllowList;
+
+  /// If true, all notDisposed leaks will be allowed.
+  final bool allowAllNotDisposed;
+
+  /// If true, all notGCed leaks will be allowed.
+  final bool allowAllNotGCed;
 }

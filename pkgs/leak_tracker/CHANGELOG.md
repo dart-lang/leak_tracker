@@ -1,3 +1,8 @@
+# 8.0.0
+
+* Enable turn on/off tracking for leak types.
+* Put all global flags into one class.
+
 # 7.0.8
 
 * Disconnect from service after obtaining retaining paths.
