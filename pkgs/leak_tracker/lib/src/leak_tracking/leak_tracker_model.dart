@@ -123,6 +123,8 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
   });
 
   /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
@@ -139,6 +141,8 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
   });
 
   /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
@@ -153,6 +157,8 @@ class LeakTrackingTestConfig {
     this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
   });
 
   /// If true, a warning will be printed when leak tracking is
@@ -192,4 +198,10 @@ class LeakTrackingTestConfig {
   ///
   /// If number of instances is [null], any number of instances is allowed.
   final Map<String, int?> notDisposedAllowList;
+
+  /// If true, all notDisposed leaks will be allowed.
+  final bool allowAllNotDisposed;
+
+  /// If true, all notGCed leaks will be allowed.
+  final bool allowAllNotGCed;
 }
