@@ -1,5 +1,5 @@
 name: leak_tracker_testing
-version: 1.0.1
+version: 1.0.2
 description: Leak tracking code intended for usage in tests.
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_testing
 
@@ -7,7 +7,7 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  leak_tracker: any
+  leak_tracker: ^8.0.0
   test: ^1.16.0
 
 dev_dependencies:

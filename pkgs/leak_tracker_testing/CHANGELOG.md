@@ -1,3 +1,7 @@
+# 1.0.2
+
+* Set version of leak_tracker to `any`.
+
 # 1.0.1
 
 * Set version of leak_tracker to `any`.
