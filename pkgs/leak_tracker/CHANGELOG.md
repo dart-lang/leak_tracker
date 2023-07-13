@@ -1,3 +1,7 @@
+# 7.0.9
+
+* Enable turn on/off tracking for leak types.
+
 # 7.0.8
 
 * Disconnect from service after obtaining retaining paths.
