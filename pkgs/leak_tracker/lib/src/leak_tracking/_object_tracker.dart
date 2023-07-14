@@ -192,7 +192,7 @@ class ObjectTracker implements LeakProvider {
     _objects.assertIntegrity();
   }
 
-  /// Runs [processor] for first items from [items], till hitting [limit].
+  /// Runs [processor] for first items from [items], at most [limit] items will be processed.
   ///
   /// Noop if [items] is null or empty.
   /// Processes all items if [limit] is null.
