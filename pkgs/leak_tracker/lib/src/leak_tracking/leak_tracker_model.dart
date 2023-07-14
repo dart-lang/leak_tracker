@@ -18,7 +18,7 @@ class LeakTrackerGlobalSettings {
   /// of validation for leaks.
   ///
   /// If the number is too big, the performance may be seriously impacted.
-  /// Id null, path will be requested without limit.
+  /// If null, path will be requested without limit.
   static int? maxRequestsForRetainingPath = 10;
 }
 
