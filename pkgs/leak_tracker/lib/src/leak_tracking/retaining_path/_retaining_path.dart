@@ -22,13 +22,17 @@ Future<RetainingPath?> obtainRetainingPath(
   final theObject = await _objectInIsolate(connection, fp);
   if (theObject == null) return null;
 
-  final result = await connection.service.getRetainingPath(
-    theObject.isolateRef.id!,
-    theObject.itemId,
-    100000,
-  );
+  try {
+    final result = await connection.service.getRetainingPath(
+      theObject.isolateRef.id!,
+      theObject.itemId,
+      100000,
+    );
 
-  return result;
+    return result;
+  } on SentinelException {
+    return null;
+  }
 }
 
 class _ObjectFingerprint {

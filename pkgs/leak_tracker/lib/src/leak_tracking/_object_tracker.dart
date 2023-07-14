@@ -2,7 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:clock/clock.dart';
+import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
@@ -180,11 +183,34 @@ class ObjectTracker implements LeakProvider {
       }
     }
 
-    if (objectsToGetPath != null && objectsToGetPath.isNotEmpty) {
-      await _addRetainingPath(objectsToGetPath);
-    }
+    await processIfNeeded(
+      items: objectsToGetPath,
+      limit: LeakTrackerGlobalSettings.maxRequestsForRetainingPath,
+      processor: _addRetainingPath,
+    );
 
     _objects.assertIntegrity();
+  }
+
+  /// Runs [processor] for first items from [items], at most [limit] items will be processed.
+  ///
+  /// Noop if [items] is null or empty.
+  /// Processes all items if [limit] is null.
+  @visibleForTesting
+  static Future<void> processIfNeeded<T>({
+    required List<T>? items,
+    required int? limit,
+    required Future<void> Function(List<T>) processor,
+  }) async {
+    if (items == null || items.isEmpty) return;
+
+    if (limit != null) {
+      items = items.sublist(
+        0,
+        min(limit, items.length),
+      );
+    }
+    await processor(items);
   }
 
   Future<void> _addRetainingPath(List<int> objectsToGetPath) async {

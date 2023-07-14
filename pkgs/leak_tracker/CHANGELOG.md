@@ -1,3 +1,8 @@
+# 8.0.1
+
+* Handle SentinelException for retaining path.
+* Limit number of requests for retaining path.
+
 # 8.0.0
 
 * Enable turn on/off tracking for leak types.

@@ -14,6 +14,64 @@ const String _trackedClass = 'trackedClass';
 const _disposalTimeBuffer = Duration(milliseconds: 100);
 
 void main() {
+  group('processIfNeeded', () {
+    for (var items in [null, <int>[]]) {
+      test('is noop for empty list, $items', () async {
+        int processorCalls = 0;
+
+        await ObjectTracker.processIfNeeded<int>(
+          items: items,
+          limit: 10,
+          processor: (List<int> items) async {
+            processorCalls++;
+          },
+        );
+
+        expect(processorCalls, 0);
+      });
+    }
+
+    for (var limit in [null, 100]) {
+      test('processes all for no limit or large limit, $limit', () async {
+        final itemsToProcess = [1, 2, 3];
+
+        int processorCalls = 0;
+        late final List<int> processedItems;
+
+        await ObjectTracker.processIfNeeded<int>(
+          items: itemsToProcess,
+          limit: limit,
+          processor: (List<int> items) async {
+            processorCalls++;
+            processedItems = items;
+          },
+        );
+
+        expect(processorCalls, 1);
+        expect(processedItems, itemsToProcess);
+      });
+    }
+
+    test('cuts for limit', () async {
+      final itemsToProcess = [1, 2, 3];
+
+      int processorCalls = 0;
+      late final List<int> processedItems;
+
+      await ObjectTracker.processIfNeeded<int>(
+        items: itemsToProcess,
+        limit: 2,
+        processor: (List<int> items) async {
+          processorCalls++;
+          processedItems = items;
+        },
+      );
+
+      expect(processorCalls, 1);
+      expect(processedItems, [1, 2]);
+    });
+  });
+
   group('$ObjectTracker handles duplicates', () {
     late ObjectTracker tracker;
     IdentityHashCode mockCoder(Object object) => 1;
