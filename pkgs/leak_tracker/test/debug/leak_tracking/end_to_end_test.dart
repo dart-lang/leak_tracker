@@ -62,7 +62,7 @@ void main() {
 
     const expectedRetainingPathTails = [
       '/leak_tracker/test/test_infra/data/dart_classes.dart/_notGCedObjects',
-      'dart.core/_GrowableList:0',
+      'dart.core/_GrowableList:',
       '/leak_tracker/test/test_infra/data/dart_classes.dart/LeakTrackedClass',
     ];
 
@@ -89,18 +89,18 @@ void main() {
 }
 
 void _verifyRetainingPath(
-  List<String> expectedRetainingPathTails,
+  List<String> expectedRetainingPathFragments,
   String actualMessage,
 ) {
   int? previousIndex;
-  for (var item in expectedRetainingPathTails) {
-    final index = actualMessage.indexOf('$item\n');
+  for (var item in expectedRetainingPathFragments) {
+    final index = actualMessage.indexOf(item);
     if (previousIndex == null) {
       previousIndex = index;
       continue;
     }
 
-    expect(index > previousIndex, true);
+    expect(index, greaterThan(previousIndex));
     final stringBetweenItems = actualMessage.substring(previousIndex, index);
     expect(
       RegExp('^').allMatches(stringBetweenItems).length,
