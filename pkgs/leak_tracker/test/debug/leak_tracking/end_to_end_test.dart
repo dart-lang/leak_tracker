@@ -10,7 +10,44 @@ import '../../test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 void main() {
+  setUp(() {
+    LeakTrackerGlobalSettings.maxRequestsForRetainingPath = null;
+  });
+
   tearDown(() => disableLeakTracking());
+
+  test('Leak tracker respects maxRequestsForRetainingPath.', () async {
+    LeakTrackerGlobalSettings.maxRequestsForRetainingPath = 2;
+    final leaks = await withLeakTracking(
+      () async {
+        LeakingClass();
+        LeakingClass();
+        LeakingClass();
+      },
+      shouldThrowOnLeaks: false,
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectRetainingPathForNonGCed: true,
+      ),
+    );
+
+    const pathHeader = '  path: >';
+
+    expect(leaks.total, 6);
+    expect(
+      () => expect(leaks, isLeakFree),
+      throwsA(
+        predicate(
+          (e) {
+            if (e is! TestFailure) {
+              throw 'Unexpected exception type: ${e.runtimeType}';
+            }
+            expect(pathHeader.allMatches(e.message!), hasLength(2));
+            return true;
+          },
+        ),
+      ),
+    );
+  });
 
   test('Retaining path for not GCed object is reported.', () async {
     final leaks = await withLeakTracking(
