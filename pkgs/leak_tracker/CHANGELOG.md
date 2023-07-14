@@ -1,4 +1,4 @@
-# 8.0.0
+# 8.0.1
 
 * Handle SentinelException for retaining path.
 * Limit number of reququests for retaining path.

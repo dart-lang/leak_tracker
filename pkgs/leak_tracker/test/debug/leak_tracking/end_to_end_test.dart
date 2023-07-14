@@ -32,7 +32,7 @@ void main() {
 
     const pathHeader = '  path: >';
 
-    expect(leaks.total, 6);
+    expect(leaks.notGCed, hasLength(3));
     expect(
       () => expect(leaks, isLeakFree),
       throwsA(
