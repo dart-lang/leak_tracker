@@ -30,7 +30,6 @@ Future<RetainingPath?> obtainRetainingPath(
     );
 
     return result;
-    // ignore: empty_catches, unnecessary_statements
   } on SentinelException {
     return null;
   }
