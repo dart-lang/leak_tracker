@@ -13,6 +13,13 @@ class LeakTrackerGlobalSettings {
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.
   static bool warnForNonSupportedPlatforms = true;
+
+  /// Limit for number of requests for retaining path per one round
+  /// of validation for leaks.
+  ///
+  /// If the number is too big, the performance may be seriously impacted.
+  /// Id null, path will be requested without limit.
+  static int? maxRequestsForRetainingPath = 10;
 }
 
 /// Handler to collect leak summary.

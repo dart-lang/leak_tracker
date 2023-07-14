@@ -1,5 +1,10 @@
 # 8.0.0
 
+* Handle SentinelException for retaining path.
+* Limit number of reququests for retaining path.
+
+# 8.0.0
+
 * Enable turn on/off tracking for leak types.
 * Put all global flags into one class.
 
