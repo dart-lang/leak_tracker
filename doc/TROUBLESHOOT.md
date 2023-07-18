@@ -86,9 +86,22 @@ you need to run it with flag `--debug` or `--profile`
 ([not available](https://github.com/flutter/flutter/issues/127331) for Flutter tests),
 or, if it is a test, by clicking `Debug` near the test name in IDE.
 
-## Known complicated cases
+## Complicated cases
 
-### 1. More than one closure context
+### 1. Static or global object causes notGCed leaks
+
+If you see notGCed leaks, where the retaining path starts with a global or static variable,
+this means that some objects were disposed, but references to them were never released.
+
+In this example, as `disposedD` is not needed anymore, it should stop being referenced when disposed.
+If `A` and `B` are still needed, `B` should assign null to the variable that references `disposedD`.
+Otherwise, the reference to the first non-needed object on the path (`staticX`, `A` or `B`) should be released.
+
+```
+staticX -> A -> B -> disposedD
+```
+
+### 2. More than one closure context
 
 If a method contains more than one closures, they share the context and thus all
 instances of the context will be alive while at least one of the closures is alive.
