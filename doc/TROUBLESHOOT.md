@@ -90,7 +90,7 @@ or, if it is a test, by clicking `Debug` near the test name in IDE.
 
 ### 1. Static or global object causes notGCed leaks
 
-If you see notGCed leaks, where retaining path starts with global or static variable,
+If you see notGCed leaks, where the retaining path starts with a global or static variable,
 this means that some objects were disposed, but references to them were never released.
 
 In this example, as `disposedD` is not needed any more, it should stop being referenced, together with disposal.
