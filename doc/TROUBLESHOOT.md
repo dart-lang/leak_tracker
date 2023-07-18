@@ -94,8 +94,8 @@ If you see notGCed leaks, where retaining path starts with global or static vari
 this means that some objects were disposed, but references to them were never released.
 
 In this example, as `disposedD` is not needed any more, it should stop being referenced, together with disposal.
-If `A` and `B` are still needed, `B` should assign null to variable thet references `disposedD`.
-Otherwize, reference to first non-needed object on the path (`staticX`, `A` or `B`) should be relesed.
+If `A` and `B` are still needed, `B` should assign null to the variable that references `disposedD`.
+Otherwise, the reference to the first non-needed object on the path (`staticX`, `A` or `B`) should be released.
 
 ```
 staticX -> A -> B -> disposedD
