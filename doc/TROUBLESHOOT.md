@@ -102,7 +102,7 @@ staticX -> A -> B -> disposedD
 ```
 
 Be careful not to fall into pattern to limit your fix to just releasing the reference to the disposed object. 
-Instead, you need to release just most left object that is not needed any more (like `staticX`, `A` or `B`). All objects
+Instead, you need to release just most left object that is not needed any more (first check `staticX`, then `A`, then `B`). All objects
 referenced from it will also become unreachable, and thus available for garbage collection.
 
 Remember, not all leaks are detected, but for 
