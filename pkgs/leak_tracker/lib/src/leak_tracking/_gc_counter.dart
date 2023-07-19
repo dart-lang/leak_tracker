@@ -10,12 +10,6 @@ class GcCounter {
   int get gcCount => reachabilityBarrier;
 }
 
-/// Delta of GC cycles, enough for a non reachable object to be GCed.
-///
-/// Theoretically, 2 should be enough, however it gives false positives
-/// if there is no activity in the application for ~5 minutes.
-const gcCountBuffer = 3;
-
 /// True, if the disposed object is expected to be GCed,
 /// assuming at the disposal moment it was referenced only
 /// by the the disposal invoker.
@@ -25,6 +19,7 @@ bool shouldObjectBeGced({
   required int currentGcCount,
   required DateTime currentTime,
   required Duration disposalTimeBuffer,
+  required int gcCountBuffer,
 }) =>
     currentGcCount - gcCountAtDisposal >= gcCountBuffer &&
     currentTime.difference(timeAtDisposal) >= disposalTimeBuffer;
