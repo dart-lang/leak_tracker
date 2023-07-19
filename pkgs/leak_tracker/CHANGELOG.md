@@ -1,3 +1,7 @@
+# 8.0.2
+
+* Improve performance.
+
 # 8.0.1
 
 * Handle SentinelException for retaining path.

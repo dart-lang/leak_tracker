@@ -147,12 +147,10 @@ Future<void> forceGC({
   final Stopwatch? stopwatch = timeout == null ? null : (Stopwatch()..start());
   final int barrier = reachabilityBarrier;
 
-  final List<List<DateTime>> storage = <List<DateTime>>[];
+  final List<List<int>> storage = <List<int>>[];
 
   void allocateMemory() {
-    storage.add(
-      Iterable<DateTime>.generate(10000, (_) => DateTime.now()).toList(),
-    );
+    storage.add(List.generate(30000, (n) => n));
     if (storage.length > 100) {
       storage.removeAt(0);
     }
