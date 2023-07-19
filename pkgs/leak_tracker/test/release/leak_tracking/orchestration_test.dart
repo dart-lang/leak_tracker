@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:leak_tracker/src/leak_tracking/_gc_counter.dart';
 import 'package:leak_tracker/src/leak_tracking/orchestration.dart';
 import 'package:test/test.dart';
 

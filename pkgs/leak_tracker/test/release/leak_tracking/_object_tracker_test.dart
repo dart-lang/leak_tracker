@@ -263,7 +263,7 @@ void main() {
 
       // Time travel.
       time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
 
       await withClock(Clock.fixed(time), () async {
         // Verify notGCed leak is registered.
@@ -293,7 +293,7 @@ void main() {
 
       // Time travel.
       time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
 
       // Verify context for the collected nonGCed.
       await withClock(Clock.fixed(time), () async {
@@ -322,6 +322,7 @@ void main() {
           classesToCollectStackTraceOnDisposal: {'String'},
         ),
         disposalTimeBuffer: _disposalTimeBuffer,
+        gcCountBuffer: defaultGcCountBuffer,
       );
     });
 
@@ -342,7 +343,7 @@ void main() {
 
       // Time travel.
       time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + gcCountBuffer;
+      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
 
       // GC and verify leak contains callstacks.
       await withClock(Clock.fixed(time), () async {

@@ -179,7 +179,11 @@ class ObjectTracker implements LeakProvider {
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
       if (_notGCed(code).isNotGCedLeak(
-          _gcCounter.gcCount, now, disposalTimeBuffer, gcCountBuffer)) {
+        _gcCounter.gcCount,
+        now,
+        disposalTimeBuffer,
+        gcCountBuffer,
+      )) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
         objectsToGetPath?.add(code);
