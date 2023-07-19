@@ -1,6 +1,7 @@
 # 8.0.2
 
 * Improve performance.
+* Make gcCountBuffer customizable with default value 3.
 
 # 8.0.1
 
