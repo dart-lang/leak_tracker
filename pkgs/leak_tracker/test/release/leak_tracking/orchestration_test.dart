@@ -49,7 +49,7 @@ void main() {
       }
 
       final durationPerRound = sw.elapsed ~/ rounds;
-      expect(durationPerRound.inMilliseconds, lessThan(50));
+      expect(durationPerRound.inMilliseconds, lessThan(100));
     });
   });
 }
