@@ -122,6 +122,13 @@ void dispose() {
 }
 ```
 
+GOOD:
+```
+void dispose() {
+    _leakTrackedChild.dispose();
+}
+```
+
 
 ### 2. More than one closure context
 
