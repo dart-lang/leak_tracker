@@ -111,7 +111,7 @@ only. So, if you just release the
 reference to disposed object, you will fix the detected leak and hide undetected ones.
 
 And, there is no point to release reference to child inside the method `dispose` of the parent, because
-not needed parent should be relesed together with its disposal. If
+not needed parent should be released together with its disposal. If
 your fix for a leak is like this, you are defenitely hiding the leak: 
 
 BAD:
