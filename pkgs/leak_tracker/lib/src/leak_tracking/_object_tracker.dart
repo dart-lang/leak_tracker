@@ -26,6 +26,7 @@ class ObjectTracker implements LeakProvider {
   ObjectTracker({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     required this.disposalTimeBuffer,
+    required this.gcCountBuffer,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -50,6 +51,8 @@ class ObjectTracker implements LeakProvider {
   bool disposed = false;
 
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  final int gcCountBuffer;
 
   void startTracking(
     Object object, {
@@ -90,7 +93,7 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
-    if (record.isGCedLateLeak(disposalTimeBuffer)) {
+    if (record.isGCedLateLeak(disposalTimeBuffer, gcCountBuffer)) {
       _objects.gcedLateLeaks.add(record);
     } else if (record.isNotDisposedLeak) {
       _objects.gcedNotDisposedLeaks.add(record);
@@ -175,8 +178,12 @@ class ObjectTracker implements LeakProvider {
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
-      if (_notGCed(code)
-          .isNotGCedLeak(_gcCounter.gcCount, now, disposalTimeBuffer)) {
+      if (_notGCed(code).isNotGCedLeak(
+        _gcCounter.gcCount,
+        now,
+        disposalTimeBuffer,
+        gcCountBuffer,
+      )) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
         objectsToGetPath?.add(code);
