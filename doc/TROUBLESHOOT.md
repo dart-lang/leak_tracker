@@ -108,11 +108,11 @@ referenced from it will also become unreachable, and thus available for garbage 
 Remember, not all leaks are detected, but for 
 [the leak tracked objects]([staticX -> A -> B](https://github.com/dart-lang/leak_tracker/blob/main/doc/DETECT.md#by-tracked-classes)) 
 only. So, if you just release the 
-reference to disposed object, you will fix the detected leak and hide the undetected ones.
+reference to disposed object, you will fix the detected leak and may hide the undetected ones.
 
 And, there is no point to release reference to child inside the method `dispose` of the parent, because
 not needed parent should be released together with its disposal. If
-your fix for a leak is like this, you are defenitely hiding the leak: 
+your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects: 
 
 BAD:
 ```
