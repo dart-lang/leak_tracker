@@ -102,11 +102,11 @@ staticX -> A -> B -> disposedD
 ```
 
 Be careful not to fall into pattern to limit your fix to just releasing the reference to the disposed object. 
-Instead, you want to release everything that is not needed any more (like `staticX`, `A` or `B`).
+Instead, you want to release most left that is not needed any more (like `staticX`, `A` or `B`).
 Remember, not all leaks are detected, but for 
 [the leak tracked objects]([staticX -> A -> B](https://github.com/dart-lang/leak_tracker/blob/main/doc/DETECT.md#by-tracked-classes)) 
 only. So, if you just release the 
-reference to disposed object, you will fix the detected leak, but undetected ones will hide.
+reference to disposed object, you will fix the detected leak and hide undetected ones.
 
 ### 2. More than one closure context
 
