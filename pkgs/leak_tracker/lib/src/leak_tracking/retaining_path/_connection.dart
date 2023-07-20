@@ -41,13 +41,13 @@ Future<Connection> connect() async {
 
   final uri = info.serverWebSocketUri;
   if (uri == null) {
-    StateError error() => StateError(
-          'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
-          '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
-        );
-
     _completer = null;
-    completer.completeError(error());
+    completer.completeError(
+      StateError(
+        'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
+        '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
+      ),
+    );
     return await completer.future;
   }
 

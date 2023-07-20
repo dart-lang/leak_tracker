@@ -1,1 +1,1 @@
-Bots run tests in this folder 'normally', with 'dart test', where asserts are on and VM service is unavailable.
+Bots run tests in this folder with 'dart test', where asserts are on, but VM service is unavailable.
