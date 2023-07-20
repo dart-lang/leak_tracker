@@ -1,3 +1,7 @@
+# 8.0.2
+
+* Fix and test cover case of customized `gcCountBuffer`.
+
 # 8.0.1
 
 * Handle SentinelException for retaining path.
