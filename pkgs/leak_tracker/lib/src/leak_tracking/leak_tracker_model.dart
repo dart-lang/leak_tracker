@@ -95,7 +95,7 @@ class LeakTrackingConfiguration {
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.gcCountBuffer = defaultGcCountBuffer,
+    required this.gcCountBuffer,
   });
 
   /// The leak tracker:

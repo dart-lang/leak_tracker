@@ -17,7 +17,8 @@ class _SummaryValues {
     LeakType.notGCed: 3,
   });
 
-  static final nonZeroCopy = LeakSummary(<LeakType, int>{}..addAll(nonZero.totals));
+  static final nonZeroCopy =
+      LeakSummary(<LeakType, int>{}..addAll(nonZero.totals));
 }
 
 void main() {
@@ -70,7 +71,8 @@ void main() {
     );
 
     // Mock defaults match real configuration defaults.
-    const config = LeakTrackingConfiguration();
+    const config =
+        LeakTrackingConfiguration(gcCountBuffer: defaultGcCountBuffer);
     final checker = defaultLeakChecker();
     expect(config.notifyDevTools, checker.devToolsSink != null);
     expect(config.stdoutLeaks, checker.stdoutSink != null);

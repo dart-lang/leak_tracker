@@ -18,6 +18,12 @@ Documentation:
 1. [Understand leak tracking concepts](doc/CONCEPTS.md)
 2. [Troubleshoot memory leaks](doc/TROUBLESHOOT.md)
 
+## Contributing and development
+
+Contributions welcome! See our
+[contributing page](https://github.com/dart-lang/leak_tracker/blob/main/CONTRIBUTING.md)
+for an overview of how to build and contribute to the project.
+
 ## Packages
 
 | Package | Description | Version |

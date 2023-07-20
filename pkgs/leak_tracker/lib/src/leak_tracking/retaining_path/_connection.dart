@@ -20,7 +20,13 @@ class Connection {
 
 Completer<Connection>? _completer;
 
-void disconnect() => _completer = null;
+void disconnect() {
+  _completer?.completeError(
+    StateError('Disconnected from vm service protocol.'),
+  );
+  _completer = null;
+  _log.info('Disconnected from vm service protocol.');
+}
 
 Future<Connection> connect() async {
   if (_completer != null) {
@@ -35,10 +41,14 @@ Future<Connection> connect() async {
 
   final uri = info.serverWebSocketUri;
   if (uri == null) {
-    throw StateError(
-      'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
-      '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
-    );
+    StateError error() => StateError(
+          'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
+          '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
+        );
+
+    _completer = null;
+    completer.completeError(error());
+    return await completer.future;
   }
 
   final service = await _connectWithWebSocket(uri, _handleError);
@@ -47,10 +57,14 @@ Future<Connection> connect() async {
 
   final result = Connection(service, isolates);
   completer.complete(result);
+  _log.info('Connected to vm service protocol.');
   return result;
 }
 
-void _handleError(Object? error) => throw error ?? Exception('Unknown error');
+void _handleError(Object? error) {
+  _log.info('Error in vm service protocol: $error');
+  throw error ?? Exception('Unknown error');
+}
 
 /// Tries to wait for two isolates to be available.
 ///
