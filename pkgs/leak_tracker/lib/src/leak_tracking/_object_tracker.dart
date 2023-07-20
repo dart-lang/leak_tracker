@@ -223,8 +223,6 @@ class ObjectTracker implements LeakProvider {
   Future<void> _addRetainingPath(List<int> objectsToGetPath) async {
     final connection = await connect();
 
-    print('connected!!!');
-
     final pathSetters = objectsToGetPath.map((code) async {
       final record = _objects.notGCed[code]!;
       final path =

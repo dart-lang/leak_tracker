@@ -5,7 +5,6 @@
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
-import 'package:logging/logging.dart';
 
 import 'package:test/test.dart';
 
@@ -13,8 +12,6 @@ import '../../test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 void main() {
-  Logger.root.onRecord.listen((LogRecord record) => print(record.message));
-
   tearDown(() {
     disableLeakTracking();
   });
@@ -57,19 +54,6 @@ void main() {
       expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
     });
 
-    test('temp', () async {
-      Future<void> f1() async {
-        await Future.delayed(const Duration(milliseconds: 100));
-        throw StateError('f1');
-      }
-
-      try {
-        await Future.wait<void>([f1(), f1()]);
-      } catch (e) {
-        print(e);
-      }
-    });
-
     test('Retaining path cannot be collected in release mode, $gcCountBuffer.',
         () async {
       late LeakTrackedClass notGCedObject;
@@ -88,25 +72,14 @@ void main() {
         );
       }
 
-      try {
-        await test();
-      } on StateError catch (error) {
-        print(error);
-        // expect(error, isA<StateError>());
-        // expect(
-        //   error.toString(),
-        //   contains('Leak troubleshooting is not available in release mode.'),
-        // );
-      }
-
-      // await expectLater(
-      //   test,
-      //   throwsA(
-      //     predicate(
-      //       (e) => e is StateError && e.message.contains('--debug'),
-      //     ),
-      //   ),
-      // );
+      await expectLater(
+        test,
+        throwsA(
+          predicate(
+            (e) => e is StateError && e.message.contains('--debug'),
+          ),
+        ),
+      );
     });
 
     test('$isLeakFree succeeds, $gcCountBuffer.', () async {
