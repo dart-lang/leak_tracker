@@ -109,7 +109,7 @@ To fix all leaks, you need to release closest to the root object on retaining pa
 (first check `staticX`, then `A`, then `B`), that is not needed any more. All objects referenced from it will
 also become unreachable, and thus available for garbage collection.
 
-One of signes that some leakes are still, is fixing a leak by releasing link to child in the parent's `dispose`,
+One of signs that some leaks still exist is fixing a leak by releasing link to child in the parent's `dispose`,
 because link to not needed parent should be released itself, together with its disposal. If
 your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects: 
 
