@@ -21,9 +21,15 @@ class Connection {
 Completer<Connection>? _completer;
 
 void disconnect() {
-  _completer?.completeError(
-    StateError('Disconnected from vm service protocol.'),
-  );
+  final completer = _completer;
+  if (completer == null) {
+    return;
+  }
+  if (!completer.isCompleted) {
+    _completer?.completeError(
+      StateError('Disconnected from vm service protocol.'),
+    );
+  }
   _completer = null;
   _log.info('Disconnected from vm service protocol.');
 }
