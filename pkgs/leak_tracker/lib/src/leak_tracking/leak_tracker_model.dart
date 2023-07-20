@@ -78,6 +78,15 @@ class LeakDiagnosticConfig {
       classesToCollectStackTraceOnDisposal.contains(classname);
 }
 
+/// The default value for number of full GC cycles, enough for a non reachable object to be GCed.
+///
+/// It is pessimistic assuming that user will want to
+/// detect leaks not more often than a second.
+///
+/// Theoretically, 2 should be enough, however it gives false positives
+/// if there is no activity in the application for ~5 minutes.
+const defaultGcCountBuffer = 3;
+
 class LeakTrackingConfiguration {
   const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
@@ -86,6 +95,7 @@ class LeakTrackingConfiguration {
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTimeBuffer = const Duration(milliseconds: 100),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    this.gcCountBuffer = defaultGcCountBuffer,
   });
 
   /// The leak tracker:
@@ -95,13 +105,18 @@ class LeakTrackingConfiguration {
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    int gcCountBuffer = defaultGcCountBuffer,
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
           disposalTimeBuffer: const Duration(),
           leakDiagnosticConfig: leakDiagnosticConfig,
+          gcCountBuffer: gcCountBuffer,
         );
+
+  /// Number of full GC cycles, enough for a non reachable object to be GCed.
+  final int gcCountBuffer;
 
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
@@ -120,9 +135,6 @@ class LeakTrackingConfiguration {
   final LeakSummaryCallback? onLeaks;
 
   /// Time to allow the disposal invoker to release the reference to the object.
-  ///
-  /// The default value is pessimistic assuming that user will want to
-  /// detect leaks not more often than a second.
   final Duration disposalTimeBuffer;
 }
 

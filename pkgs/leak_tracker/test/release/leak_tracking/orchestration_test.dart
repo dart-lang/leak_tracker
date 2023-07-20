@@ -22,20 +22,34 @@ void main() {
     await withLeakTracking(() async {});
   });
 
-  test('forceGC forces gc', () async {
-    Object? myObject = <int>[1, 2, 3, 4, 5];
-    final ref = WeakReference(myObject);
-    myObject = null;
+  group('forceGC', () {
+    test('forces gc', () async {
+      Object? myObject = <int>[1, 2, 3, 4, 5];
+      final ref = WeakReference(myObject);
+      myObject = null;
 
-    await forceGC();
+      await forceGC();
 
-    expect(ref.target, null);
-  });
+      expect(ref.target, null);
+    });
 
-  test('forceGC times out', () async {
-    await expectLater(
-      forceGC(timeout: Duration.zero),
-      throwsA(isA<TimeoutException>()),
-    );
+    test('times out', () async {
+      await expectLater(
+        () async => forceGC(timeout: Duration.zero),
+        throwsA(isA<TimeoutException>()),
+      );
+    });
+
+    test('takes reasonable time', () async {
+      const rounds = 100;
+      final sw = Stopwatch()..start();
+
+      for (var _ in Iterable.generate(rounds)) {
+        await forceGC();
+      }
+
+      final durationPerRound = sw.elapsed ~/ rounds;
+      expect(durationPerRound.inMilliseconds, lessThan(100));
+    });
   });
 }

@@ -47,6 +47,7 @@ void enableLeakTracking({
     final newTracker = ObjectTracker(
       leakDiagnosticConfig: theConfig.leakDiagnosticConfig,
       disposalTimeBuffer: theConfig.disposalTimeBuffer,
+      gcCountBuffer: theConfig.gcCountBuffer,
     );
 
     _objectTracker.value = newTracker;

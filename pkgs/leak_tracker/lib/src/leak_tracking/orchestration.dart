@@ -7,7 +7,6 @@ import 'dart:developer';
 
 import '../shared/shared_model.dart';
 import '_formatting.dart';
-import '_gc_counter.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
 import 'retaining_path/_connection.dart';
@@ -41,6 +40,9 @@ class MemoryLeaksDetectedError extends StateError {
 /// Pass [timeoutForFinalGarbageCollection] if you do not want leak tracker
 /// to wait infinitely for the forced garbage collection, that is needed
 /// to analyse results.
+///
+/// [gcCountBuffer] is number of full GC cycles, enough for a non reachable object to be GCed.
+///
 ///
 /// If you test Flutter widgets, connect their instrumentation to the leak
 /// tracker:
@@ -76,6 +78,7 @@ Future<Leaks> withLeakTracking(
   Duration? timeoutForFinalGarbageCollection,
   LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
   AsyncCodeRunner? asyncCodeRunner,
+  int gcCountBuffer = defaultGcCountBuffer,
 }) async {
   if (callback == null) return Leaks({});
 
@@ -144,12 +147,10 @@ Future<void> forceGC({
   final Stopwatch? stopwatch = timeout == null ? null : (Stopwatch()..start());
   final int barrier = reachabilityBarrier;
 
-  final List<List<DateTime>> storage = <List<DateTime>>[];
+  final List<List<int>> storage = <List<int>>[];
 
   void allocateMemory() {
-    storage.add(
-      Iterable<DateTime>.generate(10000, (_) => DateTime.now()).toList(),
-    );
+    storage.add(List.generate(30000, (n) => n));
     if (storage.length > 100) {
       storage.removeAt(0);
     }
