@@ -113,18 +113,10 @@ One of signs that some leaks still exist is fixing a leak by releasing link to c
 because link to not needed parent should be released itself, together with its disposal. If
 your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects: 
 
-BAD:
 ```
 void dispose() {
     _leakTrackedChild!.dispose();
-    _leakTrackedChild = null;
-}
-```
-
-GOOD:
-```
-void dispose() {
-    _leakTrackedChild.dispose();
+    _leakTrackedChild = null; // Wrong fix! This line hides the leak.
 }
 ```
 
