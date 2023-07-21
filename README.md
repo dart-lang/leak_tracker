@@ -18,12 +18,6 @@ Documentation:
 1. [Understand leak tracking concepts](doc/CONCEPTS.md)
 2. [Troubleshoot memory leaks](doc/TROUBLESHOOT.md)
 
-## Contributing and development
-
-Contributions welcome! See our
-[contributing page](https://github.com/dart-lang/leak_tracker/blob/main/CONTRIBUTING.md)
-for an overview of how to build and contribute to the project.
-
 ## Packages
 
 | Package | Description | Version |
@@ -31,3 +25,11 @@ for an overview of how to build and contribute to the project.
 | [leak_tracker](pkgs/leak_tracker/) | A framework for memory leak tracking for Dart and Flutter applications. | [![pub package](https://img.shields.io/pub/v/leak_tracker.svg)](https://pub.dev/packages/leak_tracker) |
 | [leak_tracker_flutter_test](pkgs/leak_tracker_flutter_test/) | Tests for leak_tracker that depend on Flutter framework. |  |
 | [leak_tracker_testing](pkgs/leak_tracker_testing/) | Leak tracking code intended for usage in tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
+
+## How to enable logs
+
+To temporary enable logs, add this line to `main`:
+
+```
+Logger.root.onRecord.listen((LogRecord record) => print(record.message));
+```

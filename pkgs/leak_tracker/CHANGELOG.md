@@ -1,6 +1,6 @@
 # 8.0.3
 
-* Fix and test cover case of customized `gcCountBuffer`.
+* Fix an issue with custom gcCountBuffer values.
 
 # 8.0.2
 
