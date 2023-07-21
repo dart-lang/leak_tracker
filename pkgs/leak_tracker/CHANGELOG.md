@@ -1,3 +1,7 @@
+# 8.0.3
+
+* Fix an issue with custom gcCountBuffer values.
+
 # 8.0.2
 
 * Improve performance.

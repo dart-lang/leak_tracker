@@ -5,12 +5,16 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:logging/logging.dart';
+
 import '../shared/shared_model.dart';
 import '_formatting.dart';
 import 'leak_tracker.dart';
 import 'leak_tracker_model.dart';
 import 'retaining_path/_connection.dart';
 import 'retaining_path/_retaining_path.dart';
+
+final _log = Logger('orchestration.dart');
 
 /// Asynchronous callback.
 ///
@@ -80,12 +84,21 @@ Future<Leaks> withLeakTracking(
   AsyncCodeRunner? asyncCodeRunner,
   int gcCountBuffer = defaultGcCountBuffer,
 }) async {
+  if (gcCountBuffer <= 0) {
+    throw ArgumentError.value(
+      gcCountBuffer,
+      'gcCountBuffer',
+      'Must be positive.',
+    );
+  }
+
   if (callback == null) return Leaks({});
 
   enableLeakTracking(
     resetIfAlreadyEnabled: true,
     config: LeakTrackingConfiguration.passive(
       leakDiagnosticConfig: leakDiagnosticConfig,
+      gcCountBuffer: gcCountBuffer,
     ),
   );
 
@@ -108,9 +121,7 @@ Future<Leaks> withLeakTracking(
           fullGcCycles: gcCountBuffer,
           timeout: timeoutForFinalGarbageCollection,
         );
-
         leaks = await collectLeaks();
-
         if ((leaks?.total ?? 0) > 0 && shouldThrowOnLeaks) {
           // `expect` should not be used here, because, when the method is used
           // from Flutter, the packages `test` and `flutter_test` conflict.
@@ -144,6 +155,7 @@ Future<void> forceGC({
   Duration? timeout,
   int fullGcCycles = 1,
 }) async {
+  _log.info('Forcing garbage collection with fullGcCycles = $fullGcCycles...');
   final Stopwatch? stopwatch = timeout == null ? null : (Stopwatch()..start());
   final int barrier = reachabilityBarrier;
 
@@ -163,6 +175,7 @@ Future<void> forceGC({
     await Future<void>.delayed(Duration.zero);
     allocateMemory();
   }
+  _log.info('Done forcing garbage collection.');
 }
 
 /// Returns nicely formatted retaining path for the [ref.target].
@@ -181,7 +194,6 @@ Future<String?> formattedRetainingPath(WeakReference ref) async {
     ref.target.runtimeType,
     identityHashCode(ref.target),
   );
-  disconnect();
 
   if (path == null) return null;
   return retainingPathToString(path);

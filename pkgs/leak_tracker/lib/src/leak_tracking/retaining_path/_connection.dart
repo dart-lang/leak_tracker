@@ -18,18 +18,8 @@ class Connection {
   final VmService service;
 }
 
-Completer<Connection>? _completer;
-
-void disconnect() => _completer = null;
-
 Future<Connection> connect() async {
-  if (_completer != null) {
-    return await _completer!.future;
-  }
-
   _log.info('Connecting to vm service protocol...');
-
-  final completer = _completer = Completer<Connection>();
 
   final info = await Service.getInfo();
 
@@ -46,11 +36,14 @@ Future<Connection> connect() async {
   final isolates = await _getTwoIsolates(service);
 
   final result = Connection(service, isolates);
-  completer.complete(result);
+  _log.info('Connected to vm service protocol.');
   return result;
 }
 
-void _handleError(Object? error) => throw error ?? Exception('Unknown error');
+void _handleError(Object? error) {
+  _log.info('Error in vm service protocol: $error');
+  throw error ?? Exception('Unknown error');
+}
 
 /// Tries to wait for two isolates to be available.
 ///

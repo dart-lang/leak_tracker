@@ -222,6 +222,7 @@ class ObjectTracker implements LeakProvider {
 
   Future<void> _addRetainingPath(List<int> objectsToGetPath) async {
     final connection = await connect();
+
     final pathSetters = objectsToGetPath.map((code) async {
       final record = _objects.notGCed[code]!;
       final path =
@@ -230,8 +231,11 @@ class ObjectTracker implements LeakProvider {
         record.setContext(ContextKeys.retainingPath, path);
       }
     });
-    await Future.wait(pathSetters);
-    disconnect();
+
+    await Future.wait(
+      pathSetters,
+      eagerError: true,
+    );
   }
 
   ObjectRecord _notGCed(int code) {

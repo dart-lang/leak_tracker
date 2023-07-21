@@ -17,7 +17,8 @@ class _SummaryValues {
     LeakType.notGCed: 3,
   });
 
-  static final nonZeroCopy = LeakSummary(<LeakType, int>{}..addAll(nonZero.totals));
+  static final nonZeroCopy =
+      LeakSummary(<LeakType, int>{}..addAll(nonZero.totals));
 }
 
 void main() {

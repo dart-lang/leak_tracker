@@ -12,46 +12,53 @@ import '../../test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 void main() {
-  tearDown(() => disableLeakTracking());
-
-  test('Not disposed object reported.', () async {
-    final leaks = await withLeakTracking(
-      () async {
-        LeakTrackedClass();
-      },
-      shouldThrowOnLeaks: false,
-    );
-
-    expect(() => expect(leaks, isLeakFree), throwsException);
-    expect(leaks.total, 1);
-
-    final theLeak = leaks.notDisposed.first;
-    expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
-    expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
+  tearDown(() {
+    disableLeakTracking();
   });
 
-  test('Not GCed object reported.', () async {
-    late LeakTrackedClass notGCedObject;
-    final leaks = await withLeakTracking(
-      () async {
-        notGCedObject = LeakTrackedClass();
-        // Dispose reachable instance.
-        notGCedObject.dispose();
-      },
-      shouldThrowOnLeaks: false,
-    );
+  for (var gcCountBuffer in [1, defaultGcCountBuffer]) {
+    test('Not disposed object reported, $gcCountBuffer.', () async {
+      final leaks = await withLeakTracking(
+        () async {
+          LeakTrackedClass();
+        },
+        shouldThrowOnLeaks: false,
+        gcCountBuffer: gcCountBuffer,
+      );
 
-    expect(() => expect(leaks, isLeakFree), throwsException);
-    expect(leaks.total, 1);
+      expect(() => expect(leaks, isLeakFree), throwsException);
+      expect(leaks.total, 1);
 
-    final theLeak = leaks.notGCed.first;
-    expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
-    expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
-  });
+      final theLeak = leaks.notDisposed.first;
+      expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
+      expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
+    });
 
-  test('Retaining path cannot be collected in release mode.', () async {
-    late LeakTrackedClass notGCedObject;
-    Future<void> test() => withLeakTracking(
+    test('Not GCed object reported, $gcCountBuffer.', () async {
+      late LeakTrackedClass notGCedObject;
+      final leaks = await withLeakTracking(
+        () async {
+          notGCedObject = LeakTrackedClass();
+          // Dispose reachable instance.
+          notGCedObject.dispose();
+        },
+        shouldThrowOnLeaks: false,
+        gcCountBuffer: gcCountBuffer,
+      );
+
+      expect(() => expect(leaks, isLeakFree), throwsException);
+      expect(leaks.total, 1);
+
+      final theLeak = leaks.notGCed.first;
+      expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
+      expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
+    });
+
+    test('Retaining path cannot be collected in release mode, $gcCountBuffer.',
+        () async {
+      late LeakTrackedClass notGCedObject;
+      Future<void> test() async {
+        await withLeakTracking(
           () async {
             notGCedObject = LeakTrackedClass();
             // Dispose reachable instance.
@@ -61,56 +68,62 @@ void main() {
           leakDiagnosticConfig: const LeakDiagnosticConfig(
             collectRetainingPathForNonGCed: true,
           ),
+          gcCountBuffer: gcCountBuffer,
         );
+      }
 
-    expect(
-      () async => await test(),
-      throwsA(
-        predicate(
-          (e) => e is StateError && e.message.contains('--debug'),
+      await expectLater(
+        test,
+        throwsA(
+          predicate(
+            (e) => e is StateError && e.message.contains('--debug'),
+          ),
         ),
-      ),
-    );
-  });
+      );
+    });
 
-  test('$isLeakFree succeeds.', () async {
-    final leaks = await withLeakTracking(
-      () async {},
-      shouldThrowOnLeaks: false,
-    );
+    test('$isLeakFree succeeds, $gcCountBuffer.', () async {
+      final leaks = await withLeakTracking(
+        () async {},
+        shouldThrowOnLeaks: false,
+        gcCountBuffer: gcCountBuffer,
+      );
 
-    expect(leaks, isLeakFree);
-  });
-
-  test('Stack trace does not start with leak tracker calls.', () async {
-    final leaks = await withLeakTracking(
-      () async {
-        LeakingClass();
-      },
-      shouldThrowOnLeaks: false,
-      leakDiagnosticConfig: const LeakDiagnosticConfig(
-        collectStackTraceOnStart: true,
-        collectStackTraceOnDisposal: true,
-      ),
-    );
-
-    try {
       expect(leaks, isLeakFree);
-    } catch (error) {
-      const traceHeaders = ['start: >', 'disposal: >'];
-      final lines = error.toString().split('\n').asMap();
+    });
 
-      for (final header in traceHeaders) {
-        final headerInexes =
-            lines.keys.where((i) => lines[i]!.endsWith(header));
-        expect(headerInexes, isNotEmpty);
-        for (final i in headerInexes) {
-          if (i + 1 >= lines.length) continue;
-          final line = lines[i + 1]!;
+    test('Stack trace does not start with leak tracker calls, $gcCountBuffer.',
+        () async {
+      final leaks = await withLeakTracking(
+        () async {
+          LeakingClass();
+        },
+        shouldThrowOnLeaks: false,
+        leakDiagnosticConfig: const LeakDiagnosticConfig(
+          collectStackTraceOnStart: true,
+          collectStackTraceOnDisposal: true,
+        ),
+        gcCountBuffer: gcCountBuffer,
+      );
 
-          expect(line, isNot(contains(leakTrackerStackTraceFragment)));
+      try {
+        expect(leaks, isLeakFree);
+      } catch (error) {
+        const traceHeaders = ['start: >', 'disposal: >'];
+        final lines = error.toString().split('\n').asMap();
+
+        for (final header in traceHeaders) {
+          final headerInexes =
+              lines.keys.where((i) => lines[i]!.endsWith(header));
+          expect(headerInexes, isNotEmpty);
+          for (final i in headerInexes) {
+            if (i + 1 >= lines.length) continue;
+            final line = lines[i + 1]!;
+
+            expect(line, isNot(contains(leakTrackerStackTraceFragment)));
+          }
         }
       }
-    }
-  });
+    });
+  }
 }
