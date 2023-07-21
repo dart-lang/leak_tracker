@@ -194,7 +194,6 @@ Future<String?> formattedRetainingPath(WeakReference ref) async {
     ref.target.runtimeType,
     identityHashCode(ref.target),
   );
-  disconnect();
 
   if (path == null) return null;
   return retainingPathToString(path);

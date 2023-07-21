@@ -235,7 +235,6 @@ class ObjectTracker implements LeakProvider {
     await Future.wait(
       pathSetters,
       eagerError: true,
-      cleanUp: (_) => disconnect(),
     );
   }
 

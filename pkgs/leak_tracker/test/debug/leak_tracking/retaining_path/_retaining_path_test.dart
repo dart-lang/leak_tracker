@@ -28,7 +28,6 @@ void main() {
 
   setUp(() {
     _logs.clear();
-    disconnect();
   });
 
   tearDownAll(() async {
@@ -44,7 +43,7 @@ void main() {
       instance.runtimeType,
       identityHashCode(instance),
     );
-    disconnect();
+
     expect(path!.elements, isNotEmpty);
   });
 
@@ -57,11 +56,10 @@ void main() {
       instance.runtimeType,
       identityHashCode(instance),
     );
-    disconnect();
     expect(path!.elements, isNotEmpty);
   });
 
-  test('Connection is happening just once', () async {
+  test('Connection can be reused', () async {
     final instance1 = MyClass();
     final instance2 = MyClass();
     final connection = await connect();
@@ -72,7 +70,6 @@ void main() {
     ];
 
     await Future.wait(obtainers);
-    disconnect();
 
     expect(
       _logs.where((item) => item == 'Connecting to vm service protocol...'),
