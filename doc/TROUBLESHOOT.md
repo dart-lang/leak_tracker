@@ -116,7 +116,7 @@ your fix for a leak is like this, you are defenitely hiding leaks of non-tracked
 ```
 void dispose() {
     _leakTrackedChild!.dispose();
-    _leakTrackedChild = null; // Wrong fix! This line hides the leak.
+    _leakTrackedChild = null; // Wrong fix! This line hides leaks.
 }
 ```
 
