@@ -71,8 +71,7 @@ void main() {
     );
 
     // Mock defaults match real configuration defaults.
-    const config =
-        LeakTrackingConfiguration(gcCountBuffer: defaultGcCountBuffer);
+    const config = LeakTrackingConfiguration();
     final checker = defaultLeakChecker();
     expect(config.notifyDevTools, checker.devToolsSink != null);
     expect(config.stdoutLeaks, checker.stdoutSink != null);

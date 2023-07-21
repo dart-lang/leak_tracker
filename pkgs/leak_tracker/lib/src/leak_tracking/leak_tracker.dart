@@ -36,9 +36,7 @@ void enableLeakTracking({
   bool resetIfAlreadyEnabled = false,
 }) {
   assert(() {
-    final theConfig = config ??= const LeakTrackingConfiguration(
-      gcCountBuffer: defaultGcCountBuffer,
-    );
+    final theConfig = config ??= const LeakTrackingConfiguration();
     if (_objectTracker.value != null) {
       if (!resetIfAlreadyEnabled) {
         throw StateError('Leak tracking is already enabled.');
