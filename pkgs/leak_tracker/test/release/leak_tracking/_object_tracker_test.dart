@@ -11,7 +11,7 @@ import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 
 const String _trackedClass = 'trackedClass';
-const _disposalTimeBuffer = Duration(milliseconds: 100);
+const _disposalTime = Duration(milliseconds: 100);
 
 void main() {
   group('processIfNeeded', () {
@@ -78,9 +78,9 @@ void main() {
 
     setUp(() {
       tracker = ObjectTracker(
-        disposalTimeBuffer: _disposalTimeBuffer,
+        disposalTime: _disposalTime,
         coder: mockCoder,
-        gcCountBuffer: defaultGcCountBuffer,
+        numberOfGcCycles: defaultNumberOfGcCycles,
       );
     });
 
@@ -145,8 +145,8 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
-        disposalTimeBuffer: _disposalTimeBuffer,
-        gcCountBuffer: defaultGcCountBuffer,
+        disposalTime: _disposalTime,
+        numberOfGcCycles: defaultNumberOfGcCycles,
       );
     });
 
@@ -170,8 +170,8 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(_disposalTimeBuffer * 1000);
-      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer * 1000;
+      time = time.add(_disposalTime * 1000);
+      gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles * 1000;
 
       // Verify no leaks.
       withClock(Clock.fixed(time), () {
@@ -211,8 +211,8 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
+      time = time.add(_disposalTime);
+      gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
       // Verify leak is registered.
       await withClock(Clock.fixed(time), () async {
@@ -236,8 +236,8 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
+      time = time.add(_disposalTime);
+      gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
       // GC and verify leak is registered.
       await withClock(Clock.fixed(time), () async {
@@ -262,8 +262,8 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
+      time = time.add(_disposalTime);
+      gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
       await withClock(Clock.fixed(time), () async {
         // Verify notGCed leak is registered.
@@ -292,8 +292,8 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
+      time = time.add(_disposalTime);
+      gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
       // Verify context for the collected nonGCed.
       await withClock(Clock.fixed(time), () async {
@@ -321,8 +321,8 @@ void main() {
           classesToCollectStackTraceOnStart: {'String'},
           classesToCollectStackTraceOnDisposal: {'String'},
         ),
-        disposalTimeBuffer: _disposalTimeBuffer,
-        gcCountBuffer: defaultGcCountBuffer,
+        disposalTime: _disposalTime,
+        numberOfGcCycles: defaultNumberOfGcCycles,
       );
     });
 
@@ -342,8 +342,8 @@ void main() {
       });
 
       // Time travel.
-      time = time.add(_disposalTimeBuffer);
-      gcCounter.gcCount = gcCounter.gcCount + defaultGcCountBuffer;
+      time = time.add(_disposalTime);
+      gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
       // GC and verify leak contains callstacks.
       await withClock(Clock.fixed(time), () async {

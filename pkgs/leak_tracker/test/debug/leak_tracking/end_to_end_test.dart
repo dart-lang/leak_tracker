@@ -16,8 +16,9 @@ void main() {
 
   tearDown(() => disableLeakTracking());
 
-  for (var gcCountBuffer in [1, defaultGcCountBuffer]) {
-    test('Leak tracker respects maxRequestsForRetainingPath, $gcCountBuffer.',
+  for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
+    test(
+        'Leak tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
         () async {
       LeakTrackerGlobalSettings.maxRequestsForRetainingPath = 2;
       final leaks = await withLeakTracking(
@@ -30,7 +31,7 @@ void main() {
         leakDiagnosticConfig: const LeakDiagnosticConfig(
           collectRetainingPathForNonGCed: true,
         ),
-        gcCountBuffer: gcCountBuffer,
+        numberOfGcCycles: numberOfGcCycles,
       );
 
       const pathHeader = '  path: >';
@@ -52,7 +53,7 @@ void main() {
       );
     });
 
-    test('Retaining path for not GCed object is reported, $gcCountBuffer.',
+    test('Retaining path for not GCed object is reported, $numberOfGcCycles.',
         () async {
       final leaks = await withLeakTracking(
         () async {
@@ -62,7 +63,7 @@ void main() {
         leakDiagnosticConfig: const LeakDiagnosticConfig(
           collectRetainingPathForNonGCed: true,
         ),
-        gcCountBuffer: gcCountBuffer,
+        numberOfGcCycles: numberOfGcCycles,
       );
 
       const expectedRetainingPathTails = [

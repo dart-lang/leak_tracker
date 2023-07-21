@@ -16,14 +16,14 @@ void main() {
     disableLeakTracking();
   });
 
-  for (var gcCountBuffer in [1, defaultGcCountBuffer]) {
-    test('Not disposed object reported, $gcCountBuffer.', () async {
+  for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
+    test('Not disposed object reported, $numberOfGcCycles.', () async {
       final leaks = await withLeakTracking(
         () async {
           LeakTrackedClass();
         },
         shouldThrowOnLeaks: false,
-        gcCountBuffer: gcCountBuffer,
+        numberOfGcCycles: numberOfGcCycles,
       );
 
       expect(() => expect(leaks, isLeakFree), throwsException);
@@ -34,7 +34,7 @@ void main() {
       expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
     });
 
-    test('Not GCed object reported, $gcCountBuffer.', () async {
+    test('Not GCed object reported, $numberOfGcCycles.', () async {
       late LeakTrackedClass notGCedObject;
       final leaks = await withLeakTracking(
         () async {
@@ -43,7 +43,7 @@ void main() {
           notGCedObject.dispose();
         },
         shouldThrowOnLeaks: false,
-        gcCountBuffer: gcCountBuffer,
+        numberOfGcCycles: numberOfGcCycles,
       );
 
       expect(() => expect(leaks, isLeakFree), throwsException);
@@ -54,7 +54,8 @@ void main() {
       expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
     });
 
-    test('Retaining path cannot be collected in release mode, $gcCountBuffer.',
+    test(
+        'Retaining path cannot be collected in release mode, $numberOfGcCycles.',
         () async {
       late LeakTrackedClass notGCedObject;
       Future<void> test() async {
@@ -68,7 +69,7 @@ void main() {
           leakDiagnosticConfig: const LeakDiagnosticConfig(
             collectRetainingPathForNonGCed: true,
           ),
-          gcCountBuffer: gcCountBuffer,
+          numberOfGcCycles: numberOfGcCycles,
         );
       }
 
@@ -82,17 +83,18 @@ void main() {
       );
     });
 
-    test('$isLeakFree succeeds, $gcCountBuffer.', () async {
+    test('$isLeakFree succeeds, $numberOfGcCycles.', () async {
       final leaks = await withLeakTracking(
         () async {},
         shouldThrowOnLeaks: false,
-        gcCountBuffer: gcCountBuffer,
+        numberOfGcCycles: numberOfGcCycles,
       );
 
       expect(leaks, isLeakFree);
     });
 
-    test('Stack trace does not start with leak tracker calls, $gcCountBuffer.',
+    test(
+        'Stack trace does not start with leak tracker calls, $numberOfGcCycles.',
         () async {
       final leaks = await withLeakTracking(
         () async {
@@ -103,7 +105,7 @@ void main() {
           collectStackTraceOnStart: true,
           collectStackTraceOnDisposal: true,
         ),
-        gcCountBuffer: gcCountBuffer,
+        numberOfGcCycles: numberOfGcCycles,
       );
 
       try {

@@ -18,8 +18,8 @@ bool shouldObjectBeGced({
   required DateTime timeAtDisposal,
   required int currentGcCount,
   required DateTime currentTime,
-  required Duration disposalTimeBuffer,
-  required int gcCountBuffer,
+  required Duration disposalTime,
+  required int numberOfGcCycles,
 }) =>
-    currentGcCount - gcCountAtDisposal >= gcCountBuffer &&
-    currentTime.difference(timeAtDisposal) >= disposalTimeBuffer;
+    currentGcCount - gcCountAtDisposal >= numberOfGcCycles &&
+    currentTime.difference(timeAtDisposal) >= disposalTime;

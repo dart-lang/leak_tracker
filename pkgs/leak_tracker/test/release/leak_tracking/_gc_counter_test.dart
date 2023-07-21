@@ -10,7 +10,7 @@ void main() {
   test('shouldObjectBeGced', () {
     final now = DateTime(2022);
     const gcNow = 1000;
-    const disposalTimeBuffer = Duration(milliseconds: 100);
+    const timeToDispose = Duration(milliseconds: 100);
 
     bool shouldBeGced(int disposalGcCount, DateTime disposalTime) =>
         shouldObjectBeGced(
@@ -18,8 +18,8 @@ void main() {
           timeAtDisposal: disposalTime,
           currentGcCount: gcNow,
           currentTime: now,
-          disposalTimeBuffer: disposalTimeBuffer,
-          gcCountBuffer: defaultGcCountBuffer,
+          disposalTime: timeToDispose,
+          numberOfGcCycles: defaultNumberOfGcCycles,
         );
 
     final forJustGcEd = shouldBeGced(gcNow, now);
@@ -33,8 +33,8 @@ void main() {
     expect(forNotEnoughGc, isFalse);
 
     final forEnoughTimeAndGc = shouldBeGced(
-      gcNow - defaultGcCountBuffer,
-      now.subtract(disposalTimeBuffer),
+      gcNow - defaultNumberOfGcCycles,
+      now.subtract(timeToDispose),
     );
     expect(forEnoughTimeAndGc, isTrue);
   });
