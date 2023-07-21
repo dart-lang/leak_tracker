@@ -51,7 +51,7 @@ class MemoryLeaksDetectedError extends StateError {
 /// it is considered a notGCed leak.
 /// Theoretically, the value 1 should be enough, but in practice it creates false
 /// positives for stale applications.
-/// So, recommended value for applications is 3, and for tests is 1.
+/// So, recommended value for applications is 3, and for tests is 2.
 ///
 /// If you test Flutter widgets, connect their instrumentation to the leak
 /// tracker:
