@@ -61,7 +61,7 @@ Leak tracker does not work for web platform.
 ### By tracked classes
 
 The leak tracker will catch leaks only for instrumented
-objects (See [concepts](#leak-tracking-concepts) for details).
+objects (See [concepts](CONCEPTS.md) for details).
 
 However, the good news is:
 

@@ -98,8 +98,28 @@ If `A` and `B` are still needed, `B` should assign null to the variable that ref
 Otherwise, the reference to the first non-needed object on the path (`staticX`, `A` or `B`) should be released.
 
 ```
-staticX -> A -> B -> disposedD
+root -> staticX -> A -> B -> disposedD
 ```
+
+The leak tracker does not detect all leaks, only the leaks of objects
+[it explicitly is tracking](https://github.com/dart-lang/leak_tracker/blob/main/doc/DETECT.md#by-tracked-classes).
+When fixing detected leaks, make sure to look for other objects that may have been leaked without being visible to the tracker.
+
+To fix all leaks, you need to release closest to the root object on retaining path
+(first check `staticX`, then `A`, then `B`), that is not needed any more. All objects referenced from it will
+also become unreachable, and thus available for garbage collection.
+
+One of signs that some leaks still exist is fixing a leak by releasing link to child in the parent's `dispose`,
+because link to not needed parent should be released itself, together with its disposal. If
+your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects: 
+
+```
+void dispose() {
+    _leakTrackedChild!.dispose();
+    _leakTrackedChild = null; // Wrong fix! This line hides leaks.
+}
+```
+
 
 ### 2. More than one closure context
 
