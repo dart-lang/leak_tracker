@@ -45,11 +45,13 @@ class MemoryLeaksDetectedError extends StateError {
 /// to wait infinitely for the forced garbage collection, that is needed
 /// to analyse results.
 ///
-/// [gcCountBuffer] is number of full GC cycles, enough for a non reachable object to be GCed.
+/// [gcCountBuffer] is number of full GC cycles, that should be enough for
+/// a non reachable object to be GCed.
 /// If after this number of GC cycles a disposed object is still not garbage collected,
 /// it is considered a notGCed leak.
-/// Theoretically, the value 1 should be enough, but in practice for stale applications
-/// it is too small. So, recommended value for applications is 3, and for tests is 1.
+/// Theoretically, the value 1 should be enough, but in practice it creates false
+/// positives for stale applications.
+/// So, recommended value for applications is 3, and for tests is 1.
 ///
 /// If you test Flutter widgets, connect their instrumentation to the leak
 /// tracker:
