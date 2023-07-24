@@ -5,6 +5,6 @@ Dependencies that create loop are markes with `!`.
 
 ```mermaid
 flowchart TD;
-_retaining_path.dart-->_service.dart;
+_retaining_path.dart-->_connection.dart;
 ```
 

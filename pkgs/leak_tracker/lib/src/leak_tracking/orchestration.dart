@@ -9,10 +9,10 @@ import 'package:logging/logging.dart';
 
 import '../shared/shared_model.dart';
 import '_formatting.dart';
-import 'leak_tracker.dart';
-import 'leak_tracker_model.dart';
 import '_retaining_path/_connection.dart';
 import '_retaining_path/_retaining_path.dart';
+import 'leak_tracker.dart';
+import 'model.dart';
 
 final _log = Logger('orchestration.dart');
 

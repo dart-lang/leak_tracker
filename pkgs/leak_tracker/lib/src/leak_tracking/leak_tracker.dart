@@ -8,7 +8,7 @@ import '../shared/shared_model.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_leak_checker.dart';
 import '_object_tracker.dart';
-import 'leak_tracker_model.dart';
+import 'model.dart';
 
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 LeakChecker? _leakChecker;

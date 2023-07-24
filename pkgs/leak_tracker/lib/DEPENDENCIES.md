@@ -7,6 +7,5 @@ Dependencies that create loop are markes with `!`.
 flowchart TD;
 devtools_integration.dart-->src;
 leak_tracker.dart-->src;
-testing.dart-->src;
 ```
 
