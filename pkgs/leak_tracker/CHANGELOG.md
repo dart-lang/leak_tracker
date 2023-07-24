@@ -1,6 +1,6 @@
 # 9.0.0
 
-* Rename `gcCountBuffer` to `numberOfGcCycles`.
+* Rename `gcCountBuffer` to `numberOfGcCycles` and `disposalTimeBuffer` to `disposalTime`.
 
 # 8.0.3
 
