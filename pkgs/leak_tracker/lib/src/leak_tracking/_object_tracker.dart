@@ -13,8 +13,8 @@ import '_finalizer.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
 import 'leak_tracker_model.dart';
-import 'retaining_path/_connection.dart';
-import 'retaining_path/_retaining_path.dart';
+import '_retaining_path/_connection.dart';
+import '_retaining_path/_retaining_path.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.

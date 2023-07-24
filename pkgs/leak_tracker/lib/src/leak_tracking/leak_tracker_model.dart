@@ -18,9 +18,11 @@ class LeakTrackerGlobalSettings {
   /// If null, the path will be requested without limit.
   static int? maxRequestsForRetainingPath = 10;
 
-  static bool get isLeakTrackingInProcess => throw UnimplementedError();
+  static bool get isTrackingInProcess => throw UnimplementedError();
 
-  static bool get isLeakTrackingPaused => throw UnimplementedError();
+  static bool get isTrackingPaused => throw UnimplementedError();
+
+  static String get phase => throw UnimplementedError();
 }
 
 /// Handler to collect leak summary.
