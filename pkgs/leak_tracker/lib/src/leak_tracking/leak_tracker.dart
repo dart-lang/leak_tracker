@@ -183,7 +183,7 @@ Future<Leaks> collectLeaks() async {
 /// Invoke this method to detect the leaks earlier, when
 /// the leaked objects are not GCed yet,
 /// to obtain retaining path.
-Future<void> checkNonGCed() async {
+Future<void> checkNotGCed() async {
   Future<void>? result;
 
   assert(() {
