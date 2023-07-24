@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/src/leak_tracking/_formatting.dart';
+import 'package:leak_tracker/src/shared/_formatting.dart';
 
 const _jsonEmpty = <String, dynamic>{};
 

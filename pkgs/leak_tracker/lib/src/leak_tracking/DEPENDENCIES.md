@@ -19,7 +19,6 @@ leak_tracker.dart-->_dispatcher.dart;
 leak_tracker.dart-->_leak_checker.dart;
 leak_tracker.dart-->_object_tracker.dart;
 leak_tracker.dart-->model.dart;
-orchestration.dart-->_formatting.dart;
 orchestration.dart-->_retaining_path;
 orchestration.dart-->leak_tracker.dart;
 orchestration.dart-->model.dart;

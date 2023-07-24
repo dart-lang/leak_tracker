@@ -1,7 +1,4 @@
 // ignore: avoid_classes_with_only_static_members, as it is ok for enum-like classes.
-import 'dart:developer';
-
-import 'package:vm_service/vm_service.dart';
 
 import '_global_state.dart';
 
