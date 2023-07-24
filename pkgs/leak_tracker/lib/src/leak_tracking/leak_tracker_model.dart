@@ -85,7 +85,7 @@ class LeakDiagnosticConfig {
 ///
 /// Theoretically, 2 should be enough, however it gives false positives
 /// if there is no activity in the application for ~5 minutes.
-const defaultGcCountBuffer = 3;
+const defaultNumberOfGcCycles = 3;
 
 class LeakTrackingConfiguration {
   const LeakTrackingConfiguration({
@@ -93,9 +93,9 @@ class LeakTrackingConfiguration {
     this.notifyDevTools = true,
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
-    this.disposalTimeBuffer = const Duration(milliseconds: 100),
+    this.disposalTime = const Duration(milliseconds: 100),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.gcCountBuffer = defaultGcCountBuffer,
+    this.numberOfGcCycles = defaultNumberOfGcCycles,
   });
 
   /// The leak tracker:
@@ -105,18 +105,18 @@ class LeakTrackingConfiguration {
   /// at the moment of leak checking.
   LeakTrackingConfiguration.passive({
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    int gcCountBuffer = defaultGcCountBuffer,
+    int numberOfGcCycles = defaultNumberOfGcCycles,
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
           checkPeriod: null,
-          disposalTimeBuffer: const Duration(),
+          disposalTime: const Duration(),
           leakDiagnosticConfig: leakDiagnosticConfig,
-          gcCountBuffer: gcCountBuffer,
+          numberOfGcCycles: numberOfGcCycles,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
-  final int gcCountBuffer;
+  final int numberOfGcCycles;
 
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
@@ -135,7 +135,7 @@ class LeakTrackingConfiguration {
   final LeakSummaryCallback? onLeaks;
 
   /// Time to allow the disposal invoker to release the reference to the object.
-  final Duration disposalTimeBuffer;
+  final Duration disposalTime;
 }
 
 /// Configuration for leak tracking in unit tests.

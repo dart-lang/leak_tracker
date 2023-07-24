@@ -22,9 +22,9 @@ class Event {
 class MockObjectTracker extends ObjectTracker {
   MockObjectTracker()
       : super(
-          disposalTimeBuffer: const Duration(milliseconds: 100),
+          disposalTime: const Duration(milliseconds: 100),
           leakDiagnosticConfig: const LeakDiagnosticConfig(),
-          gcCountBuffer: defaultGcCountBuffer,
+          numberOfGcCycles: defaultNumberOfGcCycles,
         );
 
   final events = <Event>[];

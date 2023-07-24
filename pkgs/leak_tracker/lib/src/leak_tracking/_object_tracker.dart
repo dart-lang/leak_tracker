@@ -25,8 +25,8 @@ class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    required this.disposalTimeBuffer,
-    required this.gcCountBuffer,
+    required this.disposalTime,
+    required this.numberOfGcCycles,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -40,7 +40,7 @@ class ObjectTracker implements LeakProvider {
   late IdentityHashCoder _coder;
 
   /// Time to allow the disposal invoker to release the reference to the object.
-  final Duration disposalTimeBuffer;
+  final Duration disposalTime;
 
   late FinalizerWrapper _finalizer;
 
@@ -52,7 +52,7 @@ class ObjectTracker implements LeakProvider {
 
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
-  final int gcCountBuffer;
+  final int numberOfGcCycles;
 
   void startTracking(
     Object object, {
@@ -93,7 +93,7 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
-    if (record.isGCedLateLeak(disposalTimeBuffer, gcCountBuffer)) {
+    if (record.isGCedLateLeak(disposalTime, numberOfGcCycles)) {
       _objects.gcedLateLeaks.add(record);
     } else if (record.isNotDisposedLeak) {
       _objects.gcedNotDisposedLeaks.add(record);
@@ -181,8 +181,8 @@ class ObjectTracker implements LeakProvider {
       if (_notGCed(code).isNotGCedLeak(
         _gcCounter.gcCount,
         now,
-        disposalTimeBuffer,
-        gcCountBuffer,
+        disposalTime,
+        numberOfGcCycles,
       )) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
