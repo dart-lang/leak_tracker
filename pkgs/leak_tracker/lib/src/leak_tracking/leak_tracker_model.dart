@@ -7,9 +7,6 @@ import '../shared/shared_model.dart';
 // ignore: avoid_classes_with_only_static_members, as it is ok for enum-like classes.
 /// Global settings for leak tracker.
 class LeakTrackerGlobalSettings {
-  /// If true, the leak tracker will collect debug information for leaks.
-  static bool collectDebugInformationForLeaks = false;
-
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.
   static bool warnForNonSupportedPlatforms = true;
@@ -18,8 +15,12 @@ class LeakTrackerGlobalSettings {
   /// of validation for leaks.
   ///
   /// If the number is too big, the performance may be seriously impacted.
-  /// If null, path will be requested without limit.
+  /// If null, the path will be requested without limit.
   static int? maxRequestsForRetainingPath = 10;
+
+  static bool get isLeakTrackingInProcess => throw UnimplementedError();
+
+  static bool get isLeakTrackingPaused => throw UnimplementedError();
 }
 
 /// Handler to collect leak summary.

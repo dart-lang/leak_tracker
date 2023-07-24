@@ -1,3 +1,8 @@
+# 10.0.0
+
+* Enable bulk leak tracking for regression tests.
+* Remove global flag [collectDebugInformationForLeaks].
+
 # 9.0.0
 
 * Rename `gcCountBuffer` to `numberOfGcCycles` and `disposalTimeBuffer` to `disposalTime`.

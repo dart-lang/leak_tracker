@@ -32,18 +32,14 @@ void testWidgetsWithLeakTracking(
   bool semanticsEnabled = true,
   TestVariant<Object?> variant = const DefaultTestVariant(),
   dynamic tags,
-  LeakTrackingTestConfig? leakTrackingTestConfig,
+  LeakTrackingTestConfig leakTrackingTestConfig =
+      const LeakTrackingTestConfig(),
 }) {
-  final config = leakTrackingTestConfig ??
-      (LeakTrackerGlobalSettings.collectDebugInformationForLeaks
-          ? LeakTrackingTestConfig.debug()
-          : const LeakTrackingTestConfig());
-
   Future<void> wrappedCallback(WidgetTester tester) async {
     await withFlutterLeakTracking(
       () async => callback(tester),
       tester,
-      config,
+      leakTrackingTestConfig,
     );
   }
 

@@ -47,14 +47,6 @@ For collecting debugging information in tests, temporarily pass an instance of `
   }, leakTrackingTestConfig: LeakTrackingTestConfig.debug());
 ```
 
-Or, you can temporarily set global flag, to make all tests collecting debug information:
-
-```
-setUpAll(() {
-  LeakTrackerGlobalFlags.collectDebugInformationForLeaks = true;
-});
-```
-
 **Applications**
 
 For collecting debugging information in your running application, the options are:
@@ -111,7 +103,7 @@ also become unreachable, and thus available for garbage collection.
 
 One of signs that some leaks still exist is fixing a leak by releasing link to child in the parent's `dispose`,
 because link to not needed parent should be released itself, together with its disposal. If
-your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects: 
+your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects:
 
 ```
 void dispose() {
