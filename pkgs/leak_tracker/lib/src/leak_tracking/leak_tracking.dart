@@ -9,6 +9,7 @@ import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_leak_reporter.dart';
+import '_leak_tracker.dart';
 import '_object_tracker.dart';
 import 'model.dart';
 
@@ -17,8 +18,10 @@ abstract class LeakTracking {
 
   /// Leak provider, used for integration with DevTools.
   ///
-  /// It should be updated every time leak tracking is reconfigured.
+  /// It's value should be updated every time leak tracking is reconfigured.
   static final _leakProvider = ObjectRef<WeakReference<LeakProvider>?>(null);
+
+  static bool get isEnabled => _leakTracker != null;
 
   /// Enables leak tracking for the application.
   ///
@@ -30,12 +33,11 @@ abstract class LeakTracking {
   ///
   /// If [resetIfAlreadyEnabled] is true and leak tracking is already on,
   /// [StateError] will be thrown.
-  void enableLeakTracking({
-    LeakTrackingConfiguration? config,
+  static void enableLeakTracking({
+    LeakTrackingConfiguration config = const LeakTrackingConfiguration(),
     bool resetIfAlreadyEnabled = false,
   }) {
     assert(() {
-      final theConfig = config ??= const LeakTrackingConfiguration();
       if (_leakTracker != null) {
         if (!resetIfAlreadyEnabled) {
           throw StateError('Leak tracking is already enabled.');
@@ -43,24 +45,14 @@ abstract class LeakTracking {
         disableLeakTracking();
       }
 
-      final objectTracker = ObjectTracker(
-        leakDiagnosticConfig: theConfig.leakDiagnosticConfig,
-        disposalTime: theConfig.disposalTime,
-        numberOfGcCycles: theConfig.numberOfGcCycles,
-      );
+      final leakTracker = _leakTracker = LeakTracker(config);
+      _leakProvider.value = WeakReference(leakTracker.objectTracker);
 
-      final leakChecker = LeakReporter(
-        leakProvider: objectTracker,
-        checkPeriod: theConfig.checkPeriod,
-        onLeaks: theConfig.onLeaks,
-        stdoutSink: theConfig.stdoutLeaks ? StdoutSummarySink() : null,
-        devToolsSink: theConfig.notifyDevTools ? DevToolsSummarySink() : null,
-      );
-
-      _leakProvider.value = WeakReference(objectTracker);
-
-      if (theConfig.notifyDevTools) {
-        setupDevToolsIntegration(_leakProvider);
+      if (config.notifyDevTools) {
+        // While [leakTracker] will push summary leak notifications to DevTools,
+        // DevTools may request leak details from the application via integration.
+        // That's why it needs [_leakProvider].
+        initializeDevToolsIntegration(_leakProvider);
       } else {
         registerLeakTrackingServiceExtension();
       }
@@ -71,14 +63,10 @@ abstract class LeakTracking {
   /// Disables leak tracking for the application.
   ///
   /// See usage guidance at https://github.com/dart-lang/leak_tracker.
-  void disableLeakTracking() {
+  static void disableLeakTracking() {
     assert(() {
-      _leakProvider.value?.dispose();
-      _leakChecker?.dispose();
-      _leakChecker = null;
-      _objectTracker.value?.dispose();
-      _objectTracker.value = null;
-
+      _leakTracker?.dispose();
+      _leakTracker = null;
       return true;
     }());
   }

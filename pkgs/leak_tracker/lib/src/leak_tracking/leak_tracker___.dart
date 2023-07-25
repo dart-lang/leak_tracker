@@ -10,8 +10,6 @@ import '_leak_reporter.dart';
 import '_object_tracker.dart';
 import 'model.dart';
 
-class LeakTracker {}
-
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 
 LeakReporter? _leakChecker;
@@ -64,7 +62,7 @@ void enableLeakTracking({
     );
 
     if (theConfig.notifyDevTools) {
-      setupDevToolsIntegration(_objectTracker);
+      initializeDevToolsIntegration(_objectTracker);
     } else {
       registerLeakTrackingServiceExtension();
     }

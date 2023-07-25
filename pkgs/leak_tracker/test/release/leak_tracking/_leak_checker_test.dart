@@ -6,8 +6,6 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_leak_reporter.dart';
 import 'package:test/test.dart';
 
-// Enum-like static classes are ok.
-// ignore: avoid_classes_with_only_static_members
 class _SummaryValues {
   static final zero = LeakSummary({});
 

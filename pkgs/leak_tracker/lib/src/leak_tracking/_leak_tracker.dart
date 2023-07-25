@@ -11,6 +11,28 @@ import '_object_tracker.dart';
 import 'model.dart';
 
 class LeakTracker {
-  final ObjectTracker _objectTracker;
-  final LeakReporter _leakChecker;
+  LeakTracker(LeakTrackingConfiguration config) {
+    objectTracker = ObjectTracker(
+      leakDiagnosticConfig: config.leakDiagnosticConfig,
+      disposalTime: config.disposalTime,
+      numberOfGcCycles: config.numberOfGcCycles,
+    );
+
+    leakReporter = LeakReporter(
+      leakProvider: objectTracker,
+      checkPeriod: config.checkPeriod,
+      onLeaks: config.onLeaks,
+      stdoutSink: config.stdoutLeaks ? StdoutSummarySink() : null,
+      devToolsSink: config.notifyDevTools ? DevToolsSummarySink() : null,
+    );
+  }
+
+  late final ObjectTracker objectTracker;
+
+  late final LeakReporter leakReporter;
+
+  void dispose() {
+    objectTracker.dispose();
+    leakReporter.dispose();
+  }
 }

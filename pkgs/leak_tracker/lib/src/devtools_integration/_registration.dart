@@ -27,8 +27,8 @@ bool registerLeakTrackingServiceExtension() => _registerServiceExtension(
 /// Registers service extension for DevTools integration.
 ///
 /// If the extension is already registered, returns false.
-bool setupDevToolsIntegration(
-  ObjectRef<LeakProvider?> leakProvider,
+bool initializeDevToolsIntegration(
+  ObjectRef<WeakReference<LeakProvider>?> leakProvider,
 ) {
   Future<ServiceExtensionResponse> handler(
     String method,
@@ -37,7 +37,7 @@ bool setupDevToolsIntegration(
     try {
       assert(method == memoryLeakTrackingExtensionName);
 
-      final theLeakProvider = leakProvider.value;
+      final theLeakProvider = leakProvider.value?.target;
 
       if (theLeakProvider == null) {
         return ResponseFromApp(LeakTrackingTurnedOffError())
