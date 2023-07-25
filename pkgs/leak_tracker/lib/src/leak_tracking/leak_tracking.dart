@@ -20,6 +20,10 @@ abstract class LeakTracking {
   /// Returns true if leak tracking is configured.
   static bool get isStarted => _leakTracker != null;
 
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  static bool warnForNonSupportedPlatforms = true;
+
   /// Configures leak tracking for the application.
   ///
   /// The leak tracking will function only for debug/profile/developer mode.

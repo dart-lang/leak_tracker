@@ -81,7 +81,6 @@ class LeakTrackingConfiguration {
     this.disposalTime = const Duration(milliseconds: 100),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
-    this.warnForNonSupportedPlatforms = true,
     this.maxRequestsForRetainingPath = 10,
   });
 
@@ -123,10 +122,6 @@ class LeakTrackingConfiguration {
 
   /// Time to allow the disposal invoker to release the reference to the object.
   final Duration disposalTime;
-
-  /// If true, a warning will be printed when leak tracking is
-  /// requested for a non-supported platform.
-  final bool warnForNonSupportedPlatforms;
 
   /// Limit for number of requests for retaining path per one round
   /// of validation for leaks.
