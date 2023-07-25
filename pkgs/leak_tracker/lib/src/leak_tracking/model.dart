@@ -69,6 +69,7 @@ class LeakDiagnosticConfig {
 /// if there is no activity in the application for ~5 minutes.
 const defaultNumberOfGcCycles = 3;
 
+/// Leak tracking configuration, that cannot be changed after leak tracking is started.
 class LeakTrackingConfiguration {
   const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
@@ -78,6 +79,8 @@ class LeakTrackingConfiguration {
     this.disposalTime = const Duration(milliseconds: 100),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
+    this.warnForNonSupportedPlatforms = true,
+    this.maxRequestsForRetainingPath = 10,
   });
 
   /// The leak tracker:
@@ -118,6 +121,17 @@ class LeakTrackingConfiguration {
 
   /// Time to allow the disposal invoker to release the reference to the object.
   final Duration disposalTime;
+
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  final bool warnForNonSupportedPlatforms;
+
+  /// Limit for number of requests for retaining path per one round
+  /// of validation for leaks.
+  ///
+  /// If the number is too big, the performance may be seriously impacted.
+  /// If null, the path will be srequested without limit.
+  final int? maxRequestsForRetainingPath;
 }
 
 /// Configuration for leak tracking in unit tests.

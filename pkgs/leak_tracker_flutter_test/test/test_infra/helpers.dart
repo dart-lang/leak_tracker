@@ -91,7 +91,7 @@ Future<void> withFlutterLeakTracking(
   }
 
   void flutterEventToLeakTracker(ObjectEvent event) {
-    return dispatchObjectEvent(event.toMap());
+    return LeakTracking.dispatchObjectEvent(event.toMap());
   }
 
   return TestAsyncUtils.guard<void>(() async {

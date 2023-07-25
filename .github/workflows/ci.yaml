@@ -1,5 +1,8 @@
 name: CI
 
+# TODO(polina-c): configure auto-update for diagrams
+# https://github.com/dart-lang/leak_tracker/issues/104
+
 on:
   schedule:
     # “At 00:00 (UTC) on Sunday.”

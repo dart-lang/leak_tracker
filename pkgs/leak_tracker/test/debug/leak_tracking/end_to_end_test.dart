@@ -14,7 +14,7 @@ void main() {
     LeakTrackerGlobalState.maxRequestsForRetainingPath = null;
   });
 
-  tearDown(() => disableLeakTracking());
+  tearDown(() => LeakTracking.stop());
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
     test(

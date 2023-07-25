@@ -2,11 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/src/leak_tracking/leak_tracker___.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 class LeakTrackedClass {
   LeakTrackedClass() {
-    dispatchObjectCreated(
+    LeakTracking.dispatchObjectCreated(
       library: library,
       className: '$LeakTrackedClass',
       object: this,
@@ -16,7 +16,7 @@ class LeakTrackedClass {
   static const library = 'package:my_package/lib/src/my_lib.dart';
 
   void dispose() {
-    dispatchObjectDisposed(object: this);
+    LeakTracking.dispatchObjectDisposed(object: this);
   }
 }
 

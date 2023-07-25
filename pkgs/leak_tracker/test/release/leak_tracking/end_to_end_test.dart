@@ -13,7 +13,7 @@ import '../../test_infra/data/dart_classes.dart';
 /// Tests for non-mocked public API of leak tracker.
 void main() {
   tearDown(() {
-    disableLeakTracking();
+    LeakTracking.stop();
   });
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
