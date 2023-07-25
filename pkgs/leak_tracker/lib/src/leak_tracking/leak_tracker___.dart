@@ -6,7 +6,7 @@ import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_dispatcher.dart' as dispatcher;
-import '_leak_checker.dart';
+import '_leak_reporter.dart';
 import '_object_tracker.dart';
 import 'model.dart';
 
@@ -14,7 +14,7 @@ class LeakTracker {}
 
 final _objectTracker = ObjectRef<ObjectTracker?>(null);
 
-LeakChecker? _leakChecker;
+LeakReporter? _leakChecker;
 
 ObjectTracker _theObjectTracker() {
   // TODO(polina-c): return both tracker and checker when tuples get released.
@@ -55,7 +55,7 @@ void enableLeakTracking({
 
     _objectTracker.value = newTracker;
 
-    _leakChecker = LeakChecker(
+    _leakChecker = LeakReporter(
       leakProvider: newTracker,
       checkPeriod: theConfig.checkPeriod,
       onLeaks: theConfig.onLeaks,

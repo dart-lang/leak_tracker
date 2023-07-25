@@ -6,12 +6,11 @@ import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_dispatcher.dart' as dispatcher;
-import '_leak_checker.dart';
+import '_leak_reporter.dart';
 import '_object_tracker.dart';
 import 'model.dart';
 
 class LeakTracker {
-  // static LeakTracker? _leakTracker;
-
-  // LeakProvider?
+  final ObjectTracker _objectTracker;
+  final LeakReporter _leakChecker;
 }

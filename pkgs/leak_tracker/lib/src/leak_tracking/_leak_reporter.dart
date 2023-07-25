@@ -13,8 +13,8 @@ import 'model.dart';
 ///
 /// If there are leaks, reports them to the enabled outputs:
 /// listener, console and DevTools.
-class LeakChecker {
-  LeakChecker({
+class LeakReporter {
+  LeakReporter({
     required this.leakProvider,
     required this.checkPeriod,
     required this.onLeaks,
