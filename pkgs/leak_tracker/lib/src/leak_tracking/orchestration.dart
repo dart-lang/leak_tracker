@@ -89,6 +89,7 @@ Future<Leaks> withLeakTracking(
   LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
   AsyncCodeRunner? asyncCodeRunner,
   int numberOfGcCycles = defaultNumberOfGcCycles,
+  int? maxRequestsForRetainingPath = 10,
 }) async {
   if (numberOfGcCycles <= 0) {
     throw ArgumentError.value(
@@ -105,6 +106,7 @@ Future<Leaks> withLeakTracking(
     config: LeakTrackingConfiguration.passive(
       leakDiagnosticConfig: leakDiagnosticConfig,
       numberOfGcCycles: numberOfGcCycles,
+      maxRequestsForRetainingPath: maxRequestsForRetainingPath,
     ),
   );
 

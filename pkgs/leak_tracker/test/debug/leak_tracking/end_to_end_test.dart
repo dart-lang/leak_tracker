@@ -10,17 +10,12 @@ import '../../test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 void main() {
-  setUp(() {
-    LeakTrackerGlobalState.maxRequestsForRetainingPath = null;
-  });
-
   tearDown(() => LeakTracking.stop());
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
     test(
         'Leak tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
         () async {
-      LeakTrackerGlobalState.maxRequestsForRetainingPath = 2;
       final leaks = await withLeakTracking(
         () async {
           LeakingClass();

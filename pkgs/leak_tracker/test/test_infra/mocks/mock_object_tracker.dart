@@ -25,6 +25,7 @@ class MockObjectTracker extends ObjectTracker {
           disposalTime: const Duration(milliseconds: 100),
           leakDiagnosticConfig: const LeakDiagnosticConfig(),
           numberOfGcCycles: defaultNumberOfGcCycles,
+          maxRequestsForRetainingPath: 0,
         );
 
   final events = <Event>[];

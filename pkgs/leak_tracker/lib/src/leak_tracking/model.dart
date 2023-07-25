@@ -92,6 +92,7 @@ class LeakTrackingConfiguration {
   LeakTrackingConfiguration.passive({
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
     int numberOfGcCycles = defaultNumberOfGcCycles,
+    int? maxRequestsForRetainingPath = 10,
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -99,6 +100,7 @@ class LeakTrackingConfiguration {
           disposalTime: const Duration(),
           leakDiagnosticConfig: leakDiagnosticConfig,
           numberOfGcCycles: numberOfGcCycles,
+          maxRequestsForRetainingPath: maxRequestsForRetainingPath,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.

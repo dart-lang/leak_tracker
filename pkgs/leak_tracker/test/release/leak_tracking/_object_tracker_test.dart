@@ -81,6 +81,7 @@ void main() {
         disposalTime: _disposalTime,
         coder: mockCoder,
         numberOfGcCycles: defaultNumberOfGcCycles,
+        maxRequestsForRetainingPath: 0,
       );
     });
 
@@ -147,6 +148,7 @@ void main() {
         gcCounter: gcCounter,
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
+        maxRequestsForRetainingPath: 0,
       );
     });
 
@@ -323,6 +325,7 @@ void main() {
         ),
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
+        maxRequestsForRetainingPath: 0,
       );
     });
 
