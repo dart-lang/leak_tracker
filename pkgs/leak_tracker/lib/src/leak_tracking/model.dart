@@ -69,7 +69,9 @@ class LeakDiagnosticConfig {
 /// if there is no activity in the application for ~5 minutes.
 const defaultNumberOfGcCycles = 3;
 
-/// Leak tracking configuration, that cannot be changed after leak tracking is started.
+/// Leak tracking configuration.
+///
+/// Contains settings that cannot be changed after leak tracking is started.
 class LeakTrackingConfiguration {
   const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
