@@ -27,6 +27,7 @@ void main() {
           collectRetainingPathForNonGCed: true,
         ),
         numberOfGcCycles: numberOfGcCycles,
+        maxRequestsForRetainingPath: 2,
       );
 
       const pathHeader = '  path: >';

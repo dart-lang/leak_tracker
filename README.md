@@ -33,3 +33,11 @@ To temporary enable logs, add this line to `main`:
 ```
 Logger.root.onRecord.listen((LogRecord record) => print(record.message));
 ```
+
+## How to regenerate diagrams
+
+To regenerate diagrams, run:
+
+```
+dart run layerlens
+```

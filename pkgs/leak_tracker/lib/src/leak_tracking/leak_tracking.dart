@@ -9,6 +9,7 @@ import '_dispatcher.dart' as dispatcher;
 import '_leak_tracker.dart';
 import 'model.dart';
 
+/// Provides leak tracking functionality.
 abstract class LeakTracking {
   static LeakTracker? _leakTracker;
 
