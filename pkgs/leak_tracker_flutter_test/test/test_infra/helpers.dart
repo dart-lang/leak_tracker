@@ -78,12 +78,12 @@ Future<void> withFlutterLeakTracking(
 ) async {
   // Leak tracker does not work for web platform.
   if (kIsWeb) {
-    final bool shouldPrintWarning =
-        !_webWarningPrinted && LeakTracking.warnForNonSupportedPlatforms;
+    final bool shouldPrintWarning = !_webWarningPrinted &&
+        LeakTracking.settings.warnForNotSupportedPlatforms;
     if (shouldPrintWarning) {
       _webWarningPrinted = true;
       debugPrint(
-        'Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTracking.warnForNonSupportedPlatforms` to false.',
+        'Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTracking.settings.warnForNotSupportedPlatforms` to false.',
       );
     }
     await callback();

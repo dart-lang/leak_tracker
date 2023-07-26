@@ -18,12 +18,14 @@ abstract class LeakTracking {
   /// It's value should be updated every time leak tracking is reconfigured.
   static final _leakProvider = ObjectRef<WeakReference<LeakProvider>?>(null);
 
+  /// Leak tracking settings.
+  ///
+  /// Can be modifeide before leak tracking is started and while it
+  /// is in process.
+  static final settings = LeakTrackingSettings();
+
   /// Returns true if leak tracking is configured.
   static bool get isStarted => _leakTracker != null;
-
-  /// If true, a warning will be printed when leak tracking is
-  /// requested for a non-supported platform.
-  static bool warnForNonSupportedPlatforms = true;
 
   /// Configures leak tracking for the application.
   ///
@@ -36,7 +38,7 @@ abstract class LeakTracking {
   /// If [resetIfAlreadyStarted] is false and leak tracking is already on,
   /// [StateError] will be thrown.
   static void start({
-    LeakTrackingConfiguration config = const LeakTrackingConfiguration(),
+    LeakTrackingConfig config = const LeakTrackingConfig(),
     bool resetIfAlreadyStarted = false,
   }) {
     assert(() {

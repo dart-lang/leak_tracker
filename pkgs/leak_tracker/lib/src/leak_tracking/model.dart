@@ -72,8 +72,8 @@ const defaultNumberOfGcCycles = 3;
 /// Leak tracking configuration.
 ///
 /// Contains settings that cannot be changed after leak tracking is started.
-class LeakTrackingConfiguration {
-  const LeakTrackingConfiguration({
+class LeakTrackingConfig {
+  const LeakTrackingConfig({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
     this.onLeaks,
@@ -89,7 +89,7 @@ class LeakTrackingConfiguration {
   /// - when leak checking is invoked, will not send notifications
   /// - will assume the methods `dispose` are completed
   /// at the moment of leak checking.
-  LeakTrackingConfiguration.passive({
+  LeakTrackingConfig.passive({
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
     int numberOfGcCycles = defaultNumberOfGcCycles,
     int? maxRequestsForRetainingPath = 10,
@@ -131,6 +131,26 @@ class LeakTrackingConfiguration {
   /// If the number is too big, the performance may be seriously impacted.
   /// If null, the path will be srequested without limit.
   final int? maxRequestsForRetainingPath;
+}
+
+/// Settings that can be modified while leak tracking is in process.
+class LeakTrackingSettings {
+  /// When false, added objects will not be tracked.
+  ///
+  /// If object is added when the value is true, it will be tracked
+  /// even if the value will become false before object is GCed.
+  bool paused = false;
+
+  /// Phase of the application execution.
+  ///
+  /// If not null, it will be output in leak report.
+  ///
+  /// Can be used to distinguish between different tests.
+  String? phase;
+
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  bool warnForNotSupportedPlatforms = true;
 }
 
 /// Configuration for leak tracking in unit tests.

@@ -1,5 +1,6 @@
 # 9.0.0
 
+* Rename `LeakTrackingConfiguration` to `LeakTrackingConfig`.
 * Remove global flag [collectDebugInformationForLeaks].
 * Rename `checkNonGCed` to `checkNotGCed`.
 * Group global items related to leak tracking, in abstract class LeakTracking.

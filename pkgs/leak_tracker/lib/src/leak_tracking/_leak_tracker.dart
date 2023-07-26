@@ -7,7 +7,7 @@ import '_object_tracker.dart';
 import 'model.dart';
 
 class LeakTracker {
-  LeakTracker(LeakTrackingConfiguration config) {
+  LeakTracker(LeakTrackingConfig config) {
     objectTracker = ObjectTracker(
       leakDiagnosticConfig: config.leakDiagnosticConfig,
       disposalTime: config.disposalTime,

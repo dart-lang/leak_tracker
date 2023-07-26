@@ -103,7 +103,7 @@ Future<Leaks> withLeakTracking(
 
   LeakTracking.start(
     resetIfAlreadyStarted: true,
-    config: LeakTrackingConfiguration.passive(
+    config: LeakTrackingConfig.passive(
       leakDiagnosticConfig: leakDiagnosticConfig,
       numberOfGcCycles: numberOfGcCycles,
       maxRequestsForRetainingPath: maxRequestsForRetainingPath,

@@ -69,7 +69,7 @@ void main() {
     );
 
     // Mock defaults match real configuration defaults.
-    const config = LeakTrackingConfiguration();
+    const config = LeakTrackingConfig();
     final checker = defaultLeakChecker();
     expect(config.notifyDevTools, checker.devToolsSink != null);
     expect(config.stdoutLeaks, checker.stdoutSink != null);
