@@ -133,24 +133,29 @@ class LeakTrackingConfig {
   final int? maxRequestsForRetainingPath;
 }
 
-/// Settings that can be modified while leak tracking is in process.
+/// Settings that can be modified while leak tracking is in process and before it starts.
 class LeakTrackingSettings {
+  PhaseSettings phase = const PhaseSettings();
+}
+
+/// Leak tracking settings for a specific phase of the application execution.
+///
+/// Can be used to customize leak tracking for individual tests.
+class PhaseSettings {
+  const PhaseSettings({this.paused = false, this.name});
+
   /// When false, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false before object is GCed.
-  bool paused = false;
+  final bool paused;
 
   /// Phase of the application execution.
   ///
   /// If not null, it will be output in leak report.
   ///
-  /// Can be used to distinguish between different tests.
-  String? phase;
-
-  /// If true, a warning will be printed when leak tracking is
-  /// requested for a non-supported platform.
-  bool warnForNotSupportedPlatforms = true;
+  /// Can be used to specify name of a test.
+  final String? name;
 }
 
 /// Configuration for leak tracking in unit tests.

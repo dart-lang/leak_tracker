@@ -18,6 +18,10 @@ abstract class LeakTracking {
   /// It's value should be updated every time leak tracking is reconfigured.
   static final _leakProvider = ObjectRef<WeakReference<LeakProvider>?>(null);
 
+  /// If true, a warning will be printed when leak tracking is
+  /// requested for a non-supported platform.
+  static bool warnForNotSupportedPlatforms = true;
+
   /// Leak tracking settings.
   ///
   /// Can be modifeide before leak tracking is started and while it
