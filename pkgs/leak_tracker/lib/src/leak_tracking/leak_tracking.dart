@@ -22,11 +22,16 @@ abstract class LeakTracking {
   /// requested for a non-supported platform.
   static bool warnForNotSupportedPlatforms = true;
 
-  /// Leak tracking settings.
+  /// Settings for leak tracking phase.
   ///
-  /// Can be modifeide before leak tracking is started and while it
+  /// Can be modified before leak tracking is started and while it
   /// is in process.
-  static final settings = LeakTrackingSettings();
+  ///
+  /// Objects will be assigned to the phase that was active when their
+  /// tracking started. Name of the phase will be included in the leak report.
+  static PhaseSettings get phase => _phase.value;
+  static set phase(value) => _phase.value = value;
+  static final _phase = ObjectRef(const PhaseSettings());
 
   /// Returns true if leak tracking is configured.
   static bool get isStarted => _leakTracker != null;
@@ -53,7 +58,7 @@ abstract class LeakTracking {
         stop();
       }
 
-      final leakTracker = _leakTracker = LeakTracker(config);
+      final leakTracker = _leakTracker = LeakTracker(config, _phase);
       _leakProvider.value = WeakReference(leakTracker.objectTracker);
 
       if (config.notifyDevTools) {

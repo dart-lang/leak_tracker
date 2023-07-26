@@ -4,6 +4,8 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/model.dart';
+import 'package:leak_tracker/src/shared/_primitives.dart';
 
 enum EventType {
   started,
@@ -26,6 +28,7 @@ class MockObjectTracker extends ObjectTracker {
           leakDiagnosticConfig: const LeakDiagnosticConfig(),
           numberOfGcCycles: 3,
           maxRequestsForRetainingPath: 10,
+          phase: ObjectRef(const PhaseSettings()),
         );
 
   final events = <Event>[];

@@ -133,11 +133,6 @@ class LeakTrackingConfig {
   final int? maxRequestsForRetainingPath;
 }
 
-/// Settings that can be modified while leak tracking is in process and before it starts.
-class LeakTrackingSettings {
-  PhaseSettings phase = const PhaseSettings();
-}
-
 /// Leak tracking settings for a specific phase of the application execution.
 ///
 /// Can be used to customize leak tracking for individual tests.

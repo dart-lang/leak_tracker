@@ -82,6 +82,7 @@ void main() {
         coder: mockCoder,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
+        phase: ObjectRef(const PhaseSettings()),
       );
     });
 
@@ -149,6 +150,7 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
+        phase: ObjectRef(const PhaseSettings()),
       );
     });
 
@@ -326,6 +328,7 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
+        phase: ObjectRef(const PhaseSettings()),
       );
     });
 

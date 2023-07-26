@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import '../../leak_tracker.dart';
 import '../shared/_primitives.dart';
-import '../shared/shared_model.dart';
 import '_gc_counter.dart';
 
 /// Object collections to track leaks.
@@ -83,10 +83,17 @@ class ObjectRecords {
 
 /// Information about an object, tracked for leaks.
 class ObjectRecord {
-  ObjectRecord(this.code, this.context, this.type, this.trackedClass);
+  ObjectRecord(
+    this.code,
+    this.context,
+    this.type,
+    this.trackedClass,
+    this.phase,
+  );
 
   final IdentityHashCode code;
   Map<String, dynamic>? context;
+  final PhaseSettings phase;
 
   /// Type of the tracked object.
   final Type type;

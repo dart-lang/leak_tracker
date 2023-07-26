@@ -28,6 +28,7 @@ class ObjectTracker implements LeakProvider {
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
+    required this.phase,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -57,6 +58,8 @@ class ObjectTracker implements LeakProvider {
 
   final int? maxRequestsForRetainingPath;
 
+  final ObjectRef<PhaseSettings> phase;
+
   void startTracking(
     Object object, {
     required Map<String, dynamic>? context,
@@ -74,6 +77,7 @@ class ObjectTracker implements LeakProvider {
       context,
       object.runtimeType,
       trackedClass,
+      phase.value,
     );
 
     if (leakDiagnosticConfig
