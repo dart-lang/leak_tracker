@@ -33,7 +33,7 @@ abstract class LeakTracking {
   /// If [resetIfAlreadyStarted] is true and leak tracking is already on,
   /// the tracking will be reset with new configuration.
   ///
-  /// If [resetIfAlreadyStarted] is true and leak tracking is already on,
+  /// If [resetIfAlreadyStarted] is false and leak tracking is already on,
   /// [StateError] will be thrown.
   static void start({
     LeakTrackingConfiguration config = const LeakTrackingConfiguration(),
