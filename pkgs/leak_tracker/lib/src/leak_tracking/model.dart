@@ -4,24 +4,6 @@
 
 import '../shared/shared_model.dart';
 
-// ignore: avoid_classes_with_only_static_members, as it is ok for enum-like classes.
-/// Global settings for leak tracker.
-class LeakTrackerGlobalSettings {
-  /// If true, the leak tracker will collect debug information for leaks.
-  static bool collectDebugInformationForLeaks = false;
-
-  /// If true, a warning will be printed when leak tracking is
-  /// requested for a non-supported platform.
-  static bool warnForNonSupportedPlatforms = true;
-
-  /// Limit for number of requests for retaining path per one round
-  /// of validation for leaks.
-  ///
-  /// If the number is too big, the performance may be seriously impacted.
-  /// If null, path will be requested without limit.
-  static int? maxRequestsForRetainingPath = 10;
-}
-
 /// Handler to collect leak summary.
 typedef LeakSummaryCallback = void Function(LeakSummary);
 
@@ -87,6 +69,9 @@ class LeakDiagnosticConfig {
 /// if there is no activity in the application for ~5 minutes.
 const defaultNumberOfGcCycles = 3;
 
+/// Leak tracking configuration.
+///
+/// Contains settings that cannot be changed after leak tracking is started.
 class LeakTrackingConfiguration {
   const LeakTrackingConfiguration({
     this.stdoutLeaks = true,
@@ -96,6 +81,7 @@ class LeakTrackingConfiguration {
     this.disposalTime = const Duration(milliseconds: 100),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
+    this.maxRequestsForRetainingPath = 10,
   });
 
   /// The leak tracker:
@@ -106,6 +92,7 @@ class LeakTrackingConfiguration {
   LeakTrackingConfiguration.passive({
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
     int numberOfGcCycles = defaultNumberOfGcCycles,
+    int? maxRequestsForRetainingPath = 10,
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -113,6 +100,7 @@ class LeakTrackingConfiguration {
           disposalTime: const Duration(),
           leakDiagnosticConfig: leakDiagnosticConfig,
           numberOfGcCycles: numberOfGcCycles,
+          maxRequestsForRetainingPath: maxRequestsForRetainingPath,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
@@ -136,6 +124,13 @@ class LeakTrackingConfiguration {
 
   /// Time to allow the disposal invoker to release the reference to the object.
   final Duration disposalTime;
+
+  /// Limit for number of requests for retaining path per one round
+  /// of validation for leaks.
+  ///
+  /// If the number is too big, the performance may be seriously impacted.
+  /// If null, the path will be srequested without limit.
+  final int? maxRequestsForRetainingPath;
 }
 
 /// Configuration for leak tracking in unit tests.

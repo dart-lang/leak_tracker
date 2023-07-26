@@ -7,12 +7,13 @@ import 'dart:developer';
 
 import 'package:logging/logging.dart';
 
+import '../shared/_formatting.dart';
 import '../shared/shared_model.dart';
-import '_formatting.dart';
-import 'leak_tracker.dart';
-import 'leak_tracker_model.dart';
-import 'retaining_path/_connection.dart';
-import 'retaining_path/_retaining_path.dart';
+import '_retaining_path/_connection.dart';
+import '_retaining_path/_retaining_path.dart';
+
+import 'leak_tracking.dart';
+import 'model.dart';
 
 final _log = Logger('orchestration.dart');
 
@@ -88,6 +89,7 @@ Future<Leaks> withLeakTracking(
   LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
   AsyncCodeRunner? asyncCodeRunner,
   int numberOfGcCycles = defaultNumberOfGcCycles,
+  int? maxRequestsForRetainingPath = 10,
 }) async {
   if (numberOfGcCycles <= 0) {
     throw ArgumentError.value(
@@ -99,11 +101,12 @@ Future<Leaks> withLeakTracking(
 
   if (callback == null) return Leaks({});
 
-  enableLeakTracking(
-    resetIfAlreadyEnabled: true,
+  LeakTracking.start(
+    resetIfAlreadyStarted: true,
     config: LeakTrackingConfiguration.passive(
       leakDiagnosticConfig: leakDiagnosticConfig,
       numberOfGcCycles: numberOfGcCycles,
+      maxRequestsForRetainingPath: maxRequestsForRetainingPath,
     ),
   );
 
@@ -119,14 +122,14 @@ Future<Leaks> withLeakTracking(
         if (leakDiagnosticConfig.collectRetainingPathForNonGCed) {
           // This early check is needed to collect retaing paths before forced GC,
           // because paths are unavailable for GCed objects.
-          await checkNonGCed();
+          await LeakTracking.checkNotGCed();
         }
 
         await forceGC(
           fullGcCycles: numberOfGcCycles,
           timeout: timeoutForFinalGarbageCollection,
         );
-        leaks = await collectLeaks();
+        leaks = await LeakTracking.collectLeaks();
         if ((leaks?.total ?? 0) > 0 && shouldThrowOnLeaks) {
           // `expect` should not be used here, because, when the method is used
           // from Flutter, the packages `test` and `flutter_test` conflict.
@@ -139,7 +142,7 @@ Future<Leaks> withLeakTracking(
     if (leaks == null) throw StateError('Leaks collection failed.');
     return leaks!;
   } finally {
-    disableLeakTracking();
+    LeakTracking.stop();
   }
 }
 

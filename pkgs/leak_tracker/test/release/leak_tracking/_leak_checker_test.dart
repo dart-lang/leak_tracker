@@ -3,11 +3,9 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_tracking/_leak_checker.dart';
+import 'package:leak_tracker/src/leak_tracking/_leak_reporter.dart';
 import 'package:test/test.dart';
 
-// Enum-like static classes are ok.
-// ignore: avoid_classes_with_only_static_members
 class _SummaryValues {
   static final zero = LeakSummary({});
 
@@ -31,13 +29,13 @@ void main() {
   const period = Duration(milliseconds: 5);
   late final doublePeriod = Duration(microseconds: period.inMicroseconds);
 
-  LeakChecker leakChecker({
+  LeakReporter leakChecker({
     required bool checkPeriodically,
     required bool hasListener,
     required bool hasStdout,
     required bool hasDevtools,
   }) =>
-      LeakChecker(
+      LeakReporter(
         leakProvider: leakProvider,
         checkPeriod: checkPeriodically ? period : null,
         onLeaks: hasListener ? (summary) => listened.store.add(summary) : null,
@@ -45,7 +43,7 @@ void main() {
         devToolsSink: hasDevtools ? devtools : null,
       );
 
-  LeakChecker defaultLeakChecker() => leakChecker(
+  LeakReporter defaultLeakChecker() => leakChecker(
         checkPeriodically: true,
         hasListener: false,
         hasStdout: true,

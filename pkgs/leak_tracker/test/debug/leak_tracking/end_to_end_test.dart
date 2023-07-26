@@ -10,17 +10,12 @@ import '../../test_infra/data/dart_classes.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 void main() {
-  setUp(() {
-    LeakTrackerGlobalSettings.maxRequestsForRetainingPath = null;
-  });
-
-  tearDown(() => disableLeakTracking());
+  tearDown(() => LeakTracking.stop());
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
     test(
         'Leak tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
         () async {
-      LeakTrackerGlobalSettings.maxRequestsForRetainingPath = 2;
       final leaks = await withLeakTracking(
         () async {
           LeakingClass();
@@ -32,6 +27,7 @@ void main() {
           collectRetainingPathForNonGCed: true,
         ),
         numberOfGcCycles: numberOfGcCycles,
+        maxRequestsForRetainingPath: 2,
       );
 
       const pathHeader = '  path: >';

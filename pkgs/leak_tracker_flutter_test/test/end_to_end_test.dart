@@ -45,36 +45,6 @@ void main() {
     );
   });
 
-  group('Leak tracker respects flag collectDebugInformationForLeaks', () {
-    late Leaks leaks;
-
-    setUp(
-      () => LeakTrackerGlobalSettings.collectDebugInformationForLeaks = true,
-    );
-
-    testWidgetsWithLeakTracking(
-      'for $StatelessLeakingWidget',
-      (WidgetTester tester) async {
-        await tester.pumpWidget(StatelessLeakingWidget());
-      },
-      leakTrackingTestConfig: LeakTrackingTestConfig(
-        onLeaks: (Leaks theLeaks) {
-          leaks = theLeaks;
-        },
-        failTestOnLeaks: false,
-      ),
-    );
-
-    tearDown(
-      () => _verifyLeaks(
-        leaks,
-        expectedNotDisposed: 1,
-        expectedNotGCed: 1,
-        shouldContainDebugInfo: false,
-      ),
-    );
-  });
-
   group('Stack trace does not start with leak tracker calls.', () {
     late Leaks leaks;
 

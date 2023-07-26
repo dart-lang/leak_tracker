@@ -1,5 +1,8 @@
 # 9.0.0
 
+* Remove global flag [collectDebugInformationForLeaks].
+* Rename `checkNonGCed` to `checkNotGCed`.
+* Group global items related to leak tracking, in abstract class LeakTracking.
 * Rename `gcCountBuffer` to `numberOfGcCycles` and `disposalTimeBuffer` to `disposalTime`.
 
 # 8.0.3

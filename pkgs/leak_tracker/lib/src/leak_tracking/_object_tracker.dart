@@ -12,9 +12,9 @@ import '../shared/shared_model.dart';
 import '_finalizer.dart';
 import '_gc_counter.dart';
 import '_object_record.dart';
-import 'leak_tracker_model.dart';
-import 'retaining_path/_connection.dart';
-import 'retaining_path/_retaining_path.dart';
+import '_retaining_path/_connection.dart';
+import '_retaining_path/_retaining_path.dart';
+import 'model.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
@@ -27,6 +27,7 @@ class ObjectTracker implements LeakProvider {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     required this.disposalTime,
     required this.numberOfGcCycles,
+    required this.maxRequestsForRetainingPath,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -53,6 +54,8 @@ class ObjectTracker implements LeakProvider {
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
   final int numberOfGcCycles;
+
+  final int? maxRequestsForRetainingPath;
 
   void startTracking(
     Object object, {
@@ -192,7 +195,7 @@ class ObjectTracker implements LeakProvider {
 
     await processIfNeeded(
       items: objectsToGetPath,
-      limit: LeakTrackerGlobalSettings.maxRequestsForRetainingPath,
+      limit: maxRequestsForRetainingPath,
       processor: _addRetainingPath,
     );
 

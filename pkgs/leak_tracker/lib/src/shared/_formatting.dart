@@ -4,8 +4,8 @@
 
 import 'package:vm_service/vm_service.dart';
 
-import '../shared/_primitives.dart';
-import '../shared/_util.dart';
+import '_primitives.dart';
+import '_util.dart';
 
 /// Converts item in leak tracking context to string.
 String contextToString(Object? object) {
