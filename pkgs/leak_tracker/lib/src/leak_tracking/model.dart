@@ -137,7 +137,14 @@ class LeakTrackingConfig {
 ///
 /// Can be used to customize leak tracking for individual tests.
 class PhaseSettings {
-  const PhaseSettings({this.paused = false, this.name});
+  const PhaseSettings({
+    this.notGCedAllowList = const {},
+    this.notDisposedAllowList = const {},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+    this.paused = false,
+    this.name,
+  });
 
   /// When false, added objects will not be tracked.
   ///
@@ -151,6 +158,28 @@ class PhaseSettings {
   ///
   /// Can be used to specify name of a test.
   final String? name;
+
+  /// Classes that are allowed to be not garbage collected after disposal.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to be not GCed.
+  ///
+  /// If number of instances is [null], any number of instances is allowed.
+  final Map<String, int?> notGCedAllowList;
+
+  /// Classes that are allowed to be garbage collected without being disposed.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to be not disposed.
+  ///
+  /// If number of instances is [null], any number of instances is allowed.
+  final Map<String, int?> notDisposedAllowList;
+
+  /// If true, all notDisposed leaks will be allowed.
+  final bool allowAllNotDisposed;
+
+  /// If true, all notGCed leaks will be allowed.
+  final bool allowAllNotGCed;
 }
 
 /// Configuration for leak tracking in unit tests.
