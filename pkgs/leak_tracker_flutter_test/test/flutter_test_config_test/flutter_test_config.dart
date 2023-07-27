@@ -16,14 +16,16 @@ import '../test_infra/leak_tracking_in_flutter.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   LeakTracking.warnForNotSupportedPlatforms = false;
 
-  await expectLater(
-    () => testExecutableWithLeakTracking(() => testExecutable(testMain)),
-    throwsA(
-      predicate((e) {
-        print('!!!!!!!');
-        print(e);
-        return true;
-      }),
-    ),
-  );
+  await testExecutableWithLeakTracking(() async => await testMain());
+
+  // await expectLater(
+  //   () => testExecutableWithLeakTracking(() => testExecutable(testMain)),
+  //   throwsA(
+  //     predicate((e) {
+  //       print('!!!!!!!');
+  //       print(e);
+  //       return true;
+  //     }),
+  //   ),
+  // );
 }

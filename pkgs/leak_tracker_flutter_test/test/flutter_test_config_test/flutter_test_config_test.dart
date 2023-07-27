@@ -5,14 +5,19 @@
 // ignore_for_file: avoid_redundant_argument_values
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
-import '../test_infra/dart_classes.dart';
 import '../test_infra/flutter_classes.dart';
 import '../test_infra/leak_tracking_in_flutter.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 ///
 /// For this sests expect happens in flitter_test_config.dart
-void main() {}
+void main() {
+  testWidgetsWithLeakTracking('test1, tracking-on', (widgetTester) async {
+    await widgetTester.pumpWidget(StatelessLeakingWidget());
+  });
+
+  testWidgets('test2, tracking-off', (widgetTester) async {
+    await widgetTester.pumpWidget(StatelessLeakingWidget());
+  });
+}
