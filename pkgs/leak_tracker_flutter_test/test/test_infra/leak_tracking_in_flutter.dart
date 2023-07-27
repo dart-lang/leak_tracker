@@ -2,16 +2,71 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-// Content of this file is copied from
+// Content of this file is mirror of
 // https://github.com/flutter/flutter/blob/master/packages/flutter/test/foundation/leak_tracking.dart
-// to test that new versions work well for Flutter Framework.
-// TODO(polina-c): This code should be removed after `testWidgets` start supporting leak tracking.
+// to test that a new versions work well for Flutter Framework, before it upgrades to the version.
+
+import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
+
+typedef TestMain = FutureOr<void> Function();
+
+/// Wrapper for testExecutable to configure leak tracking for tests.
+///
+/// See https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html.
+Future<void> testExecutableWithLeakTracking(
+  Future<void> Function() testExecutable,
+) async {
+  _startLeakTracking();
+  await testExecutable();
+  await _stopLeakTracking();
+}
+
+void _flutterEventToLeakTracker(ObjectEvent event) {
+    return LeakTracking.dispatchObjectEvent(event.toMap());
+  }
+
+void _startLeakTracking() {
+  _printPlatformWarningIfNeeded();
+  if (!_isPlatformSupported) return;
+
+  LeakTracking.start(config: LeakTrackingConfig.passive());
+
+  MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
+    // Future<void> asyncCodeRunner(DartAsyncCallback action) async =>
+  //     tester.runAsync(action);
+
+  // try {
+  //   Leaks leaks = await withLeakTracking(
+  //     callback,
+  //     asyncCodeRunner: asyncCodeRunner,
+  //     leakDiagnosticConfig: config.leakDiagnosticConfig,
+  //     shouldThrowOnLeaks: false,
+  //   );
+
+  //   leaks = LeakCleaner(config).clean(leaks);
+
+  //   if (leaks.total > 0) {
+  //     config.onLeaks?.call(leaks);
+  //     if (config.failTestOnLeaks) {
+  //       expect(leaks, isLeakFree);
+  //     }
+  //   }
+  // } finally {
+
+  // }
+
+}
+
+Future<void> _stopLeakTracking() async {
+  if (!_isPlatformSupported) return Future<void>.value();
+   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
+}
 
 /// Wrapper for [testWidgets] with memory leak tracking.
 ///
@@ -54,7 +109,22 @@ void testWidgetsWithLeakTracking(
   );
 }
 
-bool _webWarningPrinted = false;
+bool _notSupportedWarningPrinted = false;
+bool get _isPlatformSupported => !kIsWeb;
+void _printPlatformWarningIfNeeded() {
+  if (kIsWeb) {
+    final bool shouldPrintWarning = !_notSupportedWarningPrinted &&
+        LeakTracking.warnForNotSupportedPlatforms;
+    if (shouldPrintWarning) {
+      _notSupportedWarningPrinted = true;
+      debugPrint(
+        'Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTracking.warnForNotSupportedPlatforms` to false.',
+      );
+    }
+    return;
+  }
+  assert(_isPlatformSupported);
+}
 
 /// Runs [callback] with leak tracking.
 ///
@@ -78,10 +148,10 @@ Future<void> withFlutterLeakTracking(
 ) async {
   // Leak tracker does not work for web platform.
   if (kIsWeb) {
-    final bool shouldPrintWarning =
-        !_webWarningPrinted && LeakTracking.warnForNotSupportedPlatforms;
+    final bool shouldPrintWarning = !_notSupportedWarningPrinted &&
+        LeakTracking.warnForNotSupportedPlatforms;
     if (shouldPrintWarning) {
-      _webWarningPrinted = true;
+      _notSupportedWarningPrinted = true;
       debugPrint(
         'Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTracking.warnForNotSupportedPlatforms` to false.',
       );
