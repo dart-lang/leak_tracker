@@ -31,7 +31,7 @@ abstract class LeakTracking {
   /// tracking started. Name of the phase will be included in the leak report.
   static PhaseSettings get phase => _phase.value;
   static set phase(value) => _phase.value = value;
-  static final _phase = ObjectRef(const PhaseSettings());
+  static final _phase = ObjectRef(const PhaseSettings.paused());
 
   /// Returns true if leak tracking is configured.
   static bool get isStarted => _leakTracker != null;

@@ -137,19 +137,42 @@ class LeakTrackingConfig {
 ///
 /// Can be used to customize leak tracking for individual tests.
 class PhaseSettings {
-  const PhaseSettings({
+  const PhaseSettings._({
     this.notGCedAllowList = const {},
     this.notDisposedAllowList = const {},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
     this.paused = false,
     this.name,
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
-  /// When false, added objects will not be tracked.
+  const PhaseSettings.paused() : this._(paused: true, name: 'paused');
+
+  const PhaseSettings.test({
+    this.notGCedAllowList = const {},
+    this.notDisposedAllowList = const {},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+  })  : name = null,
+        paused = false;
+
+  PhaseSettings.withName(PhaseSettings phase, {required String name})
+      : this._(
+          name: name,
+          paused: false,
+          notGCedAllowList: phase.notGCedAllowList,
+          notDisposedAllowList: phase.notDisposedAllowList,
+          allowAllNotDisposed: phase.allowAllNotDisposed,
+          allowAllNotGCed: phase.allowAllNotGCed,
+          leakDiagnosticConfig: phase.leakDiagnosticConfig,
+        );
+
+  /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
-  /// even if the value will become false before object is GCed.
+  /// even if the value will become false before the object is GCed.
   final bool paused;
 
   /// Phase of the application execution.
@@ -180,6 +203,9 @@ class PhaseSettings {
 
   /// If true, all notGCed leaks will be allowed.
   final bool allowAllNotGCed;
+
+  /// What diagnostic information to collect for leaks.
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 }
 
 /// Configuration for leak tracking in unit tests.

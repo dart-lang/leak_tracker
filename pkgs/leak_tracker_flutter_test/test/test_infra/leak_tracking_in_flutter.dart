@@ -4,7 +4,7 @@
 
 // Content of this file is mirror of
 // https://github.com/flutter/flutter/blob/master/packages/flutter/test/foundation/leak_tracking.dart
-// to test that a new versions work well for Flutter Framework, before it upgrades to the version.
+// to test that a new version work well for Flutter Framework, before it upgrades to the version.
 
 import 'dart:async';
 
@@ -13,8 +13,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
-
-typedef TestMain = FutureOr<void> Function();
 
 /// Wrapper for testExecutable to configure leak tracking for tests.
 ///
@@ -28,8 +26,8 @@ Future<void> testExecutableWithLeakTracking(
 }
 
 void _flutterEventToLeakTracker(ObjectEvent event) {
-    return LeakTracking.dispatchObjectEvent(event.toMap());
-  }
+  return LeakTracking.dispatchObjectEvent(event.toMap());
+}
 
 void _startLeakTracking() {
   _printPlatformWarningIfNeeded();
@@ -38,46 +36,27 @@ void _startLeakTracking() {
   LeakTracking.start(config: LeakTrackingConfig.passive());
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
-    // Future<void> asyncCodeRunner(DartAsyncCallback action) async =>
-  //     tester.runAsync(action);
-
-  // try {
-  //   Leaks leaks = await withLeakTracking(
-  //     callback,
-  //     asyncCodeRunner: asyncCodeRunner,
-  //     leakDiagnosticConfig: config.leakDiagnosticConfig,
-  //     shouldThrowOnLeaks: false,
-  //   );
-
-  //   leaks = LeakCleaner(config).clean(leaks);
-
-  //   if (leaks.total > 0) {
-  //     config.onLeaks?.call(leaks);
-  //     if (config.failTestOnLeaks) {
-  //       expect(leaks, isLeakFree);
-  //     }
-  //   }
-  // } finally {
-
-  // }
-
 }
 
 Future<void> _stopLeakTracking() async {
   if (!_isPlatformSupported) return Future<void>.value();
-   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
+  MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
+
+  await forceGC(fullGcCycles: 3);
+  final leaks = await LeakTracking.collectLeaks();
 }
 
 /// Wrapper for [testWidgets] with memory leak tracking.
 ///
-/// The method will fail if instrumented objects in [callback] are
-/// garbage collected without being disposed.
+/// The test will fail if instrumented objects in [callback] are
+/// garbage collected without being disposed or not garbage
+/// collected soon after disposal.
+///
+/// [testExecutableWithLeakTracking] must be invoked
+/// for this test run.
 ///
 /// More about leak tracking:
 /// https://github.com/dart-lang/leak_tracker.
-///
-/// See https://github.com/flutter/devtools/issues/3951 for plans
-/// on leak tracking.
 @isTest
 void testWidgetsWithLeakTracking(
   String description,
@@ -87,26 +66,28 @@ void testWidgetsWithLeakTracking(
   bool semanticsEnabled = true,
   TestVariant<Object?> variant = const DefaultTestVariant(),
   dynamic tags,
-  LeakTrackingTestConfig leakTrackingTestConfig =
-      const LeakTrackingTestConfig(),
+  PhaseSettings? phase,
 }) {
-  Future<void> wrappedCallback(WidgetTester tester) async {
-    await withFlutterLeakTracking(
-      () async => callback(tester),
-      tester,
-      leakTrackingTestConfig,
-    );
+  if (!LeakTracking.isStarted) {
+    throw StateError('`testExecutableWithLeakTracking` must be invoked.');
   }
+
+  LeakTracking.phase = PhaseSettings.withName(
+    phase ?? const PhaseSettings.test(),
+    name: description,
+  );
 
   testWidgets(
     description,
-    wrappedCallback,
+    callback,
     skip: skip,
     timeout: timeout,
     semanticsEnabled: semanticsEnabled,
     variant: variant,
     tags: tags,
   );
+
+  LeakTracking.phase = const PhaseSettings.paused();
 }
 
 bool _notSupportedWarningPrinted = false;
