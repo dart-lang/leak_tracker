@@ -160,6 +160,8 @@ abstract class LeakTracking {
   ///
   /// The same object may be reported as leaked twice: first
   /// as non GCed, and then as GCed late.
+  ///
+  /// Should be invoked before [stop] to obtain the leaks.
   static Future<Leaks> collectLeaks() async {
     Future<Leaks>? result;
 

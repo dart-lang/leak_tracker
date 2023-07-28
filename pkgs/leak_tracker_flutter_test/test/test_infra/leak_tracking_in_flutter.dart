@@ -6,8 +6,6 @@
 // https://github.com/flutter/flutter/blob/master/packages/flutter/test/foundation/leak_tracking.dart
 // to test that a new version work well for Flutter Framework, before it upgrades to the version.
 
-import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
@@ -15,6 +13,8 @@ import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
 
 /// Wrapper for testExecutable to configure leak tracking for tests.
+///
+/// Throws error if tests executed with [testWidgetsWithLeakTracking] contain leaks.
 ///
 /// See https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html.
 Future<void> testExecutableWithLeakTracking(
@@ -40,10 +40,16 @@ void _startLeakTracking() {
 
 Future<void> _stopLeakTracking() async {
   if (!_isPlatformSupported) return Future<void>.value();
-  MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
 
+  MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
   await forceGC(fullGcCycles: 3);
   final leaks = await LeakTracking.collectLeaks();
+
+  LeakTracking.stop();
+
+  if (leaks.total > 0) {
+    throw StateError('Test has memory leaks. ');
+  }
 }
 
 /// Wrapper for [testWidgets] with memory leak tracking.
