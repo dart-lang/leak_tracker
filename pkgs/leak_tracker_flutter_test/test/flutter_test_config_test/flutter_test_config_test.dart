@@ -14,7 +14,7 @@ import '../test_infra/leak_tracking_in_flutter.dart';
 /// For this tests `expect` happens in flitter_test_config.dart
 void main() {
   testWidgetsWithLeakTracking('test1, tracking-on', (widgetTester) async {
-    //await widgetTester.pumpWidget(StatelessLeakingWidget());
+    await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
   testWidgets('test2, tracking-off', (widgetTester) async {

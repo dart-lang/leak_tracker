@@ -149,6 +149,9 @@ class PhaseSettings {
 
   const PhaseSettings.paused() : this._(isPaused: true, name: 'paused');
 
+  /// Creates settings for a test.
+  ///
+  /// Leaves [name] null, to let the test set up the test desctiprion as name.
   const PhaseSettings.test({
     this.notGCedAllowList = const {},
     this.notDisposedAllowList = const {},

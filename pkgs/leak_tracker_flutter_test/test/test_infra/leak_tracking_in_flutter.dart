@@ -61,32 +61,37 @@ void testWidgetsWithLeakTracking(
   dynamic tags,
   PhaseSettings? phase,
 }) {
-  LeakTracking.phase = PhaseSettings.withName(
-    phase ?? const PhaseSettings.test(),
-    name: description,
+  assert(
+    phase?.name == null && (phase?.isPaused ?? false) == false,
+    'Use `PhaseSettings.test()` to create phase for a test.',
   );
 
   Future<void> wrappedCallBack(WidgetTester tester) async {
+    LeakTracking.phase = PhaseSettings.withName(
+      phase ?? const PhaseSettings.test(),
+      name: description,
+    );
+
     if (!LeakTracking.isStarted) {
       throw StateError(
-        '`setUpTestingWithLeakTracking` must be invoked to run tests with leak tracking.',
+        '`setUpTestingWithLeakTracking` must be invoked in setUpAll to run tests with leak tracking.',
       );
     }
 
     await callback(tester);
+
+    LeakTracking.phase = const PhaseSettings.paused();
   }
 
   testWidgets(
     description,
-    callback,
+    wrappedCallBack,
     skip: skip,
     timeout: timeout,
     semanticsEnabled: semanticsEnabled,
     variant: variant,
     tags: tags,
   );
-
-  LeakTracking.phase = const PhaseSettings.paused();
 }
 
 bool _notSupportedWarningPrinted = false;
