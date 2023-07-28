@@ -99,8 +99,9 @@ this means that some objects were disposed, but references to them were never re
 root -> staticA -> B -> C -> disposedD
 ```
 
-In this example, `disposedD` should stop being reachable from root.
-Thus you need to find the closest to the root object, that is not needed any more and release reference to it, making 
+In this example, `disposedD` should stop being reachable from the root.
+You need to find the closest to the root object, that is not needed any more and release
+reference to it, that will make 
 the entire chain after available for garbage collection.
 
 There are ways to release the reference:
