@@ -12,24 +12,11 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
 
-/// Wrapper for testExecutable to configure leak tracking for tests.
-///
-/// Throws error if tests executed with [testWidgetsWithLeakTracking] contain leaks.
-///
-/// See https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html.
-Future<void> testExecutableWithLeakTracking(
-  Future<void> Function() testExecutable,
-) async {
-  _startLeakTracking();
-  await testExecutable();
-  await _stopLeakTracking();
-}
-
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
 }
 
-void _startLeakTracking() {
+void setUpLeakTracking() {
   _printPlatformWarningIfNeeded();
   if (!_isPlatformSupported) return;
 
@@ -38,7 +25,7 @@ void _startLeakTracking() {
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
 
-Future<void> _stopLeakTracking() async {
+Future<void> tearDownLeakTracking() async {
   if (!_isPlatformSupported) return Future<void>.value();
 
   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
@@ -74,9 +61,9 @@ void testWidgetsWithLeakTracking(
   dynamic tags,
   PhaseSettings? phase,
 }) {
-  if (!LeakTracking.isStarted) {
-    throw StateError('`testExecutableWithLeakTracking` must be invoked.');
-  }
+  // if (!LeakTracking.isStarted) {
+  //   throw StateError('`testExecutableWithLeakTracking` must be invoked.');
+  // }
 
   LeakTracking.phase = PhaseSettings.withName(
     phase ?? const PhaseSettings.test(),

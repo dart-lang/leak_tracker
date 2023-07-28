@@ -87,8 +87,8 @@ class LeakTrackingConfig {
   /// The leak tracker:
   /// - will not auto check leaks
   /// - when leak checking is invoked, will not send notifications
-  /// - will assume the methods `dispose` are completed
-  /// at the moment of leak checking by setting [disposalTime] to zero.
+  /// - will set [disposalTime] to zero, to assume the methods `dispose` are completed
+  /// at the moment of leak checking
   LeakTrackingConfig.passive({
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
     int numberOfGcCycles = defaultNumberOfGcCycles,
