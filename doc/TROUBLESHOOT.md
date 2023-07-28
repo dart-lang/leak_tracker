@@ -103,7 +103,7 @@ In this example, `disposedD` should stop being reachable from root.
 Thus you need to find the closest to the root object, that is not needed any more and release reference to it, making 
 the entire chain after available for garbage collection.
 
-Depending on case, the way to release the object will be different:
+There are ways to release the reference:
 
 1. If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
 ```
