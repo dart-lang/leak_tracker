@@ -11,7 +11,7 @@ switch to [more complicated troubleshooting](#more-complicated-cases).
 
 ## General rules
 
-Follow the rules to avoid/fix notGCed and notDisosed leaks:
+Follow the rules to avoid/fix notGCed and notDisposed leaks:
 
 1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
 2. **Disposal**. The owner should invoke the object's `dispose`.
