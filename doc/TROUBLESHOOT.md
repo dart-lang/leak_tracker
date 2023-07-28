@@ -15,7 +15,7 @@ Follow the rules to avoid/fix notGCed and notDisosed leaks:
 
 1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
 2. **Disposal**. The owner should invoke the object's `dispose`.
-3. **Release**. The owner should null referernce to the disposed object, if `dispose` is invoked earlier than oner's disposal.
+3. **Release**. The owner should null referernce to the disposed object, if its `dispose` happens earlier than owner's disposal.
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
    release the references becore the owner disposed the object.
 
