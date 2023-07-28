@@ -11,15 +11,15 @@ switch to [more complicated troubleshooting](#more-complicated-cases).
 
 ## General rules
 
-Follow these general rules to avoid/fix notGCed and notDisosed leaks:
+Follow the rules to avoid/fix notGCed and notDisosed leaks:
 
 1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
 2. **Disposal**. The owner should dispose the disposable.
 3. **Release**. The owner should release all links to the disposed object (unless disposal happens
    in owner's `dispose`, because in this case links to the owner should be released and
    thus enable garbage collection).
-4. **Weak referencing**. Not owners should either store WeakReference for the object, or make sure to
-   release the references becore owner disposed the objec.
+4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
+   release the references becore the owner disposed the object.
 
 ## Known simple cases
 
@@ -97,27 +97,34 @@ or, if it is a test, by clicking `Debug` near the test name in IDE.
 If you see notGCed leaks, where the retaining path starts with a global or static variable,
 this means that some objects were disposed, but references to them were never released.
 
-In this example, as `disposedD` is not needed anymore, it should stop being referenced when disposed.
+In this example, as `disposedC` is not needed anymore, it should stop being referenced when disposed.
 If `A` and `B` are still needed, `B` should assign null to the variable that references `disposedD`.
 Otherwise, the reference to the first non-needed object on the path (`staticX`, `A` or `B`) should be released.
 
 ```
-root -> staticX -> A -> B -> disposedD
+root -> staticX -> A -> B -> disposedC
 ```
 
-To fix the leaks, you need to release closest to the root object on retaining path
-(first check `staticX`, then `A`, then `B`), that is not needed any more.
+To fix the leaks, you need to release the closest to the root object on the retaining path
+(starting with `staticX`, then `A`, then `B`), that is not needed any more.
 This will make all objects, referenced from it, unreachable, and thus available for garbage collection.
 
-If object is held by owner, null it out:
+If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
 ```
-_leakingObject?.dispose();
-_leakingObject = null;
+void dispose() {
+  _disposedC.dispose();
+}
 ```
 
-If object is held by non-owner, convert the reference t weak:
+If the object is disposed earlier than owner's disposal, null the reference out:
 ```
-final WeakReference<MyClass> leakingObject;
+_disposedC?.dispose();
+_disposedC = null;
+```
+
+If the object is held by non-owner, make the reference weak:
+```
+final WeakReference<MyClass> disposedC;
 ```
 
 
