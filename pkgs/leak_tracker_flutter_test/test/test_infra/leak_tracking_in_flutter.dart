@@ -34,9 +34,7 @@ Future<void> tearDownTestingWithLeakTracking() async {
 
   LeakTracking.stop();
 
-  if (leaks.total > 0) {
-    throw StateError('Test has memory leaks. ');
-  }
+  expect(leaks, isLeakFree);
 }
 
 /// Wrapper for [testWidgets] with memory leak tracking.
