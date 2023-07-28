@@ -106,6 +106,7 @@ the entire chain after available for garbage collection.
 There are ways to release the reference:
 
 1. If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
+
 ```
 void dispose() {
   disposedD.dispose();
@@ -120,6 +121,7 @@ disposedD = null;
 ```
 
 3. If the object is held by non-owner, make the reference weak:
+
 ```
 class C {
   ...
