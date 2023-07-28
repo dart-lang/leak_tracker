@@ -18,6 +18,6 @@ void main() {
   });
 
   testWidgets('test2, tracking-off', (widgetTester) async {
-    //await widgetTester.pumpWidget(StatelessLeakingWidget());
+    await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 }

@@ -142,12 +142,12 @@ class PhaseSettings {
     this.notDisposedAllowList = const {},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
-    this.paused = false,
+    this.isPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
-  const PhaseSettings.paused() : this._(paused: true, name: 'paused');
+  const PhaseSettings.paused() : this._(isPaused: true, name: 'paused');
 
   const PhaseSettings.test({
     this.notGCedAllowList = const {},
@@ -156,12 +156,12 @@ class PhaseSettings {
     this.allowAllNotGCed = false,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   })  : name = null,
-        paused = false;
+        isPaused = false;
 
   PhaseSettings.withName(PhaseSettings phase, {required String name})
       : this._(
           name: name,
-          paused: false,
+          isPaused: false,
           notGCedAllowList: phase.notGCedAllowList,
           notDisposedAllowList: phase.notDisposedAllowList,
           allowAllNotDisposed: phase.allowAllNotDisposed,
@@ -173,7 +173,7 @@ class PhaseSettings {
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false before the object is GCed.
-  final bool paused;
+  final bool isPaused;
 
   /// Phase of the application execution.
   ///

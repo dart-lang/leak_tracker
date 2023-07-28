@@ -16,30 +16,12 @@ import '../test_infra/leak_tracking_in_flutter.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   setUpAll(() {
     LeakTracking.warnForNotSupportedPlatforms = false;
-    setUpLeakTracking();
+    setUpTestingWithLeakTracking();
   });
 
   tearDownAll(() async {
-    throw 'leaks found';
+    await tearDownTestingWithLeakTracking();
   });
 
   await testMain();
-
-  // LeakTracking.warnForNotSupportedPlatforms = false;
-
-  // await testExecutableWithLeakTracking(() async {
-  //   await testMain();
-  //   print('hello');
-  // });
-
-  // await expectLater(
-  //   () => testExecutableWithLeakTracking(() => testExecutable(testMain)),
-  //   throwsA(
-  //     predicate((e) {
-  //       print('!!!!!!!');
-  //       print(e);
-  //       return true;
-  //     }),
-  //   ),
-  // );
 }

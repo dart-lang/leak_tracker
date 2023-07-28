@@ -16,7 +16,7 @@ void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
 }
 
-void setUpLeakTracking() {
+void setUpTestingWithLeakTracking() {
   _printPlatformWarningIfNeeded();
   if (!_isPlatformSupported) return;
 
@@ -25,7 +25,7 @@ void setUpLeakTracking() {
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
 
-Future<void> tearDownLeakTracking() async {
+Future<void> tearDownTestingWithLeakTracking() async {
   if (!_isPlatformSupported) return Future<void>.value();
 
   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
@@ -61,14 +61,20 @@ void testWidgetsWithLeakTracking(
   dynamic tags,
   PhaseSettings? phase,
 }) {
-  // if (!LeakTracking.isStarted) {
-  //   throw StateError('`testExecutableWithLeakTracking` must be invoked.');
-  // }
-
   LeakTracking.phase = PhaseSettings.withName(
     phase ?? const PhaseSettings.test(),
     name: description,
   );
+
+  Future<void> wrappedCallBack(WidgetTester tester) async {
+    if (!LeakTracking.isStarted) {
+      throw StateError(
+        '`setUpTestingWithLeakTracking` must be invoked to run tests with leak tracking.',
+      );
+    }
+
+    await callback(tester);
+  }
 
   testWidgets(
     description,
