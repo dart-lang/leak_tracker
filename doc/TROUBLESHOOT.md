@@ -9,13 +9,25 @@ This page describes how to troubleshoot memory leaks. See other information on m
 If leak tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
 switch to [more complicated troubleshooting](#more-complicated-cases).
 
-## Check known simple cases
+## General rules
+
+Follow these general rules to avoid/fix notGCed and notDisosed leaks:
+
+1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
+2. **Disposal**. The owner should dispose the disposable.
+3. **Release**. The owner should release all links to the disposed object (unless disposal happens
+   in owner's `dispose`, because in this case links to the owner should be released and
+   thus enable garbage collection).
+4. **Weak referencing**. Not owners should either store WeakReference for the object, or make sure to
+   release the references becore owner disposed the objec.
+
+## Known simple cases
 
 ### 1. The test holds a disposed object
 
 TODO: add example and steps.
 
-## Collect additional information
+## Get additional information
 
 To understand the root cause of a memory leak, you may want to gather additional information.
 
@@ -93,24 +105,21 @@ Otherwise, the reference to the first non-needed object on the path (`staticX`, 
 root -> staticX -> A -> B -> disposedD
 ```
 
-The leak tracker does not detect all leaks, only the leaks of objects
-[it explicitly is tracking](https://github.com/dart-lang/leak_tracker/blob/main/doc/DETECT.md#by-tracked-classes).
-When fixing detected leaks, make sure to look for other objects that may have been leaked without being visible to the tracker.
+To fix the leaks, you need to release closest to the root object on retaining path
+(first check `staticX`, then `A`, then `B`), that is not needed any more.
+This will make all objects, referenced from it, unreachable, and thus available for garbage collection.
 
-To fix all leaks, you need to release closest to the root object on retaining path
-(first check `staticX`, then `A`, then `B`), that is not needed any more. All objects referenced from it will
-also become unreachable, and thus available for garbage collection.
-
-One of signs that some leaks still exist is fixing a leak by releasing link to child in the parent's `dispose`,
-because link to not needed parent should be released itself, together with its disposal. If
-your fix for a leak is like this, you are defenitely hiding leaks of non-tracked objects:
-
+If object is held by owner, null it out:
 ```
-void dispose() {
-    _leakTrackedChild!.dispose();
-    _leakTrackedChild = null; // Wrong fix! This line hides leaks.
-}
+_leakingObject?.dispose();
+_leakingObject = null;
 ```
+
+If object is held by non-owner, convert the reference t weak:
+```
+final WeakReference<MyClass> leakingObject;
+```
+
 
 
 ### 2. More than one closure context
