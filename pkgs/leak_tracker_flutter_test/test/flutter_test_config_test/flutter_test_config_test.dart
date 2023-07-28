@@ -11,7 +11,7 @@ import '../test_infra/leak_tracking_in_flutter.dart';
 
 /// Tests for non-mocked public API of leak tracker.
 ///
-/// For this tests `expect` happens in flitter_test_config.dart
+/// For this tests `expect` happens in flitter_test_config.dart.
 void main() {
   testWidgetsWithLeakTracking('test1, tracking-on', (widgetTester) async {
     await widgetTester.pumpWidget(StatelessLeakingWidget());
