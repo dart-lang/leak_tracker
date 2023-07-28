@@ -14,10 +14,8 @@ switch to [more complicated troubleshooting](#more-complicated-cases).
 Follow the rules to avoid/fix notGCed and notDisosed leaks:
 
 1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
-2. **Disposal**. The owner should dispose the disposable.
-3. **Release**. The owner should release all links to the disposed object (unless disposal happens
-   in owner's `dispose`, because in this case links to the owner should be released and
-   thus enable garbage collection).
+2. **Disposal**. The owner should invoke the object's `dispose`.
+3. **Release**. The owner should null referernce to the disposed object, if `dispose` is invoked earlier than oner's disposal.
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
    release the references becore the owner disposed the object.
 
@@ -94,40 +92,41 @@ or, if it is a test, by clicking `Debug` near the test name in IDE.
 
 ### 1. Static or global object causes notGCed leaks
 
-If you see notGCed leaks, where the retaining path starts with a global or static variable,
+If you see notGCed leaks, where the retaining path starts with global or static variable,
 this means that some objects were disposed, but references to them were never released.
 
-In this example, as `disposedC` is not needed anymore, it should stop being referenced when disposed.
-If `A` and `B` are still needed, `B` should assign null to the variable that references `disposedD`.
-Otherwise, the reference to the first non-needed object on the path (`staticX`, `A` or `B`) should be released.
-
 ```
-root -> staticX -> A -> B -> disposedC
+root -> staticA -> B -> C -> disposedD
 ```
 
-To fix the leaks, you need to release the closest to the root object on the retaining path
-(starting with `staticX`, then `A`, then `B`), that is not needed any more.
-This will make all objects, referenced from it, unreachable, and thus available for garbage collection.
+In this example, `disposedD` should stop being reachable from root.
+Thus you need to find the closest to the root object, that is not needed any more and release reference to it, making 
+the entire chain after available for garbage collection.
 
-If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
+Depending on case, the way to release the object will be different:
+
+1. If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
 ```
 void dispose() {
-  _disposedC.dispose();
+  disposedD.dispose();
 }
 ```
 
-If the object is disposed earlier than owner's disposal, null the reference out:
+2. If the object is disposed earlier than owner's disposal, null the reference out:
+
 ```
-_disposedC?.dispose();
-_disposedC = null;
+disposedD?.dispose();
+disposedD = null;
 ```
 
-If the object is held by non-owner, make the reference weak:
+3. If the object is held by non-owner, make the reference weak:
 ```
-final WeakReference<MyClass> disposedC;
+class C {
+  ...
+  final WeakReference<MyClass> disposedD;
+  ...
+}   
 ```
-
-
 
 ### 2. More than one closure context
 
