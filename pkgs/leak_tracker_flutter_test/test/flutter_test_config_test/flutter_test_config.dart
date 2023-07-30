@@ -26,7 +26,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
       if (e is! TestFailure) {
         rethrow;
       }
-      expect(e.message, contains(test1TrackingOn));
+      expect(e.message, contains('test: $test1TrackingOn'));
       expect(e.message!.contains(test2TrackingOff), false);
       print(e.message);
     }
