@@ -12,9 +12,7 @@ const test1TrackingOn = 'test1, tracking-on';
 const test2TrackingOff = 'test2, tracking-off';
 const test3TrackingOn = 'test3, tracking-on';
 
-/// Tests for non-mocked public API of leak tracker.
-///
-/// For this tests `expect` for found leaks happens in flitter_test_config.dart.
+/// For these tests `expect` for found leaks happens in flitter_test_config.dart.
 void main() {
   testWidgetsWithLeakTracking(test1TrackingOn, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
