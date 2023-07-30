@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 import '../test_infra/leak_tracking_in_flutter.dart';
+import 'flutter_test_config_test.dart';
 
 /// Test configuration for each test library in this directory.
 ///
@@ -20,7 +21,15 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   });
 
   tearDownAll(() async {
-    await tearDownTestingWithLeakTracking();
+    try {
+      await tearDownTestingWithLeakTracking();
+    } catch (e) {
+      if (e is! TestFailure) {
+        rethrow;
+      }
+      //expect(e.message, contains(test1TrackingOn));
+      expect(e.message!.contains(test2TrackingOff), false);
+    }
   });
 
   await testMain();
