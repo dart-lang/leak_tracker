@@ -147,7 +147,7 @@ class PhaseSettings {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
-  const PhaseSettings.paused() : this._(isPaused: true, name: 'paused');
+  const PhaseSettings.paused() : this._(isPaused: true);
 
   /// Creates settings for a test.
   ///

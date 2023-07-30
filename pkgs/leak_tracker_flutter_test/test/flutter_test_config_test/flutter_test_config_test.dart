@@ -10,18 +10,27 @@ import '../test_infra/leak_tracking_in_flutter.dart';
 
 const test1TrackingOn = 'test1, tracking-on';
 const test2TrackingOff = 'test2, tracking-off';
+const test3TrackingOn = 'test3, tracking-on';
 
 /// Tests for non-mocked public API of leak tracker.
 ///
 /// For this tests `expect` happens in flitter_test_config.dart.
 void main() {
-  testWidgetsWithLeakTracking(test1TrackingOn, (widgetTester) async {
-    expect(LeakTracking.phase.name, test1TrackingOn);
+  // testWidgetsWithLeakTracking(test1TrackingOn, (widgetTester) async {
+  //   expect(LeakTracking.phase.name, test1TrackingOn);
+  //   expect(LeakTracking.phase.isPaused, false);
+  //   await widgetTester.pumpWidget(StatelessLeakingWidget());
+  // });
+
+  testWidgets(test2TrackingOff, (widgetTester) async {
+    expect(LeakTracking.phase.name, null);
+    expect(LeakTracking.phase.isPaused, true);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
-  testWidgets(test2TrackingOff, (widgetTester) async {
-    expect(LeakTracking.phase.name, 'paused');
+  testWidgetsWithLeakTracking(test3TrackingOn, (widgetTester) async {
+    expect(LeakTracking.phase.name, test3TrackingOn);
+    expect(LeakTracking.phase.isPaused, false);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 }

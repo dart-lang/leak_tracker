@@ -14,11 +14,6 @@ class ContextKeys {
   static const retainingPath = 'path';
 }
 
-enum LeakTrackingEnvironment {
-  test,
-  application,
-}
-
 enum LeakType {
   /// Not disposed and garbage collected.
   notDisposed,
@@ -117,12 +112,15 @@ class Leaks {
 
   int get total => byType.values.map((e) => e.length).sum;
 
-  String toYaml(LeakTrackingEnvironment environment) {
+  String toYaml({required bool phasesAreTests}) {
     if (total == 0) return '';
     final leaks = LeakType.values
         .map(
-          (e) => LeakReport.iterableToYaml(e.name, byType[e] ?? [],
-              environment: environment),
+          (e) => LeakReport.iterableToYaml(
+            e.name,
+            byType[e] ?? [],
+            phasesAreTests: phasesAreTests,
+          ),
         )
         .join();
     return '$leakTrackerYamlHeader$leaks';
@@ -180,23 +178,22 @@ class LeakReport {
     String title,
     Iterable<LeakReport>? leaks, {
     String indent = '',
-    required LeakTrackingEnvironment environment,
+    required bool phasesAreTests,
   }) {
     if (leaks == null || leaks.isEmpty) return '';
 
     return '''$title:
 $indent  total: ${leaks.length}
 $indent  objects:
-${leaks.map((e) => e.toYaml('$indent    ', environment)).join()}
+${leaks.map((e) => e.toYaml('$indent    ', phasesAreTests: phasesAreTests)).join()}
 ''';
   }
 
-  String toYaml(String indent, LeakTrackingEnvironment environment) {
+  String toYaml(String indent, {required bool phasesAreTests}) {
     final result = StringBuffer();
     result.writeln('$indent$type:');
     if (phase != null) {
-      final fieldName =
-          environment == LeakTrackingEnvironment.application ? 'phase' : 'test';
+      final fieldName = phasesAreTests ? 'test' : 'phase';
       result.writeln('$indent  $fieldName: $phase');
     }
     result.writeln('$indent  identityHashCode: $code');

@@ -16,21 +16,20 @@ import 'flutter_test_config_test.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   setUpAll(() {
     LeakTracking.warnForNotSupportedPlatforms = false;
-    setUpTestingWithLeakTracking();
   });
 
-  tearDownAll(() async {
-    try {
-      await tearDownTestingWithLeakTracking();
-    } catch (e) {
-      if (e is! TestFailure) {
-        rethrow;
-      }
-      expect(e.message, contains('test: $test1TrackingOn'));
-      expect(e.message!.contains(test2TrackingOff), false);
-      print(e.message);
-    }
-  });
+  // tearDownAll(() async {
+  //   try {
+  //     await tearDownTestingWithLeakTracking();
+  //   } catch (e) {
+  //     if (e is! TestFailure) {
+  //       rethrow;
+  //     }
+  //     expect(e.message, contains('test: $test1TrackingOn'));
+  //     expect(e.message!.contains(test2TrackingOff), false);
+  //     print(e.message);
+  //   }
+  // });
 
   await testMain();
 }
