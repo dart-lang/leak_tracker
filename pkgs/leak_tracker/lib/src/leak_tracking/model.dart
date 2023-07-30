@@ -13,11 +13,6 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
-enum LeakTrackingEnvironment {
-  test,
-  application,
-}
-
 /// Configuration for diagnostics.
 ///
 /// Stacktrace and retaining path collection can seriously affect performance and memory footprint.
@@ -87,7 +82,6 @@ class LeakTrackingConfig {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.maxRequestsForRetainingPath = 10,
-    this.leakTrackingEnvironment = LeakTrackingEnvironment.application,
   });
 
   /// The leak tracker:
@@ -99,8 +93,6 @@ class LeakTrackingConfig {
     LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
     int numberOfGcCycles = defaultNumberOfGcCycles,
     int? maxRequestsForRetainingPath = 10,
-    LeakTrackingEnvironment leakTrackingEnvironment =
-        LeakTrackingEnvironment.application,
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -109,14 +101,7 @@ class LeakTrackingConfig {
           leakDiagnosticConfig: leakDiagnosticConfig,
           numberOfGcCycles: numberOfGcCycles,
           maxRequestsForRetainingPath: maxRequestsForRetainingPath,
-          leakTrackingEnvironment: leakTrackingEnvironment,
         );
-
-  /// Environment where leak tracking is used.
-  ///
-  /// Defines output format for leaks.
-  /// Does not affect the leak tracking process.
-  final LeakTrackingEnvironment leakTrackingEnvironment;
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
   final int numberOfGcCycles;

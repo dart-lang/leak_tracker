@@ -28,7 +28,7 @@ class MockObjectTracker extends ObjectTracker {
           leakDiagnosticConfig: const LeakDiagnosticConfig(),
           numberOfGcCycles: 3,
           maxRequestsForRetainingPath: 10,
-          phase: ObjectRef(const PhaseSettings()),
+          phase: ObjectRef(const PhaseSettings.test()),
         );
 
   final events = <Event>[];

@@ -29,7 +29,8 @@ class _IsLeakFree extends Matcher {
         );
     }
 
-    return mismatchDescription..add('contains leaks:\n${item.toYaml()}');
+    return mismatchDescription
+      ..add('contains leaks:\n${item.toYaml(LeakTrackingEnvironment.test)}');
   }
 
   @override

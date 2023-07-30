@@ -92,7 +92,9 @@ class ObjectRecord {
   );
 
   final IdentityHashCode code;
+
   Map<String, dynamic>? context;
+
   final PhaseSettings phase;
 
   /// Type of the tracked object.
@@ -178,5 +180,6 @@ class ObjectRecord {
         context: context,
         code: code,
         trackedClass: trackedClass,
+        phase: phase.name,
       );
 }

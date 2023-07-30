@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
@@ -27,8 +26,9 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
       if (e is! TestFailure) {
         rethrow;
       }
-      //expect(e.message, contains(test1TrackingOn));
+      expect(e.message, contains(test1TrackingOn));
       expect(e.message!.contains(test2TrackingOff), false);
+      print(e.message);
     }
   });
 

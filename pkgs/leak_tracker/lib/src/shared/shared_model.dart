@@ -14,6 +14,11 @@ class ContextKeys {
   static const retainingPath = 'path';
 }
 
+enum LeakTrackingEnvironment {
+  test,
+  application,
+}
+
 enum LeakType {
   /// Not disposed and garbage collected.
   notDisposed,
@@ -36,6 +41,7 @@ class _JsonFields {
   static const String code = 'code';
   static const String time = 'time';
   static const String totals = 'totals';
+  static const String phase = 'phase';
 }
 
 abstract class LeakProvider {
@@ -111,10 +117,13 @@ class Leaks {
 
   int get total => byType.values.map((e) => e.length).sum;
 
-  String toYaml() {
+  String toYaml(LeakTrackingEnvironment environment) {
     if (total == 0) return '';
     final leaks = LeakType.values
-        .map((e) => LeakReport.iterableToYaml(e.name, byType[e] ?? []))
+        .map(
+          (e) => LeakReport.iterableToYaml(e.name, byType[e] ?? [],
+              environment: environment),
+        )
         .join();
     return '$leakTrackerYamlHeader$leaks';
   }
@@ -128,6 +137,7 @@ class LeakReport {
     required this.context,
     required this.code,
     required this.type,
+    required this.phase,
   });
 
   factory LeakReport.fromJson(Map<String, dynamic> json) => LeakReport(
@@ -136,6 +146,7 @@ class LeakReport {
             .cast<String, dynamic>(),
         code: json[_JsonFields.code],
         trackedClass: json[_JsonFields.trackedClass] ?? '',
+        phase: json[_JsonFields.phase],
       );
 
   /// Information about the leak that can help in troubleshooting.
@@ -152,6 +163,8 @@ class LeakReport {
   /// Usually [trackedClass] is expected to be a supertype of [type].
   final String trackedClass;
 
+  final String? phase;
+
   // The fields below do not need serialization as they are populated after.
   String? retainingPath;
   List<String>? detailedPath;
@@ -167,19 +180,25 @@ class LeakReport {
     String title,
     Iterable<LeakReport>? leaks, {
     String indent = '',
+    required LeakTrackingEnvironment environment,
   }) {
     if (leaks == null || leaks.isEmpty) return '';
 
     return '''$title:
 $indent  total: ${leaks.length}
 $indent  objects:
-${leaks.map((e) => e.toYaml('$indent    ')).join()}
+${leaks.map((e) => e.toYaml('$indent    ', environment)).join()}
 ''';
   }
 
-  String toYaml(String indent) {
+  String toYaml(String indent, LeakTrackingEnvironment environment) {
     final result = StringBuffer();
     result.writeln('$indent$type:');
+    if (phase != null) {
+      final fieldName =
+          environment == LeakTrackingEnvironment.application ? 'phase' : 'test';
+      result.writeln('$indent  $fieldName: $phase');
+    }
     result.writeln('$indent  identityHashCode: $code');
     final theContext = context;
     if (theContext != null && theContext.isNotEmpty) {

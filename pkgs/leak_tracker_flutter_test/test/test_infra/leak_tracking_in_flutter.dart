@@ -20,11 +20,7 @@ void setUpTestingWithLeakTracking() {
   _printPlatformWarningIfNeeded();
   if (!_isPlatformSupported) return;
 
-  LeakTracking.start(
-    config: LeakTrackingConfig.passive(
-      leakTrackingEnvironment: LeakTrackingEnvironment.test,
-    ),
-  );
+  LeakTracking.start(config: LeakTrackingConfig.passive());
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
