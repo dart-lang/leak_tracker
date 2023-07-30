@@ -14,8 +14,24 @@ import 'flutter_test_config_test.dart';
 ///
 /// See https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html.
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
+  var leakTrackingConfigurationVerified = false;
+
+  configureLeakTrackingTearDown(
+    onLeaks: (leaks) {
+      try {
+        expect(leaks, isEmpty);
+      } catch (e) {
+        leakTrackingConfigurationVerified = true;
+      }
+    },
+  );
+
   setUpAll(() {
     LeakTracking.warnForNotSupportedPlatforms = false;
+  });
+
+  tearDownAll(() async {
+    expect(leakTrackingConfigurationVerified, true);
   });
 
   // tearDownAll(() async {

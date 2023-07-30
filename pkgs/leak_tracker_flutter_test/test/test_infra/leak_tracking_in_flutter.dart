@@ -33,7 +33,9 @@ void configureLeakTrackingTearDown({
   if (_tearDownConfigured) {
     throw StateError('Leak tracking tear down is already configured.');
   }
-  tearDownAll(() async => await _tearDownTestingWithLeakTracking(onLeaks));
+  if (_isPlatformSupported) {
+    tearDownAll(() async => await _tearDownTestingWithLeakTracking(onLeaks));
+  }
   _tearDownConfigured = true;
 }
 
