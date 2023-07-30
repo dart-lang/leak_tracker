@@ -79,6 +79,7 @@ void testWidgetsWithLeakTracking(
   dynamic tags,
   PhaseSettings? phase,
 }) {
+  print('testWidgetsWithLeakTracking $description');
   assert(
     phase?.name == null && (phase?.isPaused ?? false) == false,
     'Use `PhaseSettings.test()` to create phase for a test.',
@@ -98,8 +99,11 @@ void testWidgetsWithLeakTracking(
         '`setUpTestingWithLeakTracking` must be invoked in setUpAll to run tests with leak tracking.',
       );
     }
-
+    print(
+        'callback for $description started, phase: ${LeakTracking.phase.name} ${LeakTracking.phase.isPaused}');
     await callback(tester);
+    print(
+        'callback for $description ended, phase: ${LeakTracking.phase.name} ${LeakTracking.phase.isPaused}');
 
     LeakTracking.phase = const PhaseSettings.paused();
   }

@@ -5,8 +5,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-import '../test_infra/flutter_classes.dart';
-import '../test_infra/leak_tracking_in_flutter.dart';
+import '../../test_infra/flutter_classes.dart';
+import '../../test_infra/leak_tracking_in_flutter.dart';
 
 const test1TrackingOn = 'test1, tracking-on';
 const test2TrackingOff = 'test2, tracking-off';
@@ -16,11 +16,12 @@ const test3TrackingOn = 'test3, tracking-on';
 ///
 /// For this tests `expect` happens in flitter_test_config.dart.
 void main() {
-  // testWidgetsWithLeakTracking(test1TrackingOn, (widgetTester) async {
-  //   expect(LeakTracking.phase.name, test1TrackingOn);
-  //   expect(LeakTracking.phase.isPaused, false);
-  //   await widgetTester.pumpWidget(StatelessLeakingWidget());
-  // });
+  testWidgetsWithLeakTracking(test1TrackingOn, (widgetTester) async {
+    expect(LeakTracking.isStarted, true);
+    expect(LeakTracking.phase.name, test1TrackingOn);
+    expect(LeakTracking.phase.isPaused, false);
+    await widgetTester.pumpWidget(StatelessLeakingWidget());
+  });
 
   testWidgets(test2TrackingOff, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
