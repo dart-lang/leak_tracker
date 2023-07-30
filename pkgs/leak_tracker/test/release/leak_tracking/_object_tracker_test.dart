@@ -4,8 +4,8 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_tracking/_finalizer.dart';
-import 'package:leak_tracker/src/leak_tracking/_gc_counter.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';

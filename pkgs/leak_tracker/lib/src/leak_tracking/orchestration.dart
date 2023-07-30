@@ -9,8 +9,8 @@ import 'package:logging/logging.dart';
 
 import '../shared/_formatting.dart';
 import '../shared/shared_model.dart';
-import '_retaining_path/_connection.dart';
-import '_retaining_path/_retaining_path.dart';
+import '_primitives/_retaining_path/_connection.dart';
+import '_primitives/_retaining_path/_retaining_path.dart';
 
 import 'leak_tracking.dart';
 import 'model.dart';

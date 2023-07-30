@@ -9,11 +9,11 @@ import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
-import '_finalizer.dart';
-import '_gc_counter.dart';
+import '_primitives/_finalizer.dart';
+import '_primitives/_gc_counter.dart';
 import '_object_record.dart';
-import '_retaining_path/_connection.dart';
-import '_retaining_path/_retaining_path.dart';
+import '_primitives/_retaining_path/_connection.dart';
+import '_primitives/_retaining_path/_retaining_path.dart';
 import 'model.dart';
 
 /// Keeps collection of object records until

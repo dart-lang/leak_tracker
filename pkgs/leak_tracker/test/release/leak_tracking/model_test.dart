@@ -16,6 +16,7 @@ void main() {
           type: 't1',
           context: {'a': 1, 'b': 3.14, 'c': ''},
           code: 1,
+          phase: null,
         ),
       ],
       LeakType.notDisposed: [
@@ -24,6 +25,7 @@ void main() {
           type: 't2',
           context: {},
           code: 2,
+          phase: null,
         ),
       ],
       LeakType.notGCed: [
@@ -32,6 +34,7 @@ void main() {
           type: 't3',
           context: {},
           code: 1,
+          phase: null,
         ),
       ],
     });

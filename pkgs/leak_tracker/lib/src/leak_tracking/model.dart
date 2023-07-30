@@ -137,7 +137,7 @@ class LeakTrackingConfig {
 ///
 /// Can be used to customize leak tracking for individual tests.
 class PhaseSettings {
-  const PhaseSettings._({
+  const PhaseSettings({
     this.notGCedAllowList = const {},
     this.notDisposedAllowList = const {},
     this.allowAllNotDisposed = false,
@@ -147,7 +147,7 @@ class PhaseSettings {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
-  const PhaseSettings.paused() : this._(isPaused: true);
+  const PhaseSettings.paused() : this(isPaused: true);
 
   /// Creates settings for a test.
   ///
@@ -162,7 +162,7 @@ class PhaseSettings {
         isPaused = false;
 
   PhaseSettings.withName(PhaseSettings phase, {required String name})
-      : this._(
+      : this(
           name: name,
           isPaused: false,
           notGCedAllowList: phase.notGCedAllowList,
