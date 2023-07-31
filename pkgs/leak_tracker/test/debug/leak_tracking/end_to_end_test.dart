@@ -16,19 +16,32 @@ void main() {
     test(
         'Leak tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
         () async {
-      final leaks = await withLeakTracking(
-        () async {
-          LeakingClass();
-          LeakingClass();
-          LeakingClass();
-        },
-        shouldThrowOnLeaks: false,
-        leakDiagnosticConfig: const LeakDiagnosticConfig(
+      LeakTracking.start(
+        resetIfAlreadyStarted: true,
+        config: LeakTrackingConfig.passive(
+          numberOfGcCycles: numberOfGcCycles,
+          maxRequestsForRetainingPath: 2,
+        ),
+      );
+
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.isPaused, false);
+
+      LeakTracking.phase = const PhaseSettings(
+        leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNonGCed: true,
         ),
-        numberOfGcCycles: numberOfGcCycles,
-        maxRequestsForRetainingPath: 2,
       );
+
+      LeakingClass();
+      LeakingClass();
+      LeakingClass();
+
+      expect(LeakTracking.phase.isPaused, false);
+
+      await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+      final leaks = await LeakTracking.collectLeaks();
+      LeakTracking.stop();
 
       const pathHeader = '  path: >';
 
@@ -51,22 +64,31 @@ void main() {
 
     test('Retaining path for not GCed object is reported, $numberOfGcCycles.',
         () async {
-      final leaks = await withLeakTracking(
-        () async {
-          LeakingClass();
-        },
-        shouldThrowOnLeaks: false,
-        leakDiagnosticConfig: const LeakDiagnosticConfig(
+      LeakTracking.start(
+        resetIfAlreadyStarted: true,
+        config: LeakTrackingConfig.passive(
+          numberOfGcCycles: numberOfGcCycles,
+          maxRequestsForRetainingPath: 2,
+        ),
+      );
+
+      LeakTracking.phase = const PhaseSettings(
+        leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNonGCed: true,
         ),
-        numberOfGcCycles: numberOfGcCycles,
       );
+
+      LeakingClass();
 
       const expectedRetainingPathTails = [
         '/leak_tracker/test/test_infra/data/dart_classes.dart/_notGCedObjects',
         'dart.core/_GrowableList:',
         '/leak_tracker/test/test_infra/data/dart_classes.dart/LeakTrackedClass',
       ];
+
+      await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+      final leaks = await LeakTracking.collectLeaks();
+      LeakTracking.stop();
 
       expect(leaks.total, 2);
       expect(

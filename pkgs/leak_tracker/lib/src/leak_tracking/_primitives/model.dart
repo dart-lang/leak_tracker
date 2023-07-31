@@ -89,7 +89,6 @@ class LeakTrackingConfig {
   /// - will set [disposalTime] to zero, to assume the methods `dispose` are completed
   /// at the moment of leak checking
   LeakTrackingConfig.passive({
-    LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
     int numberOfGcCycles = defaultNumberOfGcCycles,
     int? maxRequestsForRetainingPath = 10,
   }) : this(
