@@ -160,7 +160,7 @@ class LeakTrackingTestConfig {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnStart: true,
       collectStackTraceOnDisposal: true,
-      collectRetainingPathForNonGCed: true,
+      collectRetainingPathForNotGCed: true,
     ),
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
@@ -174,7 +174,7 @@ class LeakTrackingTestConfig {
   /// and will collect retaining path for notGCed objects.
   LeakTrackingTestConfig.retainingPath({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
-      collectRetainingPathForNonGCed: true,
+      collectRetainingPathForNotGCed: true,
     ),
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},

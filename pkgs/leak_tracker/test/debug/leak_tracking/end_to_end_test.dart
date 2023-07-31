@@ -29,7 +29,7 @@ void main() {
 
       LeakTracking.phase = const PhaseSettings(
         leakDiagnosticConfig: LeakDiagnosticConfig(
-          collectRetainingPathForNonGCed: true,
+          collectRetainingPathForNotGCed: true,
         ),
       );
 
@@ -74,7 +74,7 @@ void main() {
 
       LeakTracking.phase = const PhaseSettings(
         leakDiagnosticConfig: LeakDiagnosticConfig(
-          collectRetainingPathForNonGCed: true,
+          collectRetainingPathForNotGCed: true,
         ),
       );
 

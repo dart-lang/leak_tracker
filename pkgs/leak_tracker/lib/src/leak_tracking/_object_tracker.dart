@@ -181,7 +181,7 @@ class ObjectTracker implements LeakProvider {
     _objects.assertIntegrity();
 
     final List<int>? objectsToGetPath =
-        phase.value.leakDiagnosticConfig.collectRetainingPathForNonGCed
+        phase.value.leakDiagnosticConfig.collectRetainingPathForNotGCed
             ? []
             : null;
 

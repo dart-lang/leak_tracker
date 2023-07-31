@@ -20,7 +20,7 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// only for leak troubleshooting.
 class LeakDiagnosticConfig {
   const LeakDiagnosticConfig({
-    this.collectRetainingPathForNonGCed = false,
+    this.collectRetainingPathForNotGCed = false,
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
     this.collectStackTraceOnStart = false,
@@ -49,7 +49,7 @@ class LeakDiagnosticConfig {
   ///
   /// The collection of retaining path a blocking asyncronous call.
   /// In release mode this flag does not work.
-  final bool collectRetainingPathForNonGCed;
+  final bool collectRetainingPathForNotGCed;
 
   bool shouldCollectStackTraceOnStart(String classname) =>
       collectStackTraceOnStart ||
@@ -147,7 +147,7 @@ class PhaseSettings {
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
-  /// even if the value will become false before the object is GCed.
+  /// even if the value will become false during the object lifetime.
   final bool isPaused;
 
   /// Phase of the application execution.

@@ -27,8 +27,8 @@ abstract class LeakTracking {
   /// Can be modified before leak tracking is started and while it
   /// is in process.
   ///
-  /// Objects will be assigned to the phase that was active when their
-  /// tracking started. Name of the phase will be included in the leak report.
+  /// Objects will be assigned to the phase at the moment of
+  /// tracking start. Name of the phase will be mentioned in the leak report.
   static PhaseSettings get phase => _phase.value;
   static set phase(value) {
     _phase.value = value;

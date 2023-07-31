@@ -4,7 +4,7 @@
 * Remove API that is not used in Flutter Framework.
 * Rename `LeakTrackingConfiguration` to `LeakTrackingConfig`.
 * Remove global flag [collectDebugInformationForLeaks].
-* Rename `checkNonGCed` to `checkNotGCed`.
+* Rename `checkNonGCed` to `checkNotGCed` and `collectRetainingPathForNonGCed` to `collectRetainingPathForNotGCed`.
 * Group global items related to leak tracking, in abstract class LeakTracking.
 * Rename `gcCountBuffer` to `numberOfGcCycles` and `disposalTimeBuffer` to `disposalTime`.
 
