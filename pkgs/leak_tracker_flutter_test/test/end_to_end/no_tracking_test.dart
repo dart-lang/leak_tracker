@@ -6,12 +6,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 import '../test_infra/flutter_classes.dart';
-import '../test_infra/leak_tracking_in_flutter.dart';
-
-const test0TrackingOff = 'test0, tracking-off';
-const test1TrackingOn = 'test1, tracking-on';
-const test2TrackingOff = 'test2, tracking-off';
-const test3TrackingOn = 'test3, tracking-on';
 
 void main() {
   testWidgets(

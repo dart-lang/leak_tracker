@@ -66,8 +66,12 @@ void _verifyLeaks(
 }) {
   const String linkToLeakTracker = 'https://github.com/dart-lang/leak_tracker';
 
-  final leaks = Leaks(allLeaks.byType.map((key, value) =>
-      MapEntry(key, value.where((leak) => leak.phase == testName).toList())));
+  final leaks = Leaks(
+    allLeaks.byType.map(
+      (key, value) =>
+          MapEntry(key, value.where((leak) => leak.phase == testName).toList()),
+    ),
+  );
 
   if (notDisposed + notGCed > 0) {
     expect(
