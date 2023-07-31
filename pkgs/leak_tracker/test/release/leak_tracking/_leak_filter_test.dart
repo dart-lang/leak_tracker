@@ -7,13 +7,15 @@ import 'package:leak_tracker/src/leak_tracking/_leak_filter.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
 import 'package:test/test.dart';
 
-final stringRecord = ObjectRecord(0, {}, String, '', const PhaseSettings());
-final timeRecord = ObjectRecord(0, {}, DateTime, '', const PhaseSettings());
+ObjectRecord _stringRecord(PhaseSettings phase) =>
+    ObjectRecord(0, {}, String, '', phase);
+ObjectRecord _dateTimeRecord(PhaseSettings phase) =>
+    ObjectRecord(0, {}, DateTime, '', phase);
 
 void main() {
   test('All leaks are reported with default settings.', () {
     final filter = LeakFilter();
-    final record = ObjectRecord(0, {}, String, '', const PhaseSettings());
+    final record = _stringRecord(const PhaseSettings());
 
     expect(filter.shouldReport(LeakType.notDisposed, record), true);
     expect(filter.shouldReport(LeakType.notGCed, record), true);
@@ -22,13 +24,7 @@ void main() {
 
   test('$LeakFilter respects allowAllNotDisposed.', () {
     final filter = LeakFilter();
-    final record = ObjectRecord(
-      0,
-      {},
-      String,
-      '',
-      const PhaseSettings(allowAllNotDisposed: true),
-    );
+    final record = _stringRecord(const PhaseSettings());
 
     expect(filter.shouldReport(LeakType.notDisposed, record), false);
     expect(filter.shouldReport(LeakType.notGCed, record), true);
@@ -37,16 +33,48 @@ void main() {
 
   test('$LeakFilter respects allowAllNotGCed.', () {
     final filter = LeakFilter();
-    final record = ObjectRecord(
-      0,
-      {},
-      String,
-      '',
-      const PhaseSettings(allowAllNotGCed: true),
-    );
+    final record = _stringRecord(const PhaseSettings(allowAllNotGCed: true));
 
     expect(filter.shouldReport(LeakType.notDisposed, record), true);
     expect(filter.shouldReport(LeakType.notGCed, record), false);
     expect(filter.shouldReport(LeakType.gcedLate, record), false);
+  });
+
+  test('$LeakFilter respects notGCedAllowList.', () {
+    final filter = LeakFilter();
+    const phase = PhaseSettings(notGCedAllowList: {'String': null});
+    final stringRecord = _stringRecord(phase);
+    final dateTimeRecord = _dateTimeRecord(phase);
+
+    expect(filter.shouldReport(LeakType.notDisposed, stringRecord), true);
+    expect(filter.shouldReport(LeakType.notGCed, stringRecord), false);
+    expect(filter.shouldReport(LeakType.gcedLate, stringRecord), false);
+    expect(filter.shouldReport(LeakType.notDisposed, dateTimeRecord), true);
+    expect(filter.shouldReport(LeakType.notGCed, dateTimeRecord), true);
+    expect(filter.shouldReport(LeakType.gcedLate, dateTimeRecord), true);
+  });
+
+  test('$LeakFilter respects notDisposedAllowList.', () {
+    final filter = LeakFilter();
+    const phase = PhaseSettings(notDisposedAllowList: {'String': null});
+    final stringRecord = _stringRecord(phase);
+    final dateTimeRecord = _dateTimeRecord(phase);
+
+    expect(filter.shouldReport(LeakType.notDisposed, stringRecord), false);
+    expect(filter.shouldReport(LeakType.notGCed, stringRecord), true);
+    expect(filter.shouldReport(LeakType.gcedLate, stringRecord), true);
+    expect(filter.shouldReport(LeakType.notDisposed, dateTimeRecord), true);
+    expect(filter.shouldReport(LeakType.notGCed, dateTimeRecord), true);
+    expect(filter.shouldReport(LeakType.gcedLate, dateTimeRecord), true);
+  });
+
+  test('$LeakFilter respects limit.', () {
+    final filter = LeakFilter();
+    final stringRecord =
+        _stringRecord(const PhaseSettings(notDisposedAllowList: {'String': 2}));
+
+    expect(filter.shouldReport(LeakType.notDisposed, stringRecord), false);
+    expect(filter.shouldReport(LeakType.notDisposed, stringRecord), false);
+    expect(filter.shouldReport(LeakType.notDisposed, stringRecord), true);
   });
 }

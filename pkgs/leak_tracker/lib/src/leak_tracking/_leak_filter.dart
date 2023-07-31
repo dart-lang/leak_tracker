@@ -61,7 +61,7 @@ class _PhaseLeakFilter {
     final actualCount = _count.update(
       (objectType, leakType),
       (value) => value + 1,
-      ifAbsent: () => 0,
+      ifAbsent: () => 1,
     );
 
     if (actualCount <= allowedCount) return false;
