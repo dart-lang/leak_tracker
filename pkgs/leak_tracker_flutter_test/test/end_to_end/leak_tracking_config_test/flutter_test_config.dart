@@ -46,6 +46,13 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         notGCed: 1,
         shouldContainDebugInfo: false,
       );
+      // _verifyLeaks(
+      //   leaks,
+      //   test3TrackingOnWithStackTrace,
+      //   notDisposed: 1,
+      //   notGCed: 1,
+      //   shouldContainDebugInfo: true,
+      // );
     },
   );
 
