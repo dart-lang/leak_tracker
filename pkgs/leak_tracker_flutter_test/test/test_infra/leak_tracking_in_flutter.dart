@@ -77,21 +77,23 @@ void testWidgetsWithLeakTracking(
   bool semanticsEnabled = true,
   TestVariant<Object?> variant = const DefaultTestVariant(),
   dynamic tags,
-  PhaseSettings? phase,
+  LeakTrackingTestConfig leakTrackingTestConfig =
+      const LeakTrackingTestConfig(),
 }) {
-  assert(
-    phase?.name == null && (phase?.isPaused ?? false) == false,
-    'Use `PhaseSettings.test()` to create phase for a test.',
-  );
-
   if (!_tearDownConfigured) configureLeakTrackingTearDown();
   if (!LeakTracking.isStarted) _setUpTestingWithLeakTracking();
 
+  final phase = PhaseSettings(
+    name: description,
+    leakDiagnosticConfig: leakTrackingTestConfig.leakDiagnosticConfig,
+    notGCedAllowList: leakTrackingTestConfig.notGCedAllowList,
+    notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
+    allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
+    allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
+  );
+
   Future<void> wrappedCallBack(WidgetTester tester) async {
-    LeakTracking.phase = PhaseSettings.withName(
-      phase ?? const PhaseSettings.test(),
-      name: description,
-    );
+    LeakTracking.phase = phase;
 
     if (!LeakTracking.isStarted) {
       throw StateError(
@@ -135,14 +137,10 @@ void _printPlatformWarningIfNeeded() {
 ///
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
-// TODO(polina-c): update helpers to respect allow lists defined in this class
-// https://github.com/flutter/devtools/issues/5606
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingTestConfig].
   const LeakTrackingTestConfig({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.onLeaks,
-    this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
@@ -159,8 +157,6 @@ class LeakTrackingTestConfig {
       collectStackTraceOnDisposal: true,
       collectRetainingPathForNonGCed: true,
     ),
-    this.onLeaks,
-    this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
@@ -175,31 +171,11 @@ class LeakTrackingTestConfig {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectRetainingPathForNonGCed: true,
     ),
-    this.onLeaks,
-    this.failTestOnLeaks = true,
     this.notGCedAllowList = const <String, int>{},
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
   });
-
-  /// When to collect stack trace information.
-  ///
-  /// Knowing call stack may help to troubleshoot memory leaks.
-  /// Customize this parameter to collect stack traces when needed.
-  final LeakDiagnosticConfig leakDiagnosticConfig;
-
-  /// Handler to obtain details about collected leaks.
-  ///
-  /// Use the handler to process the collected leak
-  /// details programmatically.
-  final LeaksCallback? onLeaks;
-
-  /// If true, the test will fail if leaks are found.
-  ///
-  /// If false, the test will not fail if leaks are
-  /// found to allow for analyzing leaks after the test completes.
-  final bool failTestOnLeaks;
 
   /// Classes that are allowed to be not garbage collected after disposal.
   ///
@@ -222,97 +198,10 @@ class LeakTrackingTestConfig {
 
   /// If true, all notGCed leaks will be allowed.
   final bool allowAllNotGCed;
-}
 
-/// Runs [callback] with leak tracking.
-///
-/// Wrapper for [withLeakTracking] with Flutter specific functionality.
-///
-/// The method will fail if wrapped code contains memory leaks.
-///
-/// See details in documentation for `withLeakTracking` at
-/// https://github.com/dart-lang/leak_tracker/blob/main/lib/src/orchestration.dart#withLeakTracking
-///
-/// The Flutter related enhancements are:
-/// 1. Listens to [MemoryAllocations] events.
-/// 2. Uses `tester.runAsync` for leak detection if [tester] is provided.
-///
-/// Pass [config] to troubleshoot or exempt leaks. See [LeakTrackingTestConfig]
-/// for details.
-Future<void> withFlutterLeakTracking(
-  DartAsyncCallback callback,
-  WidgetTester tester,
-  LeakTrackingTestConfig config,
-) async {
-  // Leak tracker does not work for web platform.
-  if (kIsWeb) {
-    final bool shouldPrintWarning = !_notSupportedWarningPrinted &&
-        LeakTracking.warnForNotSupportedPlatforms;
-    if (shouldPrintWarning) {
-      _notSupportedWarningPrinted = true;
-      debugPrint(
-        'Leak tracking is not supported on web platform.\nTo turn off this message, set `LeakTracking.warnForNotSupportedPlatforms` to false.',
-      );
-    }
-    await callback();
-    return;
-  }
-
-  void flutterEventToLeakTracker(ObjectEvent event) {
-    return LeakTracking.dispatchObjectEvent(event.toMap());
-  }
-
-  return TestAsyncUtils.guard<void>(() async {
-    MemoryAllocations.instance.addListener(flutterEventToLeakTracker);
-    Future<void> asyncCodeRunner(DartAsyncCallback action) async =>
-        tester.runAsync(action);
-
-    try {
-      Leaks leaks = await withLeakTracking(
-        callback,
-        asyncCodeRunner: asyncCodeRunner,
-        leakDiagnosticConfig: config.leakDiagnosticConfig,
-        shouldThrowOnLeaks: false,
-      );
-
-      leaks = LeakCleaner(config).clean(leaks);
-
-      if (leaks.total > 0) {
-        config.onLeaks?.call(leaks);
-        if (config.failTestOnLeaks) {
-          expect(leaks, isLeakFree);
-        }
-      }
-    } finally {
-      MemoryAllocations.instance.removeListener(flutterEventToLeakTracker);
-    }
-  });
-}
-
-/// Cleans leaks that are allowed by [config].
-class LeakCleaner {
-  LeakCleaner(this.config);
-
-  final LeakTrackingTestConfig config;
-
-  Leaks clean(Leaks leaks) {
-    final Leaks result = Leaks(<LeakType, List<LeakReport>>{
-      for (LeakType leakType in leaks.byType.keys)
-        leakType: leaks.byType[leakType]!
-            .where((LeakReport leak) => _shouldReportLeak(leakType, leak))
-            .toList(),
-    });
-    return result;
-  }
-
-  /// Returns true if [leak] should be reported as failure.
-  bool _shouldReportLeak(LeakType leakType, LeakReport leak) {
-    switch (leakType) {
-      case LeakType.notDisposed:
-        return !config.notDisposedAllowList.containsKey(leak.type);
-      case LeakType.notGCed:
-      case LeakType.gcedLate:
-        return !config.notGCedAllowList.containsKey(leak.type);
-    }
-  }
+  /// When to collect stack trace information.
+  ///
+  /// Knowing call stack may help to troubleshoot memory leaks.
+  /// Customize this parameter to collect stack traces when needed.
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 }

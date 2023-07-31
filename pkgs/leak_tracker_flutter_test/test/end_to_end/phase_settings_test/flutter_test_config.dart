@@ -8,6 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
+import '../../test_infra/dart_classes.dart';
 import '../../test_infra/leak_tracking_in_flutter.dart';
 import 'phase_settings_test.dart';
 
@@ -45,4 +46,52 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   });
 
   await testMain();
+}
+
+/// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].
+void _verifyLeaks(
+  Leaks leaks, {
+  int expectedNotDisposed = 0,
+  int expectedNotGCed = 0,
+  required bool shouldContainDebugInfo,
+}) {
+  const String linkToLeakTracker = 'https://github.com/dart-lang/leak_tracker';
+
+  expect(
+    () => expect(leaks, isLeakFree),
+    throwsA(
+      predicate((Object? e) {
+        return e is TestFailure && e.toString().contains(linkToLeakTracker);
+      }),
+    ),
+  );
+
+  _verifyLeakList(
+    leaks.notDisposed,
+    expectedNotDisposed,
+    shouldContainDebugInfo,
+  );
+  _verifyLeakList(
+    leaks.notGCed,
+    expectedNotGCed,
+    shouldContainDebugInfo,
+  );
+}
+
+void _verifyLeakList(
+  List<LeakReport> list,
+  int expectedCount,
+  bool shouldContainDebugInfo,
+) {
+  expect(list.length, expectedCount);
+
+  for (final LeakReport leak in list) {
+    if (shouldContainDebugInfo) {
+      expect(leak.context, isNotEmpty);
+    } else {
+      expect(leak.context ?? <String, dynamic>{}, isEmpty);
+    }
+    expect(leak.trackedClass, contains(LeakTrackedClass.library));
+    expect(leak.trackedClass, contains('$LeakTrackedClass'));
+  }
 }

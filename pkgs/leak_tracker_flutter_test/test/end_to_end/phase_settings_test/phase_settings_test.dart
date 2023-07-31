@@ -10,7 +10,7 @@ import '../../test_infra/leak_tracking_in_flutter.dart';
 
 const test1TrackingOn = 'test1, tracking-on';
 const test2TrackingOff = 'test2, tracking-off';
-const test3TrackingOn = 'test3, tracking-on';
+const test3TrackingOnWithStackTrace = 'test3, tracking-on, with stack trace';
 
 /// For these tests `expect` for found leaks happens in flitter_test_config.dart.
 void main() {
@@ -28,9 +28,10 @@ void main() {
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
-  testWidgetsWithLeakTracking(test3TrackingOn, (widgetTester) async {
+  testWidgetsWithLeakTracking(test3TrackingOnWithStackTrace,
+      (widgetTester) async {
     expect(LeakTracking.isStarted, true);
-    expect(LeakTracking.phase.name, test3TrackingOn);
+    expect(LeakTracking.phase.name, test3TrackingOnWithStackTrace);
     expect(LeakTracking.phase.isPaused, false);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });

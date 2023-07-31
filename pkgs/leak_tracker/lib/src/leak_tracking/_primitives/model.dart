@@ -149,29 +149,6 @@ class PhaseSettings {
 
   const PhaseSettings.paused() : this(isPaused: true);
 
-  /// Creates settings for a test.
-  ///
-  /// Leaves [name] null, to let the test set up the test desctiprion as name.
-  const PhaseSettings.test({
-    this.notGCedAllowList = const {},
-    this.notDisposedAllowList = const {},
-    this.allowAllNotDisposed = false,
-    this.allowAllNotGCed = false,
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-  })  : name = null,
-        isPaused = false;
-
-  PhaseSettings.withName(PhaseSettings phase, {required String name})
-      : this(
-          name: name,
-          isPaused: false,
-          notGCedAllowList: phase.notGCedAllowList,
-          notDisposedAllowList: phase.notDisposedAllowList,
-          allowAllNotDisposed: phase.allowAllNotDisposed,
-          allowAllNotGCed: phase.allowAllNotGCed,
-          leakDiagnosticConfig: phase.leakDiagnosticConfig,
-        );
-
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
