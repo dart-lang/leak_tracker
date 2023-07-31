@@ -17,16 +17,16 @@ import 'phase_settings_test.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   var leaksDetected = false;
 
-  // This tear down should be set before leak tracking tear down in order to happen after it.
+  // This tear down should be set before leak tracking tear down in
+  // order to happen after it and verify that leaks are found.
   tearDownAll(() async {
-    //expect(leaksDetected, true, reason: 'leaks should be detected');
+    expect(leaksDetected, true, reason: 'leaks should be detected');
   });
 
   configureLeakTrackingTearDown(
     onLeaks: (leaks) {
       expect(leaks.total, greaterThan(0));
       leaksDetected = true;
-      print('!!!!!!!!!!!!!!');
 
       try {
         expect(leaks, isLeakFree);
