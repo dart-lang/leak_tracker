@@ -70,9 +70,11 @@ void main() {
 
   test('$LeakFilter respects limit.', () {
     final filter = LeakFilter();
-    final stringRecord =
-        _stringRecord(const PhaseSettings(notDisposedAllowList: {'String': 2}));
+    const phase = PhaseSettings(notDisposedAllowList: {'String': 2});
+    final stringRecord = _stringRecord(phase);
+    final dateTimeRecord = _dateTimeRecord(phase);
 
+    expect(filter.shouldReport(LeakType.notDisposed, dateTimeRecord), true);
     expect(filter.shouldReport(LeakType.notDisposed, stringRecord), false);
     expect(filter.shouldReport(LeakType.notDisposed, stringRecord), false);
     expect(filter.shouldReport(LeakType.notDisposed, stringRecord), true);
