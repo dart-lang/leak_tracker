@@ -28,11 +28,18 @@ void main() {
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
-  testWidgetsWithLeakTracking(test3TrackingOnWithStackTrace,
-      (widgetTester) async {
-    expect(LeakTracking.isStarted, true);
-    expect(LeakTracking.phase.name, test3TrackingOnWithStackTrace);
-    expect(LeakTracking.phase.isPaused, false);
-    await widgetTester.pumpWidget(StatelessLeakingWidget());
-  });
+  testWidgetsWithLeakTracking(
+    test3TrackingOnWithStackTrace,
+    (widgetTester) async {
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.name, test3TrackingOnWithStackTrace);
+      expect(LeakTracking.phase.isPaused, false);
+      await widgetTester.pumpWidget(StatelessLeakingWidget());
+    },
+    leakTrackingTestConfig: const LeakTrackingTestConfig(
+      leakDiagnosticConfig: LeakDiagnosticConfig(
+        collectStackTraceOnStart: true,
+      ),
+    ),
+  );
 }

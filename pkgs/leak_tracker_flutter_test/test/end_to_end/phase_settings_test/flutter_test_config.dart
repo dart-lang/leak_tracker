@@ -10,7 +10,7 @@ import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import '../../test_infra/dart_classes.dart';
 import '../../test_infra/leak_tracking_in_flutter.dart';
-import 'phase_settings_test.dart';
+import 'config_test.dart';
 
 /// Test configuration for each test library in this directory.
 ///
@@ -38,6 +38,14 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         expect(e.message, contains('test: $test1TrackingOn'));
         expect(e.message!.contains(test2TrackingOff), false);
       }
+
+      _verifyLeaks(
+        leaks,
+        test1TrackingOn,
+        notDisposed: 1,
+        notGCed: 1,
+        shouldContainDebugInfo: false,
+      );
     },
   );
 
@@ -48,32 +56,38 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   await testMain();
 }
 
-/// Verifies [leaks] contains expected number of leaks for [_LeakTrackedClass].
+/// Verifies [allLeaks] contains expected number of leaks for [_LeakTrackedClass].
 void _verifyLeaks(
-  Leaks leaks, {
-  int expectedNotDisposed = 0,
-  int expectedNotGCed = 0,
+  Leaks allLeaks,
+  String testName, {
+  int notDisposed = 0,
+  int notGCed = 0,
   required bool shouldContainDebugInfo,
 }) {
   const String linkToLeakTracker = 'https://github.com/dart-lang/leak_tracker';
 
-  expect(
-    () => expect(leaks, isLeakFree),
-    throwsA(
-      predicate((Object? e) {
-        return e is TestFailure && e.toString().contains(linkToLeakTracker);
-      }),
-    ),
-  );
+  final leaks = Leaks(allLeaks.byType.map((key, value) =>
+      MapEntry(key, value.where((leak) => leak.phase == testName).toList())));
+
+  if (notDisposed + notGCed > 0) {
+    expect(
+      () => expect(leaks, isLeakFree),
+      throwsA(
+        predicate((Object? e) {
+          return e is TestFailure && e.toString().contains(linkToLeakTracker);
+        }),
+      ),
+    );
+  }
 
   _verifyLeakList(
     leaks.notDisposed,
-    expectedNotDisposed,
+    notDisposed,
     shouldContainDebugInfo,
   );
   _verifyLeakList(
     leaks.notGCed,
-    expectedNotGCed,
+    notGCed,
     shouldContainDebugInfo,
   );
 }
