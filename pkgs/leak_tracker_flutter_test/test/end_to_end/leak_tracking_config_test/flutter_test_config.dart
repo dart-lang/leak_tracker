@@ -10,7 +10,7 @@ import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import '../../test_infra/dart_classes.dart';
 import '../../test_infra/leak_tracking_in_flutter.dart';
-import 'config_test.dart';
+import 'leak_tracking_config_test.dart';
 
 /// Test configuration for each test library in this directory.
 ///
@@ -56,7 +56,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   await testMain();
 }
 
-/// Verifies [allLeaks] contains expected number of leaks for [_LeakTrackedClass].
+/// Verifies [allLeaks] contains expected number of leaks for the test [testName].
 void _verifyLeaks(
   Leaks allLeaks,
   String testName, {
