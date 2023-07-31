@@ -31,12 +31,8 @@ jobs:
       - name: analyze
         run: sh ./tool/analyze.sh
 
-      - name: dart release test
-        run: dart test test/release
-        working-directory: pkgs/leak_tracker
-
-      - name: dart debug test
-        run: dart test test/debug --debug
+      - name: dart test
+        run: dart test test
         working-directory: pkgs/leak_tracker
 
       - name: flutter test
