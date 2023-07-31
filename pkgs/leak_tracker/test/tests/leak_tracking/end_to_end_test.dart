@@ -110,6 +110,34 @@ void main() {
       expect(theLeak.trackedClass, contains(LeakTrackedClass.library));
       expect(theLeak.trackedClass, contains('$LeakTrackedClass'));
     });
+
+    test('Passive leak tracking detects leaks, $numberOfGcCycles.', () async {
+      LeakTracking.start(
+        resetIfAlreadyStarted: true,
+        config: LeakTrackingConfig.passive(
+          numberOfGcCycles: numberOfGcCycles,
+        ),
+      );
+
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
+
+      LeakingClass();
+      LeakingClass();
+      LeakingClass();
+
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
+
+      await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+      final leaks = await LeakTracking.collectLeaks();
+      LeakTracking.stop();
+
+      expect(leaks.notGCed, hasLength(3));
+      expect(
+        () => expect(leaks, isLeakFree),
+        throwsA(isA<TestFailure>()),
+      );
+    });
   }
 }
 
