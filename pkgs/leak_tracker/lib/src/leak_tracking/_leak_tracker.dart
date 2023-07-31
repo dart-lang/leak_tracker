@@ -10,7 +10,6 @@ import '_primitives/model.dart';
 class LeakTracker {
   LeakTracker(LeakTrackingConfig config, ObjectRef<PhaseSettings> phase) {
     objectTracker = ObjectTracker(
-      leakDiagnosticConfig: config.leakDiagnosticConfig,
       disposalTime: config.disposalTime,
       numberOfGcCycles: config.numberOfGcCycles,
       maxRequestsForRetainingPath: config.maxRequestsForRetainingPath,

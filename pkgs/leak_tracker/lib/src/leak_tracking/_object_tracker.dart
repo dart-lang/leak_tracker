@@ -25,7 +25,6 @@ import '_primitives/model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
@@ -55,8 +54,6 @@ class ObjectTracker implements LeakProvider {
 
   bool disposed = false;
 
-  final LeakDiagnosticConfig leakDiagnosticConfig;
-
   final int numberOfGcCycles;
 
   final int? maxRequestsForRetainingPath;
@@ -83,7 +80,7 @@ class ObjectTracker implements LeakProvider {
       phase.value,
     );
 
-    if (leakDiagnosticConfig
+    if (phase.value.leakDiagnosticConfig
         .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
@@ -146,7 +143,7 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.mergeContext(context);
 
-    if (leakDiagnosticConfig
+    if (phase.value.leakDiagnosticConfig
         .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
@@ -184,7 +181,9 @@ class ObjectTracker implements LeakProvider {
     _objects.assertIntegrity();
 
     final List<int>? objectsToGetPath =
-        leakDiagnosticConfig.collectRetainingPathForNonGCed ? [] : null;
+        phase.value.leakDiagnosticConfig.collectRetainingPathForNonGCed
+            ? []
+            : null;
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {

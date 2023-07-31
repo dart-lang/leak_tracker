@@ -24,7 +24,6 @@ class MockObjectTracker extends ObjectTracker {
   MockObjectTracker()
       : super(
           disposalTime: const Duration(milliseconds: 100),
-          leakDiagnosticConfig: const LeakDiagnosticConfig(),
           numberOfGcCycles: 3,
           maxRequestsForRetainingPath: 10,
           phase: ObjectRef(const PhaseSettings()),

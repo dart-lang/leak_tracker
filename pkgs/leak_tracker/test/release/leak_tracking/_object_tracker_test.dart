@@ -321,14 +321,17 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
-        leakDiagnosticConfig: const LeakDiagnosticConfig(
-          classesToCollectStackTraceOnStart: {'String'},
-          classesToCollectStackTraceOnDisposal: {'String'},
-        ),
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        phase: ObjectRef(const PhaseSettings()),
+        phase: ObjectRef(
+          const PhaseSettings(
+            leakDiagnosticConfig: LeakDiagnosticConfig(
+              classesToCollectStackTraceOnStart: {'String'},
+              classesToCollectStackTraceOnDisposal: {'String'},
+            ),
+          ),
+        ),
       );
     });
 

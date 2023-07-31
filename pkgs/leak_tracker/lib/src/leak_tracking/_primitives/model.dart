@@ -79,7 +79,6 @@ class LeakTrackingConfig {
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTime = const Duration(milliseconds: 100),
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.maxRequestsForRetainingPath = 10,
   });
@@ -98,15 +97,12 @@ class LeakTrackingConfig {
           notifyDevTools: false,
           checkPeriod: null,
           disposalTime: const Duration(),
-          leakDiagnosticConfig: leakDiagnosticConfig,
           numberOfGcCycles: numberOfGcCycles,
           maxRequestsForRetainingPath: maxRequestsForRetainingPath,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
   final int numberOfGcCycles;
-
-  final LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Period to check for leaks.
   ///
