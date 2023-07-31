@@ -4,7 +4,16 @@
 
 // Content of this file is mirror of
 // https://github.com/flutter/flutter/blob/master/packages/flutter/test/foundation/leak_tracking.dart
-// to test that a new version work well for Flutter Framework, before it upgrades to the version.
+// to test that a new versions work well for Flutter Framework, before it upgrades to the version.
+//
+// The process is:
+// 1. Increase version of packages
+// 2. Copy the content of this file from flutter
+// 3. Make the changes to the packages, update this file if needed
+// 4. Publish new versions of packages
+// 5. Update Flutter Framework to use new versions of packages, with new version of this file
+//
+// Code in this file is test covered, that makes the process self-inforcing.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +29,7 @@ void _setUpTestingWithLeakTracking() {
   _printPlatformWarningIfNeeded();
   if (!_isPlatformSupported) return;
 
+  LeakTracking.phase = const PhaseSettings.paused();
   LeakTracking.start(config: LeakTrackingConfig.passive());
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);

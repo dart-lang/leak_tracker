@@ -13,7 +13,7 @@ void main() {
       (widgetTester) async {
     expect(LeakTracking.isStarted, false);
     expect(LeakTracking.phase.name, null);
-    expect(LeakTracking.phase.isPaused, true);
+    expect(LeakTracking.phase.isPaused, false);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 }
