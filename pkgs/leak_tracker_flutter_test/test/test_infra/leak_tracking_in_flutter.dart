@@ -93,15 +93,10 @@ void testWidgetsWithLeakTracking(
   );
 
   Future<void> wrappedCallBack(WidgetTester tester) async {
+    assert(LeakTracking.isStarted);
+    assert(_tearDownConfigured);
     LeakTracking.phase = phase;
-
-    if (!LeakTracking.isStarted) {
-      throw StateError(
-        '`setUpTestingWithLeakTracking` must be invoked in setUpAll to run tests with leak tracking.',
-      );
-    }
     await callback(tester);
-
     LeakTracking.phase = const PhaseSettings.paused();
   }
 
