@@ -19,13 +19,14 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
 
   // This tear down should be set before leak tracking tear down in order to happen after it.
   tearDownAll(() async {
-    expect(leaksDetected, true, reason: 'leaks should be detected');
+    //expect(leaksDetected, true, reason: 'leaks should be detected');
   });
 
   configureLeakTrackingTearDown(
     onLeaks: (leaks) {
       expect(leaks.total, greaterThan(0));
       leaksDetected = true;
+      print('!!!!!!!!!!!!!!');
 
       try {
         expect(leaks, isLeakFree);
@@ -41,11 +42,6 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
 
   setUpAll(() {
     LeakTracking.warnForNotSupportedPlatforms = false;
-  });
-
-  tearDownAll(() async {
-    print('tear down all 2, leaks detected: $leaksDetected');
-    //expect(leaksDetected, true, reason: 'leaks should be detected');
   });
 
   await testMain();

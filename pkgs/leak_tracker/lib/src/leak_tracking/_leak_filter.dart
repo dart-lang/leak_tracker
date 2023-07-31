@@ -54,7 +54,7 @@ class _PhaseLeakFilter {
     assert(record.phase == phase);
     if (allAllowed) return false;
     final objectType = record.type.toString();
-    if (!allowList.containsKey(objectType)) return false;
+    if (!allowList.containsKey(objectType)) return true;
     final allowedCount = allowList[objectType];
     if (allowedCount == null) return false;
 
