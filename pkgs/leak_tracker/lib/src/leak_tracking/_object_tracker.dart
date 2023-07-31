@@ -269,8 +269,9 @@ class ObjectTracker implements LeakProvider {
 
     final result = Leaks({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks
-          .where((record) =>
-              _leakFilter.shouldReport(LeakType.notDisposed, record))
+          .where(
+            (record) => _leakFilter.shouldReport(LeakType.notDisposed, record),
+          )
           .map((record) => record.toLeakReport())
           .toList(),
       LeakType.notGCed: _objects.notGCedDisposedLate
