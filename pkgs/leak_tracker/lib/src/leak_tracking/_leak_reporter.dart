@@ -7,7 +7,7 @@ import 'dart:async';
 import '../devtools_integration/delivery.dart';
 import '../shared/_util.dart';
 import '../shared/shared_model.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 /// Checks [leakProvider] either by schedule or by request.
 ///

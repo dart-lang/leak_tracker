@@ -7,7 +7,7 @@ import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_leak_tracker.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 /// Provides leak tracking functionality.
 abstract class LeakTracking {

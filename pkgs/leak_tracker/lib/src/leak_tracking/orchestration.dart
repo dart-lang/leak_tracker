@@ -13,7 +13,7 @@ import '_primitives/_retaining_path/_connection.dart';
 import '_primitives/_retaining_path/_retaining_path.dart';
 
 import 'leak_tracking.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 final _log = Logger('orchestration.dart');
 

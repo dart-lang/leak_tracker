@@ -5,7 +5,7 @@
 import '../shared/_primitives.dart';
 import '_leak_reporter.dart';
 import '_object_tracker.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 class LeakTracker {
   LeakTracker(LeakTrackingConfig config, ObjectRef<PhaseSettings> phase) {

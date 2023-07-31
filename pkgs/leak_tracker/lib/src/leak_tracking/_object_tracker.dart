@@ -9,12 +9,13 @@ import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
+import '_leak_filter.dart';
+import '_object_record.dart';
 import '_primitives/_finalizer.dart';
 import '_primitives/_gc_counter.dart';
-import '_object_record.dart';
 import '_primitives/_retaining_path/_connection.dart';
 import '_primitives/_retaining_path/_retaining_path.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
@@ -49,6 +50,8 @@ class ObjectTracker implements LeakProvider {
   late GcCounter _gcCounter;
 
   final _objects = ObjectRecords();
+
+  final _leakFilter = LeakFilter();
 
   bool disposed = false;
 
