@@ -17,14 +17,14 @@ void main() {
   testWidgetsWithLeakTracking(test1TrackingOn, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
     expect(LeakTracking.phase.name, test1TrackingOn);
-    expect(LeakTracking.phase.isPaused, false);
+    expect(LeakTracking.phase.isLeakTrackingPaused, false);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
   testWidgets(test2TrackingOff, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
     expect(LeakTracking.phase.name, null);
-    expect(LeakTracking.phase.isPaused, true);
+    expect(LeakTracking.phase.isLeakTrackingPaused, true);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
@@ -33,7 +33,7 @@ void main() {
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.name, test3TrackingOnWithStackTrace);
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
     leakTrackingTestConfig: const LeakTrackingTestConfig(

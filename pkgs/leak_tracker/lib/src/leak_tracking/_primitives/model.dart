@@ -137,18 +137,18 @@ class PhaseSettings {
     this.notDisposedAllowList = const {},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
-    this.isPaused = false,
+    this.isLeakTrackingPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
   });
 
-  const PhaseSettings.paused() : this(isPaused: true);
+  const PhaseSettings.paused() : this(isLeakTrackingPaused: true);
 
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false during the object lifetime.
-  final bool isPaused;
+  final bool isLeakTrackingPaused;
 
   /// Phase of the application execution.
   ///

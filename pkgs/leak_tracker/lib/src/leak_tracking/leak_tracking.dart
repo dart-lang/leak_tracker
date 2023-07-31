@@ -110,7 +110,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
-      if (phase.isPaused) return true;
+      if (phase.isLeakTrackingPaused) return true;
 
       _leakTracker?.objectTracker.startTracking(
         object,
@@ -131,7 +131,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
-      if (phase.isPaused) return true;
+      if (phase.isLeakTrackingPaused) return true;
 
       _leakTracker?.objectTracker.dispatchDisposal(object, context: context);
       return true;
@@ -146,7 +146,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
-      if (phase.isPaused) return true;
+      if (phase.isLeakTrackingPaused) return true;
 
       _leakTracker?.objectTracker.addContext(object, context: context);
       return true;
