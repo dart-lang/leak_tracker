@@ -18,16 +18,23 @@ class Connection {
   final VmService service;
 }
 
+/// Connects to vm service protocol.
+///
+/// If it is not found, tries to start it.
 Future<Connection> connect() async {
   _log.info('Connecting to vm service protocol...');
 
-  final info = await Service.getInfo();
+  var info = await Service.getInfo();
+
+  if (info.serverWebSocketUri == null) {
+    info = await Service.controlWebServer(enable: true, silenceOutput: true);
+  }
 
   final uri = info.serverWebSocketUri;
+
   if (uri == null) {
     throw StateError(
-      'Leak troubleshooting is not available in release mode. Run your application or test with flag "--debug" '
-      '(Not supported for Flutter yet: https://github.com/flutter/flutter/issues/127331).',
+      'Leak troubleshooting is not available. Run your application with flag "--debug" to enable VM service.',
     );
   }
 
