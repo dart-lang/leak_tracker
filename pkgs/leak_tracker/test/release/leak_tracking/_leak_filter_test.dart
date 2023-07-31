@@ -24,7 +24,8 @@ void main() {
 
   test('$LeakFilter respects allowAllNotDisposed.', () {
     final filter = LeakFilter();
-    final record = _stringRecord(const PhaseSettings());
+    final record =
+        _stringRecord(const PhaseSettings(allowAllNotDisposed: true));
 
     expect(filter.shouldReport(LeakType.notDisposed, record), false);
     expect(filter.shouldReport(LeakType.notGCed, record), true);
