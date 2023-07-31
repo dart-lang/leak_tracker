@@ -8,20 +8,6 @@ import 'package:leak_tracker/src/leak_tracking/orchestration.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('$withLeakTracking does not fail after exception.', () async {
-    const exception = 'some exception';
-    try {
-      await withLeakTracking(
-        () => throw exception,
-        shouldThrowOnLeaks: false,
-      );
-    } catch (e) {
-      expect(e, exception);
-    }
-
-    await withLeakTracking(() async {});
-  });
-
   group('forceGC', () {
     test('forces gc', () async {
       Object? myObject = <int>[1, 2, 3, 4, 5];

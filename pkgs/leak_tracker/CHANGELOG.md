@@ -1,5 +1,7 @@
 # 9.0.0
 
+* Refactor to improve performance of regression tests with leak tracking.
+* Remove API that is not used in Flutter Framework.
 * Rename `LeakTrackingConfiguration` to `LeakTrackingConfig`.
 * Remove global flag [collectDebugInformationForLeaks].
 * Rename `checkNonGCed` to `checkNotGCed`.
