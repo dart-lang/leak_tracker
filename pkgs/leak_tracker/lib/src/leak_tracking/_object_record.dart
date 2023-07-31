@@ -2,9 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../../leak_tracker.dart';
 import '../shared/_primitives.dart';
+import '../shared/shared_model.dart';
 import '_primitives/_gc_counter.dart';
+import '_primitives/model.dart';
 
 /// Object collections to track leaks.
 ///

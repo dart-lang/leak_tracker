@@ -11,9 +11,8 @@ import '../shared/_formatting.dart';
 import '../shared/shared_model.dart';
 import '_primitives/_retaining_path/_connection.dart';
 import '_primitives/_retaining_path/_retaining_path.dart';
-
-import 'leak_tracking.dart';
 import '_primitives/model.dart';
+import 'leak_tracking.dart';
 
 final _log = Logger('orchestration.dart');
 

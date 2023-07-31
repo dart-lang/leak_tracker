@@ -3,15 +3,17 @@
 // // BSD-style license that can be found in the LICENSE file.s
 
 import '../shared/shared_model.dart';
+import '_object_record.dart';
 import '_primitives/model.dart';
 
 /// Decides which leaks to report based on allow lists of the phase.
 class LeakFilter {
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
 
-  bool shouldReport(PhaseSettings phase, LeakType leakType, LeakReport leak) {
-    final filter = _phases.putIfAbsent(phase, () => _PhaseLeakFilter(phase));
-    return filter.shouldReport(leakType, leak);
+  bool shouldReport(LeakType leakType, ObjectRecord record) {
+    final filter =
+        _phases.putIfAbsent(record.phase, () => _PhaseLeakFilter(record.phase));
+    return filter.shouldReport(leakType, record);
   }
 }
 
@@ -23,12 +25,12 @@ class _PhaseLeakFilter {
 
   final PhaseSettings phase;
 
-  bool shouldReport(LeakType leakType, LeakReport leak) {
+  bool shouldReport(LeakType leakType, ObjectRecord record) {
     switch (leakType) {
       case LeakType.notDisposed:
         return _shouldReport(
           leakType,
-          leak,
+          record,
           phase.allowAllNotDisposed,
           phase.notDisposedAllowList,
         );
@@ -36,7 +38,7 @@ class _PhaseLeakFilter {
       case LeakType.gcedLate:
         return _shouldReport(
           leakType,
-          leak,
+          record,
           phase.allowAllNotGCed,
           phase.notGCedAllowList,
         );
@@ -45,12 +47,13 @@ class _PhaseLeakFilter {
 
   bool _shouldReport(
     LeakType leakType,
-    LeakReport leak,
+    ObjectRecord record,
     bool allAllowed,
     Map<String, int?> allowList,
   ) {
+    assert(record.phase == phase);
     if (allAllowed) return false;
-    final objectType = leak.runtimeType.toString();
+    final objectType = record.type.toString();
     if (!allowList.containsKey(objectType)) return false;
     final allowedCount = allowList[objectType];
     if (allowedCount == null) return false;
