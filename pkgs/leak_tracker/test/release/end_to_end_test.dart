@@ -15,7 +15,9 @@ void main() {
     test('Passive leak tracking detects leaks, $numberOfGcCycles.', () async {
       LeakTracking.start(
         resetIfAlreadyStarted: true,
-        config: LeakTrackingConfig.passive(),
+        config: LeakTrackingConfig.passive(
+          numberOfGcCycles: numberOfGcCycles,
+        ),
       );
 
       expect(LeakTracking.isStarted, true);

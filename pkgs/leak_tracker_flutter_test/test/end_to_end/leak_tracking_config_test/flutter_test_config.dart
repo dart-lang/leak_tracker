@@ -46,24 +46,26 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         notGCed: 1,
         shouldContainDebugInfo: false,
       );
-      // _verifyLeaks(
-      //   leaks,
-      //   test3TrackingOnWithStackTrace,
-      //   notDisposed: 1,
-      //   notGCed: 1,
-      //   shouldContainDebugInfo: true,
-      // );
+      _verifyLeaks(
+        leaks,
+        test3TrackingOnWithStackTrace,
+        notDisposed: 1,
+        notGCed: 1,
+        shouldContainDebugInfo: true,
+      );
     },
   );
 
   setUpAll(() {
-    LeakTracking.warnForNotSupportedPlatforms = false;
+    LeakTracking.warnForUnsupportedPlatforms = false;
   });
 
   await testMain();
 }
 
 /// Verifies [allLeaks] contains expected number of leaks for the test [testName].
+///
+/// [notDisposed] and [notGCed] set number for expected leaks by leak type.
 void _verifyLeaks(
   Leaks allLeaks,
   String testName, {

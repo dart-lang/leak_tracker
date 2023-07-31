@@ -20,7 +20,7 @@ abstract class LeakTracking {
 
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.
-  static bool warnForNotSupportedPlatforms = true;
+  static bool warnForUnsupportedPlatforms = true;
 
   /// Settings for leak tracking phase.
   ///

@@ -1,6 +1,6 @@
-// // Copyright (c) 2022, the Dart project authors.  Please see the AUTHORS file
-// // for details. All rights reserved. Use of this source code is governed by a
-// // BSD-style license that can be found in the LICENSE file.s
+// Copyright (c) 2023, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.s
 
 import '../shared/shared_model.dart';
 import '_object_record.dart';
@@ -11,8 +11,10 @@ class LeakFilter {
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
 
   bool shouldReport(LeakType leakType, ObjectRecord record) {
-    final filter =
-        _phases.putIfAbsent(record.phase, () => _PhaseLeakFilter(record.phase));
+    final filter = _phases.putIfAbsent(
+      record.phase,
+      () => _PhaseLeakFilter(record.phase),
+    );
     return filter.shouldReport(leakType, record);
   }
 }
@@ -21,7 +23,7 @@ class _PhaseLeakFilter {
   _PhaseLeakFilter(this.phase);
 
   /// Number of leaks by (object type, leak type) for limited allowlists.
-  final Map<(String, LeakType), int> _count = <(String, LeakType), int>{};
+  final _count = <(String, LeakType), int>{};
 
   final PhaseSettings phase;
 
@@ -64,8 +66,6 @@ class _PhaseLeakFilter {
       ifAbsent: () => 1,
     );
 
-    if (actualCount <= allowedCount) return false;
-
-    return true;
+    return actualCount > allowedCount;
   }
 }

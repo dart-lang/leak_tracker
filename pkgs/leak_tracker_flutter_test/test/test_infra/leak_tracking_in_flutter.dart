@@ -126,7 +126,7 @@ bool get _isPlatformSupported => !kIsWeb;
 void _printPlatformWarningIfNeeded() {
   if (kIsWeb) {
     final bool shouldPrintWarning = !_notSupportedWarningPrinted &&
-        LeakTracking.warnForNotSupportedPlatforms;
+        LeakTracking.warnForUnsupportedPlatforms;
     if (shouldPrintWarning) {
       _notSupportedWarningPrinted = true;
       debugPrint(
