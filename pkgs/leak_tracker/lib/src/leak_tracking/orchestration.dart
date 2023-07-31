@@ -8,20 +8,10 @@ import 'dart:developer';
 import 'package:logging/logging.dart';
 
 import '../shared/_formatting.dart';
-import '../shared/shared_model.dart';
 import '_primitives/_retaining_path/_connection.dart';
 import '_primitives/_retaining_path/_retaining_path.dart';
-import '_primitives/model.dart';
-import 'leak_tracking.dart';
 
 final _log = Logger('orchestration.dart');
-
-/// Asynchronous callback.
-///
-/// The prefix `Dart` is used to avoid conflict with Flutter's [AsyncCallback].
-typedef DartAsyncCallback = Future<void> Function();
-
-typedef AsyncCodeRunner = Future<void> Function(DartAsyncCallback);
 
 /// Forces garbage collection by aggressive memory allocation.
 ///
