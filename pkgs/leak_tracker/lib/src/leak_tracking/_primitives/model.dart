@@ -181,4 +181,51 @@ class PhaseSettings {
 
   /// What diagnostic information to collect for leaks.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+  final Baselining baselining;
+}
+
+/// Settings for measuring memory footprint.
+class Baselining {
+  const Baselining({
+    this.mode = BaseliningMode.none,
+    this.fileName,
+    this.baseline,
+  });
+
+  final BaseliningMode mode;
+
+  final String? fileName;
+
+  final MemoryBaseline? baseline;
+}
+
+enum BaseliningMode {
+  /// Do not measure memory footprint.
+  none,
+
+  /// Measure memory footprint and output to console.
+  output,
+
+  /// Measure memory footprint, output to console and save results to file.
+  save,
+
+  /// Measure memory footprint, compare it with the saved baseline, and output diff to console.
+  compare,
+
+  /// Measure memory footprint, and fail if it is worse than baseline.
+  regression,
+}
+
+class MemoryBaseline {
+  MemoryBaseline({
+    this.allowedIncrease = 1.3,
+    required this.initialRss,
+    required this.maxDeltaRss,
+    required this.avgDeltaRss,
+  });
+
+  final int initialRss;
+  final int maxDeltaRss;
+  final int avgDeltaRss;
+  final double allowedIncrease;
 }
