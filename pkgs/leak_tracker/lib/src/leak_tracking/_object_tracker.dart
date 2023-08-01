@@ -9,12 +9,13 @@ import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
-import '_finalizer.dart';
-import '_gc_counter.dart';
+import '_leak_filter.dart';
 import '_object_record.dart';
-import '_retaining_path/_connection.dart';
-import '_retaining_path/_retaining_path.dart';
-import 'model.dart';
+import '_primitives/_finalizer.dart';
+import '_primitives/_gc_counter.dart';
+import '_primitives/_retaining_path/_connection.dart';
+import '_primitives/_retaining_path/_retaining_path.dart';
+import '_primitives/model.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
@@ -24,10 +25,10 @@ import 'model.dart';
 class ObjectTracker implements LeakProvider {
   /// The optional parameters are injected for testing purposes.
   ObjectTracker({
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
+    required this.phase,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -49,13 +50,15 @@ class ObjectTracker implements LeakProvider {
 
   final _objects = ObjectRecords();
 
-  bool disposed = false;
+  final _leakFilter = LeakFilter();
 
-  final LeakDiagnosticConfig leakDiagnosticConfig;
+  bool disposed = false;
 
   final int numberOfGcCycles;
 
   final int? maxRequestsForRetainingPath;
+
+  final ObjectRef<PhaseSettings> phase;
 
   void startTracking(
     Object object, {
@@ -63,6 +66,8 @@ class ObjectTracker implements LeakProvider {
     required String trackedClass,
   }) {
     throwIfDisposed();
+    if (phase.value.isPaused) return;
+
     final code = _coder(object);
     assert(code > 0);
     if (_checkForDuplicate(code)) return;
@@ -74,9 +79,10 @@ class ObjectTracker implements LeakProvider {
       context,
       object.runtimeType,
       trackedClass,
+      phase.value,
     );
 
-    if (leakDiagnosticConfig
+    if (phase.value.leakDiagnosticConfig
         .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
@@ -139,7 +145,7 @@ class ObjectTracker implements LeakProvider {
     final record = _notGCed(code);
     record.mergeContext(context);
 
-    if (leakDiagnosticConfig
+    if (phase.value.leakDiagnosticConfig
         .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
@@ -177,7 +183,9 @@ class ObjectTracker implements LeakProvider {
     _objects.assertIntegrity();
 
     final List<int>? objectsToGetPath =
-        leakDiagnosticConfig.collectRetainingPathForNonGCed ? [] : null;
+        phase.value.leakDiagnosticConfig.collectRetainingPathForNotGCed
+            ? []
+            : null;
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
@@ -262,12 +270,22 @@ class ObjectTracker implements LeakProvider {
 
     final result = Leaks({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks
+          .where(
+            (record) => _leakFilter.shouldReport(LeakType.notDisposed, record),
+          )
           .map((record) => record.toLeakReport())
           .toList(),
       LeakType.notGCed: _objects.notGCedDisposedLate
+          .where(
+            (code) => _leakFilter.shouldReport(
+              LeakType.notGCed,
+              _notGCed(code),
+            ),
+          )
           .map((code) => _notGCed(code).toLeakReport())
           .toList(),
       LeakType.gcedLate: _objects.gcedLateLeaks
+          .where((record) => _leakFilter.shouldReport(LeakType.notGCed, record))
           .map((record) => record.toLeakReport())
           .toList(),
     });

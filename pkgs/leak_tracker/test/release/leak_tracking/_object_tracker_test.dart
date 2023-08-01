@@ -4,9 +4,9 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_tracking/_finalizer.dart';
-import 'package:leak_tracker/src/leak_tracking/_gc_counter.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
 import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 
@@ -82,6 +82,7 @@ void main() {
         coder: mockCoder,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
+        phase: ObjectRef(const PhaseSettings()),
       );
     });
 
@@ -149,6 +150,7 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
+        phase: ObjectRef(const PhaseSettings()),
       );
     });
 
@@ -319,13 +321,17 @@ void main() {
       tracker = ObjectTracker(
         finalizerBuilder: finalizerBuilder.build,
         gcCounter: gcCounter,
-        leakDiagnosticConfig: const LeakDiagnosticConfig(
-          classesToCollectStackTraceOnStart: {'String'},
-          classesToCollectStackTraceOnDisposal: {'String'},
-        ),
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
+        phase: ObjectRef(
+          const PhaseSettings(
+            leakDiagnosticConfig: LeakDiagnosticConfig(
+              classesToCollectStackTraceOnStart: {'String'},
+              classesToCollectStackTraceOnDisposal: {'String'},
+            ),
+          ),
+        ),
       );
     });
 

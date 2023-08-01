@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../shared/shared_model.dart';
+import '../../shared/shared_model.dart';
 
 /// Handler to collect leak summary.
 typedef LeakSummaryCallback = void Function(LeakSummary);
@@ -20,7 +20,7 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// only for leak troubleshooting.
 class LeakDiagnosticConfig {
   const LeakDiagnosticConfig({
-    this.collectRetainingPathForNonGCed = false,
+    this.collectRetainingPathForNotGCed = false,
     this.classesToCollectStackTraceOnStart = const {},
     this.classesToCollectStackTraceOnDisposal = const {},
     this.collectStackTraceOnStart = false,
@@ -49,7 +49,7 @@ class LeakDiagnosticConfig {
   ///
   /// The collection of retaining path a blocking asyncronous call.
   /// In release mode this flag does not work.
-  final bool collectRetainingPathForNonGCed;
+  final bool collectRetainingPathForNotGCed;
 
   bool shouldCollectStackTraceOnStart(String classname) =>
       collectStackTraceOnStart ||
@@ -72,14 +72,13 @@ const defaultNumberOfGcCycles = 3;
 /// Leak tracking configuration.
 ///
 /// Contains settings that cannot be changed after leak tracking is started.
-class LeakTrackingConfiguration {
-  const LeakTrackingConfiguration({
+class LeakTrackingConfig {
+  const LeakTrackingConfig({
     this.stdoutLeaks = true,
     this.notifyDevTools = true,
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTime = const Duration(milliseconds: 100),
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.maxRequestsForRetainingPath = 10,
   });
@@ -87,10 +86,9 @@ class LeakTrackingConfiguration {
   /// The leak tracker:
   /// - will not auto check leaks
   /// - when leak checking is invoked, will not send notifications
-  /// - will assume the methods `dispose` are completed
-  /// at the moment of leak checking.
-  LeakTrackingConfiguration.passive({
-    LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
+  /// - will set [disposalTime] to zero, to assume the methods `dispose` are completed
+  /// at the moment of leak checking
+  LeakTrackingConfig.passive({
     int numberOfGcCycles = defaultNumberOfGcCycles,
     int? maxRequestsForRetainingPath = 10,
   }) : this(
@@ -98,15 +96,12 @@ class LeakTrackingConfiguration {
           notifyDevTools: false,
           checkPeriod: null,
           disposalTime: const Duration(),
-          leakDiagnosticConfig: leakDiagnosticConfig,
           numberOfGcCycles: numberOfGcCycles,
           maxRequestsForRetainingPath: maxRequestsForRetainingPath,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
   final int numberOfGcCycles;
-
-  final LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Period to check for leaks.
   ///
@@ -133,75 +128,34 @@ class LeakTrackingConfiguration {
   final int? maxRequestsForRetainingPath;
 }
 
-/// Configuration for leak tracking in unit tests.
+/// Leak tracking settings for a specific phase of the application execution.
 ///
-/// Customized configuration is needed only for test debugging,
-/// not for regular test runs.
-// TODO(polina-c): update helpers to respect allow lists defined in this class
-// https://github.com/flutter/devtools/issues/5606
-class LeakTrackingTestConfig {
-  /// Creates a new instance of [LeakTrackingTestConfig].
-  const LeakTrackingTestConfig({
+/// Can be used to customize leak tracking for individual tests.
+class PhaseSettings {
+  const PhaseSettings({
+    this.notGCedAllowList = const {},
+    this.notDisposedAllowList = const {},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+    this.isPaused = false,
+    this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.onLeaks,
-    this.failTestOnLeaks = true,
-    this.notGCedAllowList = const <String, int>{},
-    this.notDisposedAllowList = const <String, int>{},
-    this.allowAllNotDisposed = false,
-    this.allowAllNotGCed = false,
   });
 
-  /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
-  ///
-  /// This configuration will collect stack traces on start and disposal,
-  /// and retaining path for notGCed objects.
-  LeakTrackingTestConfig.debug({
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
-      collectStackTraceOnStart: true,
-      collectStackTraceOnDisposal: true,
-      collectRetainingPathForNonGCed: true,
-    ),
-    this.onLeaks,
-    this.failTestOnLeaks = true,
-    this.notGCedAllowList = const <String, int>{},
-    this.notDisposedAllowList = const <String, int>{},
-    this.allowAllNotDisposed = false,
-    this.allowAllNotGCed = false,
-  });
+  const PhaseSettings.paused() : this(isPaused: true);
 
-  /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
+  /// When true, added objects will not be tracked.
   ///
-  /// This configuration will not collect stack traces,
-  /// and will collect retaining path for notGCed objects.
-  LeakTrackingTestConfig.retainingPath({
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
-      collectRetainingPathForNonGCed: true,
-    ),
-    this.onLeaks,
-    this.failTestOnLeaks = true,
-    this.notGCedAllowList = const <String, int>{},
-    this.notDisposedAllowList = const <String, int>{},
-    this.allowAllNotDisposed = false,
-    this.allowAllNotGCed = false,
-  });
+  /// If object is added when the value is true, it will be tracked
+  /// even if the value will become false during the object lifetime.
+  final bool isPaused;
 
-  /// When to collect stack trace information.
+  /// Phase of the application execution.
   ///
-  /// Knowing call stack may help to troubleshoot memory leaks.
-  /// Customize this parameter to collect stack traces when needed.
-  final LeakDiagnosticConfig leakDiagnosticConfig;
-
-  /// Handler to obtain details about collected leaks.
+  /// If not null, it will be mentioned in leak report.
   ///
-  /// Use the handler to process the collected leak
-  /// details programmatically.
-  final LeaksCallback? onLeaks;
-
-  /// If true, the test will fail if leaks are found.
-  ///
-  /// If false, the test will not fail if leaks are
-  /// found to allow for analyzing leaks after the test completes.
-  final bool failTestOnLeaks;
+  /// Can be used to specify name of a test.
+  final String? name;
 
   /// Classes that are allowed to be not garbage collected after disposal.
   ///
@@ -224,4 +178,7 @@ class LeakTrackingTestConfig {
 
   /// If true, all notGCed leaks will be allowed.
   final bool allowAllNotGCed;
+
+  /// What diagnostic information to collect for leaks.
+  final LeakDiagnosticConfig leakDiagnosticConfig;
 }

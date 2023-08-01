@@ -4,7 +4,8 @@
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
-import '_gc_counter.dart';
+import '_primitives/_gc_counter.dart';
+import '_primitives/model.dart';
 
 /// Object collections to track leaks.
 ///
@@ -83,10 +84,19 @@ class ObjectRecords {
 
 /// Information about an object, tracked for leaks.
 class ObjectRecord {
-  ObjectRecord(this.code, this.context, this.type, this.trackedClass);
+  ObjectRecord(
+    this.code,
+    this.context,
+    this.type,
+    this.trackedClass,
+    this.phase,
+  );
 
   final IdentityHashCode code;
+
   Map<String, dynamic>? context;
+
+  final PhaseSettings phase;
 
   /// Type of the tracked object.
   final Type type;
@@ -171,5 +181,6 @@ class ObjectRecord {
         context: context,
         code: code,
         trackedClass: trackedClass,
+        phase: phase.name,
       );
 }

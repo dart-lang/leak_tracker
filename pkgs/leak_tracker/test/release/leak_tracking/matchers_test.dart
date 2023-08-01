@@ -14,6 +14,7 @@ final _leaks = Leaks({
       context: {},
       code: 1,
       type: 'type',
+      phase: null,
     ),
   ],
 });

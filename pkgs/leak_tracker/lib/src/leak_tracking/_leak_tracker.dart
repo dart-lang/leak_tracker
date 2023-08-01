@@ -2,17 +2,18 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import '../shared/_primitives.dart';
 import '_leak_reporter.dart';
 import '_object_tracker.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 class LeakTracker {
-  LeakTracker(LeakTrackingConfiguration config) {
+  LeakTracker(LeakTrackingConfig config, ObjectRef<PhaseSettings> phase) {
     objectTracker = ObjectTracker(
-      leakDiagnosticConfig: config.leakDiagnosticConfig,
       disposalTime: config.disposalTime,
       numberOfGcCycles: config.numberOfGcCycles,
       maxRequestsForRetainingPath: config.maxRequestsForRetainingPath,
+      phase: phase,
     );
 
     leakReporter = LeakReporter(

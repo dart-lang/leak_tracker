@@ -4,8 +4,8 @@
 
 import 'dart:async';
 
-import 'package:leak_tracker/src/leak_tracking/_retaining_path/_connection.dart';
-import 'package:leak_tracker/src/leak_tracking/_retaining_path/_retaining_path.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_connection.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 

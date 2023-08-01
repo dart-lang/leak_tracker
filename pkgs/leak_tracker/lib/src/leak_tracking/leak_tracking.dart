@@ -7,7 +7,7 @@ import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_leak_tracker.dart';
-import 'model.dart';
+import '_primitives/model.dart';
 
 /// Provides leak tracking functionality.
 abstract class LeakTracking {
@@ -18,12 +18,26 @@ abstract class LeakTracking {
   /// It's value should be updated every time leak tracking is reconfigured.
   static final _leakProvider = ObjectRef<WeakReference<LeakProvider>?>(null);
 
-  /// Returns true if leak tracking is configured.
-  static bool get isStarted => _leakTracker != null;
-
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.
-  static bool warnForNonSupportedPlatforms = true;
+  static bool warnForUnsupportedPlatforms = true;
+
+  /// Settings for leak tracking phase.
+  ///
+  /// Can be modified before leak tracking is started and while it
+  /// is in process.
+  ///
+  /// Objects will be assigned to the phase at the moment of
+  /// tracking start. Name of the phase will be mentioned in the leak report.
+  static PhaseSettings get phase => _phase.value;
+  static set phase(value) {
+    _phase.value = value;
+  }
+
+  static final _phase = ObjectRef(const PhaseSettings());
+
+  /// Returns true if leak tracking is configured.
+  static bool get isStarted => _leakTracker != null;
 
   /// Configures leak tracking for the application.
   ///
@@ -36,7 +50,7 @@ abstract class LeakTracking {
   /// If [resetIfAlreadyStarted] is false and leak tracking is already on,
   /// [StateError] will be thrown.
   static void start({
-    LeakTrackingConfiguration config = const LeakTrackingConfiguration(),
+    LeakTrackingConfig config = const LeakTrackingConfig(),
     bool resetIfAlreadyStarted = false,
   }) {
     assert(() {
@@ -47,7 +61,7 @@ abstract class LeakTracking {
         stop();
       }
 
-      final leakTracker = _leakTracker = LeakTracker(config);
+      final leakTracker = _leakTracker = LeakTracker(config, _phase);
       _leakProvider.value = WeakReference(leakTracker.objectTracker);
 
       if (config.notifyDevTools) {
@@ -80,7 +94,6 @@ abstract class LeakTracking {
   static void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
     assert(() {
       dispatcher.dispatchObjectEvent(event, _leakTracker?.objectTracker);
-
       return true;
     }());
   }
@@ -149,6 +162,8 @@ abstract class LeakTracking {
   ///
   /// The same object may be reported as leaked twice: first
   /// as non GCed, and then as GCed late.
+  ///
+  /// Should be invoked before [stop] to obtain the leaks.
   static Future<Leaks> collectLeaks() async {
     Future<Leaks>? result;
 

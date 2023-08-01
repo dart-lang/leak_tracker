@@ -6,21 +6,19 @@ Dependencies that create loop are markes with `!`.
 ```mermaid
 flowchart TD;
 _dispatcher.dart-->_object_tracker.dart;
-_leak_reporter.dart-->model.dart;
+_leak_filter.dart-->_object_record.dart;
+_leak_filter.dart-->_primitives;
+_leak_reporter.dart-->_primitives;
 _leak_tracker.dart-->_leak_reporter.dart;
 _leak_tracker.dart-->_object_tracker.dart;
-_leak_tracker.dart-->model.dart;
-_object_record.dart-->_gc_counter.dart;
-_object_tracker.dart-->_finalizer.dart;
-_object_tracker.dart-->_gc_counter.dart;
+_leak_tracker.dart-->_primitives;
+_object_record.dart-->_primitives;
+_object_tracker.dart-->_leak_filter.dart;
 _object_tracker.dart-->_object_record.dart;
-_object_tracker.dart-->_retaining_path;
-_object_tracker.dart-->model.dart;
+_object_tracker.dart-->_primitives;
 leak_tracking.dart-->_dispatcher.dart;
 leak_tracking.dart-->_leak_tracker.dart;
-leak_tracking.dart-->model.dart;
-orchestration.dart-->_retaining_path;
-orchestration.dart-->leak_tracking.dart;
-orchestration.dart-->model.dart;
+leak_tracking.dart-->_primitives;
+orchestration.dart-->_primitives;
 ```
 
