@@ -140,6 +140,7 @@ class PhaseSettings {
     this.isPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    this.baselining = const Baselining(),
   });
 
   const PhaseSettings.paused() : this(isPaused: true);
@@ -222,10 +223,12 @@ class MemoryBaseline {
     required this.initialRss,
     required this.maxDeltaRss,
     required this.avgDeltaRss,
+    required this.samples,
   });
 
   final int initialRss;
   final int maxDeltaRss;
   final int avgDeltaRss;
   final double allowedIncrease;
+  final int samples;
 }
