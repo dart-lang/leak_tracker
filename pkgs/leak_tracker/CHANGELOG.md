@@ -1,3 +1,7 @@
+# 9.0.2
+
+* Enable memory footprint baselining.
+
 # 9.0.1
 
 * Auto-start VM Service when needed.

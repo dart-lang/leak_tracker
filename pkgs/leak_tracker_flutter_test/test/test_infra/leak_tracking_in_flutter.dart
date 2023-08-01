@@ -100,6 +100,8 @@ void testWidgetsWithLeakTracking(
     notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
     allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
     allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
+    isPaused: leakTrackingTestConfig.isLeakTrackingPaused,
+    baselining: leakTrackingTestConfig.baselining,
   );
 
   Future<void> wrappedCallBack(WidgetTester tester) async {
@@ -150,6 +152,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining = const MemoryBaselining(),
+    this.isLeakTrackingPaused = false,
   });
 
   /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
@@ -166,6 +170,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining = const MemoryBaselining(),
+    this.isLeakTrackingPaused = false,
   });
 
   /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
@@ -180,6 +186,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining = const MemoryBaselining(),
+    this.isLeakTrackingPaused = false,
   });
 
   /// Classes that are allowed to be not garbage collected after disposal.
@@ -209,4 +217,8 @@ class LeakTrackingTestConfig {
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  final MemoryBaselining baselining;
+
+  final bool isLeakTrackingPaused;
 }

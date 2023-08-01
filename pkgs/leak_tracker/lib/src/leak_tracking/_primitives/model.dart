@@ -140,7 +140,7 @@ class PhaseSettings {
     this.isPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.baselining = const Baselining(),
+    this.baselining = const MemoryBaselining(),
   });
 
   const PhaseSettings.paused() : this(isPaused: true);
@@ -182,12 +182,12 @@ class PhaseSettings {
 
   /// What diagnostic information to collect for leaks.
   final LeakDiagnosticConfig leakDiagnosticConfig;
-  final Baselining baselining;
+  final MemoryBaselining baselining;
 }
 
 /// Settings for measuring memory footprint.
-class Baselining {
-  const Baselining({
+class MemoryBaselining {
+  const MemoryBaselining({
     this.mode = BaseliningMode.none,
     this.fileName,
     this.baseline,
