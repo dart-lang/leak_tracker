@@ -1,3 +1,7 @@
+# 9.0.1
+
+* Auto-start VM Service when needed.
+
 # 9.0.0
 
 * Refactor to improve performance of regression tests with leak tracking.
