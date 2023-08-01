@@ -72,6 +72,8 @@ class ObjectTracker implements LeakProvider {
 
     _finalizer.attach(object, code);
 
+    assert(!phase.value.isPaused);
+
     final record = ObjectRecord(
       _coder(object),
       context,
