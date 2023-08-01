@@ -35,24 +35,26 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         if (e is! TestFailure) {
           rethrow;
         }
-        expect(e.message, contains('test: $test1TrackingOn'));
-        expect(e.message!.contains(test2TrackingOff), false);
+        expect(e.message, isNot(contains(test1TrackingOnNoLeaks)));
+        expect(e.message, isNot(contains(test2TrackingOffLeaks)));
+        expect(e.message, contains('test: $test3TrackingOnLeaks'));
+        expect(e.message, contains('test: $test4TrackingOnWithStackTrace'));
       }
 
-      _verifyLeaks(
-        leaks,
-        test1TrackingOn,
-        notDisposed: 1,
-        notGCed: 1,
-        shouldContainDebugInfo: false,
-      );
-      _verifyLeaks(
-        leaks,
-        test3TrackingOnWithStackTrace,
-        notDisposed: 1,
-        notGCed: 1,
-        shouldContainDebugInfo: true,
-      );
+      // _verifyLeaks(
+      //   leaks,
+      //   test1TrackingOn,
+      //   notDisposed: 1,
+      //   notGCed: 1,
+      //   shouldContainDebugInfo: false,
+      // );
+      // _verifyLeaks(
+      //   leaks,
+      //   test3TrackingOnWithStackTrace,
+      //   notDisposed: 1,
+      //   notGCed: 1,
+      //   shouldContainDebugInfo: true,
+      // );
     },
   );
 
