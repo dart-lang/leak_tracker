@@ -41,20 +41,20 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         expect(e.message, contains('test: $test4TrackingOnWithStackTrace'));
       }
 
-      // _verifyLeaks(
-      //   leaks,
-      //   test1TrackingOn,
-      //   notDisposed: 1,
-      //   notGCed: 1,
-      //   shouldContainDebugInfo: false,
-      // );
-      // _verifyLeaks(
-      //   leaks,
-      //   test3TrackingOnWithStackTrace,
-      //   notDisposed: 1,
-      //   notGCed: 1,
-      //   shouldContainDebugInfo: true,
-      // );
+      _verifyLeaks(
+        leaks,
+        test3TrackingOnLeaks,
+        notDisposed: 1,
+        notGCed: 1,
+        shouldContainDebugInfo: false,
+      );
+      _verifyLeaks(
+        leaks,
+        test4TrackingOnWithStackTrace,
+        notDisposed: 1,
+        notGCed: 1,
+        shouldContainDebugInfo: true,
+      );
     },
   );
 
@@ -93,6 +93,8 @@ void _verifyLeaks(
         }),
       ),
     );
+  } else {
+    expect(leaks, isLeakFree);
   }
 
   _verifyLeakList(
