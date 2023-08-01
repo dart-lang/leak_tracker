@@ -93,6 +93,7 @@ abstract class LeakTracking {
   /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
   static void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
     assert(() {
+      if (phase.isPaused) return true;
       dispatcher.dispatchObjectEvent(event, _leakTracker?.objectTracker);
 
       return true;
