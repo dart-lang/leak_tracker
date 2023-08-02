@@ -26,7 +26,16 @@ class Baseliner {
     rss.add(_currentRss());
   }
 
-  void wrap() {}
+  void wrap() {
+    switch (baselining.mode) {
+      case BaseliningMode.output:
+        throw UnimplementedError();
+      case BaseliningMode.compare:
+        throw UnimplementedError();
+      case BaseliningMode.regression:
+        throw UnimplementedError();
+    }
+  }
 
   static int _currentRss() => ProcessInfo.currentRss;
 }
