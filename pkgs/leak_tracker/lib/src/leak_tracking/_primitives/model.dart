@@ -214,16 +214,11 @@ enum BaseliningMode {
 class MemoryBaseline {
   MemoryBaseline({
     this.allowedRssIncrease = 1.3,
-    this.allowedHeapIncrease = 1.3,
     required this.rss,
-    required this.heap,
   });
 
   final ValueSampler rss;
-  final ValueSampler heap;
-
   final double allowedRssIncrease;
-  final double allowedHeapIncrease;
 }
 
 class ValueSampler {
