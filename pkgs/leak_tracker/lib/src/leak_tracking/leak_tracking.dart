@@ -5,12 +5,15 @@
 import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
+import '_baseliner.dart';
 import '_dispatcher.dart' as dispatcher;
 import '_leak_tracker.dart';
 import '_primitives/model.dart';
 
 /// Provides leak tracking functionality.
 abstract class LeakTracking {
+  static Baseliner? _baseliner;
+
   static LeakTracker? _leakTracker;
 
   /// Leak provider, used for integration with DevTools.
@@ -30,7 +33,8 @@ abstract class LeakTracking {
   /// Objects will be assigned to the phase at the moment of
   /// tracking start. Name of the phase will be mentioned in the leak report.
   static PhaseSettings get phase => _phase.value;
-  static set phase(value) {
+  static set phase(PhaseSettings value) {
+    _baseliner = Baseliner.wrapOldAndStartNew(_baseliner, value.baselining);
     _phase.value = value;
   }
 

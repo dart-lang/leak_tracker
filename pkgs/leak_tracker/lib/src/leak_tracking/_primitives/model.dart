@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import '../../shared/shared_model.dart';
 
 /// Handler to collect leak summary.
@@ -182,13 +184,14 @@ class PhaseSettings {
 
   /// What diagnostic information to collect for leaks.
   final LeakDiagnosticConfig leakDiagnosticConfig;
-  final MemoryBaselining baselining;
+
+  final MemoryBaselining? baselining;
 }
 
 /// Settings for measuring memory footprint.
 class MemoryBaselining {
   const MemoryBaselining({
-    this.mode = BaseliningMode.none,
+    this.mode = BaseliningMode.output,
     this.fileName,
     this.baseline,
   });
@@ -201,10 +204,7 @@ class MemoryBaselining {
 }
 
 enum BaseliningMode {
-  /// Do not measure memory footprint.
-  none,
-
-  /// Measure memory footprint and output to console.
+  /// Measure memory footprint and output to console when phase is finished.
   output,
 
   /// Measure memory footprint, output to console and save results to file.
@@ -219,16 +219,49 @@ enum BaseliningMode {
 
 class MemoryBaseline {
   MemoryBaseline({
-    this.allowedIncrease = 1.3,
-    required this.initialRss,
-    required this.maxDeltaRss,
-    required this.avgDeltaRss,
-    required this.samples,
+    this.allowedRssIncrease = 1.3,
+    this.allowedHeapIncrease = 1.3,
+    required this.rss,
+    required this.heap,
   });
 
-  final int initialRss;
-  final int maxDeltaRss;
-  final int avgDeltaRss;
-  final double allowedIncrease;
-  final int samples;
+  final ValueSampler rss;
+  final ValueSampler heap;
+
+  final double allowedRssIncrease;
+  final double allowedHeapIncrease;
+}
+
+class ValueSampler {
+  ValueSampler({
+    required this.initialValue,
+    required this.deltaAvg,
+    required this.deltaMax,
+    required this.samples,
+  }) : sealed = true;
+
+  ValueSampler.start({
+    required this.initialValue,
+  })  : deltaAvg = 0,
+        deltaMax = 0,
+        samples = 0;
+
+  final int initialValue;
+  double deltaAvg;
+  int deltaMax;
+  int samples;
+  bool sealed = false;
+
+  void add(int value) {
+    if (sealed) {
+      throw StateError('Cannot add value to sealed sampler.');
+    }
+    final delta = value - initialValue;
+    deltaMax = max(deltaMax, delta);
+    if (samples == 0) {
+      deltaAvg = delta * 1.0;
+    }
+    deltaAvg = (deltaAvg * samples + delta) / (samples + 1);
+    samples++;
+  }
 }
