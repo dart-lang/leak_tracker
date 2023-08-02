@@ -192,13 +192,10 @@ class PhaseSettings {
 class MemoryBaselining {
   const MemoryBaselining({
     this.mode = BaseliningMode.output,
-    this.fileName,
     this.baseline,
   });
 
   final BaseliningMode mode;
-
-  final String? fileName;
 
   final MemoryBaseline? baseline;
 }
@@ -206,9 +203,6 @@ class MemoryBaselining {
 enum BaseliningMode {
   /// Measure memory footprint and output to console when phase is finished.
   output,
-
-  /// Measure memory footprint, output to console and save results to file.
-  save,
 
   /// Measure memory footprint, compare it with the saved baseline, and output diff to console.
   compare,
@@ -238,7 +232,7 @@ class ValueSampler {
     required this.deltaAvg,
     required this.deltaMax,
     required this.samples,
-  }) : sealed = true;
+  }) : _sealed = true;
 
   ValueSampler.start({
     required this.initialValue,
@@ -250,10 +244,10 @@ class ValueSampler {
   double deltaAvg;
   int deltaMax;
   int samples;
-  bool sealed = false;
+  bool _sealed = false;
 
   void add(int value) {
-    if (sealed) {
+    if (_sealed) {
       throw StateError('Cannot add value to sealed sampler.');
     }
     final delta = value - initialValue;
@@ -263,5 +257,9 @@ class ValueSampler {
     }
     deltaAvg = (deltaAvg * samples + delta) / (samples + 1);
     samples++;
+  }
+
+  void seal() {
+    _sealed = true;
   }
 }
