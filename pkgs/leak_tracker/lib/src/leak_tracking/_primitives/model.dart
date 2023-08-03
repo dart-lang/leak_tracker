@@ -139,19 +139,19 @@ class PhaseSettings {
     this.notDisposedAllowList = const {},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
-    this.isPaused = false,
+    this.isLeakTrackingPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.baselining = const MemoryBaselining(),
   });
 
-  const PhaseSettings.paused() : this(isPaused: true);
+  const PhaseSettings.paused() : this(isLeakTrackingPaused: true);
 
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false during the object lifetime.
-  final bool isPaused;
+  final bool isLeakTrackingPaused;
 
   /// Phase of the application execution.
   ///
@@ -193,7 +193,7 @@ class MemoryBaselining {
   const MemoryBaselining({
     this.mode = BaseliningMode.output,
     this.baseline,
-  });
+  }) : assert(mode == BaseliningMode.output || baseline != null);
 
   final BaseliningMode mode;
 
@@ -212,7 +212,7 @@ enum BaseliningMode {
 }
 
 class MemoryBaseline {
-  MemoryBaseline({
+  const MemoryBaseline({
     this.allowedRssIncrease = 1.3,
     required this.rss,
   });
@@ -256,5 +256,14 @@ class ValueSampler {
 
   void seal() {
     _sealed = true;
+  }
+
+  /// Returns dart code that constructs th object.
+  String asDartCode() {
+    return 'ValueSampler('
+        'initialValue: $initialValue, '
+        'deltaAvg: $deltaAvg, '
+        'deltaMax: $deltaMax, '
+        'samples: $samples,)';
   }
 }

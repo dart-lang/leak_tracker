@@ -66,7 +66,7 @@ class ObjectTracker implements LeakProvider {
     required String trackedClass,
   }) {
     throwIfDisposed();
-    if (phase.value.isPaused) return;
+    if (phase.value.isLeakTrackingPaused) return;
 
     final code = _coder(object);
     assert(code > 0);

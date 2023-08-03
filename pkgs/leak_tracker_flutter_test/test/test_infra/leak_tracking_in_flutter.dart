@@ -100,7 +100,7 @@ void testWidgetsWithLeakTracking(
     notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
     allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
     allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
-    isPaused: leakTrackingTestConfig.isLeakTrackingPaused,
+    isLeakTrackingPaused: leakTrackingTestConfig.isLeakTrackingPaused,
     baselining: leakTrackingTestConfig.baselining,
   );
 
@@ -152,7 +152,7 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
-    this.baselining = const MemoryBaselining(),
+    this.baselining,
     this.isLeakTrackingPaused = false,
   });
 
@@ -218,7 +218,7 @@ class LeakTrackingTestConfig {
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
-  final MemoryBaselining baselining;
+  final MemoryBaselining? baselining;
 
   final bool isLeakTrackingPaused;
 }

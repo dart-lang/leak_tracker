@@ -21,13 +21,13 @@ void main() {
       );
 
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
 
       LeakingClass();
       LeakingClass();
       LeakingClass();
 
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
 
       await forceGC(fullGcCycles: defaultNumberOfGcCycles);
       final leaks = await LeakTracking.collectLeaks();
@@ -99,7 +99,7 @@ void main() {
       );
 
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
 
       LeakTracking.phase = const PhaseSettings(
         leakDiagnosticConfig: LeakDiagnosticConfig(
@@ -111,7 +111,7 @@ void main() {
       LeakingClass();
       LeakingClass();
 
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
 
       await forceGC(fullGcCycles: defaultNumberOfGcCycles);
       final leaks = await LeakTracking.collectLeaks();

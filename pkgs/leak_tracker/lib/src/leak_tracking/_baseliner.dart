@@ -17,7 +17,7 @@ class Baseliner {
     Baseliner? oldBaseliner,
     MemoryBaselining? baselining,
   ) {
-    oldBaseliner?.wrap();
+    oldBaseliner?._finish();
     if (baselining == null) return null;
     return Baseliner(baselining);
   }
@@ -26,10 +26,10 @@ class Baseliner {
     rss.add(_currentRss());
   }
 
-  void wrap() {
+  void _finish() {
     switch (baselining.mode) {
       case BaseliningMode.output:
-        throw UnimplementedError();
+        print(asDartCode());
       case BaseliningMode.compare:
         throw UnimplementedError();
       case BaseliningMode.regression:
@@ -38,4 +38,14 @@ class Baseliner {
   }
 
   static int _currentRss() => ProcessInfo.currentRss;
+
+  String asDartCode() {
+    return '''Copy this code as your test parameter:
+      baselining: MemoryBaselining(
+        mode: BaseliningMode.compare,
+        baseline: MemoryBaseline(
+          rss: ${rss.asDartCode()},
+        ),
+      )''';
+  }
 }
