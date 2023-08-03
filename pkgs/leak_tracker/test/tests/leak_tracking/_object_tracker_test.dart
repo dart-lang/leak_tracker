@@ -159,7 +159,7 @@ void main() {
       tracker.startTracking(theObject, context: null, trackedClass: '');
       expect(
         finalizerBuilder.finalizer.attached,
-        contains(theObject),
+        contains(identityHashCode(theObject)),
       );
     });
 
@@ -372,7 +372,7 @@ void main() {
     });
   });
 
-  group('$ObjectTracker hendles phase boundaries,', () {
+  group('$ObjectTracker respects phase boundaries,', () {
     late _MockFinalizerBuilder finalizerBuilder;
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
@@ -402,9 +402,9 @@ void main() {
 
     test('when object is registered before phase started.', () async {
       const objectBeforePhase = '1';
-      const objectBeforePhaseLeaking = '4';
-      const objectInPhase = '2';
-      const objectInPhaseLeaking = '3';
+      const objectBeforePhaseLeaking = '2';
+      const objectInPhase = '3';
+      const objectInPhaseLeaking = '4';
       final allObjects = [
         objectBeforePhase,
         objectBeforePhaseLeaking,
@@ -435,7 +435,32 @@ void main() {
       expect(theLeak.code, identityHashCode(objectInPhaseLeaking));
     });
 
-    test('when object is disposed after phase ended.', () {});
+    test('when object is disposed after phase ended.', () async {
+      const objectDisposedInPhase = '1';
+      const objectLeaking = '2';
+      const objectDisposedAfterPhase = '3';
+      final allObjects = [
+        objectDisposedInPhase,
+        objectLeaking,
+        objectDisposedAfterPhase,
+      ];
+
+      phase.value = const PhaseSettings(name: 'phase1');
+      allObjects.forEach(startTracking);
+      tracker.dispatchDisposal(objectDisposedInPhase, context: null);
+      phase.value = const PhaseSettings.paused();
+      tracker.dispatchDisposal(objectDisposedAfterPhase, context: null);
+
+      // GC all objects.
+      allObjects.forEach(finalizerBuilder.gc);
+
+      // Check leaks are collected only for leaking object that
+      // was registered in the phase.
+      final leaks = await tracker.collectLeaks();
+      expect(leaks.total, 1);
+      final theLeak = leaks.byType[LeakType.notDisposed]!.single;
+      expect(theLeak.code, identityHashCode(objectLeaking));
+    });
   });
 }
 
@@ -446,12 +471,17 @@ class _MockFinalizerWrapper implements FinalizerWrapper {
   final attached = <Object>{};
 
   @override
-  void attach(Object value, Object finalizationToken, {Object? detach}) {
-    if (attached.contains(value)) throw '`attach` should not be invoked twice';
-    attached.add(value);
+  void attach(Object object, Object finalizationToken, {Object? detach}) {
+    final int code = identityHashCode(object);
+    if (attached.contains(code)) throw '`attach` should not be invoked twice';
+    attached.add(code);
   }
 
-  void finalize(Object code) => onGc(code);
+  void finalize(Object code) {
+    if (!attached.contains(code)) return;
+    onGc(code);
+    attached.remove(code);
+  }
 }
 
 class _MockFinalizerBuilder {
