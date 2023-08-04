@@ -117,6 +117,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
+      _baseliner?.takeSample();
       _leakTracker?.objectTracker.startTracking(
         object,
         context: context,
@@ -136,6 +137,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
+      _baseliner?.takeSample();
       _leakTracker?.objectTracker.dispatchDisposal(object, context: context);
       return true;
     }());
@@ -149,6 +151,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
+      _baseliner?.takeSample();
       _leakTracker?.objectTracker.addContext(object, context: context);
       return true;
     }());
