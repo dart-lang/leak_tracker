@@ -13,18 +13,30 @@ void main() {
     'baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      await widgetTester.pumpWidget(
-        const MaterialApp(home: SizedBox(child: Icon(Icons.abc))),
-      );
+      for (var i = 0; i < 1000; i++) {
+        await widgetTester.pumpWidget(
+          MaterialApp(
+            home: SizedBox(
+              height: 10 + i % 2,
+              child: const Icon(Icons.abc),
+            ),
+          ),
+        );
+      }
     },
     leakTrackingTestConfig: LeakTrackingTestConfig(
-      // baselining: MemoryBaselining(
-      //   mode: BaseliningMode.compare,
-      //   baseline:  MemoryBaseline(
-      //     rss: ValueSampler(initialValue: 143933440, deltaAvg: 0.0, deltaMax: 0, samples: 0,),
-      //   ),
-      // )
-      baselining: MemoryBaselining(),
+      baselining: MemoryBaselining(
+        baseline: MemoryBaseline(
+          rss: ValueSampler(
+            initialValue: 143245312,
+            deltaAvg: 51435184.697290875,
+            deltaMax: 76300288,
+            absAvg: 194668382.89967027,
+            absMax: 219545600,
+            samples: 4245,
+          ),
+        ),
+      ),
     ),
   );
 }

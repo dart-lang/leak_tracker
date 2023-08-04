@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import '_primitives/model.dart';
@@ -28,10 +30,12 @@ class Baseliner {
 
   void _finish() {
     switch (baselining.mode) {
-      case BaseliningMode.output:
+      case BaseliningMode.measure:
+        if (baselining.baseline != null) {
+          print(asComparison());
+          print('\n\n');
+        }
         print(asDartCode());
-      case BaseliningMode.compare:
-        throw UnimplementedError();
       case BaseliningMode.regression:
         throw UnimplementedError();
     }
@@ -40,12 +44,36 @@ class Baseliner {
   static int _currentRss() => ProcessInfo.currentRss;
 
   String asDartCode() {
-    return '''Copy this code as your test parameter:
-      baselining: MemoryBaselining(
-        mode: BaseliningMode.compare,
-        baseline: MemoryBaseline(
-          rss: ${rss.asDartCode()},
-        ),
+    return '''To set baseline, copy this code as parameter of $MemoryBaselining:
+      baseline: $MemoryBaseline(
+        rss: ${rss.asDartCode()},
       )''';
+  }
+
+  String asComparison() {
+    final baseline = baselining.baseline;
+    if (baseline == null) throw StateError('Baseline is not set.');
+    final golden = baseline.rss;
+    final current = rss;
+    final buffer = StringBuffer();
+    buffer.writeln(
+      'initialValue: ${current.initialValue} - ${golden.initialValue} = ${current.initialValue - golden.initialValue}',
+    );
+    buffer.writeln(
+      '    deltaAvg: ${current.deltaAvg} - ${golden.deltaAvg} = ${current.deltaAvg - golden.deltaAvg}',
+    );
+    buffer.writeln(
+      '    deltaMax: ${current.deltaMax} - ${golden.deltaMax} = ${current.deltaMax - golden.deltaMax}',
+    );
+    buffer.writeln(
+      '      absAvg: ${current.absAvg} - ${golden.absAvg} = ${current.absAvg - golden.absAvg}',
+    );
+    buffer.writeln(
+      '      absMax: ${current.absMax} - ${golden.absMax} = ${current.absMax - golden.absMax}',
+    );
+    buffer.writeln(
+      '     samples: ${current.samples} - ${golden.samples} = ${current.samples - golden.samples}',
+    );
+    return buffer.toString();
   }
 }

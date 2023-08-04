@@ -191,9 +191,9 @@ class PhaseSettings {
 /// Settings for measuring memory footprint.
 class MemoryBaselining {
   const MemoryBaselining({
-    this.mode = BaseliningMode.output,
+    this.mode = BaseliningMode.measure,
     this.baseline,
-  }) : assert(mode == BaseliningMode.output || baseline != null);
+  }) : assert(!(mode == BaseliningMode.regression && baseline == null));
 
   final BaseliningMode mode;
 
@@ -202,10 +202,7 @@ class MemoryBaselining {
 
 enum BaseliningMode {
   /// Measure memory footprint and output to console when phase is finished.
-  output,
-
-  /// Measure memory footprint, compare it with the saved baseline, and output diff to console.
-  compare,
+  measure,
 
   /// Measure memory footprint, and fail if it is worse than baseline.
   regression,
@@ -227,17 +224,23 @@ class ValueSampler {
     required this.deltaAvg,
     required this.deltaMax,
     required this.samples,
+    required this.absAvg,
+    required this.absMax,
   }) : _sealed = true;
 
   ValueSampler.start({
     required this.initialValue,
   })  : deltaAvg = 0,
         deltaMax = 0,
-        samples = 0;
+        samples = 0,
+        absAvg = initialValue * 1.0,
+        absMax = initialValue;
 
   final int initialValue;
   double deltaAvg;
   int deltaMax;
+  double absAvg;
+  int absMax;
   int samples;
   bool _sealed = false;
 
@@ -245,6 +248,10 @@ class ValueSampler {
     if (_sealed) {
       throw StateError('Cannot add value to sealed sampler.');
     }
+    absMax = max(absMax, value);
+
+    absAvg = (absAvg * (samples + 1) + value) / (samples + 2);
+
     final delta = value - initialValue;
     deltaMax = max(deltaMax, delta);
     if (samples == 0) {
@@ -264,6 +271,8 @@ class ValueSampler {
         'initialValue: $initialValue, '
         'deltaAvg: $deltaAvg, '
         'deltaMax: $deltaMax, '
+        'absAvg: $absAvg, '
+        'absMax: $absMax, '
         'samples: $samples,)';
   }
 }
