@@ -27,7 +27,7 @@ Future<Connection> connect() async {
   var info = await Service.getInfo();
 
   if (info.serverWebSocketUri == null) {
-    info = await Service.controlWebServer(enable: true, silenceOutput: true);
+    info = await Service.controlWebServer(enable: true);
   }
 
   final uri = info.serverWebSocketUri;
