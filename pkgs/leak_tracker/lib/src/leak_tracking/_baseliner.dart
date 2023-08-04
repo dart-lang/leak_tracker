@@ -45,7 +45,7 @@ class Baseliner {
   static int _currentRss() => ProcessInfo.currentRss;
 
   String asDartCode() {
-    return '''To set baseline, copy this code as parameter of $MemoryBaselining:
+    return '''To set as new baseline, set parameter of $MemoryBaselining:
       baseline: $MemoryBaseline(
         rss: ${rss.asDartCode()},
       )''';
