@@ -1,3 +1,7 @@
+# 9.0.2
+
+* Make sure phase bondaries are handled correctly.
+
 # 9.0.1
 
 * Auto-start VM Service when needed.
