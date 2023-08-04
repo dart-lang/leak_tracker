@@ -34,7 +34,7 @@ abstract class LeakTracking {
   /// tracking start. Name of the phase will be mentioned in the leak report.
   static PhaseSettings get phase => _phase.value;
   static set phase(PhaseSettings value) {
-    _baseliner = Baseliner.wrapOldAndStartNew(_baseliner, value.baselining);
+    _baseliner = Baseliner.finishOldAndStartNew(_baseliner, value.baselining);
     _phase.value = value;
   }
 

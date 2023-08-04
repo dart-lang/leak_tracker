@@ -6,7 +6,7 @@
 
 import 'dart:io';
 
-import '_primitives/_utils.dart';
+import '_primitives/_print_bytes.dart';
 import '_primitives/model.dart';
 
 class Baseliner {
@@ -16,7 +16,7 @@ class Baseliner {
   final MemoryBaselining baselining;
   final ValueSampler rss;
 
-  static Baseliner? wrapOldAndStartNew(
+  static Baseliner? finishOldAndStartNew(
     Baseliner? oldBaseliner,
     MemoryBaselining? baselining,
   ) {
