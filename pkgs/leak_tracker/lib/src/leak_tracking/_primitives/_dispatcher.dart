@@ -2,9 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../shared/_primitives.dart';
-import '_object_tracker.dart';
-
 // Values in [FieldNames] and [EventType] should be identical to ones used in
 // https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L23
 
@@ -19,12 +16,23 @@ class _EventType {
   static const String disposed = 'disposed';
 }
 
-void dispatchObjectEvent(
-  Map<Object, Map<String, Object>> event,
-  ObjectTracker? objectTracker,
-) {
-  if (objectTracker == null) return;
+typedef StartTrackingCallback = void Function({
+  required Object object,
+  required Map<String, dynamic>? context,
+  required String library,
+  required String className,
+});
 
+typedef DispatchDisposalCallback = void Function({
+  required Object object,
+  required Map<String, dynamic>? context,
+});
+
+void dispatchObjectEvent(
+  Map<Object, Map<String, Object>> event, {
+  required StartTrackingCallback onStartTracking,
+  required DispatchDisposalCallback onDispatchDisposal,
+}) {
   assert(event.length == 1);
   final entry = event.entries.first;
 
@@ -37,14 +45,14 @@ void dispatchObjectEvent(
   final className = fields[_FieldNames.className]?.toString() ?? '';
 
   if (eventType == _EventType.created) {
-    objectTracker.startTracking(
-      object,
+    onStartTracking(
+      object: object,
       context: null,
-      trackedClass:
-          fullClassName(library: libraryName, shortClassName: className),
+      library: libraryName,
+      className: className,
     );
   } else if (eventType == _EventType.disposed) {
-    objectTracker.dispatchDisposal(object, context: null);
+    onDispatchDisposal(object: object, context: null);
   } else {
     throw StateError('Unexpected event type for $object: $eventType.');
   }
