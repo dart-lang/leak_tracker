@@ -116,23 +116,6 @@ class ObjectTracker implements LeakProvider {
     _objects.assertRecordIntegrity(code);
   }
 
-  /// Number of times [dispatchDisposal] or [addContext] were invoked for
-  /// not registered objects.
-  ///
-  /// Normally one ContainerLayer is created in a Flutter app before main() is invoked.
-  /// The layer and it's children are not registered, but disposed.
-  int _notRegisterdObjects = 0;
-
-  final _maxAllowedNotRegisterdObjects = 100;
-
-  bool _checkForNotRegisteredObject(Object object, int code) {
-    if (_objects.notGCed.containsKey(code)) return false;
-    _notRegisterdObjects++;
-
-    assert(_notRegisterdObjects <= _maxAllowedNotRegisterdObjects);
-    return true;
-  }
-
   void dispatchDisposal(
     Object object, {
     required Map<String, dynamic>? context,
@@ -140,9 +123,12 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
-    if (_checkForNotRegisteredObject(object, code)) return;
 
-    final record = _notGCed(code);
+    final record = _objects.notGCed[code];
+    // If object is not registered, this may mean that it was created whan leak tracking was off,
+    // so disposal should not be registered too.
+    if (record == null) return;
+
     record.mergeContext(context);
 
     if (phase.value.leakDiagnosticConfig
@@ -162,8 +148,12 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
-    if (_checkForNotRegisteredObject(object, code)) return;
-    final record = _notGCed(code);
+
+    final record = _objects.notGCed[code];
+    // If object is not registered, this may mean that it was created whan leak tracking was off,
+    // so the context should not be registered too.
+    if (record == null) return;
+
     record.mergeContext(context);
   }
 
@@ -249,6 +239,9 @@ class ObjectTracker implements LeakProvider {
     );
   }
 
+  /// Returns [ObjectRecord] for [code].
+  ///
+  /// Throws error if [code] is not registered for tracking.
   ObjectRecord _notGCed(int code) {
     final result = _objects.notGCed[code];
     if (result == null) {

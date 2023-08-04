@@ -1,6 +1,6 @@
 # 9.0.2
 
-* Enable memory footprint baselining.
+* Make sure phase bondaries are handled correctly.
 
 # 9.0.1
 
