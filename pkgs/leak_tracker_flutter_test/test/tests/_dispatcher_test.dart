@@ -6,15 +6,21 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/src/leak_tracking/_dispatcher.dart';
+import 'package:leak_tracker/src/leak_tracking/_primitives/_dispatcher.dart';
 
-import '../test_infra/mock_object_tracker.dart';
+import '../test_infra/event_tracker.dart';
 
 void main() {
   test('dispatchObjectEvent dispatches Flutter SDK instrumentation.', () {
-    final tracker = MockObjectTracker();
-    MemoryAllocations.instance
-        .addListener((event) => dispatchObjectEvent(event.toMap(), tracker));
+    final tracker = EventTracker();
+
+    MemoryAllocations.instance.addListener(
+      (event) => dispatchObjectEvent(
+        event.toMap(),
+        onStartTracking: tracker.dispatchObjectCreated,
+        onDispatchDisposal: tracker.dispatchObjectDisposed,
+      ),
+    );
 
     final picture = _createPicture();
 
@@ -24,7 +30,8 @@ void main() {
     expect(event.type, EventType.started);
     expect(event.object, picture);
     expect(event.context, null);
-    expect(event.trackedClass, 'dart:ui/Picture');
+    expect(event.className, 'Picture');
+    expect(event.library, 'dart:ui');
 
     picture.dispose();
 
