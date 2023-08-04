@@ -5,8 +5,8 @@
 import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
-import '_dispatcher.dart' as dispatcher;
 import '_leak_tracker.dart';
+import '_primitives/_dispatcher.dart' as dispatcher;
 import '_primitives/model.dart';
 
 /// Provides leak tracking functionality.
