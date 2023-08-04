@@ -193,11 +193,17 @@ class MemoryBaselining {
   const MemoryBaselining({
     this.mode = BaseliningMode.measure,
     this.baseline,
+    this.gcBefore = false,
+    this.repeatCount = 1,
   }) : assert(!(mode == BaseliningMode.regression && baseline == null));
 
   final BaseliningMode mode;
 
   final MemoryBaseline? baseline;
+
+  final bool gcBefore;
+
+  final int repeatCount;
 }
 
 enum BaseliningMode {

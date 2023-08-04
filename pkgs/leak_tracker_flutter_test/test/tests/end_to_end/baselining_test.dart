@@ -8,31 +8,36 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 import '../../test_infra/leak_tracking_in_flutter.dart';
 
+int _seed = 0;
+
 void main() {
   testWidgetsWithLeakTracking(
     'baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      for (var i = 0; i < 1000; i++) {
-        await widgetTester.pumpWidget(
-          MaterialApp(
-            home: SizedBox(
-              height: 10 + i % 2,
-              child: const Icon(Icons.abc),
-            ),
+      await widgetTester.pumpWidget(
+        MaterialApp(
+          home: SizedBox(
+            height: 10 +
+                (_seed++) %
+                    101, // We need some change to avoid constant values.
+            child: const Icon(Icons.abc),
           ),
-        );
-      }
+        ),
+      );
     },
     leakTrackingTestConfig: LeakTrackingTestConfig(
+      isLeakTrackingPaused: true,
       baselining: MemoryBaselining(
+        repeatCount: 1000,
+        gcBefore: true,
         baseline: MemoryBaseline(
           rss: ValueSampler(
-            initialValue: 180486144,
-            deltaAvg: 52365240.11495881,
-            deltaMax: 76480512,
-            absAvg: 232839051.2746114,
-            absMax: 256966656,
+            initialValue: 179748864,
+            deltaAvg: 52202774.13239106,
+            deltaMax: 74547200,
+            absAvg: 231939343.555346,
+            absMax: 254296064,
             samples: 4245,
           ),
         ),
