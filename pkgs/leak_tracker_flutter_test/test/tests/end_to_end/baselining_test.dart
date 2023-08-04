@@ -30,14 +30,13 @@ void main() {
       isLeakTrackingPaused: true,
       baselining: MemoryBaselining(
         repeatCount: 1000,
-        gcBefore: true,
         baseline: MemoryBaseline(
           rss: ValueSampler(
-            initialValue: 179748864,
-            deltaAvg: 52202774.13239106,
-            deltaMax: 74547200,
-            absAvg: 231939343.555346,
-            absMax: 254296064,
+            initialValue: 144932864,
+            deltaAvg: 51777893.977856405,
+            deltaMax: 75661312,
+            absAvg: 196698563.46679235,
+            absMax: 220594176,
             samples: 4245,
           ),
         ),

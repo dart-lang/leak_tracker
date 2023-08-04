@@ -107,7 +107,6 @@ void testWidgetsWithLeakTracking(
   Future<void> wrappedCallBack(WidgetTester tester) async {
     assert(LeakTracking.isStarted);
     assert(_tearDownConfigured);
-    if (phase.baselining?.gcBefore ?? false) await tester.runAsync(forceGC);
     LeakTracking.phase = phase;
     for (int i = 0; i < (phase.baselining?.repeatCount ?? 1); i++) {
       await callback(tester);
