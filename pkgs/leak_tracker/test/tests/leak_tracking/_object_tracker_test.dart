@@ -420,7 +420,7 @@ void main() {
       startTracking(objectInPhase);
       startTracking(objectInPhaseLeaking);
 
-      // Dispose some objects.
+      // Dispose non-leaking objects.
       tracker.dispatchDisposal(objectInPhase, context: null);
       tracker.dispatchDisposal(objectBeforePhase, context: null);
 
