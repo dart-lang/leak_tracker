@@ -6,6 +6,7 @@
 
 import 'dart:io';
 
+import '_primitives/_utils.dart';
 import '_primitives/model.dart';
 
 class Baseliner {
@@ -57,23 +58,30 @@ class Baseliner {
     final current = rss;
     final buffer = StringBuffer();
     buffer.writeln(
-      'initialValue: ${current.initialValue} - ${golden.initialValue} = ${current.initialValue - golden.initialValue}',
+      _delta('initialValue', current.initialValue, golden.initialValue),
     );
     buffer.writeln(
-      '    deltaAvg: ${current.deltaAvg} - ${golden.deltaAvg} = ${current.deltaAvg - golden.deltaAvg}',
+      _delta('deltaAvg', current.deltaAvg, golden.deltaAvg),
     );
     buffer.writeln(
-      '    deltaMax: ${current.deltaMax} - ${golden.deltaMax} = ${current.deltaMax - golden.deltaMax}',
+      _delta('deltaMax', current.deltaMax, golden.deltaMax),
     );
     buffer.writeln(
-      '      absAvg: ${current.absAvg} - ${golden.absAvg} = ${current.absAvg - golden.absAvg}',
+      _delta('absAvg', current.absAvg, golden.absAvg),
     );
     buffer.writeln(
-      '      absMax: ${current.absMax} - ${golden.absMax} = ${current.absMax - golden.absMax}',
+      _delta('absMax', current.absMax, golden.absMax),
     );
     buffer.writeln(
-      '     samples: ${current.samples} - ${golden.samples} = ${current.samples - golden.samples}',
+      'samples: ${current.samples} - ${golden.samples} = ${current.samples - golden.samples}',
     );
     return buffer.toString();
+  }
+
+  String _delta(String name, num current, num golden) {
+    String format(num size) => prettyPrintBytes(size, includeUnit: true) ?? '';
+    final delta = current - golden;
+    final deltaPercent = (delta / golden * 100).toStringAsFixed(2);
+    return '$name: ${format(current)} - ${format(golden)} = ${format(delta)} ($deltaPercent%)';
   }
 }

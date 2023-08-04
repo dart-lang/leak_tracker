@@ -28,11 +28,11 @@ void main() {
       baselining: MemoryBaselining(
         baseline: MemoryBaseline(
           rss: ValueSampler(
-            initialValue: 143245312,
-            deltaAvg: 51435184.697290875,
-            deltaMax: 76300288,
-            absAvg: 194668382.89967027,
-            absMax: 219545600,
+            initialValue: 180486144,
+            deltaAvg: 52365240.11495881,
+            deltaMax: 76480512,
+            absAvg: 232839051.2746114,
+            absMax: 256966656,
             samples: 4245,
           ),
         ),
