@@ -142,7 +142,7 @@ class PhaseSettings {
     this.isLeakTrackingPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.baselining = const MemoryBaselining(),
+    this.baselining,
   });
 
   const PhaseSettings.paused() : this(isLeakTrackingPaused: true);
