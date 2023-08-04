@@ -5,8 +5,8 @@
 import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
-import '_dispatcher.dart' as dispatcher;
 import '_leak_tracker.dart';
+import '_primitives/_dispatcher.dart' as dispatcher;
 import '_primitives/model.dart';
 
 /// Provides leak tracking functionality.
@@ -93,7 +93,11 @@ abstract class LeakTracking {
   /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
   static void dispatchObjectEvent(Map<Object, Map<String, Object>> event) {
     assert(() {
-      dispatcher.dispatchObjectEvent(event, _leakTracker?.objectTracker);
+      dispatcher.dispatchObjectEvent(
+        event,
+        onStartTracking: dispatchObjectCreated,
+        onDispatchDisposal: dispatchObjectDisposed,
+      );
       return true;
     }());
   }
