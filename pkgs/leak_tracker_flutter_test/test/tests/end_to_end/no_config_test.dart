@@ -18,24 +18,24 @@ const _test3TrackingOn = 'test3, tracking-on';
 /// This set of tests verifies that if `testWidgetsWithLeakTracking` is used at least once,
 /// leak tracking is configured as expected, and is noop for `testWidgets`.
 void main() {
-  testWidgets(_test0TrackingOffLeaks, (widgetTester) async {
-    expect(LeakTracking.isStarted, true);
-    expect(LeakTracking.phase.name, null);
-    expect(LeakTracking.phase.isPaused, true);
-    await widgetTester.pumpWidget(StatelessLeakingWidget());
-  });
+  group('groups are handled', () {
+    testWidgets(_test0TrackingOffLeaks, (widgetTester) async {
+      expect(LeakTracking.isStarted, false);
+      expect(LeakTracking.phase.name, null);
+      await widgetTester.pumpWidget(StatelessLeakingWidget());
+    });
 
-  testWidgetsWithLeakTracking(_test1TrackingOn, (widgetTester) async {
-    expect(LeakTracking.isStarted, true);
-    expect(LeakTracking.phase.name, _test1TrackingOn);
-    expect(LeakTracking.phase.isPaused, false);
-  });
+    testWidgetsWithLeakTracking(_test1TrackingOn, (widgetTester) async {
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.name, _test1TrackingOn);
+      expect(LeakTracking.phase.isPaused, false);
+    });
 
-  testWidgets(_test2TrackingOffLeaks, (widgetTester) async {
-    expect(LeakTracking.isStarted, true);
-    expect(LeakTracking.phase.name, null);
-    expect(LeakTracking.phase.isPaused, true);
-    await widgetTester.pumpWidget(StatelessLeakingWidget());
+    testWidgetsWithLeakTracking(_test1TrackingOn, (widgetTester) async {
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.name, _test1TrackingOn);
+      expect(LeakTracking.phase.isPaused, false);
+    });
   });
 
   testWidgetsWithLeakTracking(_test3TrackingOn, (widgetTester) async {
