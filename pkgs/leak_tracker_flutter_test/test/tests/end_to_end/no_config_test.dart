@@ -31,10 +31,10 @@ void main() {
       expect(LeakTracking.phase.isPaused, false);
     });
 
-    testWidgetsWithLeakTracking(_test1TrackingOn, (widgetTester) async {
+    testWidgets(_test2TrackingOffLeaks, (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.name, _test1TrackingOn);
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isPaused, true);
+      await widgetTester.pumpWidget(StatelessLeakingWidget());
     });
   });
 

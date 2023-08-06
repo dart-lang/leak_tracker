@@ -35,16 +35,26 @@ void _setUpTestingWithLeakTracking() {
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
 
+bool _stopConfiguringTearDown = false;
+
+/// Sets [tearDownAll] to tear down leak tracking if it is started.
+///
+/// [configureOnce] is true tear down will be created just once,
+/// not for every test.
+/// Multiple [tearDownAll] is needed to handle test groups that have
+/// own [tearDownAll].
 void configureLeakTrackingTearDown({
   LeaksCallback? onLeaks,
+  bool configureOnce = false,
 }) {
-  if (_isPlatformSupported) {
+  if (_isPlatformSupported && !_stopConfiguringTearDown) {
     tearDownAll(() async {
       if (LeakTracking.isStarted) {
         await _tearDownTestingWithLeakTracking(onLeaks);
       }
     });
   }
+  if (configureOnce) _stopConfiguringTearDown = true;
 }
 
 Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
