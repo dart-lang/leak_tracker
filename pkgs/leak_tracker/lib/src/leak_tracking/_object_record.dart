@@ -107,7 +107,8 @@ class ObjectRecord {
   int? _disposalGcCount;
 
   void setDisposed(int gcTime, DateTime time) {
-    if (_disposalGcCount != null) throw 'The object $code was disposed twice.';
+    // Noop if object is already disposed.
+    if (_disposalGcCount != null) return;
     if (_gcedGcCount != null) {
       throw 'The object $code should not be disposed after being GCed.';
     }
