@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
 import '../../../test_infra/flutter_classes.dart';
-import '../../../test_infra/leak_tracking_in_flutter.dart';
+import '../../../../lib/src/leak_tracking.dart';
 
 const test1TrackingOnNoLeaks = 'test1, tracking-on, no leaks';
 const test2TrackingOffLeaks = 'test2, tracking-off, leaks';
