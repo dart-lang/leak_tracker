@@ -21,7 +21,7 @@ cd pkgs/leak_tracker
 dart analyze --fatal-infos
 cd -
 
-cd pkgs/leak_tracker_flutter_test
+cd pkgs/leak_tracker_flutter
 flutter analyze --fatal-infos
 cd -
 

@@ -6,10 +6,10 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_flutter/src/leak_tracking.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import '../../../test_infra/dart_classes.dart';
-import '../../../../lib/src/leak_tracking.dart';
 import 'leak_tracking_config_test.dart';
 
 /// Test configuration for each test library in this directory.
