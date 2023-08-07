@@ -4,8 +4,9 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+import 'package:leak_tracker_flutter_testing/src/leak_tracking_flutter_testing.dart';
 
-import 'package:leak_tracker_flutter/src/leak_tracking.dart';
 import '../../test_infra/flutter_classes.dart';
 
 const _test0TrackingOffLeaks = 'test0, tracking-off';
