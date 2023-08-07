@@ -107,6 +107,8 @@ class ObjectRecord {
   int? _disposalGcCount;
 
   void setDisposed(int gcTime, DateTime time) {
+    // TODO(polina-c): handle double disposal in a better way
+    // https://github.com/dart-lang/leak_tracker/issues/118
     // Noop if object is already disposed.
     if (_disposalGcCount != null) return;
     if (_gcedGcCount != null) {
