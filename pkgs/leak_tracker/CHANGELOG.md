@@ -1,3 +1,7 @@
+# 9.0.3
+
+* Stop failing if an object is disposed twice.
+
 # 9.0.2
 
 * Make sure phase bondaries are handled correctly.
