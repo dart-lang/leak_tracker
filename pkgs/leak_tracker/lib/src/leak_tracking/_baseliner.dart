@@ -33,12 +33,14 @@ class Baseliner {
     switch (baselining.mode) {
       case BaseliningMode.measure:
         if (baselining.baseline != null) {
-          print(asComparison());
+          print(_asComparison());
           print('\n\n');
         }
         print(asDartCode());
       case BaseliningMode.regression:
-        throw UnimplementedError();
+        throw UnimplementedError(
+            'Regression testing for memory consumption is not implamanted yet. '
+            'Upvote if interested: https://github.com/dart-lang/leak_tracker/issues/120');
     }
   }
 
@@ -51,26 +53,26 @@ class Baseliner {
       )''';
   }
 
-  String asComparison() {
+  String _asComparison() {
     final baseline = baselining.baseline;
     if (baseline == null) throw StateError('Baseline is not set.');
     final golden = baseline.rss;
     final current = rss;
     final buffer = StringBuffer();
     buffer.writeln(
-      _delta('initialValue', current.initialValue, golden.initialValue),
+      _asDelta('initialValue', current.initialValue, golden.initialValue),
     );
     buffer.writeln(
-      _delta('deltaAvg', current.deltaAvg, golden.deltaAvg),
+      _asDelta('deltaAvg', current.deltaAvg, golden.deltaAvg),
     );
     buffer.writeln(
-      _delta('deltaMax', current.deltaMax, golden.deltaMax),
+      _asDelta('deltaMax', current.deltaMax, golden.deltaMax),
     );
     buffer.writeln(
-      _delta('absAvg', current.absAvg, golden.absAvg),
+      _asDelta('absAvg', current.absAvg, golden.absAvg),
     );
     buffer.writeln(
-      _delta('absMax', current.absMax, golden.absMax),
+      _asDelta('absMax', current.absMax, golden.absMax),
     );
     buffer.writeln(
       'samples: ${current.samples} - ${golden.samples} = ${current.samples - golden.samples}',
@@ -78,7 +80,7 @@ class Baseliner {
     return buffer.toString();
   }
 
-  String _delta(String name, num current, num golden) {
+  String _asDelta(String name, num current, num golden) {
     String format(num size) => prettyPrintBytes(size, includeUnit: true) ?? '';
     final delta = current - golden;
     final deltaPercent = (delta / golden * 100).toStringAsFixed(2);
