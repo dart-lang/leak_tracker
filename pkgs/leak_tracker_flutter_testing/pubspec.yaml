@@ -11,7 +11,7 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  leak_tracker:  '>=10.0.0 <11.0.0'
+  leak_tracker:  '>=9.0.0 <10.0.0'
   leak_tracker_testing: '>=1.0.0 <2.0.0'
   meta: ^1.8.0
 

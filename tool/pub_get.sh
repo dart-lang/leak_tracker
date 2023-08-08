@@ -19,7 +19,7 @@ cd pkgs/leak_tracker
 dart pub get
 cd -
 
-cd pkgs/leak_tracker_flutter
+cd pkgs/leak_tracker_flutter_testing
 flutter pub get
 cd -
 
