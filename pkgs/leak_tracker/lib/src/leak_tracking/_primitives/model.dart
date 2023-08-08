@@ -4,6 +4,8 @@
 
 import 'dart:math';
 
+import 'package:collection/equality.dart';
+
 import '../../shared/shared_model.dart';
 
 /// Handler to collect leak summary.
@@ -186,21 +188,65 @@ class PhaseSettings {
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
   final MemoryBaselining? baselining;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is PhaseSettings &&
+        other.isLeakTrackingPaused == isLeakTrackingPaused &&
+        other.name == name &&
+        const DeepCollectionEquality.unordered()
+            .equals(other.notDisposedAllowList, notDisposedAllowList) &&
+        const DeepCollectionEquality.unordered()
+            .equals(other.notGCedAllowList, notGCedAllowList) &&
+        other.allowAllNotDisposed == allowAllNotDisposed &&
+        other.allowAllNotGCed == allowAllNotGCed &&
+        other.baselining == baselining;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        isLeakTrackingPaused,
+        name,
+        _mapHash(notDisposedAllowList),
+        _mapHash(notGCedAllowList),
+        allowAllNotDisposed,
+        allowAllNotGCed,
+        baselining,
+      );
 }
+
+int _mapHash(Map<String, int?> map) =>
+    Object.hash(Object.hashAll(map.keys), Object.hashAll(map.values));
 
 /// Settings for measuring memory footprint.
 class MemoryBaselining {
   const MemoryBaselining({
     this.mode = BaseliningMode.measure,
     this.baseline,
-    this.repeatCount = 1,
   }) : assert(!(mode == BaseliningMode.regression && baseline == null));
 
   final BaseliningMode mode;
 
   final MemoryBaseline? baseline;
 
-  final int repeatCount;
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is MemoryBaselining &&
+        other.mode == mode &&
+        other.baseline == baseline;
+  }
+
+  @override
+  int get hashCode => Object.hash(mode, baseline);
 }
 
 enum BaseliningMode {
@@ -219,6 +265,19 @@ class MemoryBaseline {
 
   final ValueSampler rss;
   final double allowedRssIncrease;
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is MemoryBaseline &&
+        other.allowedRssIncrease == allowedRssIncrease &&
+        other.rss == rss;
+  }
+
+  @override
+  int get hashCode => Object.hash(allowedRssIncrease, rss);
 }
 
 class ValueSampler {
@@ -278,4 +337,30 @@ class ValueSampler {
         'absMax: $absMax, '
         'samples: $samples,)';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is ValueSampler &&
+        other.initialValue == initialValue &&
+        other.deltaAvg == deltaAvg &&
+        other.deltaMax == deltaMax &&
+        other.absAvg == absAvg &&
+        other.absMax == absMax &&
+        other.samples == samples &&
+        other._sealed == _sealed;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        initialValue,
+        deltaAvg,
+        deltaMax,
+        absAvg,
+        absMax,
+        samples,
+        _sealed,
+      );
 }

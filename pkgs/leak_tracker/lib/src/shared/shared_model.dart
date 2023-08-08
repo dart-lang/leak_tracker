@@ -81,7 +81,8 @@ class LeakSummary {
       };
 
   bool matches(LeakSummary? other) =>
-      other != null && mapEquals(totals, other.totals);
+      other != null &&
+      const DeepCollectionEquality().equals(totals, other.totals);
 }
 
 /// Detailed information about found leaks.
