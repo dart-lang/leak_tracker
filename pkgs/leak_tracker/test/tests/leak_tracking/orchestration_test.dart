@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:leak_tracker/src/leak_tracking/orchestration.dart';
+import 'package:leak_tracker/src/leak_tracking/helpers.dart';
 import 'package:test/test.dart';
 
 void main() {
