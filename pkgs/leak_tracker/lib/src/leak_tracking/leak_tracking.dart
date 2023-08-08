@@ -88,6 +88,7 @@ abstract class LeakTracking {
     assert(() {
       _leakTracker?.dispose();
       _leakTracker = null;
+      Baseliner.finishOldAndStartNew(_baseliner, null);
       return true;
     }());
   }
