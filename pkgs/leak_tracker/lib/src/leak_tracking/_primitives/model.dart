@@ -152,6 +152,7 @@ class LeakTrackingConfig {
   /// If null, the path will be srequested without limit.
   final int? maxRequestsForRetainingPath;
 
+  /// Switches for features of leak tracker.
   final Switches switches;
 }
 
