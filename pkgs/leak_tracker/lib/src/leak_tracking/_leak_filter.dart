@@ -15,11 +15,23 @@ class LeakFilter {
   final Switches switches;
 
   bool shouldReport(LeakType leakType, ObjectRecord record) {
+    if (_isLeakTypeDisabled(leakType)) return false;
+
     final filter = _phases.putIfAbsent(
       record.phase,
       () => _PhaseLeakFilter(record.phase),
     );
     return filter.shouldReport(leakType, record);
+  }
+
+  bool _isLeakTypeDisabled(LeakType leakType) {
+    switch (leakType) {
+      case LeakType.notDisposed:
+        return switches.disableNotDisposed;
+      case LeakType.notGCed:
+      case LeakType.gcedLate:
+        return switches.disableNotGCed;
+    }
   }
 }
 

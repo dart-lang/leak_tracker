@@ -27,9 +27,10 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   configureLeakTrackingTearDown(
     configureOnce: true,
     onLeaks: (leaks) {
-      // Check that notGCed leaks are disabled.
-      // expect(leaks.total, 1);
-      // expect(leaks.notDisposed, 1);
+      // Check that notGCed leaks are skipped.
+      expect(leaks.notDisposed, hasLength(1));
+      expect(leaks.notGCed, hasLength(0));
+      expect(leaks.gcedLate, hasLength(0));
       leaksDetected = true;
     },
   );
