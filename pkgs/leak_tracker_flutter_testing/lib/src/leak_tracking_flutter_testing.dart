@@ -12,6 +12,7 @@ import 'model.dart';
 
 LeakTrackingTestSettings _leakTrackingTestSettings = LeakTrackingTestSettings();
 
+/// Configures leak tracking settings for each invocation of `testWidgetsWithLeakTracking`.
 void setLeakTrackingTestSettings(LeakTrackingTestSettings settings) {
   if (LeakTracking.isStarted) {
     throw StateError('$LeakTrackingTestSettings should be set before start');

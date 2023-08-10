@@ -15,6 +15,7 @@ class LeakTrackingTestSettings {
     this.disposalTime = Duration.zero,
   });
 
+  /// Switches for leak tracking features.
   final Switches switches;
 
   /// Number of full GC cycles to wait after disposal, to declare leak if the object is still not GCed.
