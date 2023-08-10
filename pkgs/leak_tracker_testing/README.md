@@ -5,14 +5,14 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 ## What is this?
 
-This is test helpers for [leak_tracker](https://pub.dev/packages/leak_tracker).
+This is helper for testing [leak_tracker](https://pub.dev/packages/leak_tracker).
 
 They are separated from `leak_tracker` to make sure
 testing code is not used in production.
 
 ## How to use the helpers?
 
-To make your test failing in case of leaks with descriptive message, pass the instance of 'Leaks' to the matcher `isLeakFree`:
+To test for leaks with descriptive messages, use `isLeakFree` against a `Leaks` instance:
 
 ```
 final leaks = await LeakTracking.collectLeaks();
