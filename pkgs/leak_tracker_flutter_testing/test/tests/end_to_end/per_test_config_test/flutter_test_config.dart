@@ -10,7 +10,7 @@ import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import '../../../test_infra/dart_classes.dart';
-import 'leak_tracking_config_test.dart';
+import 'per_test_config_test.dart';
 
 /// Test configuration for each test library in this directory.
 ///
