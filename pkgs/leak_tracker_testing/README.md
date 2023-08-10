@@ -5,7 +5,7 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 ## What is this?
 
-This is test helpers for [leak_tracker](https://pub.dev/packages/leak_tracker).
+This is helper for testing [leak_tracker](https://pub.dev/packages/leak_tracker).
 
 They are separated from `leak_tracker` to make sure
 testing code is not used in production.
