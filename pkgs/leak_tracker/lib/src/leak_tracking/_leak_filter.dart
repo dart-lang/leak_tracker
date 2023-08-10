@@ -8,7 +8,11 @@ import '_primitives/model.dart';
 
 /// Decides which leaks to report based on allow lists of the phase.
 class LeakFilter {
+  LeakFilter(this.switches);
+
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
+
+  final Switches switches;
 
   bool shouldReport(LeakType leakType, ObjectRecord record) {
     final filter = _phases.putIfAbsent(

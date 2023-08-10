@@ -29,9 +29,12 @@ void _setUpTestingWithLeakTracking() {
 
   LeakTracking.phase = const PhaseSettings.paused();
   LeakTracking.start(
-      config: LeakTrackingConfig.passive(
-    disableNotDisposed: _leakTrackingTestSettings.disableNotDisposed,
-  ));
+    config: LeakTrackingConfig.passive(
+      switches: _leakTrackingTestSettings.switches,
+      disposalTime: _leakTrackingTestSettings.disposalTime,
+      numberOfGcCycles: _leakTrackingTestSettings.numberOfGcCycles,
+    ),
+  );
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }

@@ -10,23 +10,18 @@ import 'package:leak_tracker/leak_tracker.dart';
 /// when invoked for first test with leak tracking.
 class LeakTrackingTestSettings {
   LeakTrackingTestSettings({
-    this.disableNotDisposed = false,
-    this.disableNotGCed = false,
+    this.switches = const Switches(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.disposalTime = Duration.zero,
   });
 
-  /// If true, not disposed leaks will not be tracked.
-  final bool disableNotDisposed;
-
-  /// If true notGCed leaks will not be tracked.
-  final bool disableNotGCed;
+  final Switches switches;
 
   /// Number of full GC cycles to wait after disposal, to declare leak if the object is still not GCed.
   final int numberOfGcCycles;
 
   /// Time to allow the reference to the object to be released after disposal.
-  final Duration? disposalTime;
+  final Duration disposalTime;
 }
 
 /// Configuration for leak tracking to pass to an individual unit test.
