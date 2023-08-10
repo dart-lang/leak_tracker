@@ -9,9 +9,12 @@ The text below is under construction.
 
 This is test helpers for [leak_tracker](https://pub.dev/packages/leak_tracker).
 
+They are separated from `leak_tracker` to make sure not to use
+testing code in production.
+
 ## How to use the helpers?
 
-To make your test failing in case of leaks, pass instance of 'Leaks' to the matcher `isLeakFree`:
+To make your test failing in case of leaks with descriptive message, pass the instance of 'Leaks' to the matcher `isLeakFree`:
 
 ```
 final leaks = await LeakTracking.collectLeaks();
