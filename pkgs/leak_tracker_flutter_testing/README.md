@@ -12,7 +12,7 @@ package and should not reference Flutter Frabework.
 
 ## How to use the helpers?
 
-To make your widget test failing in case of leaks, use `testWidgetsWithLeakTracking` instead of `testWidgets`:
+To make your widget test fail in case of leaks, use `testWidgetsWithLeakTracking` instead of `testWidgets`:
 
 ```
 testWidgetsWithLeakTracking('not leaking', (widgetTester) async {
