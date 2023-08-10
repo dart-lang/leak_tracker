@@ -6,10 +6,10 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import '../../../test_infra/dart_classes.dart';
-import '../../../test_infra/leak_tracking_in_flutter.dart';
 import 'leak_tracking_config_test.dart';
 
 /// Test configuration for each test library in this directory.
@@ -25,6 +25,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   });
 
   configureLeakTrackingTearDown(
+    configureOnce: true,
     onLeaks: (leaks) {
       expect(leaks.total, greaterThan(0));
       leaksDetected = true;

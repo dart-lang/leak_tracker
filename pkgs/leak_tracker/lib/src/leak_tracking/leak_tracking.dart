@@ -2,12 +2,16 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:logging/logging.dart';
+
 import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_leak_tracker.dart';
 import '_primitives/_dispatcher.dart' as dispatcher;
 import '_primitives/model.dart';
+
+final _log = Logger('leak_tracking.dart');
 
 /// Provides leak tracking functionality.
 abstract class LeakTracking {
@@ -72,6 +76,7 @@ abstract class LeakTracking {
       } else {
         registerLeakTrackingServiceExtension();
       }
+      _log.info('started leak tracking');
       return true;
     }());
   }
@@ -83,6 +88,7 @@ abstract class LeakTracking {
     assert(() {
       _leakTracker?.dispose();
       _leakTracker = null;
+      _log.info('stopped leak tracking');
       return true;
     }());
   }
