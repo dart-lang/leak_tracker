@@ -14,9 +14,19 @@ It enables:
 
 ## Usage
 
+### Leak tracking
+
+First, [understand leak tracking concepts](https://github.com/dart-lang/leak_tracker/blob/main/doc/CONCEPTS.md).
+
 TODO(polina-c): add usage information.
 
-## Additional documentation
+See the [the guidance](https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md) to troubleshoot memory leaks.
 
-1. [Understand leak tracking concepts](https://github.com/dart-lang/leak_tracker/blob/main/doc/CONCEPTS.md).
-2. [Troubleshoot memory leaks](https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md).
+### Memory usage tracking
+
+Use the function `trackMemoryUsage` to configure usage events and auto-snapshotting
+in your Dart or Flutter application.
+
+See
+[usage tracking guidance](https://github.com/dart-lang/leak_tracker/blob/main/doc/USAGE.md)
+for more details.
