@@ -29,6 +29,7 @@ class ObjectTracker implements LeakProvider {
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
     required this.phase,
+    required this.switches,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -50,7 +51,7 @@ class ObjectTracker implements LeakProvider {
 
   final _objects = ObjectRecords();
 
-  final _leakFilter = LeakFilter();
+  late final LeakFilter _leakFilter = LeakFilter(switches);
 
   bool disposed = false;
 
@@ -60,13 +61,15 @@ class ObjectTracker implements LeakProvider {
 
   final ObjectRef<PhaseSettings> phase;
 
+  final Switches switches;
+
   void startTracking(
     Object object, {
     required Map<String, dynamic>? context,
     required String trackedClass,
   }) {
     throwIfDisposed();
-    if (phase.value.isPaused) return;
+    if (phase.value.isPaused || switches.isObjectTrackingDisabled) return;
 
     final code = _coder(object);
     assert(code > 0);
@@ -121,6 +124,7 @@ class ObjectTracker implements LeakProvider {
     required Map<String, dynamic>? context,
   }) {
     throwIfDisposed();
+    if (switches.isObjectTrackingDisabled) return;
     final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
 
@@ -146,6 +150,7 @@ class ObjectTracker implements LeakProvider {
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
     throwIfDisposed();
+    if (switches.isObjectTrackingDisabled) return;
     final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
 

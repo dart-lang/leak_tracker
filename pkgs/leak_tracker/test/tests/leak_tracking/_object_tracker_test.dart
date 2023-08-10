@@ -83,6 +83,7 @@ void main() {
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
         phase: ObjectRef(const PhaseSettings()),
+        switches: const Switches(),
       );
     });
 
@@ -151,6 +152,7 @@ void main() {
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
         phase: ObjectRef(const PhaseSettings()),
+        switches: const Switches(),
       );
     });
 
@@ -332,6 +334,7 @@ void main() {
             ),
           ),
         ),
+        switches: const Switches(),
       );
     });
 
@@ -397,6 +400,7 @@ void main() {
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
         phase: phase,
+        switches: const Switches(),
       );
     });
 
