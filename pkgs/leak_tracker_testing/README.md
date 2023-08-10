@@ -12,7 +12,7 @@ testing code is not used in production.
 
 ## How to use the helpers?
 
-To make your test failing in case of leaks with descriptive message, pass the instance of 'Leaks' to the matcher `isLeakFree`:
+To test for leaks with descriptive messages, use `isLeakFree` against a `Leaks instance:
 
 ```
 final leaks = await LeakTracking.collectLeaks();
