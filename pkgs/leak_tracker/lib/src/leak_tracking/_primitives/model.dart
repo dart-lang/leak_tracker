@@ -69,27 +69,6 @@ class LeakDiagnosticConfig {
 /// if there is no activity in the application for ~5 minutes.
 const defaultNumberOfGcCycles = 3;
 
-/// Switches for features of leak tracker.
-///
-/// Useable to temporary disable features in case of
-/// noisinness or performance regression
-/// in applications or tests.
-class Switches {
-  const Switches({
-    this.disableNotGCed = false,
-    this.disableNotDisposed = false,
-  });
-
-  /// If true, notGCed leaks will not be tracked.
-  final bool disableNotGCed;
-
-  /// If true, notDisposed leaks will not be tracked.
-  final bool disableNotDisposed;
-
-  /// If true, objects are not tracked.
-  bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
-}
-
 /// Leak tracking configuration.
 ///
 /// Contains settings that cannot be changed after leak tracking is started.
@@ -102,7 +81,8 @@ class LeakTrackingConfig {
     this.disposalTime = const Duration(milliseconds: 100),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.maxRequestsForRetainingPath = 10,
-    this.switches = const Switches(),
+    this.disableNotGCed = false,
+    this.disableNotDisposed = false,
   });
 
   /// The leak tracker:
@@ -149,8 +129,9 @@ class LeakTrackingConfig {
   /// If null, the path will be srequested without limit.
   final int? maxRequestsForRetainingPath;
 
-  /// Switches that have larger priority than [PhaseSettings].
-  final Switches switches;
+  final bool disableNotGCed;
+
+  final bool disableNotDisposed;
 }
 
 /// Leak tracking settings for a specific phase of the application execution.

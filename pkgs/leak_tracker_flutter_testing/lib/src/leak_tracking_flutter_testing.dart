@@ -10,6 +10,15 @@ import 'package:meta/meta.dart';
 
 import 'model.dart';
 
+LeakTrackingTestSettings _leakTrackingTestSettings = LeakTrackingTestSettings();
+
+void setLeakTrackingTestSettings(LeakTrackingTestSettings settings) {
+  if (LeakTracking.isStarted) {
+    throw StateError('$LeakTrackingTestSettings should be set before start');
+  }
+  _leakTrackingTestSettings = settings;
+}
+
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
 }
@@ -19,7 +28,10 @@ void _setUpTestingWithLeakTracking() {
   if (!_isPlatformSupported) return;
 
   LeakTracking.phase = const PhaseSettings.paused();
-  LeakTracking.start(config: LeakTrackingConfig.passive());
+  LeakTracking.start(
+      config: LeakTrackingConfig.passive(
+    disableNotDisposed: _leakTrackingTestSettings.disableNotDisposed,
+  ));
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
