@@ -3,8 +3,6 @@
 
 Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
-The text below is under construction.
-
 ## What is this?
 
 This is Flutter specific test helpers for [leak_tracker](https://pub.dev/packages/leak_tracker).

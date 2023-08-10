@@ -3,14 +3,12 @@
 
 Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
-The text below is under construction.
-
 ## What is this?
 
 This is test helpers for [leak_tracker](https://pub.dev/packages/leak_tracker).
 
-They are separated from `leak_tracker` to make sure not to use
-testing code in production.
+They are separated from `leak_tracker` to make sure
+testing code is not used in production.
 
 ## How to use the helpers?
 
