@@ -21,7 +21,9 @@ class LeakTrackingTestSettings {
   /// Number of full GC cycles to wait after disposal, to declare leak if the object is still not GCed.
   final int numberOfGcCycles;
 
-  /// Time to allow the reference to the object to be released after disposal.
+  /// Time to allow the reference to the object to be released
+  /// by garbage collector and for finalizer to be invoked,
+  /// after disposal.
   final Duration disposalTime;
 }
 
