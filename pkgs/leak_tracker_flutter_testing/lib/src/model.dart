@@ -4,7 +4,30 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 
-/// Configuration for leak tracking in unit tests.
+/// Configuration, that can be set before testing start.
+///
+/// It will be passed to [LeakTracking.start()],
+/// when invoked for first test with leak tracking.
+class LeakTrackingTestSettings {
+  LeakTrackingTestSettings({
+    this.switches = const Switches(),
+    this.numberOfGcCycles = defaultNumberOfGcCycles,
+    this.disposalTime = Duration.zero,
+  });
+
+  /// Switches for leak tracking features.
+  final Switches switches;
+
+  /// Number of full GC cycles to wait after disposal, to declare leak if the object is still not GCed.
+  final int numberOfGcCycles;
+
+  /// Time to allow the reference to the object to be released
+  /// by garbage collector and for finalizer to be invoked,
+  /// after disposal.
+  final Duration disposalTime;
+}
+
+/// Configuration for leak tracking to pass to an individual unit test.
 ///
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.

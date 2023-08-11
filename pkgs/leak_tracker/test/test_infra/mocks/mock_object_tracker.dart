@@ -27,6 +27,7 @@ class MockObjectTracker extends ObjectTracker {
           numberOfGcCycles: defaultNumberOfGcCycles,
           maxRequestsForRetainingPath: 0,
           phase: ObjectRef(const PhaseSettings()),
+          switches: const Switches(),
         );
 
   final events = <Event>[];

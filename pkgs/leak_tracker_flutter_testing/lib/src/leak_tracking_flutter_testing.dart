@@ -10,6 +10,16 @@ import 'package:meta/meta.dart';
 
 import 'model.dart';
 
+LeakTrackingTestSettings _leakTrackingTestSettings = LeakTrackingTestSettings();
+
+/// Configures leak tracking settings for each invocation of `testWidgetsWithLeakTracking`.
+void setLeakTrackingTestSettings(LeakTrackingTestSettings settings) {
+  if (LeakTracking.isStarted) {
+    throw StateError('$LeakTrackingTestSettings should be set before start');
+  }
+  _leakTrackingTestSettings = settings;
+}
+
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
 }
@@ -19,7 +29,13 @@ void _setUpTestingWithLeakTracking() {
   if (!_isPlatformSupported) return;
 
   LeakTracking.phase = const PhaseSettings.paused();
-  LeakTracking.start(config: LeakTrackingConfig.passive());
+  LeakTracking.start(
+    config: LeakTrackingConfig.passive(
+      switches: _leakTrackingTestSettings.switches,
+      disposalTime: _leakTrackingTestSettings.disposalTime,
+      numberOfGcCycles: _leakTrackingTestSettings.numberOfGcCycles,
+    ),
+  );
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
@@ -52,7 +68,10 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   if (!_isPlatformSupported) return;
 
   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
-  await forceGC(fullGcCycles: 3);
+  await forceGC(fullGcCycles: _leakTrackingTestSettings.numberOfGcCycles);
+  // This delay is needed to make sure all disposed and not GCed object are
+  // declared as leaks, and thus there is no flakiness in tests.
+  await Future.delayed(_leakTrackingTestSettings.disposalTime);
   final leaks = await LeakTracking.collectLeaks();
 
   LeakTracking.stop();

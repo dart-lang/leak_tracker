@@ -1,3 +1,7 @@
+# 9.0.4
+
+* Make it possible to disable tracking for a type of leak.
+
 # 9.0.3
 
 * Stop failing if an object is disposed twice.
