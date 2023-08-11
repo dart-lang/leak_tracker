@@ -1,6 +1,10 @@
+# 9.0.5
+
+* Add delay before collecting leaks at the end of testing.
+
 # 9.0.4
 
-* Make it possible to disable tracking per type of leak.
+* Make it possible to disable tracking for a type of leak.
 
 # 9.0.3
 
