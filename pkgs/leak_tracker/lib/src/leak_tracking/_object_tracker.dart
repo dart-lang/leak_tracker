@@ -165,7 +165,7 @@ class ObjectTracker implements LeakProvider {
   @override
   Future<LeakSummary> leaksSummary() async {
     throwIfDisposed();
-    await _checkForNewNotGCedLeaks();
+    await _checkForNewNotGCedLeaks(summary: true);
 
     return LeakSummary({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks.length,
@@ -174,11 +174,12 @@ class ObjectTracker implements LeakProvider {
     });
   }
 
-  Future<void> _checkForNewNotGCedLeaks() async {
+  Future<void> _checkForNewNotGCedLeaks({bool summary = false}) async {
     _objects.assertIntegrity();
 
     final List<int>? objectsToGetPath =
-        phase.value.leakDiagnosticConfig.collectRetainingPathForNotGCed
+        phase.value.leakDiagnosticConfig.collectRetainingPathForNotGCed &&
+                !summary
             ? []
             : null;
 
