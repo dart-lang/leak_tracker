@@ -32,6 +32,13 @@ T cast<T>(value) {
   );
 }
 
+extension IterableExtensions<T> on Iterable<T> {
+  T? get onlyOrNull {
+    if (length > 1) throw StateError('Lenth should not be more than one.');
+    return firstOrNull;
+  }
+}
+
 void printToConsole(Object message) {
   // ignore: avoid_print, dart:io is not available in web
   print('leak_tracker: $message');
