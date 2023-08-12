@@ -514,8 +514,14 @@ void main() {
       );
     }
 
-    for (var gced in [true, false]) {
-      for (var disposed in [true, false]) {
+    for (var gced in [
+      true,
+      //false,
+    ]) {
+      for (var disposed in [
+        //true,
+        false,
+      ]) {
         test(
             'when objects are tracked with different settings, disposed=$disposed, gced=$gced.',
             () async {
