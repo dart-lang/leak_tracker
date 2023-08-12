@@ -26,7 +26,6 @@ class MockObjectTracker extends ObjectTracker {
           disposalTime: const Duration(milliseconds: 100),
           numberOfGcCycles: defaultNumberOfGcCycles,
           maxRequestsForRetainingPath: 0,
-          phase: ObjectRef(const PhaseSettings()),
           switches: const Switches(),
         );
 
@@ -37,6 +36,7 @@ class MockObjectTracker extends ObjectTracker {
     Object object, {
     required Map<String, dynamic>? context,
     required String trackedClass,
+    required PhaseSettings phase,
   }) =>
       events.add(Event(EventType.started, object, context, trackedClass));
 

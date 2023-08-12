@@ -28,7 +28,6 @@ class ObjectTracker implements LeakProvider {
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
-    required this.phase,
     required this.switches,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
@@ -59,17 +58,16 @@ class ObjectTracker implements LeakProvider {
 
   final int? maxRequestsForRetainingPath;
 
-  final ObjectRef<PhaseSettings> phase;
-
   final Switches switches;
 
   void startTracking(
     Object object, {
     required Map<String, dynamic>? context,
     required String trackedClass,
+    required PhaseSettings phase,
   }) {
     throwIfDisposed();
-    if (phase.value.isPaused || switches.isObjectTrackingDisabled) return;
+    if (phase.isPaused || switches.isObjectTrackingDisabled) return;
 
     final code = _coder(object);
     assert(code > 0);
@@ -82,10 +80,10 @@ class ObjectTracker implements LeakProvider {
       context,
       object.runtimeType,
       trackedClass,
-      phase.value,
+      phase,
     );
 
-    if (phase.value.leakDiagnosticConfig
+    if (phase.leakDiagnosticConfig
         .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
@@ -131,11 +129,11 @@ class ObjectTracker implements LeakProvider {
     final record = _objects.notGCed[code];
     // If object is not registered, this may mean that it was created whan leak tracking was off,
     // so disposal should not be registered too.
-    if (record == null) return;
+    if (record == null || record.phase.isPaused) return;
 
     record.mergeContext(context);
 
-    if (phase.value.leakDiagnosticConfig
+    if (record.phase.leakDiagnosticConfig
         .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
@@ -157,7 +155,7 @@ class ObjectTracker implements LeakProvider {
     final record = _objects.notGCed[code];
     // If object is not registered, this may mean that it was created whan leak tracking was off,
     // so the context should not be registered too.
-    if (record == null) return;
+    if (record == null || record.phase.isPaused) return;
 
     record.mergeContext(context);
   }
@@ -177,11 +175,7 @@ class ObjectTracker implements LeakProvider {
   Future<void> _checkForNewNotGCedLeaks({bool summary = false}) async {
     _objects.assertIntegrity();
 
-    final List<int>? objectsToGetPath =
-        phase.value.leakDiagnosticConfig.collectRetainingPathForNotGCed &&
-                !summary
-            ? []
-            : null;
+    final List<int>? objectsToGetPath = !summary ? [] : null;
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
@@ -193,7 +187,10 @@ class ObjectTracker implements LeakProvider {
       )) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
-        objectsToGetPath?.add(code);
+        if (_objects.notGCed[code]!.phase.leakDiagnosticConfig
+            .collectRetainingPathForNotGCed) {
+          objectsToGetPath?.add(code);
+        }
       }
     }
 
