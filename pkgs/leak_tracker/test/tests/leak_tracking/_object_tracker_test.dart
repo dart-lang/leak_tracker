@@ -426,7 +426,7 @@ void main() {
         object,
         trackedClass: _trackedClass,
         context: null,
-        phase: const PhaseSettings.paused(),
+        phase: phase,
       );
     }
 
@@ -526,11 +526,14 @@ void main() {
             'when objects are tracked with different settings, disposed=$disposed, gced=$gced.',
             () async {
           for (var object in objectsToPhases.keys) {
+            final phase = objectsToPhases[object]!;
+            print('1 started $object, ${phase.name}, ${phase.isPaused}');
             // Start tracking.
-            startTracking(object, objectsToPhases[object]!);
+            startTracking(object, phase);
           }
 
           for (var object in objectsToPhases.keys) {
+            print('finished $object');
             // Dispose and garbage collect.
             if (disposed) tracker.dispatchDisposal(object, context: null);
             if (gced) finalizerBuilder.gc(object);
