@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:math';
-
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
@@ -161,8 +159,12 @@ void main() {
 
     test('uses finalizer.', () {
       const theObject = '-';
-      tracker.startTracking(theObject,
-          context: null, trackedClass: '', phase: const PhaseSettings());
+      tracker.startTracking(
+        theObject,
+        context: null,
+        trackedClass: '',
+        phase: const PhaseSettings(),
+      );
       expect(
         finalizerBuilder.finalizer.attached,
         contains(identityHashCode(theObject)),
@@ -470,7 +472,7 @@ void main() {
       }
       leak = leak!;
 
-      expect(leak.phase, phase);
+      expect(leak.phase, phase.name);
 
       checkContext(
         leak.context,
@@ -527,13 +529,11 @@ void main() {
             () async {
           for (var object in objectsToPhases.keys) {
             final phase = objectsToPhases[object]!;
-            print('1 started $object, ${phase.name}, ${phase.isPaused}');
             // Start tracking.
             startTracking(object, phase);
           }
 
           for (var object in objectsToPhases.keys) {
-            print('finished $object');
             // Dispose and garbage collect.
             if (disposed) tracker.dispatchDisposal(object, context: null);
             if (gced) finalizerBuilder.gc(object);

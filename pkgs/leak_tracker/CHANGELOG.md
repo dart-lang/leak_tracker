@@ -1,3 +1,7 @@
+# 9.0.5
+
+* Fix issue of using wrong settings for a phase.
+
 # 9.0.4
 
 * Make it possible to disable tracking for a type of leak.

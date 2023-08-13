@@ -1,5 +1,5 @@
 name: leak_tracker
-version: 9.0.4
+version: 9.0.5
 description: A framework for memory leak tracking for Dart and Flutter applications.
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker
 
