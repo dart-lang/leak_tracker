@@ -11,6 +11,8 @@ import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:leak_tracker/src/shared/_util.dart';
 import 'package:test/test.dart';
 
+import '../../test_infra/data/dart_classes.dart';
+
 const String _trackedClass = 'trackedClass';
 const _disposalTime = Duration(milliseconds: 100);
 
@@ -394,28 +396,28 @@ void main() {
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
 
-    const objectsToPhases = <Object, PhaseSettings>{
-      '0': PhaseSettings.paused(),
-      '1': PhaseSettings(
+    final objectsToPhases = <Object, PhaseSettings>{
+      Named('0'): const PhaseSettings.paused(),
+      Named('1'): const PhaseSettings(
         name: '1',
       ),
-      '2': PhaseSettings.paused(),
-      '3': PhaseSettings(
+      Named('2'): const PhaseSettings.paused(),
+      Named('3'): const PhaseSettings(
         name: '3',
       ),
-      '4': PhaseSettings(
+      Named('4'): const PhaseSettings(
         name: '4',
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNotGCed: true,
         ),
       ),
-      '5': PhaseSettings(
+      Named('5'): const PhaseSettings(
         name: '5',
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectStackTraceOnDisposal: true,
         ),
       ),
-      '6': PhaseSettings(
+      Named('6'): const PhaseSettings(
         name: '6',
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectStackTraceOnStart: true,
@@ -496,7 +498,7 @@ void main() {
       }
       leak = leak!;
 
-      expect(leak.phase, phase);
+      expect(leak.phase, phase.name);
 
       checkContext(
         leak.context,
@@ -518,65 +520,77 @@ void main() {
 
     for (var gced in [
       true,
-      //false,
+      false,
     ]) {
       for (var disposed in [
-        //true,
+        true,
         false,
       ]) {
         test(
             'when objects are tracked with different settings, disposed=$disposed, gced=$gced.',
             () async {
-          for (var object in objectsToPhases.keys) {
-            final phase = objectsToPhases[object]!;
-            // Start tracking.
-            startTracking(object, phase);
-          }
+          var time = DateTime(2000);
 
-          for (var object in objectsToPhases.keys) {
-            // Dispose and garbage collect.
-            if (disposed) tracker.dispatchDisposal(object, context: null);
-            if (gced) finalizerBuilder.gc(object);
-          }
-
-          // Collect leaks.
-          final leaks = await tracker.collectLeaks();
-
-          // Verify leaks.
-          final expectedNotGCed = objectsToPhases.keys
-              .where(
-                (o) =>
-                    !objectsToPhases[o]!.isPaused &&
-                    !objectsToPhases[o]!.allowAllNotGCed &&
-                    !gced &&
-                    disposed,
-              )
-              .length;
-          final expectedNotDisposed = objectsToPhases.keys
-              .where(
-                (o) =>
-                    !objectsToPhases[o]!.isPaused &&
-                    !objectsToPhases[o]!.allowAllNotDisposed &&
-                    !disposed &&
-                    gced,
-              )
-              .length;
-
-          expect(leaks.total, expectedNotDisposed + expectedNotGCed);
-          expect(leaks.notGCed.length, expectedNotGCed);
-          expect(leaks.notDisposed.length, expectedNotDisposed);
-
-          if (leaks.total == 0) return;
-
-          for (var object in objectsToPhases.keys) {
-            final phase = objectsToPhases[object]!;
-            if (gced && !disposed) {
-              checkNotDisposedLeak(leaks, phase, object: object);
+          // Start tracking.
+          withClock(Clock.fixed(time), () {
+            for (var object in objectsToPhases.keys) {
+              final phase = objectsToPhases[object]!;
+              // Start tracking.
+              startTracking(object, phase);
             }
-            if (disposed && !gced) {
-              checkNotGCedLeak(leaks, phase, object: object);
+
+            for (var object in objectsToPhases.keys) {
+              // Dispose and garbage collect.
+              if (disposed) tracker.dispatchDisposal(object, context: null);
+              if (gced) finalizerBuilder.gc(object);
             }
-          }
+
+            // Emulate garbage collection.
+            gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
+          });
+
+          // Time travel
+          time = time.add(_disposalTime);
+          await withClock(Clock.fixed(time), () async {
+            // Collect leaks.
+            final leaks = await tracker.collectLeaks();
+
+            // Verify leaks.
+            final expectedNotGCed = objectsToPhases.keys
+                .where(
+                  (o) =>
+                      !objectsToPhases[o]!.isPaused &&
+                      !objectsToPhases[o]!.allowAllNotGCed &&
+                      !gced &&
+                      disposed,
+                )
+                .length;
+            final expectedNotDisposed = objectsToPhases.keys
+                .where(
+                  (o) =>
+                      !objectsToPhases[o]!.isPaused &&
+                      !objectsToPhases[o]!.allowAllNotDisposed &&
+                      !disposed &&
+                      gced,
+                )
+                .length;
+
+            expect(leaks.total, expectedNotDisposed + expectedNotGCed);
+            expect(leaks.notGCed.length, expectedNotGCed);
+            expect(leaks.notDisposed.length, expectedNotDisposed);
+
+            if (leaks.total == 0) return;
+
+            for (var object in objectsToPhases.keys) {
+              final phase = objectsToPhases[object]!;
+              if (gced && !disposed) {
+                checkNotDisposedLeak(leaks, phase, object: object);
+              }
+              if (disposed && !gced) {
+                checkNotGCedLeak(leaks, phase, object: object);
+              }
+            }
+          });
         });
       }
     }
