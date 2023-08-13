@@ -2,10 +2,39 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
+
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_primitives/_gc_counter.dart';
 import '_primitives/model.dart';
+
+@visibleForTesting
+class ObjectRecordSet {
+  final records = <IdentityHashCode, List<ObjectRecord>>{};
+
+  ObjectRecord? record(Object object) {
+    final code = identityHashCode(object);
+
+    final list = records[code];
+    if (list == null) return null;
+    return list.firstWhereOrNull((r) => r.ref.target == object);
+  }
+
+  ObjectRecord addOrGet(Object object) {
+    final code = identityHashCode(object);
+
+    final list = records[code];
+    if (list != null) {
+      final result = list.firstWhereOrNull((r) => r.ref.target == object);
+      if (result != null) return result;
+    }
+
+    return null;
+    return list.firstWhereOrNull((r) => r.ref.target == object);
+  }
+}
 
 /// Object collections to track leaks.
 ///
@@ -85,12 +114,15 @@ class ObjectRecords {
 /// Information about an object, tracked for leaks.
 class ObjectRecord {
   ObjectRecord(
-    this.code,
+    Object object,
     this.context,
     this.type,
     this.trackedClass,
     this.phase,
-  );
+  )   : code = identityHashCode(object),
+        ref = WeakReference(object);
+
+  final WeakReference<Object> ref;
 
   final IdentityHashCode code;
 
