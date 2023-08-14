@@ -33,6 +33,9 @@ T cast<T>(value) {
 }
 
 extension IterableExtensions<T> on Iterable<T> {
+  /// Returns the item or null, assuming that the length of the itrable os 0 or 1.
+  // The name is consistent woth other methods names on iterable like
+  // `firstOrNull, lastOrNull and singleOrNull`.
   T? get onlyOrNull {
     if (length > 1) throw StateError('Lenth should not be more than one.');
     return firstOrNull;
