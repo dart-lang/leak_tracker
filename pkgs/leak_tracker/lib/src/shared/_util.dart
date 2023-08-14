@@ -34,7 +34,7 @@ T cast<T>(value) {
 
 extension IterableExtensions<T> on Iterable<T> {
   T? get onlyOrNull {
-    if (length > 1) throw StateError('Lenth should not be more than one.');
+    if (length > 1) throw StateError('Length should not be more than one.');
     return firstOrNull;
   }
 }
