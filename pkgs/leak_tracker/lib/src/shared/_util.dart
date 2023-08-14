@@ -37,7 +37,7 @@ extension IterableExtensions<T> on Iterable<T> {
   // The name is consistent woth other methods names on iterable like
   // `firstOrNull, lastOrNull and singleOrNull`.
   T? get onlyOrNull {
-    if (length > 1) throw StateError('Lenth should not be more than one.');
+    if (length > 1) throw StateError('Length should not be more than one.');
     return firstOrNull;
   }
 }
