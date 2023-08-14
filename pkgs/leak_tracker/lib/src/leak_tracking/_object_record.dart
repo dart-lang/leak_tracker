@@ -31,8 +31,7 @@ class ObjectRecordSet {
       if (result != null) return result;
     }
 
-    return null;
-    return list.firstWhereOrNull((r) => r.ref.target == object);
+    return ObjectRecord(object, context, type, trackedClass, phase);
   }
 }
 
