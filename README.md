@@ -13,7 +13,14 @@ This is a framework for detecting memory issues in Dart and Flutter applications
 | [leak_tracker_flutter_testing](pkgs/leak_tracker_flutter_testing/) | Leak tracking helpers intended for usage in Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_flutter_testing.svg)](https://pub.dev/packages/leak_tracker_flutter_testing) |
 | [leak_tracker_testing](pkgs/leak_tracker_testing/) | Leak tracking helpers intended for usage in tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
 
-## How to enable logs
+## Features
+
+[Work in progress](https://github.com/dart-lang/leak_tracker/labels/P1)
+[Upvote and comment if interested](https://github.com/dart-lang/leak_tracker/labels/P2)
+
+## Contribution notes
+
+### How to enable logs
 
 To temporary enable logs, add this line to `main`:
 
@@ -21,7 +28,7 @@ To temporary enable logs, add this line to `main`:
 Logger.root.onRecord.listen((LogRecord record) => print(record.message));
 ```
 
-## How to regenerate diagrams
+### How to regenerate diagrams
 
 To regenerate diagrams, run:
 
