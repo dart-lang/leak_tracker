@@ -19,27 +19,26 @@ class Connection {
 }
 
 Future<Uri> _serviceUri() async {
-  var info = await Service.getInfo();
+  Uri? uri = (await Service.getInfo()).serverWebSocketUri;
 
-  if (info.serverWebSocketUri == null) {
-    info = await Service.controlWebServer(enable: true);
-  }
+  if (uri != null) return uri;
+
+  uri = (await Service.controlWebServer(enable: true)).serverWebSocketUri;
 
   const timeout = Duration(seconds: 5);
   final stopwatch = Stopwatch()..start();
 
-  Uri? uri;
-
-  while ((uri = info.serverWebSocketUri) == null) {
-    await Future.delayed(const Duration(milliseconds: 1));
+  while (uri == null) {
     if (stopwatch.elapsed > timeout) {
       throw StateError(
         'Could not start VM service.',
       );
     }
+    await Future.delayed(const Duration(milliseconds: 1));
+    uri = (await Service.getInfo()).serverWebSocketUri;
   }
 
-  return uri!;
+  return uri;
 }
 
 /// Connects to vm service protocol.
