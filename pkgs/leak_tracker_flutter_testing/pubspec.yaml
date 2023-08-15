@@ -17,6 +17,7 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: ^2.0.0
+  logging: ^1.1.1
 
 dependency_overrides:
   leak_tracker:
