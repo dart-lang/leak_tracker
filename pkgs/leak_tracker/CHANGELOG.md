@@ -1,3 +1,7 @@
+# 9.0.6
+
+* Allow time to connect to vm_service anf get connection Uri before throwing error.
+
 # 9.0.5
 
 * Fix issue of using wrong settings for a phase, so that the tracker uses settings
