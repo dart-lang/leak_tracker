@@ -18,25 +18,36 @@ class Connection {
   final VmService service;
 }
 
-/// Connects to vm service protocol.
-///
-/// If it is not found, tries to start it.
-Future<Connection> connect() async {
-  _log.info('Connecting to vm service protocol...');
-
+Future<Uri> _serviceUri() async {
   var info = await Service.getInfo();
 
   if (info.serverWebSocketUri == null) {
     info = await Service.controlWebServer(enable: true);
   }
 
-  final uri = info.serverWebSocketUri;
+  const timeout = Duration(seconds: 5);
+  final stopwatch = Stopwatch()..start();
 
-  if (uri == null) {
-    throw StateError(
-      'Leak troubleshooting is not available. Run your application with flag "--debug" to enable VM service.',
-    );
+  Uri? uri;
+  while ((uri = info.serverWebSocketUri) == null) {
+    await Future.delayed(const Duration(milliseconds: 1));
+    if (stopwatch.elapsed > timeout) {
+      throw StateError(
+        'Could not start VM service.',
+      );
+    }
   }
+
+  return uri!;
+}
+
+/// Connects to vm service protocol.
+///
+/// If it is not found, tries to start it.
+Future<Connection> connect() async {
+  _log.info('Connecting to vm service protocol...');
+
+  final uri = await _serviceUri();
 
   final service = await _connectWithWebSocket(uri, _handleError);
   await service.getVersion(); // Warming up and validating the connection.
