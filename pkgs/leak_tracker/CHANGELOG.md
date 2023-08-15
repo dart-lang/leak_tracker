@@ -1,6 +1,6 @@
 # 9.0.6
 
-* Allow time to connect to vm_service anf get connection Uri before throwing error.
+* Allow time to connect to vm_service and get connection Uri before throwing error.
 
 # 9.0.5
 
