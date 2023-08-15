@@ -124,6 +124,7 @@ abstract class LeakTracking {
         context: context,
         trackedClass:
             fullClassName(library: library, shortClassName: className),
+        phase: _phase.value,
       );
 
       return true;

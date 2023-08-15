@@ -1,3 +1,8 @@
+# 9.0.5
+
+* Fix issue of using wrong settings for a phase, so that the tracker uses settings
+at time of object tracking start, instead of current configuration.
+
 # 9.0.4
 
 * Make it possible to disable tracking for a type of leak.
