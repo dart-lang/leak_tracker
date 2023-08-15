@@ -29,6 +29,7 @@ Future<Uri> _serviceUri() async {
   final stopwatch = Stopwatch()..start();
 
   Uri? uri;
+
   while ((uri = info.serverWebSocketUri) == null) {
     await Future.delayed(const Duration(milliseconds: 1));
     if (stopwatch.elapsed > timeout) {
