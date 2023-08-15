@@ -15,10 +15,13 @@ This is a framework for detecting memory issues in Dart and Flutter applications
 
 ## Roadmap
 
-[Work in progress](https://github.com/dart-lang/leak_tracker/labels/P1)
-[Upvote and comment, to help with prioritization](https://github.com/dart-lang/leak_tracker/labels/P2)
+Check [Work in progress](https://github.com/dart-lang/leak_tracker/labels/P1) to see what is under construction.
+
+Help us to prioritize future work by upvoting and commenting [potential new features](https://github.com/dart-lang/leak_tracker/labels/P2).
 
 ## Contributing
+
+For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
 ### How to enable logs
 
