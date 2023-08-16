@@ -28,7 +28,7 @@ class ObjectTracker implements LeakProvider {
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
-    required this.phase,
+    required this.switches,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
     IdentityHashCoder? coder,
@@ -50,7 +50,7 @@ class ObjectTracker implements LeakProvider {
 
   final _objects = ObjectRecords();
 
-  final _leakFilter = LeakFilter();
+  late final LeakFilter _leakFilter = LeakFilter(switches);
 
   bool disposed = false;
 
@@ -58,15 +58,16 @@ class ObjectTracker implements LeakProvider {
 
   final int? maxRequestsForRetainingPath;
 
-  final ObjectRef<PhaseSettings> phase;
+  final Switches switches;
 
   void startTracking(
     Object object, {
     required Map<String, dynamic>? context,
     required String trackedClass,
+    required PhaseSettings phase,
   }) {
     throwIfDisposed();
-    if (phase.value.isLeakTrackingPaused) return;
+    if (phase.isPaused || switches.isObjectTrackingDisabled) return;
 
     final code = _coder(object);
     assert(code > 0);
@@ -79,10 +80,10 @@ class ObjectTracker implements LeakProvider {
       context,
       object.runtimeType,
       trackedClass,
-      phase.value,
+      phase,
     );
 
-    if (phase.value.leakDiagnosticConfig
+    if (phase.leakDiagnosticConfig
         .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
@@ -121,17 +122,18 @@ class ObjectTracker implements LeakProvider {
     required Map<String, dynamic>? context,
   }) {
     throwIfDisposed();
+    if (switches.isObjectTrackingDisabled) return;
     final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
 
     final record = _objects.notGCed[code];
     // If object is not registered, this may mean that it was created whan leak tracking was off,
     // so disposal should not be registered too.
-    if (record == null) return;
+    if (record == null || record.phase.isPaused) return;
 
     record.mergeContext(context);
 
-    if (phase.value.leakDiagnosticConfig
+    if (record.phase.leakDiagnosticConfig
         .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
@@ -146,13 +148,14 @@ class ObjectTracker implements LeakProvider {
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
     throwIfDisposed();
+    if (switches.isObjectTrackingDisabled) return;
     final code = _coder(object);
     if (_objects.duplicates.contains(code)) return;
 
     final record = _objects.notGCed[code];
     // If object is not registered, this may mean that it was created whan leak tracking was off,
     // so the context should not be registered too.
-    if (record == null) return;
+    if (record == null || record.phase.isPaused) return;
 
     record.mergeContext(context);
   }
@@ -160,7 +163,7 @@ class ObjectTracker implements LeakProvider {
   @override
   Future<LeakSummary> leaksSummary() async {
     throwIfDisposed();
-    await _checkForNewNotGCedLeaks();
+    await _checkForNewNotGCedLeaks(summary: true);
 
     return LeakSummary({
       LeakType.notDisposed: _objects.gcedNotDisposedLeaks.length,
@@ -169,13 +172,10 @@ class ObjectTracker implements LeakProvider {
     });
   }
 
-  Future<void> _checkForNewNotGCedLeaks() async {
+  Future<void> _checkForNewNotGCedLeaks({bool summary = false}) async {
     _objects.assertIntegrity();
 
-    final List<int>? objectsToGetPath =
-        phase.value.leakDiagnosticConfig.collectRetainingPathForNotGCed
-            ? []
-            : null;
+    final List<int>? objectsToGetPath = !summary ? [] : null;
 
     final now = clock.now();
     for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
@@ -187,7 +187,10 @@ class ObjectTracker implements LeakProvider {
       )) {
         _objects.notGCedDisposedOk.remove(code);
         _objects.notGCedDisposedLate.add(code);
-        objectsToGetPath?.add(code);
+        if (_objects.notGCed[code]!.phase.leakDiagnosticConfig
+            .collectRetainingPathForNotGCed) {
+          objectsToGetPath?.add(code);
+        }
       }
     }
 

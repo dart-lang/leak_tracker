@@ -1,0 +1,25 @@
+name: leak_tracker_flutter_testing
+version: 1.0.1
+description: Flutter specific helpers for dart memory leak tracking.
+repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_flutter_testing
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  leak_tracker:  '>=9.0.4 <10.0.0'
+  leak_tracker_testing: '>=1.0.0 <2.0.0'
+  meta: ^1.8.0
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+
+dependency_overrides:
+  leak_tracker:
+    path: ../leak_tracker
+  leak_tracker_testing:
+    path: ../leak_tracker_testing

@@ -13,7 +13,7 @@ class LeakTracker {
       disposalTime: config.disposalTime,
       numberOfGcCycles: config.numberOfGcCycles,
       maxRequestsForRetainingPath: config.maxRequestsForRetainingPath,
-      phase: phase,
+      switches: config.switches,
     );
 
     leakReporter = LeakReporter(

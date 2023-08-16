@@ -4,6 +4,12 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 
+class Named {
+  Named(this.name);
+
+  final String name;
+}
+
 class LeakTrackedClass {
   LeakTrackedClass() {
     LeakTracking.dispatchObjectCreated(

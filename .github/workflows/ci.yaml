@@ -37,7 +37,7 @@ jobs:
 
       - name: flutter test
         run: flutter test
-        working-directory: pkgs/leak_tracker_flutter_test
+        working-directory: pkgs/leak_tracker_flutter_testing
 
       - name: integration test
         run: flutter test integration_test/app_test.dart -d flutter-tester

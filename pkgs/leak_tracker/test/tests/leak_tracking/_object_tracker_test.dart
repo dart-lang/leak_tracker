@@ -8,7 +8,10 @@ import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
 import 'package:leak_tracker/src/shared/_primitives.dart';
+import 'package:leak_tracker/src/shared/_util.dart';
 import 'package:test/test.dart';
+
+import '../../test_infra/data/dart_classes.dart';
 
 const String _trackedClass = 'trackedClass';
 const _disposalTime = Duration(milliseconds: 100);
@@ -82,7 +85,7 @@ void main() {
         coder: mockCoder,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        phase: ObjectRef(const PhaseSettings()),
+        switches: const Switches(),
       );
     });
 
@@ -94,12 +97,14 @@ void main() {
         object1,
         context: null,
         trackedClass: _trackedClass,
+        phase: const PhaseSettings(),
       );
 
       tracker.startTracking(
         object2,
         context: null,
         trackedClass: _trackedClass,
+        phase: const PhaseSettings(),
       );
     });
   });
@@ -150,13 +155,18 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        phase: ObjectRef(const PhaseSettings()),
+        switches: const Switches(),
       );
     });
 
     test('uses finalizer.', () {
       const theObject = '-';
-      tracker.startTracking(theObject, context: null, trackedClass: '');
+      tracker.startTracking(
+        theObject,
+        context: null,
+        trackedClass: '',
+        phase: const PhaseSettings(),
+      );
       expect(
         finalizerBuilder.finalizer.attached,
         contains(identityHashCode(theObject)),
@@ -170,7 +180,12 @@ void main() {
 
       // Start tracking.
       withClock(Clock.fixed(time), () {
-        tracker.startTracking(theObject, context: null, trackedClass: '');
+        tracker.startTracking(
+          theObject,
+          context: null,
+          trackedClass: '',
+          phase: const PhaseSettings(),
+        );
       });
 
       // Time travel.
@@ -192,6 +207,7 @@ void main() {
         theObject,
         context: null,
         trackedClass: 'trackedClass',
+        phase: const PhaseSettings(),
       );
       finalizerBuilder.gc(theObject);
 
@@ -210,6 +226,7 @@ void main() {
           theObject,
           context: null,
           trackedClass: 'trackedClass',
+          phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
       });
@@ -235,6 +252,7 @@ void main() {
           theObject,
           context: null,
           trackedClass: 'trackedClass',
+          phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
       });
@@ -261,6 +279,7 @@ void main() {
           theObject,
           context: null,
           trackedClass: _trackedClass,
+          phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
       });
@@ -290,6 +309,7 @@ void main() {
           theObject,
           context: {'0': 0},
           trackedClass: _trackedClass,
+          phase: const PhaseSettings(),
         );
         tracker.addContext(theObject, context: {'1': 1});
         tracker.dispatchDisposal(theObject, context: {'2': 2});
@@ -324,14 +344,7 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        phase: ObjectRef(
-          const PhaseSettings(
-            leakDiagnosticConfig: LeakDiagnosticConfig(
-              classesToCollectStackTraceOnStart: {'String'},
-              classesToCollectStackTraceOnDisposal: {'String'},
-            ),
-          ),
-        ),
+        switches: const Switches(),
       );
     });
 
@@ -346,6 +359,12 @@ void main() {
           theObject,
           context: null,
           trackedClass: _trackedClass,
+          phase: const PhaseSettings(
+            leakDiagnosticConfig: LeakDiagnosticConfig(
+              classesToCollectStackTraceOnStart: {'String'},
+              classesToCollectStackTraceOnDisposal: {'String'},
+            ),
+          ),
         );
         tracker.dispatchDisposal(theObject, context: null);
       });
@@ -372,22 +391,50 @@ void main() {
     });
   });
 
-  group('$ObjectTracker respects phase boundaries,', () {
+  group('$ObjectTracker respects phase settings,', () {
     late _MockFinalizerBuilder finalizerBuilder;
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
-    late ObjectRef<PhaseSettings> phase;
 
-    void startTracking(Object object) {
+    final objectsToPhases = <Object, PhaseSettings>{
+      Named('0'): const PhaseSettings.paused(),
+      Named('1'): const PhaseSettings(
+        name: '1',
+      ),
+      Named('2'): const PhaseSettings.paused(),
+      Named('3'): const PhaseSettings(
+        name: '3',
+      ),
+      Named('4'): const PhaseSettings(
+        name: '4',
+        leakDiagnosticConfig: LeakDiagnosticConfig(
+          collectRetainingPathForNotGCed: true,
+        ),
+      ),
+      Named('5'): const PhaseSettings(
+        name: '5',
+        leakDiagnosticConfig: LeakDiagnosticConfig(
+          collectStackTraceOnDisposal: true,
+        ),
+      ),
+      Named('6'): const PhaseSettings(
+        name: '6',
+        leakDiagnosticConfig: LeakDiagnosticConfig(
+          collectStackTraceOnStart: true,
+        ),
+      ),
+    };
+
+    void startTracking(Object object, PhaseSettings phase) {
       tracker.startTracking(
         object,
         trackedClass: _trackedClass,
         context: null,
+        phase: phase,
       );
     }
 
     setUp(() {
-      phase = ObjectRef(const PhaseSettings.paused());
       finalizerBuilder = _MockFinalizerBuilder();
       gcCounter = _MockGcCounter();
       tracker = ObjectTracker(
@@ -395,72 +442,158 @@ void main() {
         gcCounter: gcCounter,
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
-        maxRequestsForRetainingPath: 0,
-        phase: phase,
+        maxRequestsForRetainingPath: null,
+        switches: const Switches(),
       );
     });
 
-    test('when object is registered before phase started.', () async {
-      const objectBeforePhase = '1';
-      const objectBeforePhaseLeaking = '2';
-      const objectInPhase = '3';
-      const objectInPhaseLeaking = '4';
-      final allObjects = [
-        objectBeforePhase,
-        objectBeforePhaseLeaking,
-        objectInPhase,
-        objectInPhaseLeaking,
-      ];
+    void checkContext(
+      Map<String, dynamic>? context, {
+      required bool shouldContain,
+      required String key,
+    }) {
+      if (shouldContain) {
+        expect(context!.keys, contains(key));
+      } else {
+        expect(context?.keys ?? [], isNot(contains(key)));
+      }
+    }
 
-      // Start tracking for all objects.
-      startTracking(objectBeforePhase);
-      startTracking(objectBeforePhaseLeaking);
-      // Start new phase
-      phase.value = const PhaseSettings();
-      startTracking(objectInPhase);
-      startTracking(objectInPhaseLeaking);
+    void checkNotDisposedLeak(
+      Leaks leaks,
+      PhaseSettings phase, {
+      required Object object,
+    }) {
+      var leak = leaks.notDisposed
+          .where((l) => l.code == identityHashCode(object))
+          .onlyOrNull;
 
-      // Dispose non-leaking objects.
-      tracker.dispatchDisposal(objectInPhase, context: null);
-      tracker.dispatchDisposal(objectBeforePhase, context: null);
+      if (phase.isPaused || phase.allowAllNotDisposed) {
+        expect(leak, isNull);
+        return;
+      }
+      leak = leak!;
 
-      // GC all objects.
-      allObjects.forEach(finalizerBuilder.gc);
+      expect(leak.phase, phase.name);
 
-      // Check leaks are collected only for leaking object that
-      // was registered in the phase.
-      final leaks = await tracker.collectLeaks();
-      expect(leaks.total, 1);
-      final theLeak = leaks.byType[LeakType.notDisposed]!.single;
-      expect(theLeak.code, identityHashCode(objectInPhaseLeaking));
-    });
+      checkContext(
+        leak.context,
+        shouldContain: phase.leakDiagnosticConfig.collectStackTraceOnStart,
+        key: ContextKeys.startCallstack,
+      );
+    }
 
-    test('when object is disposed after phase ended.', () async {
-      const objectDisposedInPhase = '1';
-      const objectLeaking = '2';
-      const objectDisposedAfterPhase = '3';
-      final allObjects = [
-        objectDisposedInPhase,
-        objectLeaking,
-        objectDisposedAfterPhase,
-      ];
+    void checkNotGCedLeak(
+      Leaks leaks,
+      PhaseSettings phase, {
+      required Object object,
+    }) {
+      var leak = leaks.notGCed
+          .where((l) => l.code == identityHashCode(object))
+          .onlyOrNull;
 
-      phase.value = const PhaseSettings(name: 'phase1');
-      allObjects.forEach(startTracking);
-      tracker.dispatchDisposal(objectDisposedInPhase, context: null);
-      phase.value = const PhaseSettings.paused();
-      tracker.dispatchDisposal(objectDisposedAfterPhase, context: null);
+      if (phase.isPaused || phase.allowAllNotGCed) {
+        expect(leak, isNull);
+        return;
+      }
+      leak = leak!;
 
-      // GC all objects.
-      allObjects.forEach(finalizerBuilder.gc);
+      expect(leak.phase, phase.name);
 
-      // Check leaks are collected only for leaking object that
-      // was registered in the phase.
-      final leaks = await tracker.collectLeaks();
-      expect(leaks.total, 1);
-      final theLeak = leaks.byType[LeakType.notDisposed]!.single;
-      expect(theLeak.code, identityHashCode(objectLeaking));
-    });
+      checkContext(
+        leak.context,
+        shouldContain: phase.leakDiagnosticConfig.collectStackTraceOnStart,
+        key: ContextKeys.startCallstack,
+      );
+      checkContext(
+        leak.context,
+        shouldContain: phase.leakDiagnosticConfig.collectStackTraceOnDisposal,
+        key: ContextKeys.disposalCallstack,
+      );
+      checkContext(
+        leak.context,
+        shouldContain:
+            phase.leakDiagnosticConfig.collectRetainingPathForNotGCed,
+        key: ContextKeys.retainingPath,
+      );
+    }
+
+    for (var gced in [
+      true,
+      false,
+    ]) {
+      for (var disposed in [
+        true,
+        false,
+      ]) {
+        test(
+            'when objects are tracked with different settings, disposed=$disposed, gced=$gced.',
+            () async {
+          var time = DateTime(2000);
+
+          // Start tracking.
+          withClock(Clock.fixed(time), () {
+            for (var object in objectsToPhases.keys) {
+              final phase = objectsToPhases[object]!;
+              // Start tracking.
+              startTracking(object, phase);
+            }
+
+            for (var object in objectsToPhases.keys) {
+              // Dispose and garbage collect.
+              if (disposed) tracker.dispatchDisposal(object, context: null);
+              if (gced) finalizerBuilder.gc(object);
+            }
+
+            // Emulate garbage collection.
+            gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
+          });
+
+          // Time travel
+          time = time.add(_disposalTime);
+          await withClock(Clock.fixed(time), () async {
+            // Collect leaks.
+            final leaks = await tracker.collectLeaks();
+
+            // Verify leaks.
+            final expectedNotGCed = objectsToPhases.keys
+                .where(
+                  (o) =>
+                      !objectsToPhases[o]!.isPaused &&
+                      !objectsToPhases[o]!.allowAllNotGCed &&
+                      !gced &&
+                      disposed,
+                )
+                .length;
+            final expectedNotDisposed = objectsToPhases.keys
+                .where(
+                  (o) =>
+                      !objectsToPhases[o]!.isPaused &&
+                      !objectsToPhases[o]!.allowAllNotDisposed &&
+                      !disposed &&
+                      gced,
+                )
+                .length;
+
+            expect(leaks.total, expectedNotDisposed + expectedNotGCed);
+            expect(leaks.notGCed.length, expectedNotGCed);
+            expect(leaks.notDisposed.length, expectedNotDisposed);
+
+            if (leaks.total == 0) return;
+
+            for (var object in objectsToPhases.keys) {
+              final phase = objectsToPhases[object]!;
+              if (gced && !disposed) {
+                checkNotDisposedLeak(leaks, phase, object: object);
+              }
+              if (disposed && !gced) {
+                checkNotGCedLeak(leaks, phase, object: object);
+              }
+            }
+          });
+        });
+      }
+    }
   });
 }
 

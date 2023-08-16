@@ -1,3 +1,16 @@
+# 9.0.5
+
+* Fix issue of using wrong settings for a phase, so that the tracker uses settings
+at time of object tracking start, instead of current configuration.
+
+# 9.0.4
+
+* Make it possible to disable tracking for a type of leak.
+
+# 9.0.3
+
+* Stop failing if an object is disposed twice.
+
 # 9.0.2
 
 * Make sure phase bondaries are handled correctly.
