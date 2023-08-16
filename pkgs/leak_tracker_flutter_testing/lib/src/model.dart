@@ -41,7 +41,7 @@ class LeakTrackingTestConfig {
     this.allowAllNotGCed = false,
   });
 
-  /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
+  /// Creates a new instance for debugging leaks.
   ///
   /// This configuration will collect stack traces on start and disposal,
   /// and retaining path for notGCed objects.
@@ -57,7 +57,36 @@ class LeakTrackingTestConfig {
     this.allowAllNotGCed = false,
   });
 
-  /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
+  /// Creates a new instance for debugging notGCed leaks.
+  ///
+  /// This configuration will collect stack traces on disposal,
+  /// and retaining path for notGCed objects.
+  LeakTrackingTestConfig.debugNotGCed({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
+      collectStackTraceOnDisposal: true,
+      collectRetainingPathForNotGCed: true,
+    ),
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+  });
+
+  /// Creates a new instance for debugging notDisposed leaks.
+  ///
+  /// This configuration will collect stack traces on start and disposal,
+  /// and retaining path for notGCed objects.
+  LeakTrackingTestConfig.debugnotDisposed({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
+      collectStackTraceOnStart: true,
+    ),
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+  });
+
+  /// Creates a new instance to collect retaining path.
   ///
   /// This configuration will not collect stack traces,
   /// and will collect retaining path for notGCed objects.
