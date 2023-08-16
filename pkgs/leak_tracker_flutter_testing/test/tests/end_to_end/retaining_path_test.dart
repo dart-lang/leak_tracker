@@ -34,9 +34,12 @@ void main() {
     await subscription.cancel();
   });
 
-  test('Path for $MyClass instance is found.', () async {
+  testWidgets('Path for $MyClass instance is found.',
+      (WidgetTester tester) async {
     final instance = MyClass();
-    final connection = await connect();
+
+    late Connection connection;
+    await tester.runAsync(() async => connection = await connect());
 
     final path = await obtainRetainingPath(
       connection,

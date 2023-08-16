@@ -9,6 +9,8 @@ import 'package:logging/logging.dart';
 import 'package:vm_service/vm_service.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import '../model.dart';
+
 final _log = Logger('_connection.dart');
 
 class Connection {
