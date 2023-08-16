@@ -49,12 +49,13 @@ impact performance and memory footprint.
 
 **Tests**
 
-For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig` to the test:
+For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig`,
+specific for the debugged leak type, to the test:
 
 ```
-  testWidgets('My test', (WidgetTester tester) async {
+  testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
     ...
-  }, leakTrackingTestConfig: LeakTrackingTestConfig.debug());
+  }, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
 ```
 
 **Applications**
@@ -101,7 +102,7 @@ root -> staticA -> B -> C -> disposedD
 
 In this example, `disposedD` should stop being reachable from the root.
 You need to find the closest to the root object, that is not needed any more and release
-reference to it, that will make 
+reference to it, that will make
 the entire chain after available for garbage collection.
 
 There are ways to release the reference:
@@ -128,7 +129,7 @@ class C {
   ...
   final WeakReference<MyClass> disposedD;
   ...
-}   
+}
 ```
 
 ### 2. More than one closure context
