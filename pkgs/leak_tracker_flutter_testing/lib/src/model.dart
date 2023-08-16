@@ -44,7 +44,7 @@ class LeakTrackingTestConfig {
   /// Creates a new instance for debugging leaks.
   ///
   /// This configuration will collect stack traces on start and disposal,
-  /// and retaining path for notGCed objects.
+  /// and the objects' retaining paths for notGCed objects.
   LeakTrackingTestConfig.debug({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnStart: true,
@@ -60,7 +60,7 @@ class LeakTrackingTestConfig {
   /// Creates a new instance for debugging notGCed leaks.
   ///
   /// This configuration will collect stack traces on disposal,
-  /// and retaining path for notGCed objects.
+  /// and the objects' retaining paths for notGCed objects.
   LeakTrackingTestConfig.debugNotGCed({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnDisposal: true,
