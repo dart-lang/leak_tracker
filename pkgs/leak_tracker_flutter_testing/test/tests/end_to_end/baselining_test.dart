@@ -5,8 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-
-import '../../test_infra/leak_tracking_in_flutter.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 int _seed = 0;
 
@@ -15,6 +14,8 @@ void main() {
     'baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.isLeakTrackingPaused, true);
+
       await widgetTester.pumpWidget(
         MaterialApp(
           home: SizedBox(
@@ -29,15 +30,14 @@ void main() {
     leakTrackingTestConfig: LeakTrackingTestConfig(
       isLeakTrackingPaused: true,
       baselining: MemoryBaselining(
-        repeatCount: 1000,
         baseline: MemoryBaseline(
           rss: ValueSampler(
-            initialValue: 144932864,
-            deltaAvg: 51777893.977856405,
-            deltaMax: 75661312,
-            absAvg: 196698563.46679235,
-            absMax: 220594176,
-            samples: 4245,
+            initialValue: 144719872,
+            deltaAvg: 8060928.0,
+            deltaMax: 13631488,
+            absAvg: 152748556.288,
+            absMax: 158351360,
+            samples: 249,
           ),
         ),
       ),
