@@ -68,3 +68,8 @@ Flutter tests.
 
 If you want your tests to fail in case of significant diviation from baseline,
 please, upvote and comment the issue: https://github.com/dart-lang/leak_tracker/issues/120.
+
+## Other than RSS values
+
+If you want to measure other than RSS values,
+please, upvote and comment the issue: https://github.com/dart-lang/sdk/issues/53134
