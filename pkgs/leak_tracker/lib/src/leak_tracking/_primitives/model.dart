@@ -83,6 +83,38 @@ class LeakDiagnosticConfig {
   bool shouldCollectStackTraceOnDisposal(String classname) =>
       collectStackTraceOnDisposal ||
       classesToCollectStackTraceOnDisposal.contains(classname);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is LeakDiagnosticConfig &&
+        other.collectStackTraceOnStart == collectStackTraceOnStart &&
+        other.collectStackTraceOnDisposal == collectStackTraceOnDisposal &&
+        other.collectRetainingPathForNotGCed ==
+            collectRetainingPathForNotGCed &&
+        const DeepCollectionEquality.unordered().equals(
+          other.classesToCollectStackTraceOnStart,
+          classesToCollectStackTraceOnStart,
+        ) &&
+        const DeepCollectionEquality.unordered().equals(
+          other.classesToCollectStackTraceOnDisposal,
+          classesToCollectStackTraceOnDisposal,
+        );
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        collectStackTraceOnStart,
+        collectStackTraceOnDisposal,
+        collectRetainingPathForNotGCed,
+        Object.hashAll(classesToCollectStackTraceOnStart),
+        Object.hashAll(classesToCollectStackTraceOnDisposal),
+      );
 }
 
 /// The default value for number of full GC cycles, enough for a non reachable object to be GCed.
@@ -234,6 +266,7 @@ class PhaseSettings {
             .equals(other.notGCedAllowList, notGCedAllowList) &&
         other.allowAllNotDisposed == allowAllNotDisposed &&
         other.allowAllNotGCed == allowAllNotGCed &&
+        other.leakDiagnosticConfig == leakDiagnosticConfig &&
         other.baselining == baselining;
   }
 

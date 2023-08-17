@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:leak_tracker/src/leak_tracking/_primitives/model.dart';
 import 'package:leak_tracker/src/shared/shared_model.dart';
 import 'package:test/test.dart';
 
@@ -63,5 +64,20 @@ void main() {
       jsonEncode(json),
       jsonEncode(LeakSummary.fromJson(json).toJson()),
     );
+  });
+
+  group('$PhaseSettings equality', () {
+    test('test name', () {
+      const phase1 = PhaseSettings();
+
+      const phase2 = PhaseSettings(
+        leakDiagnosticConfig: LeakDiagnosticConfig(
+          collectStackTraceOnDisposal: true,
+          collectStackTraceOnStart: true,
+        ),
+      );
+
+      expect(phase1 == phase2, false);
+    });
   });
 }
