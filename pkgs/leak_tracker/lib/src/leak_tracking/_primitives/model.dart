@@ -4,7 +4,7 @@
 
 import 'dart:math';
 
-import 'package:collection/equality.dart';
+import 'package:collection/collection.dart';
 
 import '../../shared/shared_model.dart';
 

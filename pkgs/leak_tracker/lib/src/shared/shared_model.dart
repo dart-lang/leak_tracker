@@ -6,7 +6,6 @@ import 'package:collection/collection.dart';
 
 import '_formatting.dart';
 import '_primitives.dart';
-import '_util.dart';
 
 class ContextKeys {
   static const startCallstack = 'start';

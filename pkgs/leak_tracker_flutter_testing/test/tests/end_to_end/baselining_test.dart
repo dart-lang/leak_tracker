@@ -7,25 +7,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
-int _seed = 0;
-
 void main() {
   testWidgetsWithLeakTracking(
-    'baseline',
+    'baselining with baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.isLeakTrackingPaused, true);
 
-      await widgetTester.pumpWidget(
-        MaterialApp(
-          home: SizedBox(
-            height: 10 +
-                (_seed++) %
-                    101, // We need some change to avoid constant values.
-            child: const Icon(Icons.abc),
-          ),
-        ),
-      );
+      await widgetTester.pumpWidget(_materialApp());
     },
     leakTrackingTestConfig: LeakTrackingTestConfig(
       isLeakTrackingPaused: true,
@@ -43,4 +32,42 @@ void main() {
       ),
     ),
   );
+
+  testWidgetsWithLeakTracking(
+    'baselining without baseline',
+    (widgetTester) async {
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.isLeakTrackingPaused, true);
+
+      await widgetTester.pumpWidget(_materialApp());
+    },
+    leakTrackingTestConfig: const LeakTrackingTestConfig(
+      isLeakTrackingPaused: true,
+      baselining: MemoryBaselining(),
+    ),
+  );
+
+  for (var i in Iterable.generate(10)) {
+    testWidgetsWithLeakTracking(
+      'baselining with multiple runs',
+      (widgetTester) async {
+        expect(LeakTracking.isStarted, true);
+        expect(LeakTracking.phase.isLeakTrackingPaused, true);
+
+        await widgetTester.pumpWidget(_materialApp(seed: i));
+      },
+      leakTrackingTestConfig: const LeakTrackingTestConfig(
+        isLeakTrackingPaused: true,
+        baselining: MemoryBaselining(),
+      ),
+    );
+  }
 }
+
+Widget _materialApp({int seed = 0}) => MaterialApp(
+      home: SizedBox(
+        height:
+            10 + seed % 101, // We need some change to avoid constant values.
+        child: const Icon(Icons.abc),
+      ),
+    );
