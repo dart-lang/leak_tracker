@@ -99,7 +99,7 @@ But, as it is mixin, it does not have its own constructor. So, it
 communicates object creation in first `addListener`, that results
 in creation stack trace pointing to `addListener`, not to constructor.
 
-To make debugging easier, invoke [ChangeNotifier.mayBeDispatchObjectCreation]
+To make debugging easier, invoke [ChangeNotifier.maybeDispatchObjectCreation]
 in constructor of the class. It will help
 to identify the owner in case of leaks.
 
