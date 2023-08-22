@@ -1,6 +1,7 @@
 # 9.0.6
 
 * Fix misspelling.
+* Enable memory baselining.
 
 # 9.0.5
 
