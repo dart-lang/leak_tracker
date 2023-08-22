@@ -318,9 +318,11 @@ enum BaseliningMode {
   regression,
 }
 
+const defaultAllowedRssDeviation = 1.3;
+
 class MemoryBaseline {
   const MemoryBaseline({
-    this.allowedRssIncrease = 1.3,
+    this.allowedRssIncrease = defaultAllowedRssDeviation,
     required this.rss,
   });
 
@@ -356,7 +358,7 @@ class ValueSampler {
   })  : deltaAvg = 0,
         deltaMax = 0,
         samples = 0,
-        absAvg = initialValue * 1.0,
+        absAvg = initialValue.toDouble(),
         absMax = initialValue;
 
   final int initialValue;
@@ -378,7 +380,7 @@ class ValueSampler {
     final delta = value - initialValue;
     deltaMax = max(deltaMax, delta);
     if (samples == 0) {
-      deltaAvg = delta * 1.0;
+      deltaAvg = delta.toDouble();
     }
     deltaAvg = (deltaAvg * samples + delta) / (samples + 1);
     samples++;

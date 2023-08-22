@@ -33,21 +33,21 @@ class Baseliner {
     switch (baselining.mode) {
       case BaseliningMode.measure:
         if (baselining.baseline != null) {
-          print(_asComparison());
+          print('$_asComparison\n\n\n');
           print('\n\n');
         }
         print(asDartCode());
       case BaseliningMode.regression:
         throw UnimplementedError(
-            'Regression testing for memory consumption is not implamanted yet. '
-            'Upvote if interested: https://github.com/dart-lang/leak_tracker/issues/120');
+            'Regression testing for memory consumption is not implemented yet. '
+            'Upvote the following issue if interested: https://github.com/dart-lang/leak_tracker/issues/120');
     }
   }
 
   static int _currentRss() => ProcessInfo.currentRss;
 
   String asDartCode() {
-    return '''To set as new baseline, set parameter of $MemoryBaselining:
+    return '''To set as the new baseline, set the following parameter of $MemoryBaselining:
       baseline: $MemoryBaseline(
         rss: ${rss.asDartCode()},
       )''';
@@ -59,21 +59,20 @@ class Baseliner {
     final golden = baseline.rss;
     final current = rss;
     final buffer = StringBuffer();
-    buffer.writeln(
-      _asDelta('initialValue', current.initialValue, golden.initialValue),
-    );
-    buffer.writeln(
-      _asDelta('deltaAvg', current.deltaAvg, golden.deltaAvg),
-    );
-    buffer.writeln(
-      _asDelta('deltaMax', current.deltaMax, golden.deltaMax),
-    );
-    buffer.writeln(
-      _asDelta('absAvg', current.absAvg, golden.absAvg),
-    );
-    buffer.writeln(
-      _asDelta('absMax', current.absMax, golden.absMax),
-    );
+
+    final byteEntries = [
+      ('initialValue', current.initialValue, golden.initialValue),
+      ('deltaAvg', current.deltaAvg, golden.deltaAvg),
+      ('deltaMax', current.deltaMax, golden.deltaMax),
+      ('absAvg', current.absAvg, golden.absAvg),
+      ('absMax', current.absMax, golden.absMax),
+    ];
+
+    for (final e in byteEntries) {
+      final (label, current, golden) = e;
+      buffer.writeln(_asDelta(label, current, golden));
+    }
+
     buffer.writeln(
       'samples: ${current.samples} - ${golden.samples} = ${current.samples - golden.samples}',
     );
