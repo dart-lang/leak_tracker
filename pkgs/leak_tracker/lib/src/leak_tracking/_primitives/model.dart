@@ -322,6 +322,7 @@ const defaultAllowedRssDeviation = 1.3;
 
 class MemoryBaseline {
   const MemoryBaseline({
+    // TODO(polina-c): add SDK version after fixing https://github.com/flutter/flutter/issues/61814
     this.allowedRssIncrease = defaultAllowedRssDeviation,
     required this.rss,
   });

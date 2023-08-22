@@ -66,7 +66,7 @@ void main() {
 
     try {
       expect(leaks, isLeakFree);
-      expect(true, false);
+      fail('Leaks were expected.');
     } catch (error) {
       const traceHeaders = ['start: >', 'disposal: >'];
 
