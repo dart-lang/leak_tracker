@@ -377,6 +377,7 @@ class ValueSampler {
   int samples;
   bool _sealed = false;
 
+  /// Adds a sample.
   void add(int value) {
     if (_sealed) {
       throw StateError('Cannot add value to sealed sampler.');
