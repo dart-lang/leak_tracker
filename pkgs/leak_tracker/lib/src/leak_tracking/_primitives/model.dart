@@ -361,13 +361,13 @@ class ValueSampler {
   })  : samples = 1,
         _deltaSum = 0,
         deltaMax = 0,
-        _absSum = initialValue,
+        _absSum = initialValue.toDouble(),
         absMax = initialValue;
 
   final int initialValue;
 
-  int _deltaSum;
-  int _absSum;
+  double _deltaSum;
+  double _absSum;
 
   int deltaMax;
   int absMax;
