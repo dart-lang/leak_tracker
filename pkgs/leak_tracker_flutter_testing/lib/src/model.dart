@@ -76,7 +76,7 @@ class LeakTrackingTestConfig {
   ///
   /// This configuration will collect stack traces on start and disposal,
   /// and retaining path for notGCed objects.
-  LeakTrackingTestConfig.debugnotDisposed({
+  LeakTrackingTestConfig.debugNotDisposed({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnStart: true,
     ),

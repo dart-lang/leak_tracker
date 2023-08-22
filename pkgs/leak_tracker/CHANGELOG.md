@@ -1,3 +1,7 @@
+# 9.0.6
+
+* Fix misspelling.
+
 # 9.0.5
 
 * Fix issue of using wrong settings for a phase, so that the tracker uses settings
