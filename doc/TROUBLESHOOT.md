@@ -96,12 +96,12 @@ or, if it is a test, by clicking `Debug` near the test name in IDE.
 [ChangeNotifier] is disposable and is tracked by leak_tracker.
 
 But, as it is mixin, it does not have its own constructor. So, it
-communicated object creation in first `addListener`. That result
+communicates object creation in first `addListener`, that results
 in creation stack trace pointing to `addListener`, not to constructor.
 
 To make debugging easier, invoke [ChangeNotifier.mayBeDispatchObjectCreation]
-in constructorof the leaking class that uses ChangeNotifier. It will halp
-to identify the owner of the leaking instance.
+in constructor of the class. It will help
+to identify the owner in case of leaks.
 
 ### 2. Static or global object causes notGCed leaks
 
