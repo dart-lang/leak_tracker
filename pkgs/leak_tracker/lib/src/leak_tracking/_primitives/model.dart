@@ -346,26 +346,34 @@ class MemoryBaseline {
 class ValueSampler {
   ValueSampler({
     required this.initialValue,
-    required this.deltaAvg,
-    required this.deltaMax,
     required this.samples,
-    required this.absAvg,
+    required deltaAvg,
+    required this.deltaMax,
+    required absAvg,
     required this.absMax,
-  }) : _sealed = true;
+  })  : _sealed = true,
+        _absSum = absAvg * samples,
+        _deltaSum = deltaAvg * samples;
 
   ValueSampler.start({
     required this.initialValue,
-  })  : deltaAvg = 0,
+  })  : samples = 1,
+        _deltaSum = 0,
         deltaMax = 0,
-        samples = 0,
-        absAvg = initialValue.toDouble(),
+        _absSum = initialValue,
         absMax = initialValue;
 
   final int initialValue;
-  double deltaAvg;
+
+  int _deltaSum;
+  int _absSum;
+
   int deltaMax;
-  double absAvg;
   int absMax;
+
+  double get deltaAvg => _deltaSum / samples;
+  double get absAvg => _absSum / samples;
+
   int samples;
   bool _sealed = false;
 
@@ -374,15 +382,12 @@ class ValueSampler {
       throw StateError('Cannot add value to sealed sampler.');
     }
     absMax = max(absMax, value);
-
-    absAvg = (absAvg * (samples + 1) + value) / (samples + 2);
-
     final delta = value - initialValue;
     deltaMax = max(deltaMax, delta);
-    if (samples == 0) {
-      deltaAvg = delta.toDouble();
-    }
-    deltaAvg = (deltaAvg * samples + delta) / (samples + 1);
+
+    _deltaSum += delta;
+    _absSum += value;
+
     samples++;
   }
 
