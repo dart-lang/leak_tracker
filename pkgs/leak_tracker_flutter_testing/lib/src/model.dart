@@ -39,6 +39,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
   /// Creates a new instance for debugging leaks.
@@ -55,6 +57,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
   /// Creates a new instance for debugging notGCed leaks.
@@ -70,6 +74,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
   /// Creates a new instance for debugging notDisposed leaks.
@@ -84,6 +90,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
   /// Creates a new instance to collect retaining path.
@@ -98,6 +106,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
   /// Classes that are allowed to be not garbage collected after disposal.
@@ -127,4 +137,13 @@ class LeakTrackingTestConfig {
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  /// Configuration for memory baselining.
+  ///
+  /// Tests with deeply equal values of [MemoryBaselining],
+  /// if ran sequentially, will be baselined together.
+  final MemoryBaselining? baselining;
+
+  /// If true, leak tracking will not happen.
+  final bool isLeakTrackingPaused;
 }

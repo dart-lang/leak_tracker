@@ -468,7 +468,7 @@ void main() {
           .where((l) => l.code == identityHashCode(object))
           .onlyOrNull;
 
-      if (phase.isPaused || phase.allowAllNotDisposed) {
+      if (phase.isLeakTrackingPaused || phase.allowAllNotDisposed) {
         expect(leak, isNull);
         return;
       }
@@ -492,7 +492,7 @@ void main() {
           .where((l) => l.code == identityHashCode(object))
           .onlyOrNull;
 
-      if (phase.isPaused || phase.allowAllNotGCed) {
+      if (phase.isLeakTrackingPaused || phase.allowAllNotGCed) {
         expect(leak, isNull);
         return;
       }
@@ -559,7 +559,7 @@ void main() {
             final expectedNotGCed = objectsToPhases.keys
                 .where(
                   (o) =>
-                      !objectsToPhases[o]!.isPaused &&
+                      !objectsToPhases[o]!.isLeakTrackingPaused &&
                       !objectsToPhases[o]!.allowAllNotGCed &&
                       !gced &&
                       disposed,
@@ -568,7 +568,7 @@ void main() {
             final expectedNotDisposed = objectsToPhases.keys
                 .where(
                   (o) =>
-                      !objectsToPhases[o]!.isPaused &&
+                      !objectsToPhases[o]!.isLeakTrackingPaused &&
                       !objectsToPhases[o]!.allowAllNotDisposed &&
                       !disposed &&
                       gced,
