@@ -38,16 +38,17 @@ void main() {
       (WidgetTester tester) async {
     final instance = MyClass();
 
-    late Connection connection;
-    await tester.runAsync(() async => connection = await connect());
+    await tester.runAsync(() async {
+      final connection = await connect();
 
-    final path = await obtainRetainingPath(
-      connection,
-      instance.runtimeType,
-      identityHashCode(instance),
-    );
+      final path = await obtainRetainingPath(
+        connection,
+        instance.runtimeType,
+        identityHashCode(instance),
+      );
 
-    expect(path!.elements, isNotEmpty);
+      expect(path!.elements, isNotEmpty);
+    });
   });
 
   test('Path for class with generic arg is found.', () async {
