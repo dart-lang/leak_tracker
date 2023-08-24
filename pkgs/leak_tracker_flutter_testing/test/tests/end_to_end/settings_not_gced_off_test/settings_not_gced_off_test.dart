@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
-import 'package:leak_tracker_flutter_testing/src/leak_tracking_flutter_testing.dart';
+import 'package:leak_tracker_flutter_testing/src/test_widgets.dart';
 
 import '../../../test_infra/flutter_classes.dart';
 
