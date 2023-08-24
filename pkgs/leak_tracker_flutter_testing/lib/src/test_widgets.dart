@@ -116,6 +116,8 @@ void testWidgetsWithLeakTracking(
     notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
     allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
     allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
+    baselining: leakTrackingTestConfig.baselining,
+    isLeakTrackingPaused: leakTrackingTestConfig.isLeakTrackingPaused,
   );
 
   Future<void> wrappedCallBack(WidgetTester tester) async {

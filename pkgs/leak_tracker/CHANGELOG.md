@@ -1,6 +1,8 @@
 # 9.0.6
 
-* Allow time to connect to vm_service and get connection Uri before throwing error.
+* Improve error reporting for connection to vm service.
+* Fix misspelling.
+* Enable memory baselining.
 
 # 9.0.5
 

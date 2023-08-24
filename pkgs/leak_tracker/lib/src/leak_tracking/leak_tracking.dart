@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
+import '_baseliner.dart';
 import '_leak_tracker.dart';
 import '_primitives/_dispatcher.dart' as dispatcher;
 import '_primitives/model.dart';
@@ -15,6 +16,8 @@ final _log = Logger('leak_tracking.dart');
 
 /// Provides leak tracking functionality.
 abstract class LeakTracking {
+  static Baseliner? _baseliner;
+
   static LeakTracker? _leakTracker;
 
   /// Leak provider, used for integration with DevTools.
@@ -34,7 +37,9 @@ abstract class LeakTracking {
   /// Objects will be assigned to the phase at the moment of
   /// tracking start. Name of the phase will be mentioned in the leak report.
   static PhaseSettings get phase => _phase.value;
-  static set phase(value) {
+  static set phase(PhaseSettings value) {
+    if (_phase.value == value) return;
+    _baseliner = Baseliner.finishOldAndStartNew(_baseliner, value.baselining);
     _phase.value = value;
   }
 
@@ -88,6 +93,7 @@ abstract class LeakTracking {
     assert(() {
       _leakTracker?.dispose();
       _leakTracker = null;
+      Baseliner.finishOldAndStartNew(_baseliner, null);
       _log.info('stopped leak tracking');
       return true;
     }());
@@ -119,6 +125,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
+      _baseliner?.takeSample();
       _leakTracker?.objectTracker.startTracking(
         object,
         context: context,
@@ -139,6 +146,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
+      _baseliner?.takeSample();
       _leakTracker?.objectTracker.dispatchDisposal(object, context: context);
       return true;
     }());
@@ -152,6 +160,7 @@ abstract class LeakTracking {
     Map<String, dynamic>? context,
   }) {
     assert(() {
+      _baseliner?.takeSample();
       _leakTracker?.objectTracker.addContext(object, context: context);
       return true;
     }());
