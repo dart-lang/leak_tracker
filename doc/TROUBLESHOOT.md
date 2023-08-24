@@ -89,9 +89,21 @@ you need to run it with flag `--debug` or `--profile`
 ([not available](https://github.com/flutter/flutter/issues/127331) for Flutter tests),
 or, if it is a test, by clicking `Debug` near the test name in IDE.
 
-## Complicated cases
+## More complicated cases
 
-### 1. Static or global object causes notGCed leaks
+### 1. It is not clear who owns ChangeNotifier
+
+[ChangeNotifier] is disposable and is tracked by leak_tracker.
+
+But, as it is mixin, it does not have its own constructor. So, it
+communicates object creation in first `addListener`, that results
+in creation stack trace pointing to `addListener`, not to constructor.
+
+To make debugging easier, invoke [ChangeNotifier.maybeDispatchObjectCreation]
+in constructor of the class. It will help
+to identify the owner in case of leaks.
+
+### 2. Static or global object causes notGCed leaks
 
 If you see notGCed leaks, where the retaining path starts with global or static variable,
 this means that some objects were disposed, but references to them were never released.
