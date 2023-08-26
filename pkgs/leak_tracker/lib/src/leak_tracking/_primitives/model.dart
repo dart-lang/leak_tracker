@@ -439,3 +439,12 @@ class ValueSampler {
         _sealed,
       );
 }
+
+typedef ObjectLyfecycleCallback = void Function();
+
+class ObjectLyfecycle {
+  ObjectLyfecycle(this.createAndDispose, this.objectType);
+
+  final ObjectLyfecycleCallback createAndDispose;
+  final Type objectType;
+}

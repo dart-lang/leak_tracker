@@ -53,7 +53,7 @@ void main() {
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.name, test4TrackingOnWithStackTrace);
-      expect(LeakTracking.phase.isPaused, false);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
     leakTrackingTestConfig: const LeakTrackingTestConfig(
