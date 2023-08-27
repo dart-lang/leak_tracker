@@ -6,6 +6,7 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:vm_service/vm_service.dart';
+import 'dart:developer';
 
 import '_connection.dart';
 
@@ -19,7 +20,7 @@ Future<RetainingPath?> retainingPathByCode(
   int code,
 ) async {
   final fp = _ObjectFingerprint(type, code);
-  final theObject = await _objectInIsolate(connection, fp);
+  final theObject = await _objectInIsolateByFingerprint(connection, fp);
   if (theObject == null) return null;
 
   try {
@@ -41,15 +42,18 @@ Future<RetainingPath?> retainingPathByCode(
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
 Future<RetainingPath?> retainingPath(
   Connection connection,
-  WeakReference ref,
+  Object? object,
 ) async {
-  final theObject = await _objectInIsolate(connection, fp);
-  if (theObject == null) return null;
+  if (object == null) return null;
+
+  final objRef = Service.getObjectId(object);
+
+  if (objRef == null) return null;
 
   try {
     final result = await connection.service.getRetainingPath(
-      theObject.isolateRef.id!,
-      theObject.itemId,
+      objRef.isolateRef.id!,
+      objRef.itemId,
       100000,
     );
 
@@ -78,11 +82,13 @@ class _ObjectFingerprint {
 /// This method will NOT find objects, that have [identityHashCode] equal to 0
 /// in result of `getInstances`.
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
-Future<_ItemInIsolate?> _objectInIsolate(
+Future<_ItemInIsolate?> _objectInIsolateByFingerprint(
   Connection connection,
   _ObjectFingerprint object,
 ) async {
   final classes = await _findClasses(connection, object.typeNameWithoutArgs);
+
+  Service.getObjectId(object)
 
   for (final theClass in classes) {
     // TODO(polina-c): remove when issue is fixed
