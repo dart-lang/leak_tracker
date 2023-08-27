@@ -11,7 +11,7 @@ This is a framework for detecting memory issues in Dart and Flutter applications
 | --- | --- | --- |
 | [leak_tracker](pkgs/leak_tracker/) | A framework for detecting memory issues for Dart and Flutter applications. | [![pub package](https://img.shields.io/pub/v/leak_tracker.svg)](https://pub.dev/packages/leak_tracker) |
 | [leak_tracker_flutter_testing](pkgs/leak_tracker_flutter_testing/) | Leak tracking helpers intended for usage in Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_flutter_testing.svg)](https://pub.dev/packages/leak_tracker_flutter_testing) |
-| [leak_tracker_testing](pkgs/leak_tracker_testing/) | Leak tracking helpers intended for usage in tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
+| [leak_tracker_testing](pkgs/leak_tracker_testing/) | Leak tracking helpers intended for usage in Dart and Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
 
 ## Roadmap
 
