@@ -39,12 +39,14 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
-  /// Creates a new instance of [LeakTrackingTestConfig] for debugging leaks.
+  /// Creates a new instance for debugging leaks.
   ///
   /// This configuration will collect stack traces on start and disposal,
-  /// and retaining path for notGCed objects.
+  /// and the objects' retaining paths for notGCed objects.
   LeakTrackingTestConfig.debug({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectStackTraceOnStart: true,
@@ -55,9 +57,44 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
-  /// Creates a new instance of [LeakTrackingTestConfig] to collect retaining path.
+  /// Creates a new instance for debugging notGCed leaks.
+  ///
+  /// This configuration will collect stack traces on disposal,
+  /// and the objects' retaining paths for notGCed objects.
+  LeakTrackingTestConfig.debugNotGCed({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
+      collectStackTraceOnDisposal: true,
+      collectRetainingPathForNotGCed: true,
+    ),
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
+  });
+
+  /// Creates a new instance for debugging notDisposed leaks.
+  ///
+  /// This configuration will collect stack traces on start and disposal,
+  /// and retaining path for notGCed objects.
+  LeakTrackingTestConfig.debugNotDisposed({
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(
+      collectStackTraceOnStart: true,
+    ),
+    this.notGCedAllowList = const <String, int>{},
+    this.notDisposedAllowList = const <String, int>{},
+    this.allowAllNotDisposed = false,
+    this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
+  });
+
+  /// Creates a new instance to collect retaining path.
   ///
   /// This configuration will not collect stack traces,
   /// and will collect retaining path for notGCed objects.
@@ -69,6 +106,8 @@ class LeakTrackingTestConfig {
     this.notDisposedAllowList = const <String, int>{},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
+    this.baselining,
+    this.isLeakTrackingPaused = false,
   });
 
   /// Classes that are allowed to be not garbage collected after disposal.
@@ -98,4 +137,13 @@ class LeakTrackingTestConfig {
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  /// Configuration for memory baselining.
+  ///
+  /// Tests with deeply equal values of [MemoryBaselining],
+  /// if ran sequentially, will be baselined together.
+  final MemoryBaselining? baselining;
+
+  /// If true, leak tracking will not happen.
+  final bool isLeakTrackingPaused;
 }

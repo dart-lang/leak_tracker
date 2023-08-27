@@ -2,34 +2,22 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/// Compares two maps for element-by-element equality.
-///
-/// Copied from
-/// https://github.com/flutter/flutter/blob/37b72342b0ce86fbfc238a9d43e524608b89af3a/packages/flutter/lib/src/foundation/collections.dart#L22
-bool mapEquals<T, U>(Map<T, U>? a, Map<T, U>? b) {
-  if (a == null) {
-    return b == null;
-  }
-  if (b == null || a.length != b.length) {
-    return false;
-  }
-  if (identical(a, b)) {
-    return true;
-  }
-  for (final T key in a.keys) {
-    if (!b.containsKey(key) || b[key] != a[key]) {
-      return false;
-    }
-  }
-  return true;
-}
-
 /// This function is better than `as`, because `as` does not provide callstack on failure.
 T cast<T>(value) {
   if (value is T) return value;
   throw ArgumentError(
     '$value is of type ${value.runtimeType} that is not subtype of $T',
   );
+}
+
+extension IterableExtensions<T> on Iterable<T> {
+  /// Returns the item or null, assuming that the length of the itrable os 0 or 1.
+  // The name is consistent woth other methods names on iterable like
+  // `firstOrNull, lastOrNull and singleOrNull`.
+  T? get onlyOrNull {
+    if (length > 1) throw StateError('Length should not be more than one.');
+    return firstOrNull;
+  }
 }
 
 void printToConsole(Object message) {

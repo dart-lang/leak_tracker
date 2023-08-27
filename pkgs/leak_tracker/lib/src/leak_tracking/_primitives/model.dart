@@ -2,6 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
+import 'package:collection/collection.dart';
+
 import '../../shared/shared_model.dart';
 
 /// Handler to collect leak summary.
@@ -79,6 +83,38 @@ class LeakDiagnosticConfig {
   bool shouldCollectStackTraceOnDisposal(String classname) =>
       collectStackTraceOnDisposal ||
       classesToCollectStackTraceOnDisposal.contains(classname);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is LeakDiagnosticConfig &&
+        other.collectStackTraceOnStart == collectStackTraceOnStart &&
+        other.collectStackTraceOnDisposal == collectStackTraceOnDisposal &&
+        other.collectRetainingPathForNotGCed ==
+            collectRetainingPathForNotGCed &&
+        const DeepCollectionEquality.unordered().equals(
+          other.classesToCollectStackTraceOnStart,
+          classesToCollectStackTraceOnStart,
+        ) &&
+        const DeepCollectionEquality.unordered().equals(
+          other.classesToCollectStackTraceOnDisposal,
+          classesToCollectStackTraceOnDisposal,
+        );
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        collectStackTraceOnStart,
+        collectStackTraceOnDisposal,
+        collectRetainingPathForNotGCed,
+        Object.hashAll(classesToCollectStackTraceOnStart),
+        Object.hashAll(classesToCollectStackTraceOnDisposal),
+      );
 }
 
 /// The default value for number of full GC cycles, enough for a non reachable object to be GCed.
@@ -165,18 +201,19 @@ class PhaseSettings {
     this.notDisposedAllowList = const {},
     this.allowAllNotDisposed = false,
     this.allowAllNotGCed = false,
-    this.isPaused = false,
+    this.isLeakTrackingPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    this.baselining,
   });
 
-  const PhaseSettings.paused() : this(isPaused: true);
+  const PhaseSettings.paused() : this(isLeakTrackingPaused: true);
 
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false during the object lifetime.
-  final bool isPaused;
+  final bool isLeakTrackingPaused;
 
   /// Phase of the application execution.
   ///
@@ -209,4 +246,191 @@ class PhaseSettings {
 
   /// What diagnostic information to collect for leaks.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  final MemoryBaselining? baselining;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is PhaseSettings &&
+        other.isLeakTrackingPaused == isLeakTrackingPaused &&
+        other.name == name &&
+        const DeepCollectionEquality.unordered()
+            .equals(other.notDisposedAllowList, notDisposedAllowList) &&
+        const DeepCollectionEquality.unordered()
+            .equals(other.notGCedAllowList, notGCedAllowList) &&
+        other.allowAllNotDisposed == allowAllNotDisposed &&
+        other.allowAllNotGCed == allowAllNotGCed &&
+        other.leakDiagnosticConfig == leakDiagnosticConfig &&
+        other.baselining == baselining;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        isLeakTrackingPaused,
+        name,
+        _mapHash(notDisposedAllowList),
+        _mapHash(notGCedAllowList),
+        allowAllNotDisposed,
+        allowAllNotGCed,
+        baselining,
+      );
+}
+
+int _mapHash(Map<String, int?> map) =>
+    Object.hash(Object.hashAll(map.keys), Object.hashAll(map.values));
+
+/// Settings for measuring memory footprint.
+class MemoryBaselining {
+  const MemoryBaselining({
+    this.mode = BaseliningMode.measure,
+    this.baseline,
+  }) : assert(!(mode == BaseliningMode.regression && baseline == null));
+
+  final BaseliningMode mode;
+
+  final MemoryBaseline? baseline;
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is MemoryBaselining &&
+        other.mode == mode &&
+        other.baseline == baseline;
+  }
+
+  @override
+  int get hashCode => Object.hash(mode, baseline);
+}
+
+enum BaseliningMode {
+  /// Measure memory footprint and output to console when phase is finished.
+  measure,
+
+  /// Measure memory footprint, and fail if it is worse than baseline.
+  regression,
+}
+
+const defaultAllowedRssDeviation = 1.3;
+
+class MemoryBaseline {
+  const MemoryBaseline({
+    // TODO(polina-c): add SDK version after fixing https://github.com/flutter/flutter/issues/61814
+    this.allowedRssIncrease = defaultAllowedRssDeviation,
+    required this.rss,
+  });
+
+  final ValueSampler rss;
+  final double allowedRssIncrease;
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is MemoryBaseline &&
+        other.allowedRssIncrease == allowedRssIncrease &&
+        other.rss == rss;
+  }
+
+  @override
+  int get hashCode => Object.hash(allowedRssIncrease, rss);
+}
+
+class ValueSampler {
+  ValueSampler({
+    required this.initialValue,
+    required this.samples,
+    required deltaAvg,
+    required this.deltaMax,
+    required absAvg,
+    required this.absMax,
+  })  : _sealed = true,
+        _absSum = absAvg * samples,
+        _deltaSum = deltaAvg * samples;
+
+  ValueSampler.start({
+    required this.initialValue,
+  })  : samples = 1,
+        _deltaSum = 0,
+        deltaMax = 0,
+        _absSum = initialValue.toDouble(),
+        absMax = initialValue;
+
+  final int initialValue;
+
+  double _deltaSum;
+  double _absSum;
+
+  int deltaMax;
+  int absMax;
+
+  double get deltaAvg => _deltaSum / samples;
+  double get absAvg => _absSum / samples;
+
+  int samples;
+  bool _sealed = false;
+
+  /// Adds a sample.
+  void add(int value) {
+    if (_sealed) {
+      throw StateError('Cannot add value to sealed sampler.');
+    }
+    absMax = max(absMax, value);
+    final delta = value - initialValue;
+    deltaMax = max(deltaMax, delta);
+
+    _deltaSum += delta;
+    _absSum += value;
+
+    samples++;
+  }
+
+  void seal() {
+    _sealed = true;
+  }
+
+  /// Returns dart code that constructs th object.
+  String asDartCode() {
+    return 'ValueSampler('
+        'initialValue: $initialValue, '
+        'deltaAvg: $deltaAvg, '
+        'deltaMax: $deltaMax, '
+        'absAvg: $absAvg, '
+        'absMax: $absMax, '
+        'samples: $samples,)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is ValueSampler &&
+        other.initialValue == initialValue &&
+        other.deltaAvg == deltaAvg &&
+        other.deltaMax == deltaMax &&
+        other.absAvg == absAvg &&
+        other.absMax == absMax &&
+        other.samples == samples &&
+        other._sealed == _sealed;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        initialValue,
+        deltaAvg,
+        deltaMax,
+        absAvg,
+        absMax,
+        samples,
+        _sealed,
+      );
 }
