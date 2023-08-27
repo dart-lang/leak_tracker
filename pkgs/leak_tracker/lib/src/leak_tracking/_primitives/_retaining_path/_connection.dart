@@ -25,17 +25,10 @@ Future<Uri> _serviceUri() async {
 
   uri = (await Service.controlWebServer(enable: true)).serverWebSocketUri;
 
-  const timeout = Duration(seconds: 5);
-  final stopwatch = Stopwatch()..start();
-
-  while (uri == null) {
-    if (stopwatch.elapsed > timeout) {
-      throw StateError(
-        'Could not start VM service. If you are running `flutter test`, pass the flag `--enable-vmservice`',
-      );
-    }
-    await Future.delayed(const Duration(milliseconds: 1));
-    uri = (await Service.getInfo()).serverWebSocketUri;
+  if (uri == null) {
+    throw StateError(
+      'Could not start VM service. If you are running `flutter test`, pass the flag `--enable-vmservice`',
+    );
   }
 
   return uri;
