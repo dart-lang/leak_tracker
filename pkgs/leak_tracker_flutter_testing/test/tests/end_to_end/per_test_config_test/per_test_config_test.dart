@@ -49,7 +49,7 @@ void main() {
   );
 
   testWidgetsWithLeakTracking(
-    test4TrackingOnWithStackTrace,
+    test5TrackingOnWithStackTrace,
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.name, test4TrackingOnWithStackTrace);
@@ -61,5 +61,16 @@ void main() {
         collectStackTraceOnStart: true,
       ),
     ),
+  );
+
+  testWidgetsWithLeakTracking(
+    test5TrackingOnWithStackTrace,
+    (widgetTester) async {
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.name, test4TrackingOnWithStackTrace);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
+      await widgetTester.pumpWidget(StatelessLeakingWidget());
+    },
+    leakTrackingTestConfig: const LeakTrackingTestConfig.retainingPath(),
   );
 }

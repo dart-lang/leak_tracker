@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:vm_service/vm_service.dart';
 
-import '../model.dart';
 import '_connection.dart';
 
 /// Obtains retainig path for an object.

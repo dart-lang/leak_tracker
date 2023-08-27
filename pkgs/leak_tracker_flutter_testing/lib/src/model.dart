@@ -98,7 +98,7 @@ class LeakTrackingTestConfig {
   ///
   /// This configuration will not collect stack traces,
   /// and will collect retaining path for notGCed objects.
-  LeakTrackingTestConfig.retainingPath({
+  const LeakTrackingTestConfig.retainingPath({
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(
       collectRetainingPathForNotGCed: true,
     ),
