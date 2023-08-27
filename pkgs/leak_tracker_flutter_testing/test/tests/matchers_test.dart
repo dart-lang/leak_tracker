@@ -10,7 +10,10 @@ import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 class _TrackedClass {
   _TrackedClass() {
     MemoryAllocations.instance.dispatchObjectCreated(
-        library: 'library', className: '_TrackedClass', object: this);
+      library: 'library',
+      className: '_TrackedClass',
+      object: this,
+    );
   }
 
   void dispose() {

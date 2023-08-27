@@ -17,11 +17,6 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
-typedef AsyncRunnerCallback = Future<T?> Function<T>(
-  Future<T> Function() callback, {
-  Duration additionalTime,
-});
-
 /// Switches for features of leak tracker.
 ///
 /// Useable to temporary disable features in case of
