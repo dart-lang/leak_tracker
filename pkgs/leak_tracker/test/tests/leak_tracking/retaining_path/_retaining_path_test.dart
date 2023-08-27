@@ -38,7 +38,7 @@ void main() {
     final instance = MyClass();
     final connection = await connect();
 
-    final path = await obtainRetainingPath(
+    final path = await retainingPathByCode(
       connection,
       instance.runtimeType,
       identityHashCode(instance),
@@ -51,7 +51,7 @@ void main() {
     final instance = MyArgClass<String>();
     final connection = await connect();
 
-    final path = await obtainRetainingPath(
+    final path = await retainingPathByCode(
       connection,
       instance.runtimeType,
       identityHashCode(instance),
@@ -65,8 +65,8 @@ void main() {
     final connection = await connect();
 
     final obtainers = [
-      obtainRetainingPath(connection, MyClass, identityHashCode(instance1)),
-      obtainRetainingPath(connection, MyClass, identityHashCode(instance2)),
+      retainingPathByCode(connection, MyClass, identityHashCode(instance1)),
+      retainingPathByCode(connection, MyClass, identityHashCode(instance2)),
     ];
 
     await Future.wait(obtainers);

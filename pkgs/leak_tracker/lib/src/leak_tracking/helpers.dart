@@ -64,7 +64,7 @@ Future<void> forceGC({
 Future<String?> formattedRetainingPath(WeakReference ref) async {
   if (ref.target == null) return null;
   final connection = await connect();
-  final path = await obtainRetainingPath(
+  final path = await retainingPathByCode(
     connection,
     ref.target.runtimeType,
     identityHashCode(ref.target),

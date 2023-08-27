@@ -9,16 +9,40 @@ import 'package:vm_service/vm_service.dart';
 
 import '_connection.dart';
 
-/// Obtains retainig path for an object.
+/// Returns retainig path for an object, by identity hash code.
 ///
 /// Does not work for objects that have [identityHashCode] equal to 0.
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
-Future<RetainingPath?> obtainRetainingPath(
+Future<RetainingPath?> retainingPathByCode(
   Connection connection,
   Type type,
   int code,
 ) async {
   final fp = _ObjectFingerprint(type, code);
+  final theObject = await _objectInIsolate(connection, fp);
+  if (theObject == null) return null;
+
+  try {
+    final result = await connection.service.getRetainingPath(
+      theObject.isolateRef.id!,
+      theObject.itemId,
+      100000,
+    );
+
+    return result;
+  } on SentinelException {
+    return null;
+  }
+}
+
+/// Returns retainig path for an object, by identity hash code.
+///
+/// Does not work for objects that have [identityHashCode] equal to 0.
+/// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
+Future<RetainingPath?> retainingPath(
+  Connection connection,
+  WeakReference ref,
+) async {
   final theObject = await _objectInIsolate(connection, fp);
   if (theObject == null) return null;
 
