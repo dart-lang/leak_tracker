@@ -50,7 +50,7 @@ class _DispatchesMemoryEvents extends Matcher {
         'createAndDispose is expected to dispatch two events to $MemoryAllocations.instance,'
         ' for the type $item,'
         ' first $ObjectCreated and then $ObjectDisposed.\n'
-        'Actually it dispatched ${events.length} events:\n$events';
+        'Instead, it dispatched ${events.length} events:\n$events';
 
     return false;
   }
