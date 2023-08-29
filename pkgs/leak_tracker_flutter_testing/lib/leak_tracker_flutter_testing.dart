@@ -2,5 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-export 'src/leak_tracking_flutter_testing.dart';
+export 'src/matchers.dart';
 export 'src/model.dart';
+export 'src/test_widgets.dart';

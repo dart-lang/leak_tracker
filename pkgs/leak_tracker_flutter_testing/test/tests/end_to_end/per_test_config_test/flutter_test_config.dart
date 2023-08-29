@@ -40,6 +40,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
         expect(e.message, isNot(contains(test2TrackingOffLeaks)));
         expect(e.message, contains('test: $test3TrackingOnLeaks'));
         expect(e.message, contains('test: $test4TrackingOnWithStackTrace'));
+        expect(e.message, contains('test: $test5TrackingOnWithPath'));
       }
 
       _verifyLeaks(

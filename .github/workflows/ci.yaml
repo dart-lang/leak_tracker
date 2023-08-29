@@ -36,7 +36,7 @@ jobs:
         working-directory: pkgs/leak_tracker
 
       - name: flutter test
-        run: flutter test
+        run: flutter test --enable-vmservice
         working-directory: pkgs/leak_tracker_flutter_testing
 
       - name: integration test

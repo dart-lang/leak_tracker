@@ -1,5 +1,6 @@
 # 9.0.6
 
+* Improve error reporting for connection to vm service.
 * Fix misspelling.
 * Enable memory baselining.
 

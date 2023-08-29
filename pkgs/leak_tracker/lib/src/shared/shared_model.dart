@@ -148,6 +148,8 @@ class LeakReport {
       );
 
   /// Information about the leak that can help in troubleshooting.
+  ///
+  /// Use [ContextKeys] to access predefined keys.
   final Map<String, dynamic>? context;
 
   /// [identityHashCode] of the object.

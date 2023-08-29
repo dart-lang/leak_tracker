@@ -4,10 +4,10 @@
 
 import 'dart:async';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
-import 'package:test/test.dart';
 
 class MyClass {
   MyClass();
@@ -34,17 +34,21 @@ void main() {
     await subscription.cancel();
   });
 
-  test('Path for $MyClass instance is found.', () async {
+  testWidgets('Path for $MyClass instance is found.',
+      (WidgetTester tester) async {
     final instance = MyClass();
-    final connection = await connect();
 
-    final path = await obtainRetainingPath(
-      connection,
-      instance.runtimeType,
-      identityHashCode(instance),
-    );
+    await tester.runAsync(() async {
+      final connection = await connect();
 
-    expect(path!.elements, isNotEmpty);
+      final path = await obtainRetainingPath(
+        connection,
+        instance.runtimeType,
+        identityHashCode(instance),
+      );
+
+      expect(path!.elements, isNotEmpty);
+    });
   });
 
   test('Path for class with generic arg is found.', () async {
