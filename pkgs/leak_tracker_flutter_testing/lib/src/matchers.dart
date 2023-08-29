@@ -7,7 +7,11 @@ import 'package:flutter_test/flutter_test.dart';
 
 /// Checks if the object dispatches events to `MemoryAllocations.instance`.
 ///
-/// [createAndDispose] should create and dispose the object.
+/// The memory events are used by tools like leak_tracker for diagnostics.
+///
+/// The matcher checks that the object object is instrumented properly,
+/// dispatches two events to `MemoryAllocations.instance`,
+/// first `ObjectCreated` and then `ObjectDisposed`.
 Matcher dispatchesMemoryEvents(Function() createAndDispose) =>
     _DispatchesMemoryEvents(createAndDispose);
 
