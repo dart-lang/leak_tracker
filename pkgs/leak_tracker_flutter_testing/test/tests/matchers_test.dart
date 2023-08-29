@@ -23,17 +23,14 @@ class _TrackedClass {
 void main() {
   test('dispatchesMemoryEvents success', () {
     expect(
-      _TrackedClass,
-      dispatchesMemoryEvents(() => _TrackedClass().dispose()),
+      () => _TrackedClass().dispose(),
+      dispatchesMemoryEvents(_TrackedClass),
     );
   });
 
   test('dispatchesMemoryEvents failure', () {
     expect(
-      () => expect(
-        _TrackedClass,
-        dispatchesMemoryEvents(() {}),
-      ),
+      () => expect(() {}, dispatchesMemoryEvents(_TrackedClass)),
       throwsA(isA<TestFailure>()),
     );
   });

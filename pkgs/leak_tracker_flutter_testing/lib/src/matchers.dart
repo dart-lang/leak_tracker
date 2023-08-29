@@ -12,32 +12,33 @@ import 'package:flutter_test/flutter_test.dart';
 /// The matcher checks that the object object is instrumented properly,
 /// dispatches two events to `MemoryAllocations.instance`,
 /// first `ObjectCreated` and then `ObjectDisposed`.
-Matcher dispatchesMemoryEvents(Function() createAndDispose) =>
-    _DispatchesMemoryEvents(createAndDispose);
+Matcher dispatchesMemoryEvents(Type type) {
+  return _DispatchesMemoryEvents(type);
+}
 
 class _DispatchesMemoryEvents extends Matcher {
-  const _DispatchesMemoryEvents(this.createAndDispose);
+  const _DispatchesMemoryEvents(this.type);
 
-  final Function() createAndDispose;
   static const _key = 'description';
+  final Type type;
 
   @override
   bool matches(Object? item, Map matchState) {
-    if (item is! Type) {
-      matchState[_key] = 'The matcher applies to $Type.';
+    if (item is! Function()) {
+      matchState[_key] = 'The matcher applies to `Function()`.';
       return false;
     }
 
     final events = <ObjectEvent>[];
 
     void listener(ObjectEvent event) {
-      if (event.object.runtimeType == item) {
+      if (event.object.runtimeType == type) {
         events.add(event);
       }
     }
 
     MemoryAllocations.instance.addListener(listener);
-    createAndDispose();
+    item();
     MemoryAllocations.instance.removeListener(listener);
 
     if (events.length == 2 &&
