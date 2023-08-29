@@ -7,30 +7,34 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 /// Checks if the object dispatches events to `MemoryAllocations.instance`.
-const Matcher dispatchesMemoryEvents = _DispatchesMemoryEvents();
+///
+/// [createAndDispose] should create and dispose the object.
+Matcher dispatchesMemoryEvents(Function() createAndDispose) =>
+    _DispatchesMemoryEvents(createAndDispose);
 
 class _DispatchesMemoryEvents extends Matcher {
-  const _DispatchesMemoryEvents();
+  const _DispatchesMemoryEvents(this.createAndDispose);
 
+  final Function() createAndDispose;
   static const _key = 'description';
 
   @override
   bool matches(Object? item, Map matchState) {
-    if (item is! ObjectLyfecycle) {
-      matchState[_key] = 'The matcher applies to $ObjectLyfecycle.';
+    if (item is! Type) {
+      matchState[_key] = 'The matcher applies to $Type.';
       return false;
     }
 
     final events = <ObjectEvent>[];
 
     void listener(ObjectEvent event) {
-      if (event.object.runtimeType == item.objectType) {
+      if (event.object.runtimeType == item) {
         events.add(event);
       }
     }
 
     MemoryAllocations.instance.addListener(listener);
-    item.createAndDispose();
+    createAndDispose();
     MemoryAllocations.instance.removeListener(listener);
 
     if (events.length == 2 &&
@@ -41,7 +45,7 @@ class _DispatchesMemoryEvents extends Matcher {
 
     matchState[_key] =
         'createAndDispose is expected to dispatch two events to $MemoryAllocations.instance,'
-        ' for the type ${item.objectType},'
+        ' for the type $item,'
         ' first $ObjectCreated and then $ObjectDisposed.\n'
         'Actually it dispatched ${events.length} events:\n$events';
 

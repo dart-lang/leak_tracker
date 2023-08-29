@@ -38,7 +38,7 @@ Future<Uri> _serviceUri() async {
 ///
 /// If it is not found, tries to start it.
 Future<Connection> connect() async {
-  _log.info('Connecting to vm service protocol...');
+  _log.info('Connecting to VM service protocol...');
 
   final uri = await _serviceUri();
 

@@ -76,7 +76,7 @@ void main() {
     await Future.wait(obtainers);
 
     expect(
-      _logs.where((item) => item == 'Connecting to vm service protocol...'),
+      _logs.where((item) => item == 'Connecting to VM service protocol...'),
       hasLength(1),
     );
   });

@@ -24,16 +24,16 @@ class _TrackedClass {
 void main() {
   test('dispatchesMemoryEvents success', () {
     expect(
-      ObjectLyfecycle(() => _TrackedClass().dispose(), _TrackedClass),
-      dispatchesMemoryEvents,
+      _TrackedClass,
+      dispatchesMemoryEvents(() => _TrackedClass().dispose()),
     );
   });
 
   test('dispatchesMemoryEvents failure', () {
     expect(
       () => expect(
-        ObjectLyfecycle(() {}, _TrackedClass),
-        dispatchesMemoryEvents,
+        _TrackedClass,
+        dispatchesMemoryEvents(() {}),
       ),
       throwsA(isA<TestFailure>()),
     );
