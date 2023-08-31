@@ -19,6 +19,15 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
    release the references before the owner disposed the object.
 
+A test specific rule:
+1. If your test ctreates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
+
+```
+final FocusNode focusNode1 = FocusNode(debugLabel: 'IconButton 1');
+final FocusNode focusNode2 = FocusNode(debugLabel: 'IconButton 2');
+addTearDown(() {  focusNode1.dispose();  focusNode2.dispose();});
+```
+
 ## Known simple cases
 
 ### 1. The test holds a disposed object
