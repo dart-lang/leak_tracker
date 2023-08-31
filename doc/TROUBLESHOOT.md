@@ -20,7 +20,7 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
    release the references before the owner disposed the object.
 
 A test specific rule:
-1. If your test ctreates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
+1. If your test creates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
 
 ```
 final FocusNode focusNode1 = FocusNode(debugLabel: 'IconButton 1');
