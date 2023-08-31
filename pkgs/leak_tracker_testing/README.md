@@ -14,7 +14,7 @@ testing code is not used in production.
 
 To test for leaks with descriptive messages, use `isLeakFree` against a `Leaks` instance:
 
-```
+```dart
 final leaks = await LeakTracking.collectLeaks();
 expect(leaks, isLeakFree);
 ```

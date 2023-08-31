@@ -24,7 +24,7 @@ Then make your change, run the test again and see how the change affected memory
 
 Code example:
 
-```
+```dart
 for (var i in Iterable.generate(1000)) {
     testWidgetsWithLeakTracking(
         'baselining with multiple runs',

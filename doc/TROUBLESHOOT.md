@@ -22,7 +22,7 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 A test specific rule:
 1. If your test creates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
 
-```
+```dart
 final FocusNode focusNode1 = FocusNode(debugLabel: 'IconButton 1');
 final FocusNode focusNode2 = FocusNode(debugLabel: 'IconButton 2');
 addTearDown(() {  focusNode1.dispose();  focusNode2.dispose();});
@@ -61,10 +61,10 @@ impact performance and memory footprint.
 For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig`,
 specific for the debugged leak type, to the test:
 
-```
-  testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
-    ...
-  }, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
+```dart
+testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
+  ...
+}, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
 ```
 
 **Applications**
@@ -81,7 +81,7 @@ TODO: link DevTools documentation with explanation
 If you expect an object to be not referenced at some point,
 but not sure, you can validate it by temporaryly adding assertion.
 
-```
+```dart
 final ref = WeakReference(myObject);
 myObject = null;
 await forceGC();
@@ -130,7 +130,7 @@ There are ways to release the reference:
 
 1. If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
 
-```
+```dart
 void dispose() {
   disposedD.dispose();
 }
@@ -138,14 +138,14 @@ void dispose() {
 
 2. If the object is disposed earlier than owner's disposal, null the reference out:
 
-```
+```dart
 disposedD?.dispose();
 disposedD = null;
 ```
 
 3. If the object is held by non-owner, make the reference weak:
 
-```
+```dart
 class C {
   ...
   final WeakReference<MyClass> disposedD;
