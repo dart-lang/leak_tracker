@@ -21,17 +21,21 @@ class _TrackedClass {
 }
 
 void main() {
-  test('dispatchesMemoryEvents success', () {
-    expect(
-      () => _TrackedClass().dispose(),
-      dispatchesMemoryEvents(_TrackedClass),
+  test('dispatchesMemoryEvents success', () async {
+    await expectLater(
+      await memoryEvents(() async => _TrackedClass().dispose(), _TrackedClass),
+      areCreateAndDispose,
     );
   });
 
-  test('dispatchesMemoryEvents failure', () {
-    expect(
-      () => expect(() {}, dispatchesMemoryEvents(_TrackedClass)),
-      throwsA(isA<TestFailure>()),
-    );
+  test('dispatchesMemoryEvents failure', () async {
+    try {
+      await expectLater(
+        await memoryEvents(() async {}, _TrackedClass),
+        areCreateAndDispose,
+      );
+    } catch (e) {
+      expect(e, isA<TestFailure>());
+    }
   });
 }
