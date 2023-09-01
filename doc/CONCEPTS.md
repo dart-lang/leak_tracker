@@ -34,10 +34,10 @@ the following types of leaks:
 - **Fix**: To fix the leak, assign all reachable references
    of the object to null after disposal:
 
-   ```
+   ```dart
    myField.dispose();
    myField = null;
-        ```
+   ```
 
 ### Disposed and GCed late (GCed-late) <a id='gced-late'></a>
 

@@ -27,7 +27,7 @@ For general contributing information, see Dart-wide [CONTRIBUTING.md](https://gi
 
 To temporary enable logs, add this line to `main`:
 
-```
+```dart
 Logger.root.onRecord.listen((LogRecord record) => print(record.message));
 ```
 
@@ -35,6 +35,6 @@ Logger.root.onRecord.listen((LogRecord record) => print(record.message));
 
 To regenerate diagrams, run:
 
-```
+```shell
 dart run layerlens
 ```

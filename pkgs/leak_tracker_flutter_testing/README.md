@@ -14,7 +14,7 @@ package and should not reference Flutter Framework.
 
 To make your widget test fail in case of leaks, use `testWidgetsWithLeakTracking` instead of `testWidgets`:
 
-```
+```dart
 testWidgetsWithLeakTracking('not leaking', (widgetTester) async {
     ...
 });
