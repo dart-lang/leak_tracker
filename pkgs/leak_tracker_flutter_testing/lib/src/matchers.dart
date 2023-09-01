@@ -5,6 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+/// Invokes [callback] and collects events dispatched to [MemoryAllocations.instance] for [type].
 Future<List<ObjectEvent>> memoryEvents(
   Future<void> Function() callback,
   Type type,
@@ -24,13 +25,7 @@ Future<List<ObjectEvent>> memoryEvents(
   return events;
 }
 
-/// Checks if the object dispatches events to `MemoryAllocations.instance`.
-///
-/// The memory events are used by tools like leak_tracker for diagnostics.
-///
-/// The matcher checks that the object object is instrumented properly,
-/// dispatches two events to `MemoryAllocations.instance`,
-/// first `ObjectCreated` and then `ObjectDisposed`.
+/// Checks if Iterable<ObjectEvent> contains two events, first `ObjectCreated` and then `ObjectDisposed`.
 Matcher areCreateAndDispose = const _AreCreateAndDispose();
 
 class _AreCreateAndDispose extends Matcher {
