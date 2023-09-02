@@ -34,6 +34,15 @@ addTearDown(() {  focusNode1.dispose();  focusNode2.dispose();});
 
 TODO: add example and steps.
 
+### 2. The test creates OverlayEntry
+
+If test creates an OverlayEntry, it should both remove and dispose it:
+
+```dart
+final OverlayEntry overlayEntry = OverlayEntry(...);
+addTearDown(() => overlayEntry..remove()..dispose());
+```
+
 ## Get additional information
 
 To understand the root cause of a memory leak, you may want to gather additional information.
