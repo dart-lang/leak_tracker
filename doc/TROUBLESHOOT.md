@@ -36,7 +36,7 @@ TODO: add example and steps.
 
 ### 2. The test creates OverlayEntry
 
-If test creates an OverlayEntry, it should both remove and dispose it:
+If your code creates an OverlayEntry, it should both remove and dispose it:
 
 ```dart
 final OverlayEntry overlayEntry = OverlayEntry(...);
