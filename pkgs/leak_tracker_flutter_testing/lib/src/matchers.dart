@@ -2,12 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Invokes [callback] and collects events dispatched to [MemoryAllocations.instance] for [type].
 Future<List<ObjectEvent>> memoryEvents(
-  Future<void> Function() callback,
+  FutureOr<void> Function() callback,
   Type type,
 ) async {
   final events = <ObjectEvent>[];

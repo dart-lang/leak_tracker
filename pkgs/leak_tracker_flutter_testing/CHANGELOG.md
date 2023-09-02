@@ -1,4 +1,4 @@
-# 2.0.0
+# 1.0.4
 
 * Update matcher for memory events to handle async callbacks.
 
