@@ -23,9 +23,8 @@ A test specific rule:
 1. If your test creates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
 
 ```dart
-final FocusNode focusNode1 = FocusNode(debugLabel: 'IconButton 1');
-final FocusNode focusNode2 = FocusNode(debugLabel: 'IconButton 2');
-addTearDown(() {  focusNode1.dispose();  focusNode2.dispose();});
+final FocusNode focusNode = FocusNode(debugLabel: 'IconButton 1');
+addTearDown(focusNode.dispose());
 ```
 
 ## Known simple cases
