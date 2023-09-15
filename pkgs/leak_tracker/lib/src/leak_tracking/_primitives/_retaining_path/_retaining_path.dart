@@ -37,10 +37,10 @@ Future<RetainingPath?> retainingPathByCode(
   }
 }
 
-/// Returns retainig path for an object, by identity hash code.
+/// Returns retainig path for an object, if it can be detected.
 ///
-/// Does not work for objects that have [identityHashCode] equal to 0.
-/// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
+/// If [object] is null or object reference cannot be obtained or isolate cannot be obtained,
+/// returns null.
 Future<RetainingPath?> retainingPath(
   Connection connection,
   Object? object,
@@ -52,8 +52,14 @@ Future<RetainingPath?> retainingPath(
   if (objRef == null) return null;
 
   try {
+    final isolateId = Service.getIsolateId(Isolate.current);
+
+    if (isolateId == null) {
+      return null;
+    }
+
     final result = await connection.service.getRetainingPath(
-      Isolate.current.id,
+      isolateId,
       objRef,
       100000,
     );
