@@ -3,10 +3,11 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer';
+import 'dart:isolate';
 
 import 'package:collection/collection.dart';
-import 'package:vm_service/vm_service.dart';
-import 'dart:developer';
+import 'package:vm_service/vm_service.dart' hide Isolate;
 
 import '_connection.dart';
 
@@ -52,8 +53,8 @@ Future<RetainingPath?> retainingPath(
 
   try {
     final result = await connection.service.getRetainingPath(
-      objRef.isolateRef.id!,
-      objRef.itemId,
+      Isolate.current.id,
+      objRef,
       100000,
     );
 
@@ -88,7 +89,7 @@ Future<_ItemInIsolate?> _objectInIsolateByFingerprint(
 ) async {
   final classes = await _findClasses(connection, object.typeNameWithoutArgs);
 
-  Service.getObjectId(object)
+  Service.getObjectId(object);
 
   for (final theClass in classes) {
     // TODO(polina-c): remove when issue is fixed
