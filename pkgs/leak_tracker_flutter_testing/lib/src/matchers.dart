@@ -2,56 +2,55 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-/// Checks if the object dispatches events to `MemoryAllocations.instance`.
-///
-/// The memory events are used by tools like leak_tracker for diagnostics.
-///
-/// The matcher checks that the object object is instrumented properly,
-/// dispatches two events to `MemoryAllocations.instance`,
-/// first `ObjectCreated` and then `ObjectDisposed`.
-Matcher dispatchesMemoryEvents(Type type) {
-  return _DispatchesMemoryEvents(type);
+/// Invokes [callback] and collects events dispatched to [MemoryAllocations.instance] for [type].
+Future<List<ObjectEvent>> memoryEvents(
+  FutureOr<void> Function() callback,
+  Type type,
+) async {
+  final events = <ObjectEvent>[];
+
+  void listener(ObjectEvent event) {
+    if (event.object.runtimeType == type) {
+      events.add(event);
+    }
+  }
+
+  MemoryAllocations.instance.addListener(listener);
+  await callback();
+  MemoryAllocations.instance.removeListener(listener);
+
+  return events;
 }
 
-class _DispatchesMemoryEvents extends Matcher {
-  const _DispatchesMemoryEvents(this.type);
+/// Checks if Iterable<ObjectEvent> contains two events, first `ObjectCreated` and then `ObjectDisposed`.
+Matcher areCreateAndDispose = const _AreCreateAndDispose();
+
+class _AreCreateAndDispose extends Matcher {
+  const _AreCreateAndDispose();
 
   static const _key = 'description';
-  final Type type;
 
   @override
   bool matches(Object? item, Map matchState) {
-    if (item is! Function()) {
-      matchState[_key] = 'The matcher applies to `Function()`.';
+    if (item is! Iterable<ObjectEvent>) {
+      matchState[_key] = 'The matcher applies to $Iterable<$ObjectEvent>.';
       return false;
     }
 
-    final events = <ObjectEvent>[];
-
-    void listener(ObjectEvent event) {
-      if (event.object.runtimeType == type) {
-        events.add(event);
-      }
-    }
-
-    MemoryAllocations.instance.addListener(listener);
-    item();
-    MemoryAllocations.instance.removeListener(listener);
-
-    if (events.length == 2 &&
-        events.first is ObjectCreated &&
-        events.last is ObjectDisposed) {
+    if (item.length == 2 &&
+        item.first is ObjectCreated &&
+        item.last is ObjectDisposed) {
       return true;
     }
 
     matchState[_key] =
-        'createAndDispose is expected to dispatch two events to $MemoryAllocations.instance,'
-        ' for the type $item,'
-        ' first $ObjectCreated and then $ObjectDisposed.\n'
-        'Instead, it dispatched ${events.length} events:\n$events';
+        'The events are expected to be first $ObjectCreated and then $ObjectDisposed.\n'
+        'Instead, they are ${item.length} events:\n$item.';
 
     return false;
   }

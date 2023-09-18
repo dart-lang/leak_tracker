@@ -1,3 +1,7 @@
+# 1.0.4
+
+* Update matcher for memory events to handle async callbacks.
+
 # 1.0.3
 
 * Define matcher to verify if a class is reporting memory allocations.
