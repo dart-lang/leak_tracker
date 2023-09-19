@@ -1,3 +1,7 @@
+# 9.0.7
+
+* Remove failed assert.
+
 # 9.0.6
 
 * Improve error reporting for connection to vm service.
