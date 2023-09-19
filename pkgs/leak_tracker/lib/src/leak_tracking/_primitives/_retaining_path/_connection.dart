@@ -18,25 +18,29 @@ class Connection {
   final VmService service;
 }
 
-/// Connects to vm service protocol.
-///
-/// If it is not found, tries to start it.
-Future<Connection> connect() async {
-  _log.info('Connecting to vm service protocol...');
+Future<Uri> _serviceUri() async {
+  Uri? uri = (await Service.getInfo()).serverWebSocketUri;
 
-  var info = await Service.getInfo();
+  if (uri != null) return uri;
 
-  if (info.serverWebSocketUri == null) {
-    info = await Service.controlWebServer(enable: true);
-  }
-
-  final uri = info.serverWebSocketUri;
+  uri = (await Service.controlWebServer(enable: true)).serverWebSocketUri;
 
   if (uri == null) {
     throw StateError(
-      'Leak troubleshooting is not available. Run your application with flag "--debug" to enable VM service.',
+      'Could not start VM service. If you are running `flutter test`, pass the flag `--enable-vmservice`',
     );
   }
+
+  return uri;
+}
+
+/// Connects to vm service protocol.
+///
+/// If the VM service is not found, tries to start it.
+Future<Connection> connect() async {
+  _log.info('Connecting to VM service protocol...');
+
+  final uri = await _serviceUri();
 
   final service = await _connectWithWebSocket(uri, _handleError);
   await service.getVersion(); // Warming up and validating the connection.

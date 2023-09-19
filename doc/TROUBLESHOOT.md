@@ -19,11 +19,28 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
    release the references before the owner disposed the object.
 
+A test specific rule:
+1. If your test creates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
+
+```dart
+final FocusNode focusNode = FocusNode();
+addTearDown(focusNode.dispose());
+```
+
 ## Known simple cases
 
 ### 1. The test holds a disposed object
 
 TODO: add example and steps.
+
+### 2. The test creates OverlayEntry
+
+If your code creates an OverlayEntry, it should both remove and dispose it:
+
+```dart
+final OverlayEntry overlayEntry = OverlayEntry(...);
+addTearDown(() => overlayEntry..remove()..dispose());
+```
 
 ## Get additional information
 
@@ -52,10 +69,10 @@ impact performance and memory footprint.
 For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig`,
 specific for the debugged leak type, to the test:
 
-```
-  testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
-    ...
-  }, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
+```dart
+testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
+  ...
+}, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
 ```
 
 **Applications**
@@ -72,7 +89,7 @@ TODO: link DevTools documentation with explanation
 If you expect an object to be not referenced at some point,
 but not sure, you can validate it by temporaryly adding assertion.
 
-```
+```dart
 final ref = WeakReference(myObject);
 myObject = null;
 await forceGC();
@@ -121,7 +138,7 @@ There are ways to release the reference:
 
 1. If the object is disposed by owner in the owner's dispose, check who holds the owner and release the reference to it:
 
-```
+```dart
 void dispose() {
   disposedD.dispose();
 }
@@ -129,14 +146,14 @@ void dispose() {
 
 2. If the object is disposed earlier than owner's disposal, null the reference out:
 
-```
+```dart
 disposedD?.dispose();
 disposedD = null;
 ```
 
 3. If the object is held by non-owner, make the reference weak:
 
-```
+```dart
 class C {
   ...
   final WeakReference<MyClass> disposedD;

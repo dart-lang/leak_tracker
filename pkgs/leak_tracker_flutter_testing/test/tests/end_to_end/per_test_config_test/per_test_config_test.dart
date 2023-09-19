@@ -13,6 +13,7 @@ const test1TrackingOnNoLeaks = 'test1, tracking-on, no leaks';
 const test2TrackingOffLeaks = 'test2, tracking-off, leaks';
 const test3TrackingOnLeaks = 'test3, tracking-on, leaks';
 const test4TrackingOnWithStackTrace = 'test4, tracking-on, with stack trace';
+const test5TrackingOnWithPath = 'test5, tracking-on, with path';
 
 /// For these tests `expect` for found leaks happens in flutter_test_config.dart.
 void main() {
@@ -45,10 +46,17 @@ void main() {
       expect(LeakTracking.phase.isLeakTrackingPaused, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
-    leakTrackingTestConfig: const LeakTrackingTestConfig(
-      leakDiagnosticConfig: LeakDiagnosticConfig(
-        collectStackTraceOnStart: true,
-      ),
-    ),
+    leakTrackingTestConfig: LeakTrackingTestConfig.debug(),
+  );
+
+  testWidgetsWithLeakTracking(
+    test5TrackingOnWithPath,
+    (widgetTester) async {
+      expect(LeakTracking.isStarted, true);
+      expect(LeakTracking.phase.name, test5TrackingOnWithPath);
+      expect(LeakTracking.phase.isLeakTrackingPaused, false);
+      await widgetTester.pumpWidget(StatelessLeakingWidget());
+    },
+    leakTrackingTestConfig: const LeakTrackingTestConfig.retainingPath(),
   );
 }

@@ -4,10 +4,10 @@
 
 import 'dart:async';
 
+import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
-import 'package:test/test.dart';
 
 class MyClass {
   MyClass();
@@ -34,24 +34,28 @@ void main() {
     await subscription.cancel();
   });
 
-  test('Path for $MyClass instance is found.', () async {
+  testWidgets('Path for $MyClass instance is found.',
+      (WidgetTester tester) async {
     final instance = MyClass();
-    final connection = await connect();
 
-    final path = await retainingPathByCode(
-      connection,
-      instance.runtimeType,
-      identityHashCode(instance),
-    );
+    await tester.runAsync(() async {
+      final connection = await connect();
 
-    expect(path!.elements, isNotEmpty);
+      final path = await obtainRetainingPath(
+        connection,
+        instance.runtimeType,
+        identityHashCode(instance),
+      );
+
+      expect(path!.elements, isNotEmpty);
+    });
   });
 
   test('Path for class with generic arg is found.', () async {
     final instance = MyArgClass<String>();
     final connection = await connect();
 
-    final path = await retainingPathByCode(
+    final path = await obtainRetainingPath(
       connection,
       instance.runtimeType,
       identityHashCode(instance),
@@ -65,8 +69,8 @@ void main() {
     final connection = await connect();
 
     final obtainers = [
-      retainingPathByCode(connection, MyClass, identityHashCode(instance1)),
-      retainingPathByCode(connection, MyClass, identityHashCode(instance2)),
+      obtainRetainingPath(connection, MyClass, identityHashCode(instance1)),
+      obtainRetainingPath(connection, MyClass, identityHashCode(instance2)),
     ];
 
     await Future.wait(obtainers);
