@@ -9,6 +9,10 @@ import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_conn
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
 
+// We duplicate testing for retaining path here,
+// because there were cases when the tests were passing for dart,
+// but not for flutter.
+
 class MyClass {
   MyClass();
 }
