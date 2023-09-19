@@ -15,14 +15,18 @@ class ObjectRecord {
     this.type,
     this.trackedClass,
     this.phase,
-  );
+  ) : ref = WeakReference(phase);
 
-  ObjectRecord(
-    this.object,
+  ObjectRecord.object(
+    Object object,
     this.context,
     this.trackedClass,
     this.phase,
-  );
+  )   : ref = WeakReference(object),
+        type = object.runtimeType,
+        code = identityHashCode(object);
+
+  final WeakReference<Object> ref;
 
   final IdentityHashCode code;
 
@@ -30,7 +34,7 @@ class ObjectRecord {
 
   final PhaseSettings phase;
 
-  /// Type of the tracked object.
+  /// Runtime type of the tracked object.
   final Type type;
 
   final String trackedClass;

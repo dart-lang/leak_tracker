@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '_object_record.dart';
@@ -44,7 +45,7 @@ class ObjectRecordSet {
     final existing = list.firstWhereOrNull((r) => r.ref.target == object);
     if (existing != null) return existing;
 
-    final result = ObjectRecord(object, context, trackedClass, phase);
+    final result = ObjectRecord.object(object, context, trackedClass, phase);
     list.add(result);
     return result;
   }
