@@ -17,6 +17,13 @@ class ObjectRecord {
     this.phase,
   );
 
+  ObjectRecord(
+    this.object,
+    this.context,
+    this.trackedClass,
+    this.phase,
+  );
+
   final IdentityHashCode code;
 
   Map<String, dynamic>? context;

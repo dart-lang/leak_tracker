@@ -2,8 +2,53 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:collection/collection.dart';
+
 import '../shared/_primitives.dart';
 import '_object_record.dart';
+import '_primitives/model.dart';
+
+@visibleForTesting
+class ObjectRecordSet {
+  ObjectRecordSet({this.coder = standardIdentityHashCoder});
+
+  final IdentityHashCoder coder;
+
+  final _records = <IdentityHashCode, List<ObjectRecord>>{};
+
+  ObjectRecord? record(Object object) {
+    final code = identityHashCode(object);
+
+    final list = _records[code];
+    if (list == null) return null;
+
+    return list.firstWhereOrNull((r) => r.ref.target == object);
+  }
+
+  void remove(ObjectRecord record) {
+    final list = _records[record.code];
+    list?.removeWhere((r) => r == record);
+    if (list == null || list.isEmpty) _records.remove(record.code);
+  }
+
+  ObjectRecord putIfAbsent(
+    Object object,
+    Map<String, dynamic>? context,
+    PhaseSettings phase,
+    String trackedClass,
+  ) {
+    final code = identityHashCode(object);
+
+    final list = _records.putIfAbsent(code, () => []);
+
+    final existing = list.firstWhereOrNull((r) => r.ref.target == object);
+    if (existing != null) return existing;
+
+    final result = ObjectRecord(object, context, trackedClass, phase);
+    list.add(result);
+    return result;
+  }
+}
 
 /// Object collections to track leaks.
 ///
