@@ -4,10 +4,10 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
-import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:leak_tracker/src/shared/_util.dart';
 import 'package:test/test.dart';
 
@@ -77,12 +77,10 @@ void main() {
 
   group('$ObjectTracker handles duplicates', () {
     late ObjectTracker tracker;
-    IdentityHashCode mockCoder(Object object) => 1;
 
     setUp(() {
       tracker = ObjectTracker(
         disposalTime: _disposalTime,
-        coder: mockCoder,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
         switches: const Switches(),
@@ -160,7 +158,7 @@ void main() {
     });
 
     test('uses finalizer.', () {
-      const theObject = '-';
+      const theObject = [];
       tracker.startTracking(
         theObject,
         context: null,
@@ -168,14 +166,14 @@ void main() {
         phase: const PhaseSettings(),
       );
       expect(
-        finalizerBuilder.finalizer.attached,
-        contains(identityHashCode(theObject)),
+        finalizerBuilder.finalizer.attached.values,
+        contains(theObject),
       );
     });
 
     test('does not false positive.', () {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking.
@@ -200,7 +198,7 @@ void main() {
 
     test('tracks ${LeakType.notDisposed}.', () async {
       // Define object.
-      const theObject = '-';
+      const theObject = [];
 
       // Start tracking and GC.
       tracker.startTracking(
@@ -217,7 +215,7 @@ void main() {
 
     test('tracks ${LeakType.notGCed}.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -243,7 +241,7 @@ void main() {
 
     test('tracks ${LeakType.gcedLate}.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -270,7 +268,7 @@ void main() {
 
     test('tracks ${LeakType.gcedLate} lifecycle accurately.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -300,7 +298,7 @@ void main() {
 
     test('collects context accurately.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -350,7 +348,7 @@ void main() {
 
     test('collects stack traces.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -361,8 +359,8 @@ void main() {
           trackedClass: _trackedClass,
           phase: const PhaseSettings(
             leakDiagnosticConfig: LeakDiagnosticConfig(
-              classesToCollectStackTraceOnStart: {'String'},
-              classesToCollectStackTraceOnDisposal: {'String'},
+              collectStackTraceOnStart: true,
+              collectStackTraceOnDisposal: true,
             ),
           ),
         );
@@ -601,19 +599,27 @@ class _MockFinalizerWrapper implements FinalizerWrapper {
   _MockFinalizerWrapper(this.onGc);
 
   final ObjectGcCallback onGc;
-  final attached = <Object>{};
+  // Maps tokens to objects.
+  final attached = <ObjectRecord, Object>{};
 
   @override
   void attach(Object object, Object finalizationToken, {Object? detach}) {
-    final int code = identityHashCode(object);
-    if (attached.contains(code)) throw '`attach` should not be invoked twice';
-    attached.add(code);
+    if (attached.containsValue(object)) {
+      throw '`attach` should not be invoked twice';
+    }
+    if (attached.containsKey(finalizationToken)) {
+      throw 'tokens should not duplicate';
+    }
+    attached[finalizationToken as ObjectRecord] = object;
   }
 
-  void finalize(Object code) {
-    if (!attached.contains(code)) return;
-    onGc(code);
-    attached.remove(code);
+  void finalize(Object finalizationToken) {
+    if (finalizationToken is! ObjectRecord) {
+      throw 'Unexpected type of token: ${finalizationToken.runtimeType}';
+    }
+    if (!attached.containsKey(finalizationToken)) return;
+    onGc(finalizationToken);
+    attached.remove(finalizationToken);
   }
 }
 
@@ -621,7 +627,11 @@ class _MockFinalizerBuilder {
   late final _MockFinalizerWrapper finalizer;
 
   void gc(Object object) {
-    finalizer.finalize(identityHashCode(object));
+    final token = finalizer.attached.entries
+        .where((entry) => entry.value == object)
+        .firstOrNull
+        ?.key;
+    if (token != null) finalizer.finalize(token);
   }
 
   _MockFinalizerWrapper build(ObjectGcCallback onGc) {
