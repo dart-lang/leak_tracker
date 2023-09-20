@@ -95,10 +95,6 @@ class ObjectRecords {
   /// GCed ibjects that were not disposed.
   final List<ObjectRecord> gcedNotDisposedLeaks = <ObjectRecord>[];
 
-  /// As identityHashCode is not unique, we ignore objects that happen to have
-  /// equal code.
-  final Set<IdentityHashCode> duplicates = <int>{};
-
   void _assertNotWatched(IdentityHashCode code) {
     // assert(() {
     //   assert(!notGCed.containsKey(code));

@@ -7,7 +7,6 @@ import 'dart:math';
 import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
 
-import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_leak_filter.dart';
 import '_object_record.dart';
@@ -32,15 +31,11 @@ class ObjectTracker implements LeakProvider {
     required this.switches,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
-    IdentityHashCoder? coder,
   }) {
-    _coder = coder ?? standardIdentityHashCoder;
     finalizerBuilder ??= buildStandardFinalizer;
     _finalizer = finalizerBuilder(_onOobjectGarbageCollected);
     _gcCounter = gcCounter ?? GcCounter();
   }
-
-  late IdentityHashCoder _coder;
 
   /// Time to allow the disposal invoker to release the reference to the object.
   final Duration disposalTime;
@@ -84,14 +79,11 @@ class ObjectTracker implements LeakProvider {
     _objects.assertRecordIntegrity(record);
   }
 
-  void _onOobjectGarbageCollected(Object code) {
+  void _onOobjectGarbageCollected(Object record) {
     if (disposed) return;
-    if (code is! int) throw 'Object token should be integer.';
+    if (record is! ObjectRecord) throw 'record should be $ObjectRecord.';
 
-    if (_objects.duplicates.contains(code)) return;
-
-    _objects.assertRecordIntegrity(code);
-    final record = _notGCed(code);
+    _objects.assertRecordIntegrity(record);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
     if (record.isGCedLateLeak(disposalTime, numberOfGcCycles)) {
@@ -100,12 +92,12 @@ class ObjectTracker implements LeakProvider {
       _objects.gcedNotDisposedLeaks.add(record);
     }
 
-    _objects.notGCed.remove(code);
-    _objects.notGCedDisposedOk.remove(code);
-    _objects.notGCedDisposedLate.remove(code);
-    _objects.notGCedDisposedLateCollected.remove(code);
+    _objects.notGCed.remove(record);
+    _objects.notGCedDisposedOk.remove(record);
+    _objects.notGCedDisposedLate.remove(record);
+    _objects.notGCedDisposedLateCollected.remove(record);
 
-    _objects.assertRecordIntegrity(code);
+    _objects.assertRecordIntegrity(record);
   }
 
   void dispatchDisposal(
@@ -114,12 +106,9 @@ class ObjectTracker implements LeakProvider {
   }) {
     throwIfDisposed();
     if (switches.isObjectTrackingDisabled) return;
-    final code = _coder(object);
-    if (_objects.duplicates.contains(code)) return;
 
-    final record = _objects.notGCed[code];
-    // If object is not registered, this may mean that it was created whan leak tracking was off,
-    // so disposal should not be registered too.
+    final record = _objects.notGCed.record(object);
+    // If object is not registered, this may mean that it was created when leak tracking was off.
     if (record == null || record.phase.isLeakTrackingPaused) return;
 
     record.mergeContext(context);
@@ -129,23 +118,20 @@ class ObjectTracker implements LeakProvider {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
 
-    _objects.assertRecordIntegrity(code);
+    _objects.assertRecordIntegrity(record);
 
     record.setDisposed(_gcCounter.gcCount, clock.now());
-    _objects.notGCedDisposedOk.add(code);
+    _objects.notGCedDisposedOk.add(record);
 
-    _objects.assertRecordIntegrity(code);
+    _objects.assertRecordIntegrity(record);
   }
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
     throwIfDisposed();
     if (switches.isObjectTrackingDisabled) return;
-    final code = _coder(object);
-    if (_objects.duplicates.contains(code)) return;
 
-    final record = _objects.notGCed[code];
-    // If object is not registered, this may mean that it was created whan leak tracking was off,
-    // so the context should not be registered too.
+    final record = _objects.notGCed.record(object);
+    // If object is not registered, this may mean that it was created when leak tracking was off.
     if (record == null || record.phase.isLeakTrackingPaused) return;
 
     record.mergeContext(context);
@@ -166,21 +152,21 @@ class ObjectTracker implements LeakProvider {
   Future<void> _checkForNewNotGCedLeaks({bool summary = false}) async {
     _objects.assertIntegrity();
 
-    final List<int>? objectsToGetPath = !summary ? [] : null;
+    final List<ObjectRecord>? objectsToGetPath = summary ? null : [];
 
     final now = clock.now();
-    for (int code in _objects.notGCedDisposedOk.toList(growable: false)) {
-      if (_notGCed(code).isNotGCedLeak(
+    for (ObjectRecord record
+        in _objects.notGCedDisposedOk.toList(growable: false)) {
+      if (record.isNotGCedLeak(
         _gcCounter.gcCount,
         now,
         disposalTime,
         numberOfGcCycles,
       )) {
-        _objects.notGCedDisposedOk.remove(code);
-        _objects.notGCedDisposedLate.add(code);
-        if (_objects.notGCed[code]!.phase.leakDiagnosticConfig
-            .collectRetainingPathForNotGCed) {
-          objectsToGetPath?.add(code);
+        _objects.notGCedDisposedOk.remove(record);
+        _objects.notGCedDisposedLate.add(record);
+        if (record.phase.leakDiagnosticConfig.collectRetainingPathForNotGCed) {
+          objectsToGetPath?.add(record);
         }
       }
     }
@@ -215,11 +201,10 @@ class ObjectTracker implements LeakProvider {
     await processor(items);
   }
 
-  Future<void> _addRetainingPath(List<int> objectsToGetPath) async {
+  Future<void> _addRetainingPath(List<ObjectRecord> objectsToGetPath) async {
     final connection = await connect();
 
-    final pathSetters = objectsToGetPath.map((code) async {
-      final record = _objects.notGCed[code]!;
+    final pathSetters = objectsToGetPath.map((record) async {
       final path =
           await retainingPathByCode(connection, record.type, record.code);
       if (path != null) {
@@ -231,17 +216,6 @@ class ObjectTracker implements LeakProvider {
       pathSetters,
       eagerError: true,
     );
-  }
-
-  /// Returns [ObjectRecord] for [code].
-  ///
-  /// Throws error if [code] is not registered for tracking.
-  ObjectRecord _notGCed(int code) {
-    final result = _objects.notGCed[code];
-    if (result == null) {
-      throw 'The object with code $code is not registered for tracking.';
-    }
-    return result;
   }
 
   @override
@@ -264,12 +238,12 @@ class ObjectTracker implements LeakProvider {
           .toList(),
       LeakType.notGCed: _objects.notGCedDisposedLate
           .where(
-            (code) => _leakFilter.shouldReport(
+            (record) => _leakFilter.shouldReport(
               LeakType.notGCed,
-              _notGCed(code),
+              record,
             ),
           )
-          .map((code) => _notGCed(code).toLeakReport())
+          .map((record) => record.toLeakReport())
           .toList(),
       LeakType.gcedLate: _objects.gcedLateLeaks
           .where((record) => _leakFilter.shouldReport(LeakType.notGCed, record))

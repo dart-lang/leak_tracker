@@ -7,7 +7,6 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
-import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:leak_tracker/src/shared/_util.dart';
 import 'package:test/test.dart';
 
@@ -77,12 +76,10 @@ void main() {
 
   group('$ObjectTracker handles duplicates', () {
     late ObjectTracker tracker;
-    IdentityHashCode mockCoder(Object object) => 1;
 
     setUp(() {
       tracker = ObjectTracker(
         disposalTime: _disposalTime,
-        coder: mockCoder,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
         switches: const Switches(),
