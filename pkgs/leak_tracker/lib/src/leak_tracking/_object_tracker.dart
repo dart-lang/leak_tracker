@@ -65,14 +65,12 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     if (phase.isLeakTrackingPaused || switches.isObjectTrackingDisabled) return;
 
-    if (phase.leakDiagnosticConfig
-        .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
-      context ??= {};
-      context[ContextKeys.startCallstack] = StackTrace.current;
-    }
-
     final record =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
+
+    if (phase.leakDiagnosticConfig.collectStackTraceOnStart) {
+      record.setContext(ContextKeys.startCallstack, StackTrace.current);
+    }
 
     _finalizer.attach(object, record);
 
@@ -113,8 +111,7 @@ class ObjectTracker implements LeakProvider {
 
     record.mergeContext(context);
 
-    if (record.phase.leakDiagnosticConfig
-        .shouldCollectStackTraceOnDisposal(object.runtimeType.toString())) {
+    if (record.phase.leakDiagnosticConfig.collectStackTraceOnDisposal) {
       record.setContext(ContextKeys.disposalCallstack, StackTrace.current);
     }
 

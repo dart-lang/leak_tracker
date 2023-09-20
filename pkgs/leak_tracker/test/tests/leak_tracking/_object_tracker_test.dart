@@ -359,8 +359,8 @@ void main() {
           trackedClass: _trackedClass,
           phase: const PhaseSettings(
             leakDiagnosticConfig: LeakDiagnosticConfig(
-              classesToCollectStackTraceOnStart: {'String'},
-              classesToCollectStackTraceOnDisposal: {'String'},
+              collectStackTraceOnStart: true,
+              collectStackTraceOnDisposal: true,
             ),
           ),
         );
@@ -629,9 +629,9 @@ class _MockFinalizerBuilder {
   void gc(Object object) {
     final token = finalizer.attached.entries
         .where((entry) => entry.value == object)
-        .first
-        .key;
-    finalizer.finalize(token);
+        .firstOrNull
+        ?.key;
+    if (token != null) finalizer.finalize(token);
   }
 
   _MockFinalizerWrapper build(ObjectGcCallback onGc) {

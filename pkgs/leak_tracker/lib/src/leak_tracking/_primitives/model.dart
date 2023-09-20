@@ -46,23 +46,9 @@ class Switches {
 class LeakDiagnosticConfig {
   const LeakDiagnosticConfig({
     this.collectRetainingPathForNotGCed = false,
-    this.classesToCollectStackTraceOnStart = const {},
-    this.classesToCollectStackTraceOnDisposal = const {},
     this.collectStackTraceOnStart = false,
     this.collectStackTraceOnDisposal = false,
   });
-
-  /// Set of classes to collect callstack on tracking start.
-  ///
-  /// Ignored if [collectStackTraceOnStart] is true.
-  /// String is used, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnStart;
-
-  /// Set of classes to collect callstack on disposal.
-  ///
-  /// Ignored if [collectStackTraceOnDisposal] is true.
-  /// String is used, because some types are private and thus not accessible.
-  final Set<String> classesToCollectStackTraceOnDisposal;
 
   /// If true, stack trace will be collected on start of tracking for all classes.
   final bool collectStackTraceOnStart;
@@ -76,14 +62,6 @@ class LeakDiagnosticConfig {
   /// In release mode this flag does not work.
   final bool collectRetainingPathForNotGCed;
 
-  bool shouldCollectStackTraceOnStart(String classname) =>
-      collectStackTraceOnStart ||
-      classesToCollectStackTraceOnStart.contains(classname);
-
-  bool shouldCollectStackTraceOnDisposal(String classname) =>
-      collectStackTraceOnDisposal ||
-      classesToCollectStackTraceOnDisposal.contains(classname);
-
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) {
@@ -95,16 +73,7 @@ class LeakDiagnosticConfig {
     return other is LeakDiagnosticConfig &&
         other.collectStackTraceOnStart == collectStackTraceOnStart &&
         other.collectStackTraceOnDisposal == collectStackTraceOnDisposal &&
-        other.collectRetainingPathForNotGCed ==
-            collectRetainingPathForNotGCed &&
-        const DeepCollectionEquality.unordered().equals(
-          other.classesToCollectStackTraceOnStart,
-          classesToCollectStackTraceOnStart,
-        ) &&
-        const DeepCollectionEquality.unordered().equals(
-          other.classesToCollectStackTraceOnDisposal,
-          classesToCollectStackTraceOnDisposal,
-        );
+        other.collectRetainingPathForNotGCed == collectRetainingPathForNotGCed;
   }
 
   @override
@@ -112,8 +81,6 @@ class LeakDiagnosticConfig {
         collectStackTraceOnStart,
         collectStackTraceOnDisposal,
         collectRetainingPathForNotGCed,
-        Object.hashAll(classesToCollectStackTraceOnStart),
-        Object.hashAll(classesToCollectStackTraceOnDisposal),
       );
 }
 

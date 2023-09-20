@@ -1,3 +1,8 @@
+# 9.0.7
+
+* Use ObjectRecord instead of hash code to identify objects.
+* Remove collection of stack trace by class in LeakDiagnosticConfig.
+
 # 9.0.6
 
 * Improve error reporting for connection to vm service.
