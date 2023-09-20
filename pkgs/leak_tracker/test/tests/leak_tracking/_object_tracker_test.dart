@@ -4,6 +4,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
@@ -157,7 +158,7 @@ void main() {
     });
 
     test('uses finalizer.', () {
-      const theObject = '-';
+      const theObject = [];
       tracker.startTracking(
         theObject,
         context: null,
@@ -172,7 +173,7 @@ void main() {
 
     test('does not false positive.', () {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking.
@@ -197,7 +198,7 @@ void main() {
 
     test('tracks ${LeakType.notDisposed}.', () async {
       // Define object.
-      const theObject = '-';
+      const theObject = [];
 
       // Start tracking and GC.
       tracker.startTracking(
@@ -214,7 +215,7 @@ void main() {
 
     test('tracks ${LeakType.notGCed}.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -240,7 +241,7 @@ void main() {
 
     test('tracks ${LeakType.gcedLate}.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -267,7 +268,7 @@ void main() {
 
     test('tracks ${LeakType.gcedLate} lifecycle accurately.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -297,7 +298,7 @@ void main() {
 
     test('collects context accurately.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -347,7 +348,7 @@ void main() {
 
     test('collects stack traces.', () async {
       // Define object and time.
-      const theObject = '-';
+      const theObject = [];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -598,19 +599,23 @@ class _MockFinalizerWrapper implements FinalizerWrapper {
   _MockFinalizerWrapper(this.onGc);
 
   final ObjectGcCallback onGc;
-  final attached = <Object>{};
+  final attached = <Object, Object>{};
 
   @override
   void attach(Object object, Object finalizationToken, {Object? detach}) {
-    final int code = identityHashCode(object);
-    if (attached.contains(code)) throw '`attach` should not be invoked twice';
-    attached.add(code);
+    if (attached.containsValue(object)) {
+      throw '`attach` should not be invoked twice';
+    }
+    if (attached.containsKey(finalizationToken)) {
+      throw 'tokens should not duplicate';
+    }
+    attached[finalizationToken] = object;
   }
 
-  void finalize(Object code) {
-    if (!attached.contains(code)) return;
-    onGc(code);
-    attached.remove(code);
+  void finalize(Object finalizationToken) {
+    if (!attached.containsKey(finalizationToken)) return;
+    onGc(finalizationToken);
+    attached.remove(finalizationToken);
   }
 }
 
@@ -618,7 +623,7 @@ class _MockFinalizerBuilder {
   late final _MockFinalizerWrapper finalizer;
 
   void gc(Object object) {
-    finalizer.finalize(identityHashCode(object));
+    finalizer.finalize(object);
   }
 
   _MockFinalizerWrapper build(ObjectGcCallback onGc) {
