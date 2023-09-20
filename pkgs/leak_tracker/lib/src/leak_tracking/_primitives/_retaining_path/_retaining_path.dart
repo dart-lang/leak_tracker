@@ -95,8 +95,6 @@ Future<_ItemInIsolate?> _objectInIsolateByFingerprint(
 ) async {
   final classes = await _findClasses(connection, object.typeNameWithoutArgs);
 
-  Service.getObjectId(object);
-
   for (final theClass in classes) {
     // TODO(polina-c): remove when issue is fixed
     // https://github.com/dart-lang/sdk/issues/52893
