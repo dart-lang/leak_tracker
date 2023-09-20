@@ -70,28 +70,18 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     if (phase.isLeakTrackingPaused || switches.isObjectTrackingDisabled) return;
 
-    final code = _coder(object);
-    assert(code > 0);
-    if (_checkForDuplicate(code)) return;
-
-    _finalizer.attach(object, code);
-
-    final record = ObjectRecord(
-      _coder(object),
-      context,
-      object.runtimeType,
-      trackedClass,
-      phase,
-    );
-
     if (phase.leakDiagnosticConfig
         .shouldCollectStackTraceOnStart(object.runtimeType.toString())) {
-      record.setContext(ContextKeys.startCallstack, StackTrace.current);
+      context ??= {};
+      context[ContextKeys.startCallstack] = StackTrace.current;
     }
 
-    _objects.notGCed[code] = record;
+    final record =
+        _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
 
-    _objects.assertRecordIntegrity(code);
+    _finalizer.attach(object, record);
+
+    _objects.assertRecordIntegrity(record);
   }
 
   void _onOobjectGarbageCollected(Object code) {
@@ -293,28 +283,6 @@ class ObjectTracker implements LeakProvider {
     _objects.gcedLateLeaks.clear();
 
     return result;
-  }
-
-  final _maxAllowedDuplicates = 100;
-
-  /// Normally there is no duplicates or 1-2 per application run. If there are
-  /// more, this means an error.
-  bool _checkForDuplicate(int code) {
-    if (!_objects.notGCed.containsKey(code)) return false;
-    if (_objects.duplicates.contains(code)) return true;
-
-    _objects.duplicates.add(code);
-    _objects.notGCed.remove(code);
-    _objects.notGCedDisposedOk.remove(code);
-    _objects.notGCedDisposedLate.remove(code);
-    _objects.notGCedDisposedLateCollected.remove(code);
-
-    if (_objects.duplicates.length > _maxAllowedDuplicates) {
-      throw 'Too many duplicates, Please, file a bug '
-          'to https://github.com/dart-lang/leak_tracker/issues.';
-    }
-
-    return true;
   }
 
   void throwIfDisposed() {

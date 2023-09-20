@@ -27,9 +27,18 @@ class ObjectRecordSet {
   }
 
   void remove(ObjectRecord record) {
-    final list = _records[record.code];
-    list?.removeWhere((r) => r == record);
-    if (list == null || list.isEmpty) _records.remove(record.code);
+    final list = _records[record.code]!;
+    bool removed = false;
+    list.removeWhere((r) {
+      if (r == record) {
+        assert(!removed);
+        removed = true;
+      }
+      return r == record;
+    });
+    assert(removed);
+    _length--;
+    if (list.isEmpty) _records.remove(record.code);
   }
 
   ObjectRecord putIfAbsent(
@@ -47,8 +56,12 @@ class ObjectRecordSet {
 
     final result = ObjectRecord.object(object, context, trackedClass, phase);
     list.add(result);
+    _length++;
     return result;
   }
+
+  int _length = 0;
+  int get length => _length;
 }
 
 /// Object collections to track leaks.
@@ -96,7 +109,7 @@ class ObjectRecords {
     // }());
   }
 
-  void assertRecordIntegrity(IdentityHashCode code) {
+  void assertRecordIntegrity(ObjectRecord code) {
     // assert(() {
     //   final notGCedSetMembership = (notGCedDisposedOk.contains(code) ? 1 : 0) +
     //       (notGCedDisposedLate.contains(code) ? 1 : 0) +

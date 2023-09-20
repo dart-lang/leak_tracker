@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-typedef ObjectGcCallback = void Function(Object code);
+typedef ObjectGcCallback = void Function(Object token);
 
 /// Finilizer builder to mock standard [Finalizer].
 typedef FinalizerBuilder = FinalizerWrapper Function(
@@ -13,7 +13,7 @@ FinalizerWrapper buildStandardFinalizer(ObjectGcCallback onObjectGc) =>
     StandardFinalizerWrapper(onObjectGc);
 
 abstract class FinalizerWrapper {
-  void attach(Object object, Object code);
+  void attach(Object object, Object token);
 }
 
 class StandardFinalizerWrapper implements FinalizerWrapper {
@@ -23,7 +23,7 @@ class StandardFinalizerWrapper implements FinalizerWrapper {
   final Finalizer<Object> _finalizer;
 
   @override
-  void attach(Object object, Object code) {
-    _finalizer.attach(object, code);
+  void attach(Object object, Object token) {
+    _finalizer.attach(object, token);
   }
 }
