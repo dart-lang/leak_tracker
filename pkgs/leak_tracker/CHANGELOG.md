@@ -2,6 +2,7 @@
 
 * Use ObjectRecord instead of hash code to identify objects.
 * Remove collection of stack trace by class in LeakDiagnosticConfig.
+* Bump version of SDK to 3.1.2.
 
 # 9.0.6
 

@@ -1,10 +1,7 @@
-# 1.0.4
-
-* Define ObjectLifecycle.
-
 # 1.0.3
 
 * Update version of leak_tracker to `^9.0.0`.
+* Bump version of SDK to 3.1.2.
 
 # 1.0.2
 
