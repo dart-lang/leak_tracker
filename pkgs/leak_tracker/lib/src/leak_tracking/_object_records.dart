@@ -108,13 +108,13 @@ class ObjectRecords {
   final List<ObjectRecord> gcedNotDisposedLeaks = <ObjectRecord>[];
 
   void _assertNotWatchedToBeGCed(ObjectRecord record) {
-    // assert(() {
-    //   assert(!notGCed.containsKey(code));
-    //   assert(!notGCedDisposedOk.contains(code));
-    //   assert(!notGCedDisposedLate.contains(code));
-    //   assert(!notGCedDisposedLateCollected.contains(code));
-    //   return true;
-    // }());
+    assert(() {
+      assert(!notGCed.contains(record));
+      assert(!notGCedDisposedOk.contains(record));
+      assert(!notGCedDisposedLate.contains(record));
+      assert(!notGCedDisposedLateCollected.contains(record));
+      return true;
+    }());
   }
 
   void assertRecordIntegrity(ObjectRecord record) {
