@@ -60,7 +60,7 @@ class ObjectRecordSet {
     final existing = list.firstWhereOrNull((r) => r.ref.target == object);
     if (existing != null) return existing;
 
-    final result = ObjectRecord.object(object, context, trackedClass, phase);
+    final result = ObjectRecord(object, context, trackedClass, phase);
     list.add(result);
     _length++;
     return result;

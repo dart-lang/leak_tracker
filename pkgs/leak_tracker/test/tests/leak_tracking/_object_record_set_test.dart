@@ -17,7 +17,7 @@ final _coders = <String, IdentityHashCoder>{
 };
 
 const _phase = PhaseSettings();
-final _record = ObjectRecord.object([], {}, '', _phase);
+final _record = ObjectRecord([], {}, '', _phase);
 
 void main() {
   for (var coderName in _coders.keys) {

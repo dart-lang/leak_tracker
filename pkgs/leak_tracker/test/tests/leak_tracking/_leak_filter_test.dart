@@ -8,9 +8,9 @@ import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
 import 'package:test/test.dart';
 
 ObjectRecord _stringRecord(PhaseSettings phase) =>
-    ObjectRecord(0, {}, String, '', phase);
+    ObjectRecord(0, {}, '', phase);
 ObjectRecord _dateTimeRecord(PhaseSettings phase) =>
-    ObjectRecord(0, {}, DateTime, '', phase);
+    ObjectRecord(0, {}, '', phase);
 
 void main() {
   test('All leaks are reported with default settings.', () {
