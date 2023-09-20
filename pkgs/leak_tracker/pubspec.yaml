@@ -4,7 +4,7 @@ description: A framework for memory leak tracking for Dart and Flutter applicati
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.2.0-162.0.dev <4.0.0'
 
 dependencies:
   clock: ^1.1.1
@@ -13,7 +13,7 @@ dependencies:
   logging: ^1.1.1
   meta: ^1.8.0
   path: ^1.8.3
-  vm_service: '>=11.3.0 <13.0.0'
+  vm_service: '>=11.10.0 <13.0.0'
   web_socket_channel: ^2.1.0
 
 dev_dependencies:

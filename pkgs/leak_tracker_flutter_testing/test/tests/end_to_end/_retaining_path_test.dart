@@ -9,6 +9,10 @@ import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_conn
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
 import 'package:logging/logging.dart';
 
+// We duplicate testing for retaining path here,
+// because there were cases when the tests were passing for dart,
+// but not for flutter.
+
 class MyClass {
   MyClass();
 }
@@ -41,7 +45,7 @@ void main() {
     await tester.runAsync(() async {
       final connection = await connect();
 
-      final path = await obtainRetainingPath(
+      final path = await retainingPathByCode(
         connection,
         instance.runtimeType,
         identityHashCode(instance),
@@ -55,7 +59,7 @@ void main() {
     final instance = MyArgClass<String>();
     final connection = await connect();
 
-    final path = await obtainRetainingPath(
+    final path = await retainingPathByCode(
       connection,
       instance.runtimeType,
       identityHashCode(instance),
@@ -69,8 +73,8 @@ void main() {
     final connection = await connect();
 
     final obtainers = [
-      obtainRetainingPath(connection, MyClass, identityHashCode(instance1)),
-      obtainRetainingPath(connection, MyClass, identityHashCode(instance2)),
+      retainingPathByCode(connection, MyClass, identityHashCode(instance1)),
+      retainingPathByCode(connection, MyClass, identityHashCode(instance2)),
     ];
 
     await Future.wait(obtainers);

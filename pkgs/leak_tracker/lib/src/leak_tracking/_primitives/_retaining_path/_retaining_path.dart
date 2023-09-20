@@ -3,29 +3,64 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer';
+import 'dart:isolate';
 
 import 'package:collection/collection.dart';
-import 'package:vm_service/vm_service.dart';
+import 'package:vm_service/vm_service.dart' hide Isolate;
 
 import '_connection.dart';
 
-/// Obtains retainig path for an object.
+/// Returns retainig path for an object, by identity hash code.
 ///
 /// Does not work for objects that have [identityHashCode] equal to 0.
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
-Future<RetainingPath?> obtainRetainingPath(
+Future<RetainingPath?> retainingPathByCode(
   Connection connection,
   Type type,
   int code,
 ) async {
   final fp = _ObjectFingerprint(type, code);
-  final theObject = await _objectInIsolate(connection, fp);
+  final theObject = await _objectInIsolateByFingerprint(connection, fp);
   if (theObject == null) return null;
 
   try {
     final result = await connection.service.getRetainingPath(
       theObject.isolateRef.id!,
       theObject.itemId,
+      100000,
+    );
+
+    return result;
+  } on SentinelException {
+    return null;
+  }
+}
+
+/// Returns retainig path for an object, if it can be detected.
+///
+/// If [object] is null or object reference cannot be obtained or isolate cannot be obtained,
+/// returns null.
+Future<RetainingPath?> retainingPath(
+  Connection connection,
+  Object? object,
+) async {
+  if (object == null) return null;
+
+  final objRef = Service.getObjectId(object);
+
+  if (objRef == null) return null;
+
+  try {
+    final isolateId = Service.getIsolateId(Isolate.current);
+
+    if (isolateId == null) {
+      return null;
+    }
+
+    final result = await connection.service.getRetainingPath(
+      isolateId,
+      objRef,
       100000,
     );
 
@@ -54,7 +89,7 @@ class _ObjectFingerprint {
 /// This method will NOT find objects, that have [identityHashCode] equal to 0
 /// in result of `getInstances`.
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
-Future<_ItemInIsolate?> _objectInIsolate(
+Future<_ItemInIsolate?> _objectInIsolateByFingerprint(
   Connection connection,
   _ObjectFingerprint object,
 ) async {
