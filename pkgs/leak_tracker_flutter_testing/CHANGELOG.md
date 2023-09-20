@@ -1,7 +1,10 @@
+# 1.0.5
+
+* Bump version of SDK to 3.1.2.
+
 # 1.0.4
 
 * Update matcher for memory events to handle async callbacks.
-* Bump version of SDK to 3.1.2.
 
 # 1.0.3
 
