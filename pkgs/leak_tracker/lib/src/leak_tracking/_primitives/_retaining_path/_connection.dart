@@ -11,13 +11,6 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 
 final _log = Logger('_connection.dart');
 
-class Connection {
-  Connection(this.service, this.isolates);
-
-  final List<IsolateRef> isolates;
-  final VmService service;
-}
-
 Future<Uri> _serviceUri() async {
   Uri? uri = (await Service.getInfo()).serverWebSocketUri;
 
@@ -37,54 +30,21 @@ Future<Uri> _serviceUri() async {
 /// Connects to vm service protocol.
 ///
 /// If the VM service is not found, tries to start it.
-Future<Connection> connect() async {
+Future<VmService> connect() async {
   _log.info('Connecting to VM service protocol...');
 
   final uri = await _serviceUri();
 
   final service = await _connectWithWebSocket(uri, _handleError);
   await service.getVersion(); // Warming up and validating the connection.
-  final isolates = await _getTwoIsolates(service);
 
-  final result = Connection(service, isolates);
   _log.info('Connected to vm service protocol.');
-  return result;
+  return service;
 }
 
 void _handleError(Object? error) {
   _log.info('Error in vm service protocol: $error');
   throw error ?? Exception('Unknown error');
-}
-
-/// Tries to wait for two isolates to be available.
-///
-/// Depending on environment (command line / IDE, Flutter / Dart), isolates may have different names,
-/// and there can be one or two. Sometimes the second one appears with latency.
-/// And sometimes there are two isolates with name 'main'.
-Future<List<IsolateRef>> _getTwoIsolates(VmService service) async {
-  _log.info('Started loading isolates...');
-
-  final result = <IsolateRef>[];
-
-  const isolatesToGet = 2;
-  const watingTime = Duration(seconds: 2);
-  final stopwatch = Stopwatch()..start();
-  while (result.length < isolatesToGet && stopwatch.elapsed < watingTime) {
-    result.clear();
-    await _forEachIsolate(
-      service,
-      (IsolateRef r) async => result.add(r),
-    );
-    if (result.length < isolatesToGet) {
-      await Future.delayed(const Duration(milliseconds: 100));
-    }
-  }
-  if (result.isEmpty) {
-    throw StateError('Could not connect to isolates.');
-  }
-
-  _log.info('Ended loading isolates.');
-  return result;
 }
 
 Future<VmService> _connectWithWebSocket(
@@ -106,18 +66,4 @@ Future<VmService> _connectWithWebSocket(
   }
 
   return service;
-}
-
-/// Executes `callback` for each isolate, and waiting for all callbacks to
-/// finish before completing.
-Future<void> _forEachIsolate(
-  VmService service,
-  Future<void> Function(IsolateRef) callback,
-) async {
-  final vm = await service.getVM();
-  final futures = <Future>[];
-  for (final isolate in vm.isolates ?? []) {
-    futures.add(callback(isolate));
-  }
-  await Future.wait(futures);
 }

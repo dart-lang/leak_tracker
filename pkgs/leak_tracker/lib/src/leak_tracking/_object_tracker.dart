@@ -205,8 +205,7 @@ class ObjectTracker implements LeakProvider {
     final connection = await connect();
 
     final pathSetters = objectsToGetPath.map((record) async {
-      final path =
-          await retainingPathByCode(connection, record.type, record.code);
+      final path = await retainingPath(connection, record.ref.target);
       if (path != null) {
         record.setContext(ContextKeys.retainingPath, path);
       }

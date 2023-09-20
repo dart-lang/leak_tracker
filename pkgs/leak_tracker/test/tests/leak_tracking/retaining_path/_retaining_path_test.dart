@@ -38,10 +38,9 @@ void main() {
     final instance = MyClass();
     final connection = await connect();
 
-    final path = await retainingPathByCode(
+    final path = await retainingPath(
       connection,
-      instance.runtimeType,
-      identityHashCode(instance),
+      instance,
     );
 
     expect(path!.elements, isNotEmpty);
@@ -51,10 +50,9 @@ void main() {
     final instance = MyArgClass<String>();
     final connection = await connect();
 
-    final path = await retainingPathByCode(
+    final path = await retainingPath(
       connection,
-      instance.runtimeType,
-      identityHashCode(instance),
+      instance,
     );
     expect(path!.elements, isNotEmpty);
   });
@@ -65,8 +63,8 @@ void main() {
     final connection = await connect();
 
     final obtainers = [
-      retainingPathByCode(connection, MyClass, identityHashCode(instance1)),
-      retainingPathByCode(connection, MyClass, identityHashCode(instance2)),
+      retainingPath(connection, instance1),
+      retainingPath(connection, instance2),
     ];
 
     await Future.wait(obtainers);
