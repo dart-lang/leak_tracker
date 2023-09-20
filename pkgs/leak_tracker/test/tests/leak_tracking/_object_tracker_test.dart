@@ -4,6 +4,7 @@
 
 import 'package:clock/clock.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_finalizer.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_gc_counter.dart';
@@ -598,7 +599,8 @@ class _MockFinalizerWrapper implements FinalizerWrapper {
   _MockFinalizerWrapper(this.onGc);
 
   final ObjectGcCallback onGc;
-  final attached = <Object, Object>{};
+  // Maps tokens to objects.
+  final attached = <ObjectRecord, Object>{};
 
   @override
   void attach(Object object, Object finalizationToken, {Object? detach}) {
@@ -608,10 +610,13 @@ class _MockFinalizerWrapper implements FinalizerWrapper {
     if (attached.containsKey(finalizationToken)) {
       throw 'tokens should not duplicate';
     }
-    attached[finalizationToken] = object;
+    attached[finalizationToken as ObjectRecord] = object;
   }
 
   void finalize(Object finalizationToken) {
+    if (finalizationToken is! ObjectRecord) {
+      throw 'Unexpected type of token: ${finalizationToken.runtimeType}';
+    }
     if (!attached.containsKey(finalizationToken)) return;
     onGc(finalizationToken);
     attached.remove(finalizationToken);
@@ -622,7 +627,11 @@ class _MockFinalizerBuilder {
   late final _MockFinalizerWrapper finalizer;
 
   void gc(Object object) {
-    finalizer.finalize(object);
+    final token = finalizer.attached.entries
+        .where((entry) => entry.value == object)
+        .first
+        .key;
+    finalizer.finalize(token);
   }
 
   _MockFinalizerWrapper build(ObjectGcCallback onGc) {
