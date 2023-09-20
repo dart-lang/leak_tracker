@@ -17,6 +17,12 @@ class ObjectRecordSet {
 
   final _records = <IdentityHashCode, List<ObjectRecord>>{};
 
+  bool contains(ObjectRecord record) {
+    final list = _records[record.code];
+    if (list == null) return false;
+    return list.contains(record);
+  }
+
   ObjectRecord? record(Object object) {
     final code = identityHashCode(object);
 
@@ -62,6 +68,12 @@ class ObjectRecordSet {
 
   int _length = 0;
   int get length => _length;
+
+  void forEach(void Function(ObjectRecord record) callback) {
+    for (var list in _records.values) {
+      list.forEach(callback);
+    }
+  }
 }
 
 /// Object collections to track leaks.
@@ -95,7 +107,7 @@ class ObjectRecords {
   /// GCed ibjects that were not disposed.
   final List<ObjectRecord> gcedNotDisposedLeaks = <ObjectRecord>[];
 
-  void _assertNotWatched(IdentityHashCode code) {
+  void _assertNotWatchedToBeGCed(ObjectRecord record) {
     // assert(() {
     //   assert(!notGCed.containsKey(code));
     //   assert(!notGCedDisposedOk.contains(code));
@@ -105,30 +117,29 @@ class ObjectRecords {
     // }());
   }
 
-  void assertRecordIntegrity(ObjectRecord code) {
-    // assert(() {
-    //   final notGCedSetMembership = (notGCedDisposedOk.contains(code) ? 1 : 0) +
-    //       (notGCedDisposedLate.contains(code) ? 1 : 0) +
-    //       (notGCedDisposedLateCollected.contains(code) ? 1 : 0);
+  void assertRecordIntegrity(ObjectRecord record) {
+    assert(() {
+      final notGCedSetMembership =
+          (notGCedDisposedOk.contains(record) ? 1 : 0) +
+              (notGCedDisposedLate.contains(record) ? 1 : 0) +
+              (notGCedDisposedLateCollected.contains(record) ? 1 : 0);
 
-    //   assert(notGCedSetMembership <= 1);
+      assert(notGCedSetMembership <= 1);
 
-    //   if (notGCedSetMembership == 1) {
-    //     assert(notGCed.containsKey(code));
-    //   }
+      if (notGCedSetMembership == 1) {
+        assert(notGCed.contains(record));
+      }
 
-    //   if (duplicates.contains(code)) _assertNotWatched(code);
-    //   return true;
-    // }());
+      return true;
+    }());
   }
 
   void assertIntegrity() {
-    // assert(() {
-    //   notGCed.keys.forEach(assertRecordIntegrity);
-    //   gcedLateLeaks.map((e) => e.code).forEach(_assertNotWatched);
-    //   gcedNotDisposedLeaks.map((e) => e.code).forEach(_assertNotWatched);
-    //   duplicates.forEach(_assertNotWatched);
-    //   return true;
-    // }());
+    assert(() {
+      notGCed.forEach(assertRecordIntegrity);
+      gcedLateLeaks.forEach(_assertNotWatchedToBeGCed);
+      gcedNotDisposedLeaks.forEach(_assertNotWatchedToBeGCed);
+      return true;
+    }());
   }
 }
