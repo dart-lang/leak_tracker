@@ -28,6 +28,10 @@ class ObjectRecord {
 
   final WeakReference<Object> ref;
 
+  /// [IdentityHashCode] of the object.
+  ///
+  /// Is needed to help debugging notDisposed leak, for which
+  /// the object is already GCed and thus there is no access to its code.
   final IdentityHashCode code;
 
   Map<String, dynamic>? context;
