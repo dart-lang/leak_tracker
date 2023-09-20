@@ -33,7 +33,7 @@ class ObjectTracker implements LeakProvider {
     GcCounter? gcCounter,
   }) {
     finalizerBuilder ??= buildStandardFinalizer;
-    _finalizer = finalizerBuilder(_onOobjectGarbageCollected);
+    _finalizer = finalizerBuilder(_onObjectGarbageCollected);
     _gcCounter = gcCounter ?? GcCounter();
   }
 
@@ -77,7 +77,7 @@ class ObjectTracker implements LeakProvider {
     _objects.assertRecordIntegrity(record);
   }
 
-  void _onOobjectGarbageCollected(Object record) {
+  void _onObjectGarbageCollected(Object record) {
     if (disposed) return;
     if (record is! ObjectRecord) throw 'record should be $ObjectRecord.';
 
