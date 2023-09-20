@@ -166,8 +166,8 @@ void main() {
         phase: const PhaseSettings(),
       );
       expect(
-        finalizerBuilder.finalizer.attached,
-        contains(identityHashCode(theObject)),
+        finalizerBuilder.finalizer.attached.values,
+        contains(theObject),
       );
     });
 
