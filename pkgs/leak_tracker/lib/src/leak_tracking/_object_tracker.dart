@@ -62,6 +62,7 @@ class ObjectTracker implements LeakProvider {
     required String trackedClass,
     required PhaseSettings phase,
   }) {
+    //print('!!!!! started tracking ${identityHashCode(object)}');
     throwIfDisposed();
     if (phase.isLeakTrackingPaused || switches.isObjectTrackingDisabled) return;
 
@@ -78,6 +79,7 @@ class ObjectTracker implements LeakProvider {
   }
 
   void _onObjectGarbageCollected(Object record) {
+    //print('!!!!! garbage collected ${identityHashCode(record.hashCode)}');
     if (disposed) return;
     if (record is! ObjectRecord) throw 'record should be $ObjectRecord.';
 
