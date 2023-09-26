@@ -19,7 +19,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   tearDownAll(() async {
     final theLeaks = leaks;
     if (theLeaks == null) throw 'leaks should be detected';
-    print(theLeaks.notDisposed.length);
+    expect(theLeaks.notDisposed, hasLength(2));
   });
 
   configureLeakTrackingTearDown(

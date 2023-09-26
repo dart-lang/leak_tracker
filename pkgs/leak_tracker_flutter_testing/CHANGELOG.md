@@ -1,3 +1,7 @@
+# 1.0.5
+
+* If an object is not disposed by the end of testing, mark it as notDisposed.
+
 # 1.0.4
 
 * Update matcher for memory events to handle async callbacks.
