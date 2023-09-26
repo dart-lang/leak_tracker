@@ -66,8 +66,9 @@ void configureLeakTrackingTearDown({
 Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   if (!LeakTracking.isStarted) return;
   if (!_isPlatformSupported) return;
-
   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
+
+  LeakTracking.convertNotDisposedToLeaks();
   await forceGC(fullGcCycles: _leakTrackingTestSettings.numberOfGcCycles);
   // This delay is needed to make sure all disposed and not GCed object are
   // declared as leaks, and thus there is no flakiness in tests.
