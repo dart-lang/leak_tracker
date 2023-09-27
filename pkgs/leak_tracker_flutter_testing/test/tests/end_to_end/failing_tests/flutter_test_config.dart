@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
-/// Test configuration for each test library in this directory.
+/// The test configuration for each test library in this directory.
 ///
 /// See https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html.
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
