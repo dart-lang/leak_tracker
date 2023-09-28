@@ -216,6 +216,6 @@ abstract class LeakTracking {
   /// Should be invoked after test execution, to detect
   /// not disposed objects, that are not GCed yet.
   static void convertNotDisposedToLeaks() {
-    _leakTracker?.objectTracker.markAllNotDisposedGCed();
+    _leakTracker?.objectTracker.declareAllNotDisposedAsLeaks();
   }
 }
