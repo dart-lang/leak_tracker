@@ -107,6 +107,8 @@ class ObjectTracker implements LeakProvider {
   /// Is used to make sure all disposables are disposed by the the end of the test.
   void declareAllNotDisposedAsLeaks() {
     throwIfDisposed();
+    // We need this temporary storage to avoid errror 'concurrent modification during iteration'
+    // for internal iterables in `_objects.notGCed`.
     final notGCedAndNotDisposed = <ObjectRecord>[];
     _objects.notGCed.forEach((record) {
       if (!record.isDisposed) notGCedAndNotDisposed.add(record);
