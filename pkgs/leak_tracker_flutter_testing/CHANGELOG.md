@@ -1,11 +1,11 @@
 # 1.0.5
 
 * If an object is not disposed by the end of testing, mark it as notDisposed.
+* Bump version of SDK to 3.1.2.
 
 # 1.0.4
 
 * Update matcher for memory events to handle async callbacks.
-* Bump version of SDK to 3.1.2.
 
 # 1.0.3
 
