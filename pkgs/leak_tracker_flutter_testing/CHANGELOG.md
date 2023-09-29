@@ -1,3 +1,7 @@
+# 1.0.6
+
+* If an object is not disposed by the end of testing, mark it as notDisposed.
+
 # 1.0.5
 
 * Bump version of SDK to 3.1.2.

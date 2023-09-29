@@ -32,8 +32,10 @@ class ObjectRecordSet {
     return list.firstWhereOrNull((r) => r.ref.target == object);
   }
 
+  /// Removes record if it exists in the set.
   void remove(ObjectRecord record) {
-    final list = _records[record.code]!;
+    final list = _records[record.code];
+    if (list == null) return;
     bool removed = false;
     list.removeWhere((r) {
       if (r == record) {
@@ -42,7 +44,6 @@ class ObjectRecordSet {
       }
       return r == record;
     });
-    assert(removed);
     _length--;
     if (list.isEmpty) _records.remove(record.code);
   }

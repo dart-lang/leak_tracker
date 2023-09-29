@@ -84,6 +84,10 @@ class ObjectTracker implements LeakProvider {
     _objects.assertRecordIntegrity(record);
     record.setGCed(_gcCounter.gcCount, clock.now());
 
+    _declareNotDisposedLeak(record);
+  }
+
+  void _declareNotDisposedLeak(ObjectRecord record) {
     if (record.isGCedLateLeak(disposalTime, numberOfGcCycles)) {
       _objects.gcedLateLeaks.add(record);
     } else if (record.isNotDisposedLeak) {
@@ -96,6 +100,20 @@ class ObjectTracker implements LeakProvider {
     _objects.notGCedDisposedLateCollected.remove(record);
 
     _objects.assertRecordIntegrity(record);
+  }
+
+  /// Declares all not disposed objects as leaks, even if they are not GCed yet.
+  ///
+  /// Is used to make sure all disposables are disposed by the the end of the test.
+  void declareAllNotDisposedAsLeaks() {
+    throwIfDisposed();
+    // We need this temporary storage to avoid error 'concurrent modification during iteration'
+    // for internal iterables in `_objects.notGCed`.
+    final notGCedAndNotDisposed = <ObjectRecord>[];
+    _objects.notGCed.forEach((record) {
+      if (!record.isDisposed) notGCedAndNotDisposed.add(record);
+    });
+    notGCedAndNotDisposed.forEach(_declareNotDisposedLeak);
   }
 
   void dispatchDisposal(

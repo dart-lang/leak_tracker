@@ -210,4 +210,12 @@ abstract class LeakTracking {
 
     await (result ?? Future.value());
   }
+
+  /// Declares all not disposed objects as leaks.
+  ///
+  /// Should be invoked after test execution, to detect
+  /// not disposed objects, even if they are not GCed yet.
+  static void declareNotDisposedObjectsAsLeaks() {
+    _leakTracker?.objectTracker.declareAllNotDisposedAsLeaks();
+  }
 }
