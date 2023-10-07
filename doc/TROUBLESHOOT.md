@@ -42,6 +42,19 @@ final OverlayEntry overlayEntry = OverlayEntry(...);
 addTearDown(() => overlayEntry..remove()..dispose());
 ```
 
+### 3. The test starts a gesture
+
+If your test starts a test gesture, make sure to finish it to release resources:
+
+```dart
+final TestGesture gesture = await tester.startGesture(
+...
+// Finish gesture to release resources.
+await tester.pumpAndSettle();
+await gesture.up();
+await tester.pumpAndSettle();
+```
+
 ## Get additional information
 
 To understand the root cause of a memory leak, you may want to gather additional information.
