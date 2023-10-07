@@ -15,7 +15,8 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   var leaksDetected = false;
 
   setLeakTrackingTestSettings(
-    LeakTrackingTestSettings(switches: const Switches(disableNotGCed: true)),
+    LeakTrackingTestSettingsLegacy(
+        switches: const Switches(disableNotGCed: true)),
   );
 
   // This tear down should be set before leak tracking tear down in

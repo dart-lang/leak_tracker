@@ -10,12 +10,14 @@ import 'package:meta/meta.dart';
 
 import 'model.dart';
 
-LeakTrackingTestSettings _leakTrackingTestSettings = LeakTrackingTestSettings();
+LeakTrackingTestSettingsLegacy _leakTrackingTestSettings =
+    LeakTrackingTestSettingsLegacy();
 
 /// Configures leak tracking settings for each invocation of `testWidgetsWithLeakTracking`.
-void setLeakTrackingTestSettings(LeakTrackingTestSettings settings) {
+void setLeakTrackingTestSettings(LeakTrackingTestSettingsLegacy settings) {
   if (LeakTracking.isStarted) {
-    throw StateError('$LeakTrackingTestSettings should be set before start');
+    throw StateError(
+        '$LeakTrackingTestSettingsLegacy should be set before start');
   }
   _leakTrackingTestSettings = settings;
 }

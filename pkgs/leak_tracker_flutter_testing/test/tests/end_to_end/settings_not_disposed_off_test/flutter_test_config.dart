@@ -15,7 +15,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   var leaksDetected = false;
 
   setLeakTrackingTestSettings(
-    LeakTrackingTestSettings(
+    LeakTrackingTestSettingsLegacy(
       switches: const Switches(disableNotDisposed: true),
     ),
   );

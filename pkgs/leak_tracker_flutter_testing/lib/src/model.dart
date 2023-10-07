@@ -4,12 +4,42 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 
+/// Leak tracking settings for tests.
+class LeakTrackingTestSettings {
+  /// Switches for leak types.
+  final Switches switches;
+
+  /// Classes that are allowed to be not garbage collected after disposal.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to be not GCed.
+  ///
+  /// If number of instances is [null], any number of instances is allowed.
+  final Map<String, int?> notGCedAllowList;
+
+  /// Classes that are allowed to be garbage collected without being disposed.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to be not disposed.
+  ///
+  /// If number of instances is [null], any number of instances is allowed.
+  final Map<String, int?> notDisposedAllowList;
+
+  /// Defines which disgnostics information to collect.
+  ///
+  /// Knowing call stack may help to troubleshoot memory leaks.
+  /// Customize this parameter to collect stack traces when needed.
+  final LeakDiagnosticConfig leakDiagnosticConfig;
+}
+
 /// Configuration, that can be set before testing start.
 ///
 /// It will be passed to [LeakTracking.start()],
 /// when invoked for first test with leak tracking.
-class LeakTrackingTestSettings {
-  LeakTrackingTestSettings({
+// TODO(polina-c): remove this class in favor of [LeakTrackingSettings]
+// https://github.com/flutter/devtools/issues/3951
+class LeakTrackingTestSettingsLegacy {
+  LeakTrackingTestSettingsLegacy({
     this.switches = const Switches(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.disposalTime = Duration.zero,
@@ -31,6 +61,8 @@ class LeakTrackingTestSettings {
 ///
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
+// TODO(polina-c): remove this class in favor of [LeakTrackingSettings]
+// https://github.com/flutter/devtools/issues/3951
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingTestConfig].
   const LeakTrackingTestConfig({
