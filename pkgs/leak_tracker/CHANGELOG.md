@@ -1,3 +1,7 @@
+# 9.0.8
+
+* Enable declaring all not disposed objects as leaks.
+
 # 9.0.7
 
 * Use ObjectRecord instead of hash code to identify objects.
