@@ -75,8 +75,8 @@ class LeakAllowLists {
 void _emptyLeakHandler(Leaks leaks) {}
 
 /// Leak tracking settings for tests.
-class LeakTrackingInTests {
-  LeakTrackingInTests._({
+class LeakTrackingForTests {
+  LeakTrackingForTests._({
     this.leakAllowLists = const LeakAllowLists(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.failOnLeaks = true,
@@ -84,14 +84,14 @@ class LeakTrackingInTests {
     this.baselining = const MemoryBaselining.none(),
   });
 
-  LeakTrackingInTests copyWith({
+  LeakTrackingForTests copyWith({
     LeakAllowLists? leakAllowLists,
     LeakDiagnosticConfig? leakDiagnosticConfig,
     bool? failOnLeaks,
     LeaksCallback? onLeaks,
     MemoryBaselining? baselining,
   }) {
-    return LeakTrackingInTests._(
+    return LeakTrackingForTests._(
       leakAllowLists: leakAllowLists ?? this.leakAllowLists,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaks: failOnLeaks ?? this.failOnLeaks,
@@ -100,15 +100,15 @@ class LeakTrackingInTests {
     );
   }
 
-  static LeakTrackingInTests instance = LeakTrackingInTests._();
+  static LeakTrackingForTests instance = LeakTrackingForTests._();
 
-  static LeakTrackingInTests debugNotGCed() {
+  static LeakTrackingForTests debugNotGCed() {
     return instance.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotGCed(),
     );
   }
 
-  static LeakTrackingInTests debugNotDisposed() {
+  static LeakTrackingForTests debugNotDisposed() {
     return instance.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotDisposed(),
     );
@@ -117,7 +117,7 @@ class LeakTrackingInTests {
   /// Returns [instance] with extended allow lists.
   ///
   /// Sets maximum of allowed number of leaks per class.
-  static LeakTrackingInTests allow({
+  static LeakTrackingForTests allow({
     LeakAllowList? notGCed,
     bool? allNotGced,
     LeakAllowList? notDisposed,
@@ -134,7 +134,7 @@ class LeakTrackingInTests {
   }
 
   /// Removes classes from leak allow lists.
-  static LeakTrackingInTests disallow({
+  static LeakTrackingForTests disallow({
     notGCed = const [],
     notDisposed = const [],
   }) {
