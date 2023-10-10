@@ -50,6 +50,18 @@ class LeakDiagnosticConfig {
     this.collectStackTraceOnDisposal = false,
   });
 
+  const LeakDiagnosticConfig.debugNotGCed()
+      : this(
+          collectStackTraceOnStart: true,
+          collectRetainingPathForNotGCed: true,
+          collectStackTraceOnDisposal: true,
+        );
+
+  const LeakDiagnosticConfig.debugNotDisposed()
+      : this(
+          collectStackTraceOnStart: true,
+        );
+
   /// If true, stack trace will be collected on start of tracking for all classes.
   final bool collectStackTraceOnStart;
 
@@ -259,6 +271,10 @@ class MemoryBaselining {
     this.baseline,
   }) : assert(!(mode == BaseliningMode.regression && baseline == null));
 
+  const MemoryBaselining.none()
+      : mode = BaseliningMode.none,
+        baseline = null;
+
   final BaseliningMode mode;
 
   final MemoryBaseline? baseline;
@@ -278,6 +294,9 @@ class MemoryBaselining {
 }
 
 enum BaseliningMode {
+  /// No baselining.
+  none,
+
   /// Measure memory footprint and output to console when phase is finished.
   measure,
 

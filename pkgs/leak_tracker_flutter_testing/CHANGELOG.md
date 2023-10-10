@@ -1,3 +1,7 @@
+# 1.0.6-wip
+
+* Make configuration adjustable.
+
 # 1.0.5
 
 * Bump version of SDK to 3.1.2.

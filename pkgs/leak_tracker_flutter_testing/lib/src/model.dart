@@ -2,44 +2,178 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:math';
+
 import 'package:leak_tracker/leak_tracker.dart';
 
+class LeakAllowList {
+  const LeakAllowList._({this.byClass = const {}, this.allowAll = false});
+
+  const LeakAllowList.allowAll() : this._(allowAll: true, byClass: const {});
+
+  const LeakAllowList.byClass(this.byClass) : allowAll = false;
+
+  const LeakAllowList.empty() : this._(allowAll: false, byClass: const {});
+
+  final Map<String, int?> byClass;
+
+  /// If true, all leaks are allowed, otherwise [byClass] defines what is allowed.
+  final bool allowAll;
+
+  LeakAllowList copyWith({Map<String, int?>? byClass, bool? allowAll}) {
+    return LeakAllowList._(
+      allowAll: allowAll ?? this.allowAll,
+      byClass: byClass ?? this.byClass,
+    );
+  }
+
+  /// Merges two allow lists.
+  ///
+  /// Sets maximum of allowed number of leaks.
+  LeakAllowList merge(LeakAllowList? other) {
+    if (other == null) return this;
+    final map = {...byClass};
+    for (final theClass in other.byClass.keys) {
+      if (!byClass.containsKey(theClass)) {
+        continue;
+      }
+      final int? otherCount = other.byClass[theClass];
+      final int? thisCount = byClass[theClass];
+      if (thisCount == null || otherCount == null) {
+        map[theClass] = null;
+        continue;
+      }
+      map[theClass] = max(thisCount, otherCount);
+    }
+    return LeakAllowList._(
+      byClass: map,
+      allowAll: allowAll || other.allowAll,
+    );
+  }
+
+  /// Disallows list of classes.
+  LeakAllowList disallow(List<String> list) {
+    if (list.isEmpty) return this;
+    final map = {...byClass};
+    list.forEach(map.remove);
+    return copyWith(byClass: map);
+  }
+}
+
+class LeakAllowLists {
+  const LeakAllowLists({
+    this.notGCed = const LeakAllowList.empty(),
+    this.notDisposed = const LeakAllowList.empty(),
+    this.allawAll = false,
+  });
+
+  final LeakAllowList notGCed;
+  final LeakAllowList notDisposed;
+  final bool allawAll;
+}
+
+void _emptyLeakHandler(Leaks leaks) {}
+
 /// Leak tracking settings for tests.
-class LeakTrackingTestSettings {
-  /// Switches for leak types.
-  final Switches switches;
+class LeakTrackingInTests {
+  LeakTrackingInTests._({
+    this.leakAllowLists = const LeakAllowLists(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    this.failOnLeaks = true,
+    this.onLeaks = _emptyLeakHandler,
+    this.baselining = const MemoryBaselining.none(),
+  });
 
-  /// Classes that are allowed to be not garbage collected after disposal.
-  ///
-  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
-  /// to the number of instances of the class that are allowed to be not GCed.
-  ///
-  /// If number of instances is [null], any number of instances is allowed.
-  final Map<String, int?> notGCedAllowList;
+  LeakTrackingInTests copyWith({
+    LeakAllowLists? leakAllowLists,
+    LeakDiagnosticConfig? leakDiagnosticConfig,
+    bool? failOnLeaks,
+    LeaksCallback? onLeaks,
+    MemoryBaselining? baselining,
+  }) {
+    return LeakTrackingInTests._(
+      leakAllowLists: leakAllowLists ?? this.leakAllowLists,
+      leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
+      failOnLeaks: failOnLeaks ?? this.failOnLeaks,
+      onLeaks: onLeaks ?? this.onLeaks,
+      baselining: baselining ?? this.baselining,
+    );
+  }
 
-  /// Classes that are allowed to be garbage collected without being disposed.
+  static LeakTrackingInTests instance = LeakTrackingInTests._();
+
+  static LeakTrackingInTests debugNotGCed() {
+    return instance.copyWith(
+      leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotGCed(),
+    );
+  }
+
+  static LeakTrackingInTests debugNotDisposed() {
+    return instance.copyWith(
+      leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotDisposed(),
+    );
+  }
+
+  /// Returns [instance] with extended allow lists.
   ///
-  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
-  /// to the number of instances of the class that are allowed to be not disposed.
-  ///
-  /// If number of instances is [null], any number of instances is allowed.
-  final Map<String, int?> notDisposedAllowList;
+  /// Sets maximum of allowed number of leaks per class.
+  static LeakTrackingInTests allow({
+    LeakAllowList? notGCed,
+    bool? allNotGced,
+    LeakAllowList? notDisposed,
+    bool? allNotDisposed,
+    all = false,
+  }) {
+    return instance.copyWith(
+      leakAllowLists: LeakAllowLists(
+        allawAll: instance.leakAllowLists.allawAll || all,
+        notGCed: instance.leakAllowLists.notGCed.merge(notGCed),
+        notDisposed: instance.leakAllowLists.notGCed.merge(notDisposed),
+      ),
+    );
+  }
+
+  /// Removes classes from leak allow lists.
+  static LeakTrackingInTests disallow({
+    notGCed = const [],
+    notDisposed = const [],
+  }) {
+    return instance.copyWith(
+      leakAllowLists: LeakAllowLists(
+        allawAll: instance.leakAllowLists.allawAll,
+        notGCed: instance.leakAllowLists.notGCed.disallow(notGCed),
+        notDisposed: instance.leakAllowLists.notGCed.disallow(notDisposed),
+      ),
+    );
+  }
+
+  final bool failOnLeaks;
+
+  final LeaksCallback onLeaks;
+
+  final LeakAllowLists leakAllowLists;
 
   /// Defines which disgnostics information to collect.
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  /// Configuration for memory baselining.
+  ///
+  /// Tests with deeply equal values of [MemoryBaselining],
+  /// if ran sequentially, will be baselined together.
+  final MemoryBaselining baselining;
 }
 
 /// Configuration, that can be set before testing start.
 ///
 /// It will be passed to [LeakTracking.start()],
 /// when invoked for first test with leak tracking.
-// TODO(polina-c): remove this class in favor of [LeakTrackingSettings]
+// TODO(polina-c): remove this class in favor of [LeakTrackingInTests]
 // https://github.com/flutter/devtools/issues/3951
-class LeakTrackingTestSettingsLegacy {
-  LeakTrackingTestSettingsLegacy({
+class LeakTrackingTestSettings {
+  LeakTrackingTestSettings({
     this.switches = const Switches(),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.disposalTime = Duration.zero,
