@@ -15,6 +15,12 @@ class LeakSkipList {
 
   const LeakSkipList.trackAll() : this._(skipAll: false, byClass: const {});
 
+  /// Classes to skip leaks for.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to leak.
+  ///
+  /// If number of instances is [null], all leaks are skipped.
   final Map<String, int?> byClass;
 
   /// If true, all leaks are skipped, otherwise [byClass] defines what is skipped.
@@ -58,6 +64,13 @@ class LeakSkipList {
     list.forEach(map.remove);
     return copyWith(byClass: map);
   }
+
+  bool isTracked(String className) {
+    if (skipAll) return false;
+    if (byClass.containsKey(className) && byClass[className] != null)
+      return true;
+    return false;
+  }
 }
 
 class LeakSkipLists {
@@ -73,6 +86,23 @@ class LeakSkipLists {
   final LeakSkipList notGCed;
   final LeakSkipList notDisposed;
   final bool skipAll;
+
+  /// Returns true if the class is tracked.
+  ///
+  /// If [leakType] is null, returns true if the class tracked for at
+  /// least one leak type.
+  bool isTracked(String className, {LeakType? leakType}) {
+    if (skipAll) return false;
+    switch (leakType) {
+      case null:
+        return notGCed.isTracked(className) || notDisposed.isTracked(className);
+      case LeakType.notDisposed:
+        return notDisposed.isTracked(className);
+      case LeakType.notGCed:
+      case LeakType.gcedLate:
+        return notGCed.isTracked(className);
+    }
+  }
 }
 
 /// Configuration, that can be set before testing start.

@@ -6,7 +6,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_flutter_testing/src/leak_tracking_for_tests.dart';
 
 void main() {
-  test('$LeakTrackingForTestsSettings can be altered by level', () async {
-    // LeakTrackingInTests.
+  test('$LeakTrackingForTestsSettings can be altered by levels', () async {
+    const myClass = 'MyClass';
+    expect(_isTracked(myClass), false);
   });
 }
+
+bool _isTracked(String className) =>
+    LeakTrackingForTests.settings.leakSkipLists.isTracked(className);
