@@ -8,6 +8,6 @@ import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 void main() {
   test('$LeakTrackingInTests can be altered', () async {
-    LeakTrackingInTests.
+    // LeakTrackingInTests.
   });
 }
