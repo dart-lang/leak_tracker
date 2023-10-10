@@ -3,10 +3,10 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+import 'package:leak_tracker_flutter_testing/src/leak_tracking_for_tests.dart';
 
 void main() {
-  test('$LeakTrackingForTests can be altered', () async {
+  test('$LeakTrackingForTestsSettings can be altered by level', () async {
     // LeakTrackingInTests.
   });
 }

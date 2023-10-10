@@ -6,31 +6,31 @@ import 'dart:math';
 
 import 'package:leak_tracker/leak_tracker.dart';
 
-class LeakAllowList {
-  const LeakAllowList._({this.byClass = const {}, this.allowAll = false});
+class LeakSkipList {
+  const LeakSkipList._({this.byClass = const {}, this.skipAll = false});
 
-  const LeakAllowList.allowAll() : this._(allowAll: true, byClass: const {});
+  const LeakSkipList.skipAll() : this._(skipAll: true, byClass: const {});
 
-  const LeakAllowList.byClass(this.byClass) : allowAll = false;
+  const LeakSkipList.byClass(this.byClass) : skipAll = false;
 
-  const LeakAllowList.empty() : this._(allowAll: false, byClass: const {});
+  const LeakSkipList.trackAll() : this._(skipAll: false, byClass: const {});
 
   final Map<String, int?> byClass;
 
-  /// If true, all leaks are allowed, otherwise [byClass] defines what is allowed.
-  final bool allowAll;
+  /// If true, all leaks are skipped, otherwise [byClass] defines what is skipped.
+  final bool skipAll;
 
-  LeakAllowList copyWith({Map<String, int?>? byClass, bool? allowAll}) {
-    return LeakAllowList._(
-      allowAll: allowAll ?? this.allowAll,
+  LeakSkipList copyWith({Map<String, int?>? byClass, bool? skipAll}) {
+    return LeakSkipList._(
+      skipAll: skipAll ?? this.skipAll,
       byClass: byClass ?? this.byClass,
     );
   }
 
-  /// Merges two allow lists.
+  /// Merges two skip lists.
   ///
-  /// Sets maximum of allowed number of leaks.
-  LeakAllowList merge(LeakAllowList? other) {
+  /// In result the skip limit for a class is maximum of two original skip limits.
+  LeakSkipList merge(LeakSkipList? other) {
     if (other == null) return this;
     final map = {...byClass};
     for (final theClass in other.byClass.keys) {
@@ -45,14 +45,14 @@ class LeakAllowList {
       }
       map[theClass] = max(thisCount, otherCount);
     }
-    return LeakAllowList._(
+    return LeakSkipList._(
       byClass: map,
-      allowAll: allowAll || other.allowAll,
+      skipAll: skipAll || other.skipAll,
     );
   }
 
-  /// Disallows list of classes.
-  LeakAllowList disallow(List<String> list) {
+  /// Remove the classes from skip lists.
+  LeakSkipList track(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
     list.forEach(map.remove);
@@ -60,110 +60,19 @@ class LeakAllowList {
   }
 }
 
-class LeakAllowLists {
-  const LeakAllowLists({
-    this.notGCed = const LeakAllowList.empty(),
-    this.notDisposed = const LeakAllowList.empty(),
-    this.allawAll = false,
+class LeakSkipLists {
+  const LeakSkipLists({
+    this.notGCed = const LeakSkipList.trackAll(),
+    this.notDisposed = const LeakSkipList.trackAll(),
+    this.skipAll = false,
   });
 
-  final LeakAllowList notGCed;
-  final LeakAllowList notDisposed;
-  final bool allawAll;
-}
+  const LeakSkipLists.skipAll() : this(skipAll: true);
+  const LeakSkipLists.trackAll() : this();
 
-void _emptyLeakHandler(Leaks leaks) {}
-
-/// Leak tracking settings for tests.
-class LeakTrackingForTests {
-  LeakTrackingForTests._({
-    this.leakAllowLists = const LeakAllowLists(),
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.failOnLeaks = true,
-    this.onLeaks = _emptyLeakHandler,
-    this.baselining = const MemoryBaselining.none(),
-  });
-
-  LeakTrackingForTests copyWith({
-    LeakAllowLists? leakAllowLists,
-    LeakDiagnosticConfig? leakDiagnosticConfig,
-    bool? failOnLeaks,
-    LeaksCallback? onLeaks,
-    MemoryBaselining? baselining,
-  }) {
-    return LeakTrackingForTests._(
-      leakAllowLists: leakAllowLists ?? this.leakAllowLists,
-      leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
-      failOnLeaks: failOnLeaks ?? this.failOnLeaks,
-      onLeaks: onLeaks ?? this.onLeaks,
-      baselining: baselining ?? this.baselining,
-    );
-  }
-
-  static LeakTrackingForTests instance = LeakTrackingForTests._();
-
-  static LeakTrackingForTests debugNotGCed() {
-    return instance.copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotGCed(),
-    );
-  }
-
-  static LeakTrackingForTests debugNotDisposed() {
-    return instance.copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotDisposed(),
-    );
-  }
-
-  /// Returns [instance] with extended allow lists.
-  ///
-  /// Sets maximum of allowed number of leaks per class.
-  static LeakTrackingForTests allow({
-    LeakAllowList? notGCed,
-    bool? allNotGced,
-    LeakAllowList? notDisposed,
-    bool? allNotDisposed,
-    all = false,
-  }) {
-    return instance.copyWith(
-      leakAllowLists: LeakAllowLists(
-        allawAll: instance.leakAllowLists.allawAll || all,
-        notGCed: instance.leakAllowLists.notGCed.merge(notGCed),
-        notDisposed: instance.leakAllowLists.notGCed.merge(notDisposed),
-      ),
-    );
-  }
-
-  /// Removes classes from leak allow lists.
-  static LeakTrackingForTests disallow({
-    notGCed = const [],
-    notDisposed = const [],
-  }) {
-    return instance.copyWith(
-      leakAllowLists: LeakAllowLists(
-        allawAll: instance.leakAllowLists.allawAll,
-        notGCed: instance.leakAllowLists.notGCed.disallow(notGCed),
-        notDisposed: instance.leakAllowLists.notGCed.disallow(notDisposed),
-      ),
-    );
-  }
-
-  final bool failOnLeaks;
-
-  final LeaksCallback onLeaks;
-
-  final LeakAllowLists leakAllowLists;
-
-  /// Defines which disgnostics information to collect.
-  ///
-  /// Knowing call stack may help to troubleshoot memory leaks.
-  /// Customize this parameter to collect stack traces when needed.
-  final LeakDiagnosticConfig leakDiagnosticConfig;
-
-  /// Configuration for memory baselining.
-  ///
-  /// Tests with deeply equal values of [MemoryBaselining],
-  /// if ran sequentially, will be baselined together.
-  final MemoryBaselining baselining;
+  final LeakSkipList notGCed;
+  final LeakSkipList notDisposed;
+  final bool skipAll;
 }
 
 /// Configuration, that can be set before testing start.
