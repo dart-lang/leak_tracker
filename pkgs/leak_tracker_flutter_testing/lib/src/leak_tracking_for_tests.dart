@@ -20,6 +20,9 @@ abstract class LeakTrackingForTests {
     _settings = value;
   }
 
+  static void pause() => settings = settings.copyWith(paused: true);
+  static void start() => settings = settings.copyWith(paused: false);
+
   static LeakTrackingForTestsSettings debugNotGCed() {
     return _settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotGCed(),
@@ -40,7 +43,6 @@ abstract class LeakTrackingForTests {
     bool? allNotGced,
     LeakSkipList? notDisposed,
     bool? allNotDisposed,
-    all = false,
   }) {
     return _settings.copyWith(
       leakSkipLists: LeakSkipLists(
@@ -51,9 +53,6 @@ abstract class LeakTrackingForTests {
   }
 
   /// Removes classes from leak skip lists.
-  ///
-  /// If skipAll is true in skip lists, the classes will not be tracked.
-  /// Result skip limit for a class is set to maximum of two skip limits.
   static LeakTrackingForTestsSettings track({
     notGCed = const [],
     notDisposed = const [],
@@ -98,6 +97,7 @@ class LeakTrackingForTestsSettings {
     );
   }
 
+  /// If true, leak tracking is paused.
   final bool paused;
 
   final bool failOnLeaks;
