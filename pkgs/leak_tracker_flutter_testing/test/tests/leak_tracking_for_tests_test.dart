@@ -14,4 +14,4 @@ void main() {
 }
 
 bool _isTracked(String className) =>
-    LeakTrackingForTests.settings.leakSkipLists.isTracked(className);
+    LeakTrackingForTests.settings.leakSkipLists.isSkipped(className);

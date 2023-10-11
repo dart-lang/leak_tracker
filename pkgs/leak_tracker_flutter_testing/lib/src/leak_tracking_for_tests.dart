@@ -60,8 +60,8 @@ abstract class LeakTrackingForTests {
   }) {
     return _settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        notGCed: _settings.leakSkipLists.notGCed.track(notGCed),
-        notDisposed: _settings.leakSkipLists.notGCed.track(notDisposed),
+        notGCed: _settings.leakSkipLists.notGCed.remove(notGCed),
+        notDisposed: _settings.leakSkipLists.notGCed.remove(notDisposed),
       ),
     );
   }

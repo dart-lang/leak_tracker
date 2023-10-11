@@ -13,7 +13,7 @@ class LeakSkipList {
 
   const LeakSkipList.byClass(this.byClass) : skipAll = false;
 
-  const LeakSkipList.trackAll() : this._(skipAll: false, byClass: const {});
+  const LeakSkipList() : this._(skipAll: false, byClass: const {});
 
   /// Classes to skip leaks for.
   ///
@@ -58,41 +58,41 @@ class LeakSkipList {
   }
 
   /// Remove the classes from skip lists.
-  LeakSkipList track(List<String> list) {
+  LeakSkipList remove(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
     list.forEach(map.remove);
     return copyWith(byClass: map);
   }
 
-  bool isTracked(String className) {
-    if (skipAll) return false;
-    return byClass.containsKey(className) && byClass[className] != null;
+  bool isSkipped(String className) {
+    if (skipAll) return true;
+    return byClass.containsKey(className) && byClass[className] == null;
   }
 }
 
 class LeakSkipLists {
   const LeakSkipLists({
-    this.notGCed = const LeakSkipList.trackAll(),
-    this.notDisposed = const LeakSkipList.trackAll(),
+    this.notGCed = const LeakSkipList(),
+    this.notDisposed = const LeakSkipList(),
   });
 
   final LeakSkipList notGCed;
   final LeakSkipList notDisposed;
 
-  /// Returns true if the class is tracked.
+  /// Returns true if the class is skipped.
   ///
-  /// If [leakType] is null, returns true if the class tracked for at
-  /// least one leak type.
-  bool isTracked(String className, {LeakType? leakType}) {
+  /// If [leakType] is null, returns true if the class is skipped for all
+  /// leak types.
+  bool isSkipped(String className, {LeakType? leakType}) {
     switch (leakType) {
       case null:
-        return notGCed.isTracked(className) || notDisposed.isTracked(className);
+        return notGCed.isSkipped(className) && notDisposed.isSkipped(className);
       case LeakType.notDisposed:
-        return notDisposed.isTracked(className);
+        return notDisposed.isSkipped(className);
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return notGCed.isTracked(className);
+        return notGCed.isSkipped(className);
     }
   }
 }
