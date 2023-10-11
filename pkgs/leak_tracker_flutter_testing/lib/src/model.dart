@@ -67,9 +67,7 @@ class LeakSkipList {
 
   bool isTracked(String className) {
     if (skipAll) return false;
-    if (byClass.containsKey(className) && byClass[className] != null)
-      return true;
-    return false;
+    return byClass.containsKey(className) && byClass[className] != null;
   }
 }
 
@@ -77,22 +75,16 @@ class LeakSkipLists {
   const LeakSkipLists({
     this.notGCed = const LeakSkipList.trackAll(),
     this.notDisposed = const LeakSkipList.trackAll(),
-    this.skipAll = false,
   });
-
-  const LeakSkipLists.skipAll() : this(skipAll: true);
-  const LeakSkipLists.trackAll() : this();
 
   final LeakSkipList notGCed;
   final LeakSkipList notDisposed;
-  final bool skipAll;
 
   /// Returns true if the class is tracked.
   ///
   /// If [leakType] is null, returns true if the class tracked for at
   /// least one leak type.
   bool isTracked(String className, {LeakType? leakType}) {
-    if (skipAll) return false;
     switch (leakType) {
       case null:
         return notGCed.isTracked(className) || notDisposed.isTracked(className);

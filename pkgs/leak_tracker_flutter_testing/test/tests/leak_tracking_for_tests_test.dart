@@ -9,6 +9,7 @@ void main() {
   test('$LeakTrackingForTestsSettings can be altered by levels', () async {
     const myClass = 'MyClass';
     expect(_isTracked(myClass), false);
+    //LeakTrackingForTests.
   });
 }
 

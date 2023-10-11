@@ -15,7 +15,7 @@ abstract class LeakTrackingForTests {
   }
 
   static LeakTrackingForTestsSettings _settings =
-      LeakTrackingForTestsSettings._paused();
+      LeakTrackingForTestsSettings._();
   static set settings(LeakTrackingForTestsSettings value) {
     _settings = value;
   }
@@ -44,7 +44,6 @@ abstract class LeakTrackingForTests {
   }) {
     return _settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        skipAll: _settings.leakSkipLists.skipAll || all,
         notGCed: _settings.leakSkipLists.notGCed.merge(notGCed),
         notDisposed: _settings.leakSkipLists.notGCed.merge(notDisposed),
       ),
@@ -61,7 +60,6 @@ abstract class LeakTrackingForTests {
   }) {
     return _settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        skipAll: _settings.leakSkipLists.skipAll,
         notGCed: _settings.leakSkipLists.notGCed.track(notGCed),
         notDisposed: _settings.leakSkipLists.notGCed.track(notDisposed),
       ),
@@ -74,15 +72,13 @@ abstract class LeakTrackingForTests {
 /// Should be instantiated using static methods of [LeakTrackingForTests].
 class LeakTrackingForTestsSettings {
   LeakTrackingForTestsSettings._({
-    this.leakSkipLists = const LeakSkipLists.trackAll(),
+    this.paused = true,
+    this.leakSkipLists = const LeakSkipLists(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.failOnLeaks = true,
     this.onLeaks = _emptyLeakHandler,
     this.baselining = const MemoryBaselining.none(),
   });
-
-  LeakTrackingForTestsSettings._paused()
-      : this._(leakSkipLists: const LeakSkipLists.skipAll());
 
   LeakTrackingForTestsSettings copyWith({
     LeakSkipLists? leakSkipLists,
@@ -90,6 +86,7 @@ class LeakTrackingForTestsSettings {
     bool? failOnLeaks,
     LeaksCallback? onLeaks,
     MemoryBaselining? baselining,
+    bool? paused,
   }) {
     return LeakTrackingForTestsSettings._(
       leakSkipLists: leakSkipLists ?? this.leakSkipLists,
@@ -97,8 +94,11 @@ class LeakTrackingForTestsSettings {
       failOnLeaks: failOnLeaks ?? this.failOnLeaks,
       onLeaks: onLeaks ?? this.onLeaks,
       baselining: baselining ?? this.baselining,
+      paused: paused ?? this.paused,
     );
   }
+
+  final bool paused;
 
   final bool failOnLeaks;
 
