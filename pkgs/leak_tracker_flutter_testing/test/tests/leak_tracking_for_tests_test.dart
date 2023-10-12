@@ -15,9 +15,9 @@ void main() {
 
     // Change settings for package or folder.
     LeakTrackingForTests.start();
-    LeakTrackingForTests.skip();
+    LeakTrackingForTests.skip(classes: [myClass]);
 
-    // Change settings for library.
+    // Change settings for test library.
 
     // Set settings for test.
   });

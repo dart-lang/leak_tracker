@@ -74,7 +74,6 @@ class LeakTrackingForTestsSettings {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.failOnLeaks = true,
     this.onLeaks = _emptyLeakHandler,
-    this.baselining = const MemoryBaselining.none(),
   });
 
   LeakTrackingForTestsSettings copyWith({
@@ -90,7 +89,6 @@ class LeakTrackingForTestsSettings {
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaks: failOnLeaks ?? this.failOnLeaks,
       onLeaks: onLeaks ?? this.onLeaks,
-      baselining: baselining ?? this.baselining,
       paused: paused ?? this.paused,
     );
   }
@@ -109,10 +107,4 @@ class LeakTrackingForTestsSettings {
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
-
-  /// Configuration for memory baselining.
-  ///
-  /// Tests with deeply equal values of [MemoryBaselining],
-  /// if ran sequentially, will be baselined together.
-  final MemoryBaselining baselining;
 }
