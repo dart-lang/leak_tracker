@@ -7,11 +7,9 @@ import 'dart:math';
 import 'package:leak_tracker/leak_tracker.dart';
 
 class LeakSkipList {
-  const LeakSkipList() : this._(skipAll: false, byClass: const {});
+  const LeakSkipList({this.byClass = const {}, this.skipAll = false});
 
-  const LeakSkipList._({this.byClass = const {}, this.skipAll = false});
-
-  const LeakSkipList.skipAll() : this._(skipAll: true, byClass: const {});
+  const LeakSkipList.skipAll() : this(skipAll: true, byClass: const {});
 
   const LeakSkipList.byClass(this.byClass) : skipAll = false;
 
@@ -27,7 +25,7 @@ class LeakSkipList {
   final bool skipAll;
 
   LeakSkipList copyWith({Map<String, int?>? byClass, bool? skipAll}) {
-    return LeakSkipList._(
+    return LeakSkipList(
       skipAll: skipAll ?? this.skipAll,
       byClass: byClass ?? this.byClass,
     );
@@ -51,7 +49,7 @@ class LeakSkipList {
       }
       map[theClass] = max(thisCount, otherCount);
     }
-    return LeakSkipList._(
+    return LeakSkipList(
       byClass: map,
       skipAll: skipAll || other.skipAll,
     );

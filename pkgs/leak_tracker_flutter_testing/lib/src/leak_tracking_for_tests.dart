@@ -28,21 +28,54 @@ abstract class LeakTrackingForTests {
     );
   }
 
+  static void skip({
+    Map<String, int?> notGCed = const {},
+    bool allNotGCed = false,
+    Map<String, int?> notDisposed = const {},
+    bool allNotDisposed = false,
+    List<String> classes = const [],
+  }) {
+    settings = withSkipped(
+      notDisposed: notDisposed,
+      notGCed: notGCed,
+      allNotDisposed: allNotDisposed,
+      allNotGCed: allNotGCed,
+      classes: classes,
+    );
+  }
+
   /// Returns [settings] with extended skip lists.
   ///
   /// In result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
-  static LeakTrackingForTestsSettings skip({
-    LeakSkipList? notGCed,
-    bool? allNotGced,
-    LeakSkipList? notDisposed,
-    bool? allNotDisposed,
-    List<String>? classes,
+  static LeakTrackingForTestsSettings withSkipped({
+    Map<String, int?> notGCed = const {},
+    bool allNotGCed = false,
+    Map<String, int?> notDisposed = const {},
+    bool allNotDisposed = false,
+    List<String> classes = const [],
   }) {
+    Map<String, int?> addClassesToMap(
+      Map<String, int?> map,
+      List<String> classes,
+    ) {
+      return {...map}..addEntries(classes.map((c) => MapEntry(c, null)));
+    }
+
     return settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        notGCed: settings.leakSkipLists.notGCed.merge(notGCed),
-        notDisposed: settings.leakSkipLists.notGCed.merge(notDisposed),
+        notGCed: settings.leakSkipLists.notGCed.merge(
+          LeakSkipList(
+            byClass: addClassesToMap(notGCed, classes),
+            skipAll: allNotGCed,
+          ),
+        ),
+        notDisposed: settings.leakSkipLists.notGCed.merge(
+          LeakSkipList(
+            byClass: addClassesToMap(notDisposed, classes),
+            skipAll: allNotDisposed,
+          ),
+        ),
       ),
     );
   }
@@ -50,7 +83,7 @@ abstract class LeakTrackingForTests {
   /// Removes classes from leak skip lists.
   ///
   /// Items in [classes] will be removed from all skip lists.
-  static LeakTrackingForTestsSettings track({
+  static LeakTrackingForTestsSettings withTracked({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
@@ -60,6 +93,21 @@ abstract class LeakTrackingForTests {
         notGCed: settings.leakSkipLists.notGCed.remove(notGCed),
         notDisposed: settings.leakSkipLists.notGCed.remove(notDisposed),
       ),
+    );
+  }
+
+  /// Removes classes from leak skip lists.
+  ///
+  /// Items in [classes] will be removed from all skip lists.
+  static void track({
+    List<String> notGCed = const [],
+    List<String> notDisposed = const [],
+    List<String> classes = const [],
+  }) {
+    settings = withTracked(
+      notDisposed: notDisposed,
+      notGCed: notGCed,
+      classes: classes,
     );
   }
 }
