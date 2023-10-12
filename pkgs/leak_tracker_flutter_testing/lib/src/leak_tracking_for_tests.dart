@@ -10,57 +10,55 @@ void _emptyLeakHandler(Leaks leaks) {}
 
 /// Leak tracking settings for tests.
 abstract class LeakTrackingForTests {
-  static LeakTrackingForTestsSettings get settings {
-    return _settings;
-  }
-
-  static LeakTrackingForTestsSettings _settings =
+  static LeakTrackingForTestsSettings settings =
       LeakTrackingForTestsSettings._();
-  static set settings(LeakTrackingForTestsSettings value) {
-    _settings = value;
-  }
 
   static void pause() => settings = settings.copyWith(paused: true);
   static void start() => settings = settings.copyWith(paused: false);
 
   static LeakTrackingForTestsSettings debugNotGCed() {
-    return _settings.copyWith(
+    return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotGCed(),
     );
   }
 
   static LeakTrackingForTestsSettings debugNotDisposed() {
-    return _settings.copyWith(
+    return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotDisposed(),
     );
   }
 
-  /// Returns [_settings] with extended skip lists.
+  /// Returns [settings] with extended skip lists.
   ///
   /// In result the skip limit for a class is maximum of two original skip limits.
+  /// Items in [classes] will be added to all skip lists.
   static LeakTrackingForTestsSettings skip({
     LeakSkipList? notGCed,
     bool? allNotGced,
     LeakSkipList? notDisposed,
     bool? allNotDisposed,
+    List<String>? classes,
   }) {
-    return _settings.copyWith(
+    return settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        notGCed: _settings.leakSkipLists.notGCed.merge(notGCed),
-        notDisposed: _settings.leakSkipLists.notGCed.merge(notDisposed),
+        notGCed: settings.leakSkipLists.notGCed.merge(notGCed),
+        notDisposed: settings.leakSkipLists.notGCed.merge(notDisposed),
       ),
     );
   }
 
   /// Removes classes from leak skip lists.
+  ///
+  /// Items in [classes] will be removed from all skip lists.
   static LeakTrackingForTestsSettings track({
-    notGCed = const [],
-    notDisposed = const [],
+    List<String> notGCed = const [],
+    List<String> notDisposed = const [],
+    List<String> classes = const [],
   }) {
-    return _settings.copyWith(
+    return settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        notGCed: _settings.leakSkipLists.notGCed.remove(notGCed),
-        notDisposed: _settings.leakSkipLists.notGCed.remove(notDisposed),
+        notGCed: settings.leakSkipLists.notGCed.remove(notGCed),
+        notDisposed: settings.leakSkipLists.notGCed.remove(notDisposed),
       ),
     );
   }

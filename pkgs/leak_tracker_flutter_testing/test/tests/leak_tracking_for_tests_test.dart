@@ -14,6 +14,8 @@ void main() {
     expect(_isSkipped(myClass), false);
 
     // Change settings for package or folder.
+    LeakTrackingForTests.start();
+    LeakTrackingForTests.skip();
 
     // Change settings for library.
 

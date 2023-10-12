@@ -7,13 +7,13 @@ import 'dart:math';
 import 'package:leak_tracker/leak_tracker.dart';
 
 class LeakSkipList {
+  const LeakSkipList() : this._(skipAll: false, byClass: const {});
+
   const LeakSkipList._({this.byClass = const {}, this.skipAll = false});
 
   const LeakSkipList.skipAll() : this._(skipAll: true, byClass: const {});
 
   const LeakSkipList.byClass(this.byClass) : skipAll = false;
-
-  const LeakSkipList() : this._(skipAll: false, byClass: const {});
 
   /// Classes to skip leaks for.
   ///
