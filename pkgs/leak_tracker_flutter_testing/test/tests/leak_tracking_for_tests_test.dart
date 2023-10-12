@@ -8,6 +8,8 @@ import 'package:leak_tracker_flutter_testing/src/leak_tracking_for_tests.dart';
 void main() {
   test('$LeakTrackingForTestsSettings can be altered by levels', () async {
     const myClass = 'MyClass';
+    const myNotDisposedClass = 'MyNotDisposedClass';
+    const myNotGCedClass = 'myNotGCedClass';
 
     // Check initial settings.
     expect(LeakTrackingForTests.settings.paused, true);
