@@ -40,6 +40,7 @@ class Switches {
   bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
 }
 
+/// List of classes to skip during leak tracking.
 class LeakSkipList {
   const LeakSkipList({this.byClass = const {}, this.skipAll = false});
 
@@ -47,7 +48,7 @@ class LeakSkipList {
 
   const LeakSkipList.byClass(this.byClass) : skipAll = false;
 
-  /// Classes to skip leaks for.
+  /// Classes to skip during leak tracking.
   ///
   /// Maps name of the class, as returned by `object.runtimeType.toString()`,
   /// to the number of instances of the class that are allowed to leak.
@@ -58,6 +59,8 @@ class LeakSkipList {
   /// If true, all leaks are skipped, otherwise [byClass] defines what is skipped.
   final bool skipAll;
 
+  /// Creates a copy of this object with the given fields replaced
+  /// with the new values.
   LeakSkipList copyWith({Map<String, int?>? byClass, bool? skipAll}) {
     return LeakSkipList(
       skipAll: skipAll ?? this.skipAll,
@@ -67,7 +70,7 @@ class LeakSkipList {
 
   /// Merges two skip lists.
   ///
-  /// In result the skip limit for a class is maximum of two original skip limits.
+  /// In the result object the skip limit for a class is maximum of two original skip limits.
   LeakSkipList merge(LeakSkipList? other) {
     if (other == null) return this;
     final map = {...byClass};
@@ -90,7 +93,7 @@ class LeakSkipList {
     );
   }
 
-  /// Remove the classes from skip lists.
+  /// Removes the classes from skip lists.
   LeakSkipList track(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
@@ -98,19 +101,24 @@ class LeakSkipList {
     return copyWith(byClass: map);
   }
 
+  /// Returns true if the class should be skipped.
   bool isSkipped(String className) {
     if (skipAll) return true;
     return byClass.containsKey(className) && byClass[className] == null;
   }
 }
 
+/// Skip lists for each type of leak.
 class LeakSkipLists {
   const LeakSkipLists({
     this.notGCed = const LeakSkipList(),
     this.notDisposed = const LeakSkipList(),
   });
 
+  /// Skip list for notGCed leaks.
   final LeakSkipList notGCed;
+
+  /// Skip list for notDisposed leaks.
   final LeakSkipList notDisposed;
 
   /// Returns true if the class is skipped.
