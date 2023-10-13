@@ -35,7 +35,7 @@ class _Classes {
       all.where((c) => !classes.contains(c)).toList();
 }
 
-bool _areOnlyAllowed(
+bool _areOnlySkipped(
   List<String> classes, {
   LeakType? leakType,
   LeakTrackingForTestsSettings? settings,
@@ -44,13 +44,13 @@ bool _areOnlyAllowed(
   final classesAllowed = !classes
       .map(
         (theClass) =>
-            theSettings.leakSkipLists.isAllowed(theClass, leakType: leakType),
+            theSettings.leakSkipLists.isSkipped(theClass, leakType: leakType),
       )
       .any((allowed) => !allowed);
   final othersDisallowed = _Classes.others(classes)
       .map(
         (theClass) =>
-            theSettings.leakSkipLists.isAllowed(theClass, leakType: leakType),
+            theSettings.leakSkipLists.isSkipped(theClass, leakType: leakType),
       )
       .any((allowed) => !allowed);
   return classesAllowed && othersDisallowed;
@@ -73,28 +73,28 @@ void main() {
       '$LeakTrackingForTestsSettings can be altered globally or for a library.',
       () async {
     // Verify initial settings.
-    expect(_areOnlyAllowed([]), true);
-    expect(_areOnlyAllowed([], leakType: LeakType.notDisposed), true);
-    expect(_areOnlyAllowed([], leakType: LeakType.notGCed), true);
+    expect(_areOnlySkipped([]), true);
+    expect(_areOnlySkipped([], leakType: LeakType.notDisposed), true);
+    expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
 
     // Skip some classes.
-    LeakTrackingForTests.allow(
+    LeakTrackingForTests.skip(
       classes: [_Classes.anyLeak1],
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
     );
 
     // Verify the change.
-    expect(_areOnlyAllowed([_Classes.anyLeak1]), true);
+    expect(_areOnlySkipped([_Classes.anyLeak1]), true);
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [_Classes.anyLeak1, _Classes.notDisposed1],
         leakType: LeakType.notDisposed,
       ),
       true,
     );
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [_Classes.anyLeak1, _Classes.notGCed1],
         leakType: LeakType.notGCed,
       ),
@@ -109,35 +109,35 @@ void main() {
     );
 
     // Verify the change.
-    expect(_areOnlyAllowed([]), true);
-    expect(_areOnlyAllowed([], leakType: LeakType.notDisposed), true);
-    expect(_areOnlyAllowed([], leakType: LeakType.notGCed), true);
+    expect(_areOnlySkipped([]), true);
+    expect(_areOnlySkipped([], leakType: LeakType.notDisposed), true);
+    expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
   });
 
   test('$LeakTrackingForTestsSettings can be altered iteratively.', () async {
     // Verify initial settings.
-    expect(_areOnlyAllowed([]), true);
-    expect(_areOnlyAllowed([], leakType: LeakType.notDisposed), true);
-    expect(_areOnlyAllowed([], leakType: LeakType.notGCed), true);
+    expect(_areOnlySkipped([]), true);
+    expect(_areOnlySkipped([], leakType: LeakType.notDisposed), true);
+    expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
 
-    // Allow some classes.
-    LeakTrackingForTests.allow(
+    // Skip some classes.
+    LeakTrackingForTests.skip(
       classes: [_Classes.anyLeak1],
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
     );
 
     // Verify the change.
-    expect(_areOnlyAllowed([_Classes.anyLeak1]), true);
+    expect(_areOnlySkipped([_Classes.anyLeak1]), true);
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [_Classes.anyLeak1, _Classes.notDisposed1],
         leakType: LeakType.notDisposed,
       ),
       true,
     );
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [_Classes.anyLeak1, _Classes.notGCed1],
         leakType: LeakType.notGCed,
       ),
@@ -145,16 +145,16 @@ void main() {
     );
 
     // Allow more classes.
-    LeakTrackingForTests.allow(
+    LeakTrackingForTests.skip(
       classes: [_Classes.anyLeak2],
       notGCed: {_Classes.notGCed2: null},
       notDisposed: {_Classes.notDisposed2: null},
     );
 
     // Verify the change.
-    expect(_areOnlyAllowed([_Classes.anyLeak1, _Classes.anyLeak2]), true);
+    expect(_areOnlySkipped([_Classes.anyLeak1, _Classes.anyLeak2]), true);
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [
           _Classes.anyLeak1,
           _Classes.notDisposed1,
@@ -166,7 +166,7 @@ void main() {
       true,
     );
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [
           _Classes.anyLeak1,
           _Classes.notGCed1,
@@ -182,18 +182,18 @@ void main() {
   test('$LeakTrackingForTestsSettings can be altered for and individual test.',
       () async {
     // Skip some classes.
-    LeakTrackingForTests.allow(
+    LeakTrackingForTests.skip(
       classes: [_Classes.anyLeak1],
     );
 
     // Verify the change.
-    expect(_areOnlyAllowed([_Classes.anyLeak1]), true);
+    expect(_areOnlySkipped([_Classes.anyLeak1]), true);
     expect(
-      _areOnlyAllowed([_Classes.anyLeak1], leakType: LeakType.notDisposed),
+      _areOnlySkipped([_Classes.anyLeak1], leakType: LeakType.notDisposed),
       true,
     );
     expect(
-      _areOnlyAllowed([_Classes.anyLeak1], leakType: LeakType.notGCed),
+      _areOnlySkipped([_Classes.anyLeak1], leakType: LeakType.notGCed),
       true,
     );
 
@@ -204,9 +204,9 @@ void main() {
     );
 
     // Verify the change.
-    expect(_areOnlyAllowed([_Classes.anyLeak1], settings: settings), true);
+    expect(_areOnlySkipped([_Classes.anyLeak1], settings: settings), true);
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [_Classes.anyLeak1, _Classes.notDisposed1],
         leakType: LeakType.notDisposed,
         settings: settings,
@@ -214,7 +214,7 @@ void main() {
       true,
     );
     expect(
-      _areOnlyAllowed(
+      _areOnlySkipped(
         [_Classes.anyLeak1, _Classes.notGCed1],
         leakType: LeakType.notGCed,
         settings: settings,
