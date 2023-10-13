@@ -22,6 +22,8 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// Useable to temporary disable features in case of
 /// noisinness or performance regression
 /// in applications or tests.
+/// TODO(polina-c): delete after migration to [LeakSkipLists].
+/// https://github.com/flutter/devtools/issues/3951
 class Switches {
   const Switches({
     this.disableNotGCed = false,
@@ -36,6 +38,96 @@ class Switches {
 
   /// If true, objects are not tracked.
   bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
+}
+
+class LeakSkipList {
+  const LeakSkipList({this.byClass = const {}, this.skipAll = false});
+
+  const LeakSkipList.skipAll() : this(skipAll: true, byClass: const {});
+
+  const LeakSkipList.byClass(this.byClass) : skipAll = false;
+
+  /// Classes to skip leaks for.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to leak.
+  ///
+  /// If number of instances is [null], all leaks are skipped.
+  final Map<String, int?> byClass;
+
+  /// If true, all leaks are skipped, otherwise [byClass] defines what is skipped.
+  final bool skipAll;
+
+  LeakSkipList copyWith({Map<String, int?>? byClass, bool? skipAll}) {
+    return LeakSkipList(
+      skipAll: skipAll ?? this.skipAll,
+      byClass: byClass ?? this.byClass,
+    );
+  }
+
+  /// Merges two skip lists.
+  ///
+  /// In result the skip limit for a class is maximum of two original skip limits.
+  LeakSkipList merge(LeakSkipList? other) {
+    if (other == null) return this;
+    final map = {...byClass};
+    for (final theClass in other.byClass.keys) {
+      if (!map.containsKey(theClass)) {
+        map[theClass] = other.byClass[theClass];
+        continue;
+      }
+      final int? otherCount = other.byClass[theClass];
+      final int? thisCount = byClass[theClass];
+      if (thisCount == null || otherCount == null) {
+        map[theClass] = null;
+        continue;
+      }
+      map[theClass] = max(thisCount, otherCount);
+    }
+    return LeakSkipList(
+      byClass: map,
+      skipAll: skipAll || other.skipAll,
+    );
+  }
+
+  /// Remove the classes from skip lists.
+  LeakSkipList remove(List<String> list) {
+    if (list.isEmpty) return this;
+    final map = {...byClass};
+    list.forEach(map.remove);
+    return copyWith(byClass: map);
+  }
+
+  bool isSkipped(String className) {
+    if (skipAll) return true;
+    return byClass.containsKey(className) && byClass[className] == null;
+  }
+}
+
+class LeakSkipLists {
+  const LeakSkipLists({
+    this.notGCed = const LeakSkipList(),
+    this.notDisposed = const LeakSkipList(),
+  });
+
+  final LeakSkipList notGCed;
+  final LeakSkipList notDisposed;
+
+  /// Returns true if the class is skipped.
+  ///
+  /// If [leakType] is null, returns true if the class is skipped for all
+  /// leak types.
+  bool isSkipped(String className, {LeakType? leakType}) {
+    switch (leakType) {
+      case null:
+        return notGCed.isSkipped(className) && notDisposed.isSkipped(className);
+      case LeakType.notDisposed:
+        return notDisposed.isSkipped(className);
+      case LeakType.notGCed:
+      case LeakType.gcedLate:
+        return notGCed.isSkipped(className);
+    }
+  }
 }
 
 /// Configuration for diagnostics.

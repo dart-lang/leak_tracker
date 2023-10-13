@@ -110,4 +110,16 @@ void main() {
       expect(sampler.deltaMax, 1);
     });
   });
+
+  group('$LeakSkipList', () {
+    test('merges', () {
+      const list1 = LeakSkipList.byClass({'class1': null});
+      const list2 = LeakSkipList.byClass({'class2': null});
+
+      final result = list1.merge(list2);
+
+      expect(result.isSkipped('class1'), true);
+      expect(result.isSkipped('class2'), true);
+    });
+  });
 }

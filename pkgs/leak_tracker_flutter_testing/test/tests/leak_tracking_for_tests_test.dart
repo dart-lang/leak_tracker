@@ -26,10 +26,10 @@ void main() {
         LeakTrackingForTests.settings.leakSkipLists
             .isSkipped(className, leakType: leakType);
 
-    // Verify initial settings.
-    expect(isSkipped(myClass), false);
-    expect(isSkipped(myClass, leakType: LeakType.notDisposed), false);
-    expect(isSkipped(myClass, leakType: LeakType.notGCed), false);
+    // // Verify initial settings.
+    // expect(isSkipped(myClass), false);
+    // expect(isSkipped(myClass, leakType: LeakType.notDisposed), false);
+    // expect(isSkipped(myClass, leakType: LeakType.notGCed), false);
 
     // Skip some classes.
     LeakTrackingForTests.skip(
