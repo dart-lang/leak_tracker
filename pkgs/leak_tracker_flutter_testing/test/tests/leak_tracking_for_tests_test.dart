@@ -41,19 +41,19 @@ bool _areOnlySkipped(
   LeakTrackingForTestsSettings? settings,
 }) {
   final theSettings = settings ?? LeakTrackingForTests.settings;
-  final classesAllowed = !classes
+  final classesSkipped = !classes
       .map(
         (theClass) =>
             theSettings.leakSkipLists.isSkipped(theClass, leakType: leakType),
       )
-      .any((allowed) => !allowed);
-  final othersDisallowed = _Classes.others(classes)
+      .any((skipped) => !skipped);
+  final othersTracked = _Classes.others(classes)
       .map(
         (theClass) =>
             theSettings.leakSkipLists.isSkipped(theClass, leakType: leakType),
       )
-      .any((allowed) => !allowed);
-  return classesAllowed && othersDisallowed;
+      .any((skipped) => !skipped);
+  return classesSkipped && othersTracked;
 }
 
 void main() {
@@ -144,7 +144,7 @@ void main() {
       true,
     );
 
-    // Allow more classes.
+    // Skip more classes.
     LeakTrackingForTests.skip(
       classes: [_Classes.anyLeak2],
       notGCed: {_Classes.notGCed2: null},
