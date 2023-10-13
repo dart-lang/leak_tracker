@@ -140,7 +140,7 @@ abstract class LeakTrackingForTests {
 /// Should be instantiated using static methods of [LeakTrackingForTests].
 class LeakTrackingForTestsSettings {
   @visibleForTesting
-  LeakTrackingForTestsSettings({
+  const LeakTrackingForTestsSettings({
     this.paused = true,
     this.skippedLeaks = const SkippedLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
