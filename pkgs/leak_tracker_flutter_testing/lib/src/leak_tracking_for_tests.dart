@@ -43,7 +43,7 @@ abstract class LeakTrackingForTests {
   }
 
   /// Adds certain classes and leak types to skip lists in [settings].
-  static void skip({
+  static void allow({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
@@ -85,7 +85,7 @@ abstract class LeakTrackingForTests {
             skipAll: allNotGCed,
           ),
         ),
-        notDisposed: settings.leakSkipLists.notGCed.merge(
+        notDisposed: settings.leakSkipLists.notDisposed.merge(
           LeakSkipList(
             byClass: addClassesToMap(notDisposed, classes),
             skipAll: allNotDisposed,

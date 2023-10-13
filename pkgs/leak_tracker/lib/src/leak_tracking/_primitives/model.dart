@@ -125,7 +125,7 @@ class LeakSkipLists {
   ///
   /// If [leakType] is null, returns true if the class is skipped for all
   /// leak types.
-  bool isSkipped(String className, {LeakType? leakType}) {
+  bool isAllowed(String className, {LeakType? leakType}) {
     switch (leakType) {
       case null:
         return notGCed.isSkipped(className) && notDisposed.isSkipped(className);
