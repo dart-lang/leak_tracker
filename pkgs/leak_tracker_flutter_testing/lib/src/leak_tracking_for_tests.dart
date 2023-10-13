@@ -3,19 +3,19 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:meta/meta.dart';
 
 void _emptyLeakHandler(Leaks leaks) {}
 
 /// Leak tracking settings and helper methods for tests.
 abstract class LeakTrackingForTests {
   /// Current configuration for leak tracking.
-  static LeakTrackingForTestsSettings settings =
-      LeakTrackingForTestsSettings._();
+  static LeakTrackingForTestsSettings settings = LeakTrackingForTestsSettings();
 
-  /// Updates [settings] to be paused.
+  /// Updates [settings] to pause leak tracking.
   static void pause() => settings = settings.copyWith(paused: true);
 
-  /// Updates [settings] to be started.
+  /// Updates [settings] to start leak tracking.
   static void start() => settings = settings.copyWith(paused: false);
 
   /// Creates copy of current settings to debug notGCed leaks.
@@ -134,7 +134,8 @@ abstract class LeakTrackingForTests {
 ///
 /// Should be instantiated using static methods of [LeakTrackingForTests].
 class LeakTrackingForTestsSettings {
-  LeakTrackingForTestsSettings._({
+  @visibleForTesting
+  LeakTrackingForTestsSettings({
     this.paused = true,
     this.leakSkipLists = const LeakSkipLists(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
@@ -152,7 +153,7 @@ class LeakTrackingForTestsSettings {
     MemoryBaselining? baselining,
     bool? paused,
   }) {
-    return LeakTrackingForTestsSettings._(
+    return LeakTrackingForTestsSettings(
       leakSkipLists: leakSkipLists ?? this.leakSkipLists,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaks: failOnLeaks ?? this.failOnLeaks,
