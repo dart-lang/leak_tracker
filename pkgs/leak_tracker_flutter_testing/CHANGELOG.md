@@ -1,6 +1,7 @@
 # 1.0.7
 
 * Make configuration adjustable.
+
 # 1.0.6
 
 * If an object is not disposed by the end of testing, mark it as notDisposed.

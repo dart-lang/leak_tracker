@@ -4,8 +4,6 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 
-import 'model.dart';
-
 void _emptyLeakHandler(Leaks leaks) {}
 
 /// Leak tracking settings for tests.
