@@ -148,8 +148,10 @@ class LeakTrackingForTestsSettings {
     this.onLeaks = _emptyLeakHandler,
   });
 
+  /// Creates a copy of this object with [paused] set to true.
   LeakTrackingForTestsSettings copyPaused() => copyWith(paused: true);
 
+  /// Creates a copy of this object with [paused] set to false.
   LeakTrackingForTestsSettings copyStarted() => copyWith(paused: false);
 
   /// Creates a copy of this object with the given fields replaced
