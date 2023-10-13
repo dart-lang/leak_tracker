@@ -153,7 +153,7 @@ class LeakTrackingForTestsSettings {
   LeakTrackingForTestsSettings copyWith({
     SkippedLeaks? skippedLeaks,
     LeakDiagnosticConfig? leakDiagnosticConfig,
-    bool? failOnLeaks,
+    bool? failOnLeaksCollected,
     LeaksCallback? onLeaks,
     MemoryBaselining? baselining,
     bool? paused,
@@ -161,7 +161,7 @@ class LeakTrackingForTestsSettings {
     return LeakTrackingForTestsSettings(
       skippedLeaks: skippedLeaks ?? this.skippedLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
-      failOnLeaksCollected: failOnLeaks ?? this.failOnLeaksCollected,
+      failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,
       onLeaks: onLeaks ?? this.onLeaks,
       paused: paused ?? this.paused,
     );
