@@ -88,12 +88,15 @@ abstract class LeakTrackingForTests {
     List<String> notDisposed = const [],
     List<String> classes = const [],
   }) {
-    return settings.copyWith(
+    final result = settings.copyWith(
       leakSkipLists: LeakSkipLists(
-        notGCed: settings.leakSkipLists.notGCed.remove(notGCed),
-        notDisposed: settings.leakSkipLists.notGCed.remove(notDisposed),
+        notGCed: settings.leakSkipLists.notGCed.track(notGCed).track(classes),
+        notDisposed: settings.leakSkipLists.notDisposed
+            .track(notDisposed)
+            .track(classes),
       ),
     );
+    return result;
   }
 
   /// Removes classes from leak skip lists.

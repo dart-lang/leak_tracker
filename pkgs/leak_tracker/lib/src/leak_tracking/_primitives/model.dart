@@ -91,7 +91,7 @@ class LeakSkipList {
   }
 
   /// Remove the classes from skip lists.
-  LeakSkipList remove(List<String> list) {
+  LeakSkipList track(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
     list.forEach(map.remove);

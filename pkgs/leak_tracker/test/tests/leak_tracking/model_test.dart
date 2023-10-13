@@ -121,5 +121,14 @@ void main() {
       expect(result.isSkipped('class1'), true);
       expect(result.isSkipped('class2'), true);
     });
+
+    test('removes', () {
+      const list = LeakSkipList.byClass({'class1': null, 'class2': null});
+
+      final result = list.track(['class1']);
+
+      expect(result.isSkipped('class1'), false);
+      expect(result.isSkipped('class2'), true);
+    });
   });
 }
