@@ -111,10 +111,10 @@ void main() {
     });
   });
 
-  group('$LeakSkipList', () {
+  group('$LeakSkipSet', () {
     test('merges', () {
-      const list1 = LeakSkipList.byClass({'class1': null});
-      const list2 = LeakSkipList.byClass({'class2': null});
+      const list1 = LeakSkipSet.byClass({'class1': null});
+      const list2 = LeakSkipSet.byClass({'class2': null});
 
       final result = list1.merge(list2);
 
@@ -123,7 +123,7 @@ void main() {
     });
 
     test('removes', () {
-      const list = LeakSkipList.byClass({'class1': null, 'class2': null});
+      const list = LeakSkipSet.byClass({'class1': null, 'class2': null});
 
       final result = list.track(['class1']);
 

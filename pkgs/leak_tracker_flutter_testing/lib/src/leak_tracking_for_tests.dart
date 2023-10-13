@@ -84,15 +84,15 @@ abstract class LeakTrackingForTests {
     }
 
     return settings.copyWith(
-      leakSkipLists: LeakSkipLists(
-        notGCed: settings.leakSkipLists.notGCed.merge(
-          LeakSkipList(
+      skippedLeaks: SkippedLeaks(
+        notGCed: settings.skippedLeaks.notGCed.merge(
+          LeakSkipSet(
             byClass: addClassesToMap(notGCed, classes),
             skipAll: allNotGCed,
           ),
         ),
-        notDisposed: settings.leakSkipLists.notDisposed.merge(
-          LeakSkipList(
+        notDisposed: settings.skippedLeaks.notDisposed.merge(
+          LeakSkipSet(
             byClass: addClassesToMap(notDisposed, classes),
             skipAll: allNotDisposed,
           ),
@@ -110,11 +110,10 @@ abstract class LeakTrackingForTests {
     List<String> classes = const [],
   }) {
     final result = settings.copyWith(
-      leakSkipLists: LeakSkipLists(
-        notGCed: settings.leakSkipLists.notGCed.track(notGCed).track(classes),
-        notDisposed: settings.leakSkipLists.notDisposed
-            .track(notDisposed)
-            .track(classes),
+      skippedLeaks: SkippedLeaks(
+        notGCed: settings.skippedLeaks.notGCed.track([...notGCed, ...classes]),
+        notDisposed: settings.skippedLeaks.notDisposed
+            .track([...notDisposed, ...classes]),
       ),
     );
     return result;
@@ -123,7 +122,7 @@ abstract class LeakTrackingForTests {
   /// Removes certain classes and leak types from skip lists in [settings].
   ///
   /// Items in [classes] will be removed from all skip lists.
-  static void track({
+  static void trackLeaks({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
@@ -143,16 +142,16 @@ class LeakTrackingForTestsSettings {
   @visibleForTesting
   LeakTrackingForTestsSettings({
     this.paused = true,
-    this.leakSkipLists = const LeakSkipLists(),
+    this.skippedLeaks = const SkippedLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.failOnLeaks = true,
+    this.failOnLeaksCollected = true,
     this.onLeaks = _emptyLeakHandler,
   });
 
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
   LeakTrackingForTestsSettings copyWith({
-    LeakSkipLists? leakSkipLists,
+    SkippedLeaks? skippedLeaks,
     LeakDiagnosticConfig? leakDiagnosticConfig,
     bool? failOnLeaks,
     LeaksCallback? onLeaks,
@@ -160,9 +159,9 @@ class LeakTrackingForTestsSettings {
     bool? paused,
   }) {
     return LeakTrackingForTestsSettings(
-      leakSkipLists: leakSkipLists ?? this.leakSkipLists,
+      skippedLeaks: skippedLeaks ?? this.skippedLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
-      failOnLeaks: failOnLeaks ?? this.failOnLeaks,
+      failOnLeaksCollected: failOnLeaks ?? this.failOnLeaksCollected,
       onLeaks: onLeaks ?? this.onLeaks,
       paused: paused ?? this.paused,
     );
@@ -174,15 +173,15 @@ class LeakTrackingForTestsSettings {
   /// If true, tests will fail on leaks.
   ///
   /// Set to true to test that tests collect expected leaks.
-  final bool failOnLeaks;
+  final bool failOnLeaksCollected;
 
-  /// Callback to invoke if test collected leaks, before failing if [failOnLeaks] is true.
+  /// Callback to invoke before the test fails when [failOnLeaksCollected] is true and if leaks were found.
   final LeaksCallback onLeaks;
 
   /// Leaks to skip.
-  final LeakSkipLists leakSkipLists;
+  final SkippedLeaks skippedLeaks;
 
-  /// Defines which disgnostics information to collect.
+  /// Defines which diagnostics information to collect.
   ///
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.

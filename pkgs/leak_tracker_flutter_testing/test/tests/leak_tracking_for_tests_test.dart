@@ -44,13 +44,13 @@ bool _areOnlySkipped(
   final classesSkipped = !classes
       .map(
         (theClass) =>
-            theSettings.leakSkipLists.isSkipped(theClass, leakType: leakType),
+            theSettings.skippedLeaks.isSkipped(theClass, leakType: leakType),
       )
       .any((skipped) => !skipped);
   final othersTracked = _Classes.others(classes)
       .map(
         (theClass) =>
-            theSettings.leakSkipLists.isSkipped(theClass, leakType: leakType),
+            theSettings.skippedLeaks.isSkipped(theClass, leakType: leakType),
       )
       .any((skipped) => !skipped);
   return classesSkipped && othersTracked;
@@ -102,7 +102,7 @@ void main() {
     );
 
     // Start tracking classes.
-    LeakTrackingForTests.track(
+    LeakTrackingForTests.trackLeaks(
       classes: [_Classes.anyLeak1],
       notGCed: [_Classes.notGCed1],
       notDisposed: [_Classes.notDisposed1],

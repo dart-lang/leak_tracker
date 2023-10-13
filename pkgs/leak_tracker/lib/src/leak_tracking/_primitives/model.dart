@@ -22,7 +22,7 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// Useable to temporary disable features in case of
 /// noisinness or performance regression
 /// in applications or tests.
-/// TODO(polina-c): delete after migration to [LeakSkipLists].
+/// TODO(polina-c): delete after migration to [SkippedLeaks].
 /// https://github.com/flutter/devtools/issues/3951
 class Switches {
   const Switches({
@@ -40,13 +40,13 @@ class Switches {
   bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
 }
 
-/// List of classes to skip during leak tracking.
-class LeakSkipList {
-  const LeakSkipList({this.byClass = const {}, this.skipAll = false});
+/// Set of classes to skip during leak tracking.
+class LeakSkipSet {
+  const LeakSkipSet({this.byClass = const {}, this.skipAll = false});
 
-  const LeakSkipList.skipAll() : this(skipAll: true, byClass: const {});
+  const LeakSkipSet.skipAll() : this(skipAll: true, byClass: const {});
 
-  const LeakSkipList.byClass(this.byClass) : skipAll = false;
+  const LeakSkipSet.byClass(this.byClass) : skipAll = false;
 
   /// Classes to skip during leak tracking.
   ///
@@ -61,8 +61,8 @@ class LeakSkipList {
 
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
-  LeakSkipList copyWith({Map<String, int?>? byClass, bool? skipAll}) {
-    return LeakSkipList(
+  LeakSkipSet copyWith({Map<String, int?>? byClass, bool? skipAll}) {
+    return LeakSkipSet(
       skipAll: skipAll ?? this.skipAll,
       byClass: byClass ?? this.byClass,
     );
@@ -71,7 +71,7 @@ class LeakSkipList {
   /// Merges two skip lists.
   ///
   /// In the result object the skip limit for a class is maximum of two original skip limits.
-  LeakSkipList merge(LeakSkipList? other) {
+  LeakSkipSet merge(LeakSkipSet? other) {
     if (other == null) return this;
     final map = {...byClass};
     for (final theClass in other.byClass.keys) {
@@ -87,14 +87,14 @@ class LeakSkipList {
       }
       map[theClass] = max(thisCount, otherCount);
     }
-    return LeakSkipList(
+    return LeakSkipSet(
       byClass: map,
       skipAll: skipAll || other.skipAll,
     );
   }
 
   /// Removes the classes from skip lists.
-  LeakSkipList track(List<String> list) {
+  LeakSkipSet track(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
     list.forEach(map.remove);
@@ -109,17 +109,17 @@ class LeakSkipList {
 }
 
 /// Skip lists for each type of leak.
-class LeakSkipLists {
-  const LeakSkipLists({
-    this.notGCed = const LeakSkipList(),
-    this.notDisposed = const LeakSkipList(),
+class SkippedLeaks {
+  const SkippedLeaks({
+    this.notGCed = const LeakSkipSet(),
+    this.notDisposed = const LeakSkipSet(),
   });
 
   /// Skip list for notGCed leaks.
-  final LeakSkipList notGCed;
+  final LeakSkipSet notGCed;
 
   /// Skip list for notDisposed leaks.
-  final LeakSkipList notDisposed;
+  final LeakSkipSet notDisposed;
 
   /// Returns true if the class is skipped.
   ///

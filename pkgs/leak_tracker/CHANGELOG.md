@@ -1,6 +1,6 @@
 # 9.0.9
 
-* Define [LeakSkipLists].
+* Define [SkippedLeaks].
 * Add item `none` to BaseliningMode.
 
 # 9.0.8
