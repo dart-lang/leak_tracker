@@ -6,26 +6,43 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 void _emptyLeakHandler(Leaks leaks) {}
 
-/// Leak tracking settings for tests.
+/// Leak tracking settings and helper methods for tests.
 abstract class LeakTrackingForTests {
+  /// Current configuration for leak tracking.
   static LeakTrackingForTestsSettings settings =
       LeakTrackingForTestsSettings._();
 
+  /// Updates [settings] to be paused.
   static void pause() => settings = settings.copyWith(paused: true);
+
+  /// Updates [settings] to be started.
   static void start() => settings = settings.copyWith(paused: false);
 
-  static LeakTrackingForTestsSettings debugNotGCed() {
+  /// Creates copy of current settings to debug notGCed leaks.
+  static LeakTrackingForTestsSettings withCreationStackTrace() {
     return settings.copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotGCed(),
+      leakDiagnosticConfig:
+          const LeakDiagnosticConfig(collectStackTraceOnStart: true),
     );
   }
 
-  static LeakTrackingForTestsSettings debugNotDisposed() {
+  /// Creates copy of current settings to debug notDisposed leaks.
+  static LeakTrackingForTestsSettings withDisposalStackTrace() {
     return settings.copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig.debugNotDisposed(),
+      leakDiagnosticConfig:
+          const LeakDiagnosticConfig(collectStackTraceOnDisposal: true),
     );
   }
 
+  /// Creates copy of current settings, that collects retaining path for not GCed objects.
+  static LeakTrackingForTestsSettings withRetainingPath() {
+    return settings.copyWith(
+      leakDiagnosticConfig:
+          const LeakDiagnosticConfig(collectRetainingPathForNotGCed: true),
+    );
+  }
+
+  /// Adds certain classes and leak types to skip lists in [settings].
   static void skip({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
@@ -42,9 +59,9 @@ abstract class LeakTrackingForTests {
     );
   }
 
-  /// Returns [settings] with extended skip lists.
+  /// Returns copy of [settings] with extended skip lists.
   ///
-  /// In result the skip limit for a class is maximum of two original skip limits.
+  /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
   static LeakTrackingForTestsSettings withSkipped({
     Map<String, int?> notGCed = const {},
@@ -78,7 +95,7 @@ abstract class LeakTrackingForTests {
     );
   }
 
-  /// Removes classes from leak skip lists.
+  /// Returns copy of [settings] with reduced skip lists.
   ///
   /// Items in [classes] will be removed from all skip lists.
   static LeakTrackingForTestsSettings withTracked({
@@ -97,7 +114,7 @@ abstract class LeakTrackingForTests {
     return result;
   }
 
-  /// Removes classes from leak skip lists.
+  /// Removes certain classes and leak types from skip lists in [settings].
   ///
   /// Items in [classes] will be removed from all skip lists.
   static void track({
@@ -125,6 +142,8 @@ class LeakTrackingForTestsSettings {
     this.onLeaks = _emptyLeakHandler,
   });
 
+  /// Creates a copy of this object with the given fields replaced
+  /// with the new values.
   LeakTrackingForTestsSettings copyWith({
     LeakSkipLists? leakSkipLists,
     LeakDiagnosticConfig? leakDiagnosticConfig,
@@ -145,10 +164,15 @@ class LeakTrackingForTestsSettings {
   /// If true, leak tracking is paused.
   final bool paused;
 
+  /// If true, tests will fail on leaks.
+  ///
+  /// Set to true to test that tests collect expected leaks.
   final bool failOnLeaks;
 
+  /// Callback to invoke if test collected leaks, before failing if [failOnLeaks] is true.
   final LeaksCallback onLeaks;
 
+  /// Leaks to skip.
   final LeakSkipLists leakSkipLists;
 
   /// Defines which disgnostics information to collect.

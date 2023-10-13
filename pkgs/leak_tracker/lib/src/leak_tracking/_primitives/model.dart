@@ -150,18 +150,6 @@ class LeakDiagnosticConfig {
     this.collectStackTraceOnDisposal = false,
   });
 
-  const LeakDiagnosticConfig.debugNotGCed()
-      : this(
-          collectStackTraceOnStart: true,
-          collectRetainingPathForNotGCed: true,
-          collectStackTraceOnDisposal: true,
-        );
-
-  const LeakDiagnosticConfig.debugNotDisposed()
-      : this(
-          collectStackTraceOnStart: true,
-        );
-
   /// If true, stack trace will be collected on start of tracking for all classes.
   final bool collectStackTraceOnStart;
 
@@ -170,7 +158,7 @@ class LeakDiagnosticConfig {
 
   /// If true, retaining path will be collected for non-GCed objects.
   ///
-  /// The collection of retaining path a blocking asyncronous call.
+  /// The collection of retaining path is a blocking asyncronous call.
   /// In release mode this flag does not work.
   final bool collectRetainingPathForNotGCed;
 
