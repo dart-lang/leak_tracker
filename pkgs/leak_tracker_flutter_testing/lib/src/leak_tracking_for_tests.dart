@@ -21,24 +21,27 @@ abstract class LeakTrackingForTests {
   /// Creates copy of current settings to debug notGCed leaks.
   static LeakTrackingForTestsSettings withCreationStackTrace() {
     return settings.copyWith(
-      leakDiagnosticConfig:
-          const LeakDiagnosticConfig(collectStackTraceOnStart: true),
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectStackTraceOnStart: true,
+      ),
     );
   }
 
   /// Creates copy of current settings to debug notDisposed leaks.
   static LeakTrackingForTestsSettings withDisposalStackTrace() {
     return settings.copyWith(
-      leakDiagnosticConfig:
-          const LeakDiagnosticConfig(collectStackTraceOnDisposal: true),
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectStackTraceOnDisposal: true,
+      ),
     );
   }
 
   /// Creates copy of current settings, that collects retaining path for not GCed objects.
   static LeakTrackingForTestsSettings withRetainingPath() {
     return settings.copyWith(
-      leakDiagnosticConfig:
-          const LeakDiagnosticConfig(collectRetainingPathForNotGCed: true),
+      leakDiagnosticConfig: const LeakDiagnosticConfig(
+        collectRetainingPathForNotGCed: true,
+      ),
     );
   }
 
@@ -50,7 +53,7 @@ abstract class LeakTrackingForTests {
     bool allNotDisposed = false,
     List<String> classes = const [],
   }) {
-    settings = withSkipped(
+    settings = copyWithSkippedLeaks(
       notDisposed: notDisposed,
       notGCed: notGCed,
       allNotDisposed: allNotDisposed,
@@ -63,7 +66,7 @@ abstract class LeakTrackingForTests {
   ///
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
-  static LeakTrackingForTestsSettings withSkipped({
+  static LeakTrackingForTestsSettings copyWithSkippedLeaks({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
@@ -74,7 +77,10 @@ abstract class LeakTrackingForTests {
       Map<String, int?> map,
       List<String> classes,
     ) {
-      return {...map}..addEntries(classes.map((c) => MapEntry(c, null)));
+      return {
+        ...map,
+        for (final c in classes) c: null,
+      };
     }
 
     return settings.copyWith(
@@ -98,7 +104,7 @@ abstract class LeakTrackingForTests {
   /// Returns copy of [settings] with reduced skip lists.
   ///
   /// Items in [classes] will be removed from all skip lists.
-  static LeakTrackingForTestsSettings withTracked({
+  static LeakTrackingForTestsSettings copyWithTrackedLeaks({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
@@ -122,7 +128,7 @@ abstract class LeakTrackingForTests {
     List<String> notDisposed = const [],
     List<String> classes = const [],
   }) {
-    settings = withTracked(
+    settings = copyWithTrackedLeaks(
       notDisposed: notDisposed,
       notGCed: notGCed,
       classes: classes,
