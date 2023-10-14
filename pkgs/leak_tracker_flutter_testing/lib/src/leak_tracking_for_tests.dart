@@ -14,17 +14,17 @@ abstract class LeakTrackingForTests {
       const LeakTrackingForTestsSettings();
 
   /// Updates [settings] to pause leak tracking.
-  static void pause() => settings = copyWithPaused();
+  static void pause() => settings = paused();
 
   /// Updates [settings] to start leak tracking.
-  static void start() => settings = copyWithStarted();
+  static void start() => settings = started();
 
   /// Creates a copy of current settings with [paused] set to true.
-  static LeakTrackingForTestsSettings copyWithPaused() =>
+  static LeakTrackingForTestsSettings paused() =>
       settings.copyWith(paused: true);
 
   /// Creates a copy of current settings with [paused] set to false.
-  static LeakTrackingForTestsSettings copyWithStarted() =>
+  static LeakTrackingForTestsSettings started() =>
       settings.copyWith(paused: false);
 
   /// Creates copy of current settings to debug notGCed leaks.
