@@ -198,7 +198,7 @@ void main() {
     );
 
     // Get adjusted settings.
-    final settings = LeakTrackingForTests.copyWithSkippedLeaks(
+    final settings = LeakTrackingForTests.withSkippedLeaks(
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
     );

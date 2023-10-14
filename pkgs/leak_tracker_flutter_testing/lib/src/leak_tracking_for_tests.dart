@@ -62,7 +62,7 @@ abstract class LeakTrackingForTests {
     bool allNotDisposed = false,
     List<String> classes = const [],
   }) {
-    settings = copyWithSkippedLeaks(
+    settings = withSkippedLeaks(
       notDisposed: notDisposed,
       notGCed: notGCed,
       allNotDisposed: allNotDisposed,
@@ -75,7 +75,7 @@ abstract class LeakTrackingForTests {
   ///
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
-  static LeakTrackingForTestsSettings copyWithSkippedLeaks({
+  static LeakTrackingForTestsSettings withSkippedLeaks({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
