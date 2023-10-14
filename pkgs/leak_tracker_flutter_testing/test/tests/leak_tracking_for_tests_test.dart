@@ -58,7 +58,7 @@ bool _areOnlySkipped(
 
 void main() {
   setUp(() {
-    LeakTrackingForTests.settings = LeakTrackingForTestsSettings();
+    LeakTrackingForTests.settings = const LeakTrackingForTestsSettings();
   });
 
   test('$LeakTrackingForTestsSettings can be started and paused.', () async {

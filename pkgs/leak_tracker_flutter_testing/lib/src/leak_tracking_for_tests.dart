@@ -10,13 +10,22 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// Leak tracking settings and helper methods for tests.
 abstract class LeakTrackingForTests {
   /// Current configuration for leak tracking.
-  static LeakTrackingForTestsSettings settings = LeakTrackingForTestsSettings();
+  static LeakTrackingForTestsSettings settings =
+      const LeakTrackingForTestsSettings();
 
   /// Updates [settings] to pause leak tracking.
-  static void pause() => settings = settings.copyWith(paused: true);
+  static void pause() => settings = copyWithPaused();
 
   /// Updates [settings] to start leak tracking.
-  static void start() => settings = settings.copyWith(paused: false);
+  static void start() => settings = copyWithStarted();
+
+  /// Creates a copy of current settings with [paused] set to true.
+  static LeakTrackingForTestsSettings copyWithPaused() =>
+      settings.copyWith(paused: true);
+
+  /// Creates a copy of current settings with [paused] set to false.
+  static LeakTrackingForTestsSettings copyWithStarted() =>
+      settings.copyWith(paused: false);
 
   /// Creates copy of current settings to debug notGCed leaks.
   static LeakTrackingForTestsSettings withCreationStackTrace() {
@@ -147,12 +156,6 @@ class LeakTrackingForTestsSettings {
     this.failOnLeaksCollected = true,
     this.onLeaks = _emptyLeakHandler,
   });
-
-  /// Creates a copy of this object with [paused] set to true.
-  LeakTrackingForTestsSettings copyPaused() => copyWith(paused: true);
-
-  /// Creates a copy of this object with [paused] set to false.
-  LeakTrackingForTestsSettings copyStarted() => copyWith(paused: false);
 
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
