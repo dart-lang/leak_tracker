@@ -35,6 +35,7 @@ class _Classes {
       all.where((c) => !classes.contains(c)).toList();
 }
 
+/// Returns true, if the provided [classes] are skipped and all other classes from [_Classes] are tracked.
 bool _areOnlySkipped(
   List<String> classes, {
   LeakType? leakType,
