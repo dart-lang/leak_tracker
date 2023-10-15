@@ -62,7 +62,7 @@ class _AreCreateAndDispose extends Matcher {
     Map matchState,
     bool verbose,
   ) {
-    return mismatchDescription..add(matchState[_key]);
+    return mismatchDescription..add(matchState[_key] as String);
   }
 
   @override

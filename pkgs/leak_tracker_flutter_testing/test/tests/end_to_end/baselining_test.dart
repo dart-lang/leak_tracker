@@ -47,7 +47,7 @@ void main() {
     ),
   );
 
-  for (var i in Iterable.generate(10)) {
+  for (var i in Iterable<int>.generate(10)) {
     testWidgetsWithLeakTracking(
       'baselining with multiple runs',
       (widgetTester) async {

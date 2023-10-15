@@ -202,7 +202,7 @@ class _ListenedSink {
 
   void checkStoreAndClear(List<LeakSummary> items) {
     expect(store, hasLength(items.length));
-    for (final i in Iterable.generate(store.length)) {
+    for (final i in Iterable<int>.generate(store.length)) {
       expect(store[i].toMessage(), contains(items[i].toMessage()));
     }
     store.clear();
@@ -217,7 +217,7 @@ class _MockStdoutSink implements StdoutSummarySink {
 
   void checkStoreAndClear(List<LeakSummary> items) {
     expect(store, hasLength(items.length));
-    for (final i in Iterable.generate(store.length)) {
+    for (final i in Iterable<int>.generate(store.length)) {
       expect(store[i].toMessage(), contains(items[i].toMessage()));
     }
     store.clear();
@@ -232,7 +232,7 @@ class _MockDevToolsSink implements DevToolsSummarySink {
 
   void checkStoreAndClear(List<LeakSummary> items) {
     expect(store, hasLength(items.length));
-    for (final i in Iterable.generate(store.length)) {
+    for (final i in Iterable<int>.generate(store.length)) {
       expect(store[i].toMessage(), contains(items[i].toMessage()));
     }
     store.clear();
