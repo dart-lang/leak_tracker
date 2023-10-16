@@ -41,12 +41,18 @@ class Switches {
 }
 
 /// Set of classes to skip during leak tracking.
-class LeakSkipSet {
-  const LeakSkipSet({this.byClass = const {}, this.skipAll = false});
+class SkippedLeaksSet {
+  /// Creates instance of [SkippedLeaksSet].
+  ///
+  /// Use this constructor to provide both [byClass] and [skipAll]
+  /// in case when you want to preserve list of classes, while temporarily turning off
+  /// the entire leak tracking, so that when you turn it back on for a subset of tests
+  /// with `copyWith(skipAll: false)`, the list of classes is set to needed value.
+  const SkippedLeaksSet({this.byClass = const {}, this.skipAll = false});
 
-  const LeakSkipSet.skipAll() : this(skipAll: true, byClass: const {});
+  const SkippedLeaksSet.skipAll() : this(skipAll: true, byClass: const {});
 
-  const LeakSkipSet.byClass(this.byClass) : skipAll = false;
+  const SkippedLeaksSet.byClass(this.byClass) : skipAll = false;
 
   /// Classes to skip during leak tracking.
   ///
@@ -61,8 +67,8 @@ class LeakSkipSet {
 
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
-  LeakSkipSet copyWith({Map<String, int?>? byClass, bool? skipAll}) {
-    return LeakSkipSet(
+  SkippedLeaksSet copyWith({Map<String, int?>? byClass, bool? skipAll}) {
+    return SkippedLeaksSet(
       skipAll: skipAll ?? this.skipAll,
       byClass: byClass ?? this.byClass,
     );
@@ -71,7 +77,7 @@ class LeakSkipSet {
   /// Merges two skip lists.
   ///
   /// In the result object the skip limit for a class is maximum of two original skip limits.
-  LeakSkipSet merge(LeakSkipSet? other) {
+  SkippedLeaksSet merge(SkippedLeaksSet? other) {
     if (other == null) return this;
     final map = {...byClass};
     for (final theClass in other.byClass.keys) {
@@ -87,14 +93,14 @@ class LeakSkipSet {
       }
       map[theClass] = max(thisCount, otherCount);
     }
-    return LeakSkipSet(
+    return SkippedLeaksSet(
       byClass: map,
       skipAll: skipAll || other.skipAll,
     );
   }
 
   /// Removes the classes from skip lists.
-  LeakSkipSet track(List<String> list) {
+  SkippedLeaksSet track(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
     list.forEach(map.remove);
@@ -111,15 +117,15 @@ class LeakSkipSet {
 /// The total set of skipped leaks for both [notGCed] and [notDisposed] leaks.
 class SkippedLeaks {
   const SkippedLeaks({
-    this.notGCed = const LeakSkipSet(),
-    this.notDisposed = const LeakSkipSet(),
+    this.notGCed = const SkippedLeaksSet(),
+    this.notDisposed = const SkippedLeaksSet(),
   });
 
   /// Skip list for notGCed leaks.
-  final LeakSkipSet notGCed;
+  final SkippedLeaksSet notGCed;
 
   /// Skip list for notDisposed leaks.
-  final LeakSkipSet notDisposed;
+  final SkippedLeaksSet notDisposed;
 
   /// Returns true if the class is skipped.
   ///

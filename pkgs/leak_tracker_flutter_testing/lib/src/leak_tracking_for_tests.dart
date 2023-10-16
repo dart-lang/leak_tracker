@@ -95,13 +95,13 @@ abstract class LeakTrackingForTests {
     return settings.copyWith(
       skippedLeaks: SkippedLeaks(
         notGCed: settings.skippedLeaks.notGCed.merge(
-          LeakSkipSet(
+          SkippedLeaksSet(
             byClass: addClassesToMap(notGCed, classes),
             skipAll: allNotGCed,
           ),
         ),
         notDisposed: settings.skippedLeaks.notDisposed.merge(
-          LeakSkipSet(
+          SkippedLeaksSet(
             byClass: addClassesToMap(notDisposed, classes),
             skipAll: allNotDisposed,
           ),
