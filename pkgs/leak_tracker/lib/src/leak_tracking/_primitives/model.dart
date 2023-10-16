@@ -108,7 +108,7 @@ class LeakSkipSet {
   }
 }
 
-/// Skip lists for each type of leak.
+/// The total set of skipped leaks for both [notGCed] and [notDisposed] leaks.
 class SkippedLeaks {
   const SkippedLeaks({
     this.notGCed = const LeakSkipSet(),
