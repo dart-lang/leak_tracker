@@ -30,7 +30,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 ///
 /// Update for [LeakTrackingForTests.settings] when a test is already running
 /// will throw exception.
-abstract class LeakTrackingForTests {
+abstract final class LeakTrackingForTests {
   /// Current configuration for leak tracking.
   ///
   /// Us used by `testWidgets` if configuration is not provided for a test.
