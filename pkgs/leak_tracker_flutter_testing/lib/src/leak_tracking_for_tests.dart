@@ -20,7 +20,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// Use methods that return adjusted [LeakTrackingForTests.settings]
 /// to customize default for an individual test:
 ///
-/// ```
+/// ```dart
 /// testWidgets(
 ///     'initialTimerDuration falls within limit',
 ///     leakTracking: LeakTrackingForTests.withSkippedLeaks(allNotGCed: true),
