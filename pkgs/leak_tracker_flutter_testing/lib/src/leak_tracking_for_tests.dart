@@ -7,9 +7,33 @@ import 'package:meta/meta.dart';
 
 void _emptyLeakHandler(Leaks leaks) {}
 
-/// Leak tracking settings and helper methods for tests.
+/// Set of helper methods to adjust default leak tracker settings for tests.
+///
+/// Some metods modify [LeakTrackingForTests.settings], others return adjusted
+/// copy of [LeakTrackingForTests.settings].
+///
+/// Use methods, which modify [LeakTrackingForTests.settings], to
+/// change default settings for set of tests,
+/// for example for package or folder (in flutter_test_config.dart) or
+/// for library (in `setUpAll`).
+///
+/// Use methods that return adjusted [LeakTrackingForTests.settings]
+/// to customize default for an individual test:
+///
+/// ```
+/// testWidgets(
+///     'initialTimerDuration falls within limit',
+///     leakTracking: LeakTrackingForTests.withSkippedLeaks(allNotGCed: true),
+///     (WidgetTester tester) async {
+///       ...
+/// ```
+///
+/// Update for [LeakTrackingForTests.settings] when a test is already running
+/// will throw exception.
 abstract class LeakTrackingForTests {
   /// Current configuration for leak tracking.
+  ///
+  /// Us used by `testWidgets` if configuration is not provided for a test.
   static LeakTrackingForTestsSettings settings =
       const LeakTrackingForTestsSettings();
 
