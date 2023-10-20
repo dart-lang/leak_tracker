@@ -51,7 +51,9 @@ class LeakTrackingForTests {
   /// Creates a copy of [settings] with [LeakTrackingForTests.ignore] set to false.
   static LeakTrackingForTests tracked() => settings.copyWith(ignore: false);
 
-  /// Creates copy of [settings] to debug notGCed leaks.
+  /// Creates copy of [settings] to with enabled collection of creation stack trace.
+  ///
+  /// Stack trace of the leaked object creation will be added to diagnostics.
   static LeakTrackingForTests withCreationStackTrace() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
@@ -60,7 +62,9 @@ class LeakTrackingForTests {
     );
   }
 
-  /// Creates copy of [settings] to debug notDisposed leaks.
+  /// Creates copy of [settings] to with enabled collection of disposal stack trace.
+  ///
+  /// Stack trace of the leaked object disposal will be added to diagnostics.
   static LeakTrackingForTests withDisposalStackTrace() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
