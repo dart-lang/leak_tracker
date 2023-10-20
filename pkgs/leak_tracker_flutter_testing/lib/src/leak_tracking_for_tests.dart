@@ -23,7 +23,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// ```dart
 /// testWidgets(
 ///     'initialTimerDuration falls within limit',
-///     leakTracking: LeakTrackingForTests.ignored(),
+///     leakTracking: LeakTrackingForTests.withIgnoredAll(),
 ///     (WidgetTester tester) async {
 ///       ...
 /// ```
