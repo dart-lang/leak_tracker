@@ -45,13 +45,13 @@ bool _areOnlySkipped(
   final classesSkipped = !classes
       .map(
         (theClass) =>
-            theSettings.skippedLeaks.isSkipped(theClass, leakType: leakType),
+            theSettings.ignoredLeaks.isIgnored(theClass, leakType: leakType),
       )
       .any((skipped) => !skipped);
   final othersTracked = _Classes.others(classes)
       .map(
         (theClass) =>
-            theSettings.skippedLeaks.isSkipped(theClass, leakType: leakType),
+            theSettings.ignoredLeaks.isIgnored(theClass, leakType: leakType),
       )
       .any((skipped) => !skipped);
   return classesSkipped && othersTracked;
@@ -63,11 +63,11 @@ void main() {
   });
 
   test('$LeakTrackingForTestsSettings can be started and paused.', () async {
-    expect(LeakTrackingForTests.settings.paused, true);
-    LeakTrackingForTests.start();
-    expect(LeakTrackingForTests.settings.paused, false);
-    LeakTrackingForTests.pause();
-    expect(LeakTrackingForTests.settings.paused, true);
+    expect(LeakTrackingForTests.settings.ignore, true);
+    LeakTrackingForTests.track();
+    expect(LeakTrackingForTests.settings.ignore, false);
+    LeakTrackingForTests.ignoreAll();
+    expect(LeakTrackingForTests.settings.ignore, true);
   });
 
   test(
@@ -79,7 +79,7 @@ void main() {
     expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
 
     // Skip some classes.
-    LeakTrackingForTests.skip(
+    LeakTrackingForTests.ignore(
       classes: [_Classes.anyLeak1],
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
@@ -122,7 +122,7 @@ void main() {
     expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
 
     // Skip some classes.
-    LeakTrackingForTests.skip(
+    LeakTrackingForTests.ignore(
       classes: [_Classes.anyLeak1],
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
@@ -146,7 +146,7 @@ void main() {
     );
 
     // Skip more classes.
-    LeakTrackingForTests.skip(
+    LeakTrackingForTests.ignore(
       classes: [_Classes.anyLeak2],
       notGCed: {_Classes.notGCed2: null},
       notDisposed: {_Classes.notDisposed2: null},
@@ -183,7 +183,7 @@ void main() {
   test('$LeakTrackingForTestsSettings can be altered for and individual test.',
       () async {
     // Skip some classes.
-    LeakTrackingForTests.skip(
+    LeakTrackingForTests.ignore(
       classes: [_Classes.anyLeak1],
     );
 
@@ -199,7 +199,7 @@ void main() {
     );
 
     // Get adjusted settings.
-    final settings = LeakTrackingForTests.withSkippedLeaks(
+    final settings = LeakTrackingForTests.withIgnoredLeaks(
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
     );

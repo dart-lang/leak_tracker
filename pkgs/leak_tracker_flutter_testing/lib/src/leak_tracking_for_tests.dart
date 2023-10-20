@@ -23,7 +23,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// ```dart
 /// testWidgets(
 ///     'initialTimerDuration falls within limit',
-///     leakTracking: LeakTrackingForTests.withSkippedLeaks(allNotGCed: true),
+///     leakTracking: LeakTrackingForTests.withIgnoredLeaks(allNotGCed: true),
 ///     (WidgetTester tester) async {
 ///       ...
 /// ```
@@ -38,18 +38,18 @@ abstract final class LeakTrackingForTests {
       const LeakTrackingForTestsSettings();
 
   /// Updates [settings] to pause leak tracking.
-  static void pause() => settings = ignore();
+  static void ignoreAll() => settings = ignored();
 
   /// Updates [settings] to start leak tracking.
-  static void start() => settings = track();
+  static void track() => settings = tracked();
 
-  /// Creates a copy of current settings with [LeakTrackingForTestsSettings.paused] set to true.
-  static LeakTrackingForTestsSettings ignore() =>
-      settings.copyWith(paused: true);
+  /// Creates a copy of current settings with [LeakTrackingForTestsSettings.ignore] set to true.
+  static LeakTrackingForTestsSettings ignored() =>
+      settings.copyWith(ignore: true);
 
-  /// Creates a copy of current settings with [LeakTrackingForTestsSettings.paused] set to false.
-  static LeakTrackingForTestsSettings track() =>
-      settings.copyWith(paused: false);
+  /// Creates a copy of current settings with [LeakTrackingForTestsSettings.ignore] set to false.
+  static LeakTrackingForTestsSettings tracked() =>
+      settings.copyWith(ignore: false);
 
   /// Creates copy of current settings to debug notGCed leaks.
   static LeakTrackingForTestsSettings withCreationStackTrace() {
@@ -78,15 +78,15 @@ abstract final class LeakTrackingForTests {
     );
   }
 
-  /// Adds certain classes and leak types to skip lists in [settings].
-  static void skip({
+  /// Adds certain classes and leak types to ignore lists in [settings].
+  static void ignore({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
     bool allNotDisposed = false,
     List<String> classes = const [],
   }) {
-    settings = withSkippedLeaks(
+    settings = withIgnoredLeaks(
       notDisposed: notDisposed,
       notGCed: notGCed,
       allNotDisposed: allNotDisposed,
@@ -99,7 +99,7 @@ abstract final class LeakTrackingForTests {
   ///
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
-  static LeakTrackingForTestsSettings withSkippedLeaks({
+  static LeakTrackingForTestsSettings withIgnoredLeaks({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
@@ -117,44 +117,44 @@ abstract final class LeakTrackingForTests {
     }
 
     return settings.copyWith(
-      skippedLeaks: SkippedLeaks(
-        notGCed: settings.skippedLeaks.notGCed.merge(
-          SkippedLeaksSet(
+      ignoredLeaks: IgnoredLeaks(
+        notGCed: settings.ignoredLeaks.notGCed.merge(
+          IgnoredLeaksSet(
             byClass: addClassesToMap(notGCed, classes),
-            skipAll: allNotGCed,
+            ignoreAll: allNotGCed,
           ),
         ),
-        notDisposed: settings.skippedLeaks.notDisposed.merge(
-          SkippedLeaksSet(
+        notDisposed: settings.ignoredLeaks.notDisposed.merge(
+          IgnoredLeaksSet(
             byClass: addClassesToMap(notDisposed, classes),
-            skipAll: allNotDisposed,
+            ignoreAll: allNotDisposed,
           ),
         ),
       ),
     );
   }
 
-  /// Returns copy of [settings] with reduced skip lists.
+  /// Returns copy of [settings] with reduced ignore lists.
   ///
-  /// Items in [classes] will be removed from all skip lists.
+  /// Items in [classes] will be removed from all ignore lists.
   static LeakTrackingForTestsSettings copyWithTrackedLeaks({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
   }) {
     final result = settings.copyWith(
-      skippedLeaks: SkippedLeaks(
-        notGCed: settings.skippedLeaks.notGCed.track([...notGCed, ...classes]),
-        notDisposed: settings.skippedLeaks.notDisposed
+      ignoredLeaks: IgnoredLeaks(
+        notGCed: settings.ignoredLeaks.notGCed.track([...notGCed, ...classes]),
+        notDisposed: settings.ignoredLeaks.notDisposed
             .track([...notDisposed, ...classes]),
       ),
     );
     return result;
   }
 
-  /// Removes certain classes and leak types from skip lists in [settings].
+  /// Removes certain classes and leak types from ignore lists in [settings].
   ///
-  /// Items in [classes] will be removed from all skip lists.
+  /// Items in [classes] will be removed from all ignore lists.
   static void trackLeaks({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
@@ -174,8 +174,8 @@ abstract final class LeakTrackingForTests {
 class LeakTrackingForTestsSettings {
   @visibleForTesting
   const LeakTrackingForTestsSettings({
-    this.paused = true,
-    this.skippedLeaks = const SkippedLeaks(),
+    this.ignore = true,
+    this.ignoredLeaks = const IgnoredLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.failOnLeaksCollected = true,
     this.onLeaks = _emptyLeakHandler,
@@ -184,24 +184,24 @@ class LeakTrackingForTestsSettings {
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
   LeakTrackingForTestsSettings copyWith({
-    SkippedLeaks? skippedLeaks,
+    IgnoredLeaks? ignoredLeaks,
     LeakDiagnosticConfig? leakDiagnosticConfig,
     bool? failOnLeaksCollected,
     LeaksCallback? onLeaks,
     MemoryBaselining? baselining,
-    bool? paused,
+    bool? ignore,
   }) {
     return LeakTrackingForTestsSettings(
-      skippedLeaks: skippedLeaks ?? this.skippedLeaks,
+      ignoredLeaks: ignoredLeaks ?? this.ignoredLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,
       onLeaks: onLeaks ?? this.onLeaks,
-      paused: paused ?? this.paused,
+      ignore: ignore ?? this.ignore,
     );
   }
 
   /// If true, leak tracking is paused.
-  final bool paused;
+  final bool ignore;
 
   /// If true, tests will fail on leaks.
   ///
@@ -211,8 +211,8 @@ class LeakTrackingForTestsSettings {
   /// Callback to invoke before the test fails when [failOnLeaksCollected] is true and if leaks were found.
   final LeaksCallback onLeaks;
 
-  /// Leaks to skip.
-  final SkippedLeaks skippedLeaks;
+  /// Leaks to ignore.
+  final IgnoredLeaks ignoredLeaks;
 
   /// Defines which diagnostics information to collect.
   ///

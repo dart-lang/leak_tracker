@@ -111,24 +111,24 @@ void main() {
     });
   });
 
-  group('$SkippedLeaksSet', () {
+  group('$IgnoredLeaksSet', () {
     test('merges', () {
-      const list1 = SkippedLeaksSet.byClass({'class1': null});
-      const list2 = SkippedLeaksSet.byClass({'class2': null});
+      const list1 = IgnoredLeaksSet.byClass({'class1': null});
+      const list2 = IgnoredLeaksSet.byClass({'class2': null});
 
       final result = list1.merge(list2);
 
-      expect(result.isSkipped('class1'), true);
-      expect(result.isSkipped('class2'), true);
+      expect(result.isIgnored('class1'), true);
+      expect(result.isIgnored('class2'), true);
     });
 
     test('removes', () {
-      const list = SkippedLeaksSet.byClass({'class1': null, 'class2': null});
+      const list = IgnoredLeaksSet.byClass({'class1': null, 'class2': null});
 
       final result = list.track(['class1']);
 
-      expect(result.isSkipped('class1'), false);
-      expect(result.isSkipped('class2'), true);
+      expect(result.isIgnored('class1'), false);
+      expect(result.isIgnored('class2'), true);
     });
   });
 }

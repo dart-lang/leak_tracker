@@ -22,7 +22,7 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// Useable to temporary disable features in case of
 /// noisinness or performance regression
 /// in applications or tests.
-/// TODO(polina-c): delete after migration to [SkippedLeaks].
+/// TODO(polina-c): delete after migration to [IgnoredLeaks].
 /// https://github.com/flutter/devtools/issues/3951
 class Switches {
   const Switches({
@@ -40,44 +40,44 @@ class Switches {
   bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
 }
 
-/// Set of classes to skip during leak tracking.
-class SkippedLeaksSet {
-  /// Creates instance of [SkippedLeaksSet].
+/// Set of classes to ignore during leak tracking.
+class IgnoredLeaksSet {
+  /// Creates instance of [IgnoredLeaksSet].
   ///
-  /// Use this constructor to provide both [byClass] and [skipAll]
+  /// Use this constructor to provide both [byClass] and [ignoreAll]
   /// in case when you want to preserve list of classes, while temporarily turning off
   /// the entire leak tracking, so that when you turn it back on for a subset of tests
-  /// with `copyWith(skipAll: false)`, the list of classes is set to needed value.
-  const SkippedLeaksSet({this.byClass = const {}, this.skipAll = false});
+  /// with `copyWith(ignoreAll: false)`, the list of classes is set to needed value.
+  const IgnoredLeaksSet({this.byClass = const {}, this.ignoreAll = false});
 
-  const SkippedLeaksSet.skipAll() : this(skipAll: true, byClass: const {});
+  const IgnoredLeaksSet.ignore() : this(ignoreAll: true, byClass: const {});
 
-  const SkippedLeaksSet.byClass(this.byClass) : skipAll = false;
+  const IgnoredLeaksSet.byClass(this.byClass) : ignoreAll = false;
 
-  /// Classes to skip during leak tracking.
+  /// Classes to ignore during leak tracking.
   ///
   /// Maps name of the class, as returned by `object.runtimeType.toString()`,
   /// to the number of instances of the class that are allowed to leak.
   ///
-  /// If number of instances is [null], all leaks are skipped.
+  /// If number of instances is [null], all leaks are ignoreped.
   final Map<String, int?> byClass;
 
-  /// If true, all leaks are skipped, otherwise [byClass] defines what is skipped.
-  final bool skipAll;
+  /// If true, all leaks are ignoreped, otherwise [byClass] defines what is ignoreped.
+  final bool ignoreAll;
 
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
-  SkippedLeaksSet copyWith({Map<String, int?>? byClass, bool? skipAll}) {
-    return SkippedLeaksSet(
-      skipAll: skipAll ?? this.skipAll,
+  IgnoredLeaksSet copyWith({Map<String, int?>? byClass, bool? ignoreAll}) {
+    return IgnoredLeaksSet(
+      ignoreAll: ignoreAll ?? this.ignoreAll,
       byClass: byClass ?? this.byClass,
     );
   }
 
-  /// Merges two skip lists.
+  /// Merges two ignore lists.
   ///
-  /// In the result object the skip limit for a class is maximum of two original skip limits.
-  SkippedLeaksSet merge(SkippedLeaksSet? other) {
+  /// In the result object the ignore limit for a class is maximum of two original ignore limits.
+  IgnoredLeaksSet merge(IgnoredLeaksSet? other) {
     if (other == null) return this;
     final map = {...byClass};
     for (final theClass in other.byClass.keys) {
@@ -93,53 +93,53 @@ class SkippedLeaksSet {
       }
       map[theClass] = max(thisCount, otherCount);
     }
-    return SkippedLeaksSet(
+    return IgnoredLeaksSet(
       byClass: map,
-      skipAll: skipAll || other.skipAll,
+      ignoreAll: ignoreAll || other.ignoreAll,
     );
   }
 
-  /// Removes the classes from skip lists.
-  SkippedLeaksSet track(List<String> list) {
+  /// Removes the classes from ignore lists.
+  IgnoredLeaksSet track(List<String> list) {
     if (list.isEmpty) return this;
     final map = {...byClass};
     list.forEach(map.remove);
     return copyWith(byClass: map);
   }
 
-  /// Returns true if the class should be skipped.
-  bool isSkipped(String className) {
-    if (skipAll) return true;
+  /// Returns true if the class should be ignoreped.
+  bool isIgnored(String className) {
+    if (ignoreAll) return true;
     return byClass.containsKey(className) && byClass[className] == null;
   }
 }
 
-/// The total set of skipped leaks for both [notGCed] and [notDisposed] leaks.
-class SkippedLeaks {
-  const SkippedLeaks({
-    this.notGCed = const SkippedLeaksSet(),
-    this.notDisposed = const SkippedLeaksSet(),
+/// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
+class IgnoredLeaks {
+  const IgnoredLeaks({
+    this.notGCed = const IgnoredLeaksSet(),
+    this.notDisposed = const IgnoredLeaksSet(),
   });
 
-  /// Skip list for notGCed leaks.
-  final SkippedLeaksSet notGCed;
+  /// Ignore list for notGCed leaks.
+  final IgnoredLeaksSet notGCed;
 
-  /// Skip list for notDisposed leaks.
-  final SkippedLeaksSet notDisposed;
+  /// Ignore list for notDisposed leaks.
+  final IgnoredLeaksSet notDisposed;
 
-  /// Returns true if the class is skipped.
+  /// Returns true if the class is ignored.
   ///
-  /// If [leakType] is null, returns true if the class is skipped for all
+  /// If [leakType] is null, returns true if the class is ignored for all
   /// leak types.
-  bool isSkipped(String className, {LeakType? leakType}) {
+  bool isIgnored(String className, {LeakType? leakType}) {
     switch (leakType) {
       case null:
-        return notGCed.isSkipped(className) && notDisposed.isSkipped(className);
+        return notGCed.isIgnored(className) && notDisposed.isIgnored(className);
       case LeakType.notDisposed:
-        return notDisposed.isSkipped(className);
+        return notDisposed.isIgnored(className);
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return notGCed.isSkipped(className);
+        return notGCed.isIgnored(className);
     }
   }
 }
