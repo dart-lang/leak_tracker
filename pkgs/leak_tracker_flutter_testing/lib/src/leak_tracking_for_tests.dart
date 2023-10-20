@@ -23,36 +23,36 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// ```dart
 /// testWidgets(
 ///     'initialTimerDuration falls within limit',
-///     leakTracking: LeakTrackingForTests.withIgnoredLeaks(allNotGCed: true),
+///     leakTracking: LeakTrackingForTests.ignored(),
 ///     (WidgetTester tester) async {
 ///       ...
 /// ```
 ///
 /// If [LeakTrackingForTests.settings] are updated during a test run,
 /// the updated settings will be used for the next test.
-abstract final class LeakTrackingForTests {
+class LeakTrackingForTests {
+  @visibleForTesting
+  const LeakTrackingForTests({
+    this.ignore = true,
+    this.ignoredLeaks = const IgnoredLeaks(),
+    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
+    this.failOnLeaksCollected = true,
+    this.onLeaks = _emptyLeakHandler,
+  });
+
   /// Current configuration for leak tracking.
   ///
   /// Is used by `testWidgets` if configuration is not provided for a test.
-  static LeakTrackingForTestsSettings settings =
-      const LeakTrackingForTestsSettings();
+  static LeakTrackingForTests settings = const LeakTrackingForTests();
 
-  /// Updates [settings] to pause leak tracking.
-  static void ignoreAll() => settings = ignored();
+  /// Creates a copy of current settings with [LeakTrackingForTests.ignore] set to true.
+  static LeakTrackingForTests ignored() => settings.copyWith(ignore: true);
 
-  /// Updates [settings] to start leak tracking.
-  static void track() => settings = tracked();
-
-  /// Creates a copy of current settings with [LeakTrackingForTestsSettings.ignore] set to true.
-  static LeakTrackingForTestsSettings ignored() =>
-      settings.copyWith(ignore: true);
-
-  /// Creates a copy of current settings with [LeakTrackingForTestsSettings.ignore] set to false.
-  static LeakTrackingForTestsSettings tracked() =>
-      settings.copyWith(ignore: false);
+  /// Creates a copy of current settings with [LeakTrackingForTests.ignore] set to false.
+  static LeakTrackingForTests tracked() => settings.copyWith(ignore: false);
 
   /// Creates copy of current settings to debug notGCed leaks.
-  static LeakTrackingForTestsSettings withCreationStackTrace() {
+  static LeakTrackingForTests withCreationStackTrace() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectStackTraceOnStart: true,
@@ -61,7 +61,7 @@ abstract final class LeakTrackingForTests {
   }
 
   /// Creates copy of current settings to debug notDisposed leaks.
-  static LeakTrackingForTestsSettings withDisposalStackTrace() {
+  static LeakTrackingForTests withDisposalStackTrace() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectStackTraceOnDisposal: true,
@@ -70,7 +70,7 @@ abstract final class LeakTrackingForTests {
   }
 
   /// Creates copy of current settings, that collects retaining path for not GCed objects.
-  static LeakTrackingForTestsSettings withRetainingPath() {
+  static LeakTrackingForTests withRetainingPath() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectRetainingPathForNotGCed: true,
@@ -78,28 +78,11 @@ abstract final class LeakTrackingForTests {
     );
   }
 
-  /// Adds certain classes and leak types to ignore lists in [settings].
-  static void ignore({
-    Map<String, int?> notGCed = const {},
-    bool allNotGCed = false,
-    Map<String, int?> notDisposed = const {},
-    bool allNotDisposed = false,
-    List<String> classes = const [],
-  }) {
-    settings = withIgnoredLeaks(
-      notDisposed: notDisposed,
-      notGCed: notGCed,
-      allNotDisposed: allNotDisposed,
-      allNotGCed: allNotGCed,
-      classes: classes,
-    );
-  }
-
   /// Returns copy of [settings] with extended skip lists.
   ///
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
-  static LeakTrackingForTestsSettings withIgnoredLeaks({
+  static LeakTrackingForTests withIgnored({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
@@ -137,7 +120,7 @@ abstract final class LeakTrackingForTests {
   /// Returns copy of [settings] with reduced ignore lists.
   ///
   /// Items in [classes] will be removed from all ignore lists.
-  static LeakTrackingForTestsSettings copyWithTrackedLeaks({
+  static LeakTrackingForTests withTracked({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
@@ -152,45 +135,16 @@ abstract final class LeakTrackingForTests {
     return result;
   }
 
-  /// Removes certain classes and leak types from ignore lists in [settings].
-  ///
-  /// Items in [classes] will be removed from all ignore lists.
-  static void trackLeaks({
-    List<String> notGCed = const [],
-    List<String> notDisposed = const [],
-    List<String> classes = const [],
-  }) {
-    settings = copyWithTrackedLeaks(
-      notDisposed: notDisposed,
-      notGCed: notGCed,
-      classes: classes,
-    );
-  }
-}
-
-/// Leak tracking settings for tests.
-///
-/// Should be instantiated using static methods of [LeakTrackingForTests].
-class LeakTrackingForTestsSettings {
-  @visibleForTesting
-  const LeakTrackingForTestsSettings({
-    this.ignore = true,
-    this.ignoredLeaks = const IgnoredLeaks(),
-    this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.failOnLeaksCollected = true,
-    this.onLeaks = _emptyLeakHandler,
-  });
-
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
-  LeakTrackingForTestsSettings copyWith({
+  LeakTrackingForTests copyWith({
     IgnoredLeaks? ignoredLeaks,
     LeakDiagnosticConfig? leakDiagnosticConfig,
     bool? failOnLeaksCollected,
     LeaksCallback? onLeaks,
     bool? ignore,
   }) {
-    return LeakTrackingForTestsSettings(
+    return LeakTrackingForTests(
       ignoredLeaks: ignoredLeaks ?? this.ignoredLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,

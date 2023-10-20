@@ -39,7 +39,7 @@ class _Classes {
 bool _areOnlySkipped(
   List<String> classes, {
   LeakType? leakType,
-  LeakTrackingForTestsSettings? settings,
+  LeakTrackingForTests? settings,
 }) {
   final theSettings = settings ?? LeakTrackingForTests.settings;
   final classesSkipped = !classes
@@ -59,19 +59,10 @@ bool _areOnlySkipped(
 
 void main() {
   setUp(() {
-    LeakTrackingForTests.settings = const LeakTrackingForTestsSettings();
+    LeakTrackingForTests.settings = const LeakTrackingForTests();
   });
 
-  test('$LeakTrackingForTestsSettings can be started and paused.', () async {
-    expect(LeakTrackingForTests.settings.ignore, true);
-    LeakTrackingForTests.track();
-    expect(LeakTrackingForTests.settings.ignore, false);
-    LeakTrackingForTests.ignoreAll();
-    expect(LeakTrackingForTests.settings.ignore, true);
-  });
-
-  test(
-      '$LeakTrackingForTestsSettings can be altered globally or for a library.',
+  test('$LeakTrackingForTests can be altered globally or for a library.',
       () async {
     // Verify initial settings.
     expect(_areOnlySkipped([]), true);
@@ -115,7 +106,7 @@ void main() {
     expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
   });
 
-  test('$LeakTrackingForTestsSettings can be altered iteratively.', () async {
+  test('$LeakTrackingForTests can be altered iteratively.', () async {
     // Verify initial settings.
     expect(_areOnlySkipped([]), true);
     expect(_areOnlySkipped([], leakType: LeakType.notDisposed), true);
@@ -180,7 +171,7 @@ void main() {
     );
   });
 
-  test('$LeakTrackingForTestsSettings can be altered for and individual test.',
+  test('$LeakTrackingForTests can be altered for and individual test.',
       () async {
     // Skip some classes.
     LeakTrackingForTests.ignore(
@@ -199,7 +190,7 @@ void main() {
     );
 
     // Get adjusted settings.
-    final settings = LeakTrackingForTests.withIgnoredLeaks(
+    final settings = LeakTrackingForTests.withIgnored(
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
     );
