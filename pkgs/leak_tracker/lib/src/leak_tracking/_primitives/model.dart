@@ -315,9 +315,9 @@ class ValueSampler {
   ValueSampler({
     required this.initialValue,
     required this.samples,
-    required deltaAvg,
+    required double deltaAvg,
     required this.deltaMax,
-    required absAvg,
+    required double absAvg,
     required this.absMax,
   })  : _sealed = true,
         _absSum = absAvg * samples,

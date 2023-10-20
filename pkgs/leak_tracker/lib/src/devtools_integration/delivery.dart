@@ -20,10 +20,10 @@ class RequestToApp<T extends Object> {
   RequestToApp(this.message);
 
   RequestToApp.fromRequestParameters(Map<String, String> parameters)
-      : message = openEnvelope(
-          jsonDecode(parameters[_JsonFields.content]!),
+      : message = openEnvelope<T>(
+          jsonDecode(parameters[_JsonFields.content]!) as Map<String, Object?>,
           Channel.requestToApp,
-        ) as T;
+        );
 
   Map<String, String> toRequestParameters() {
     return {
@@ -39,7 +39,7 @@ class ResponseFromApp<T extends Object> {
   ResponseFromApp(this.message);
 
   ResponseFromApp.fromJson(Map<String, dynamic> json)
-      : this(openEnvelope(json, Channel.responseFromApp) as T);
+      : this(openEnvelope<T>(json, Channel.responseFromApp));
 
   ResponseFromApp.fromServiceResponse(Response response)
       : this.fromJson(response.json!);
@@ -59,7 +59,7 @@ class EventFromApp<T extends Object> {
   EventFromApp(this.message);
 
   EventFromApp.fromJson(Map<String, dynamic> json)
-      : this(openEnvelope(json, Channel.eventFromApp) as T);
+      : this(openEnvelope<T>(json, Channel.eventFromApp));
 
   static EventFromApp? fromVmServiceEvent(Event event) {
     if (event.extensionKind != memoryLeakTrackingExtensionName) return null;

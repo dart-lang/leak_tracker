@@ -52,7 +52,10 @@ class LeakSummary {
 
   factory LeakSummary.fromJson(Map<String, dynamic> json) => LeakSummary(
         (json[_JsonFields.totals] as Map<String, dynamic>).map(
-          (key, value) => MapEntry(LeakType.byName(key), int.parse(value)),
+          (key, value) => MapEntry(
+            LeakType.byName(key),
+            int.parse(value as String),
+          ),
         ),
         time:
             DateTime.fromMillisecondsSinceEpoch(json[_JsonFields.time] as int),
@@ -139,12 +142,11 @@ class LeakReport {
   });
 
   factory LeakReport.fromJson(Map<String, dynamic> json) => LeakReport(
-        type: json[_JsonFields.type],
-        context: (json[_JsonFields.context] as Map<String, dynamic>? ?? {})
-            .cast<String, dynamic>(),
-        code: json[_JsonFields.code],
-        trackedClass: json[_JsonFields.trackedClass] ?? '',
-        phase: json[_JsonFields.phase],
+        type: json[_JsonFields.type] as String,
+        context: json[_JsonFields.context] as Map<String, dynamic>? ?? {},
+        code: json[_JsonFields.code] as int,
+        trackedClass: json[_JsonFields.trackedClass] as String? ?? '',
+        phase: json[_JsonFields.phase] as String?,
       );
 
   /// Information about the leak that can help in troubleshooting.

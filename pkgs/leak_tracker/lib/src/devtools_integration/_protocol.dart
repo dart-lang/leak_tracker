@@ -63,14 +63,15 @@ Map<String, dynamic> sealEnvelope(Object message, Channel channel) {
   };
 }
 
-/// Deserialize [message] into an opbejct of a right type.
-Object openEnvelope(
+/// Deserialize [message] into an object with the specified [T] type.
+T openEnvelope<T>(
   Map<String, dynamic> message,
   Channel channel,
 ) {
-  final envelope = _envelopeByCode(message[_JsonFields.envelopeCode] as String);
+  final envelope =
+      _envelopeByCode<T>(message[_JsonFields.envelopeCode] as String);
   assert(envelope.channel == channel);
-  return envelope.decode(message[_JsonFields.content]);
+  return envelope.decode(message[_JsonFields.content] as Map<String, Object?>);
 }
 
 /// Information necessary to serialize and deserialize an instance of type [T],
