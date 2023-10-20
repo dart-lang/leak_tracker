@@ -43,7 +43,6 @@ class LeakTrackingForTests {
   /// Current configuration for leak tracking.
   ///
   /// Is used by `testWidgets` if configuration is not provided for a test.
-  @useResult
   static LeakTrackingForTests settings = const LeakTrackingForTests();
 
   /// Copies with [ignore] set to true.
