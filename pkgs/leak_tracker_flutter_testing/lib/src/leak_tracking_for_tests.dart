@@ -43,17 +43,21 @@ class LeakTrackingForTests {
   /// Current configuration for leak tracking.
   ///
   /// Is used by `testWidgets` if configuration is not provided for a test.
+  @useResult
   static LeakTrackingForTests settings = const LeakTrackingForTests();
 
   /// Copies with [ignore] set to true.
+  @useResult
   LeakTrackingForTests withIgnoredAll() => copyWith(ignore: true);
 
   /// Copies with [ignore] set to false.
+  @useResult
   LeakTrackingForTests withTrackedAll() => copyWith(ignore: false);
 
   /// Copies with enabled collection of creation stack trace.
   ///
   /// Stack trace of the leaked object creation will be added to diagnostics.
+  @useResult
   LeakTrackingForTests withCreationStackTrace() {
     return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
@@ -65,6 +69,7 @@ class LeakTrackingForTests {
   /// Copies with enabled collection of disposal stack trace.
   ///
   /// Stack trace of the leaked object disposal will be added to diagnostics.
+  @useResult
   LeakTrackingForTests withDisposalStackTrace() {
     return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
@@ -74,6 +79,7 @@ class LeakTrackingForTests {
   }
 
   /// Creates copy of [settings], that collects retaining path for not GCed objects.
+  @useResult
   LeakTrackingForTests withRetainingPath() {
     return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
@@ -86,6 +92,7 @@ class LeakTrackingForTests {
   ///
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
+  @useResult
   LeakTrackingForTests withIgnored({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
@@ -124,6 +131,7 @@ class LeakTrackingForTests {
   /// Returns copy of [settings] with reduced ignore lists.
   ///
   /// Items in [classes] will be removed from all ignore lists.
+  @useResult
   LeakTrackingForTests withTracked({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
@@ -141,6 +149,7 @@ class LeakTrackingForTests {
 
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
+  @useResult
   LeakTrackingForTests copyWith({
     IgnoredLeaks? ignoredLeaks,
     LeakDiagnosticConfig? leakDiagnosticConfig,
