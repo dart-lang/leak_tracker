@@ -9,7 +9,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 
 /// Set of helper methods to adjust default leak tracker settings for tests.
 ///
-/// Some metods modify [LeakTrackingForTests.settings], others return adjusted
+/// Some methods modify [LeakTrackingForTests.settings], others return adjusted
 /// copy of [LeakTrackingForTests.settings].
 ///
 /// Use methods, which modify [LeakTrackingForTests.settings], to
@@ -28,12 +28,12 @@ void _emptyLeakHandler(Leaks leaks) {}
 ///       ...
 /// ```
 ///
-/// Update for [LeakTrackingForTests.settings] when a test is already running
-/// will throw exception.
+/// If [LeakTrackingForTests.settings] are updated during a test run,
+/// the updated settings will be used for the next test.
 abstract final class LeakTrackingForTests {
   /// Current configuration for leak tracking.
   ///
-  /// Us used by `testWidgets` if configuration is not provided for a test.
+  /// Is used by `testWidgets` if configuration is not provided for a test.
   static LeakTrackingForTestsSettings settings =
       const LeakTrackingForTestsSettings();
 

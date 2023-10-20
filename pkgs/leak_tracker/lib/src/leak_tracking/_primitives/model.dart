@@ -59,10 +59,10 @@ class IgnoredLeaksSet {
   /// Maps name of the class, as returned by `object.runtimeType.toString()`,
   /// to the number of instances of the class that are allowed to leak.
   ///
-  /// If number of instances is [null], all leaks are ignoreped.
+  /// If number of instances is [null], all leaks are ignored.
   final Map<String, int?> byClass;
 
-  /// If true, all leaks are ignoreped, otherwise [byClass] defines what is ignoreped.
+  /// If true, all leaks are ignored, otherwise [byClass] defines what is ignored.
   final bool ignoreAll;
 
   /// Creates a copy of this object with the given fields replaced
@@ -107,7 +107,10 @@ class IgnoredLeaksSet {
     return copyWith(byClass: map);
   }
 
-  /// Returns true if the class should be ignoreped.
+  /// Returns true if the class should be ignored.
+  ///
+  /// Returns false if limited number of leaks is set to be ignored, that is
+  /// `byClass[className] != null`.
   bool isIgnored(String className) {
     if (ignoreAll) return true;
     return byClass.containsKey(className) && byClass[className] == null;
