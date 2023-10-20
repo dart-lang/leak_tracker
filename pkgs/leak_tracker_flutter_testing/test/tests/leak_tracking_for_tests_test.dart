@@ -39,9 +39,9 @@ class _Classes {
 bool _areOnlySkipped(
   List<String> classes, {
   LeakType? leakType,
-  LeakTrackingForTests? settings,
+  LeakTesting? settings,
 }) {
-  final theSettings = settings ?? LeakTrackingForTests.settings;
+  final theSettings = settings ?? LeakTesting.settings;
   final classesSkipped = !classes
       .map(
         (theClass) =>
@@ -59,18 +59,17 @@ bool _areOnlySkipped(
 
 void main() {
   setUp(() {
-    LeakTrackingForTests.settings = const LeakTrackingForTests();
+    LeakTesting.settings = const LeakTesting();
   });
 
-  test('$LeakTrackingForTests can be altered globally or for a library.',
-      () async {
+  test('$LeakTesting can be altered globally or for a library.', () async {
     // Verify initial settings.
     expect(_areOnlySkipped([]), true);
     expect(_areOnlySkipped([], leakType: LeakType.notDisposed), true);
     expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
 
     // Skip some classes.
-    LeakTrackingForTests.settings = LeakTrackingForTests.settings.withIgnored(
+    LeakTesting.settings = LeakTesting.settings.withIgnored(
       classes: [_Classes.anyLeak1],
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
@@ -94,7 +93,7 @@ void main() {
     );
 
     // Start tracking classes.
-    LeakTrackingForTests.settings = LeakTrackingForTests.settings.withTracked(
+    LeakTesting.settings = LeakTesting.settings.withTracked(
       classes: [_Classes.anyLeak1],
       notGCed: [_Classes.notGCed1],
       notDisposed: [_Classes.notDisposed1],
@@ -106,14 +105,14 @@ void main() {
     expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
   });
 
-  test('$LeakTrackingForTests can be altered iteratively.', () async {
+  test('$LeakTesting can be altered iteratively.', () async {
     // Verify initial settings.
     expect(_areOnlySkipped([]), true);
     expect(_areOnlySkipped([], leakType: LeakType.notDisposed), true);
     expect(_areOnlySkipped([], leakType: LeakType.notGCed), true);
 
     // Skip some classes.
-    LeakTrackingForTests.settings = LeakTrackingForTests.settings.withIgnored(
+    LeakTesting.settings = LeakTesting.settings.withIgnored(
       classes: [_Classes.anyLeak1],
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
@@ -137,7 +136,7 @@ void main() {
     );
 
     // Skip more classes.
-    LeakTrackingForTests.settings = LeakTrackingForTests.settings.withIgnored(
+    LeakTesting.settings = LeakTesting.settings.withIgnored(
       classes: [_Classes.anyLeak2],
       notGCed: {_Classes.notGCed2: null},
       notDisposed: {_Classes.notDisposed2: null},
@@ -171,10 +170,9 @@ void main() {
     );
   });
 
-  test('$LeakTrackingForTests can be altered for and individual test.',
-      () async {
+  test('$LeakTesting can be altered for and individual test.', () async {
     // Skip some classes.
-    LeakTrackingForTests.settings = LeakTrackingForTests.settings.withIgnored(
+    LeakTesting.settings = LeakTesting.settings.withIgnored(
       classes: [_Classes.anyLeak1],
     );
 
@@ -190,7 +188,7 @@ void main() {
     );
 
     // Get adjusted settings.
-    final settings = LeakTrackingForTests.settings.withIgnored(
+    final settings = LeakTesting.settings.withIgnored(
       notGCed: {_Classes.notGCed1: null},
       notDisposed: {_Classes.notDisposed1: null},
     );

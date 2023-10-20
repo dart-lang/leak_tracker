@@ -9,7 +9,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 
 /// Leak tracker settings for tests.
 ///
-/// Modify [LeakTrackingForTests.settings], to
+/// Modify [LeakTesting.settings], to
 /// change default settings for tests that do not set leak tracking configuration,
 /// for package or folder in flutter_test_config.dart and for
 /// a test file in `setUpAll`.
@@ -17,22 +17,22 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// If you update the settings for a group, remember the original value to a local variable
 /// and restore it in `tearDownAll` for the group.
 ///
-/// Use methods that return adjusted [LeakTrackingForTests.settings]
+/// Use methods that return adjusted [LeakTesting.settings]
 /// to customize default for an individual test:
 ///
 /// ```dart
 /// testWidgets(
 ///     'initialTimerDuration falls within limit',
-///     leakTracking: LeakTrackingForTests.withIgnoredAll(),
+///     leakTracking: LeakTesting.withIgnoredAll(),
 ///     (WidgetTester tester) async {
 ///       ...
 /// ```
 ///
-/// If [LeakTrackingForTests.settings] are updated during a test run,
+/// If [LeakTesting.settings] are updated during a test run,
 /// the updated settings will be used for the next test.
-class LeakTrackingForTests {
+class LeakTesting {
   @visibleForTesting
-  const LeakTrackingForTests({
+  const LeakTesting({
     this.ignore = true,
     this.ignoredLeaks = const IgnoredLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
@@ -43,21 +43,21 @@ class LeakTrackingForTests {
   /// Current configuration for leak tracking.
   ///
   /// Is used by `testWidgets` if configuration is not provided for a test.
-  static LeakTrackingForTests settings = const LeakTrackingForTests();
+  static LeakTesting settings = const LeakTesting();
 
   /// Copies with [ignore] set to true.
   @useResult
-  LeakTrackingForTests withIgnoredAll() => copyWith(ignore: true);
+  LeakTesting withIgnoredAll() => copyWith(ignore: true);
 
   /// Copies with [ignore] set to false.
   @useResult
-  LeakTrackingForTests withTrackedAll() => copyWith(ignore: false);
+  LeakTesting withTrackedAll() => copyWith(ignore: false);
 
   /// Copies with enabled collection of creation stack trace.
   ///
   /// Stack trace of the leaked object creation will be added to diagnostics.
   @useResult
-  LeakTrackingForTests withCreationStackTrace() {
+  LeakTesting withCreationStackTrace() {
     return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectStackTraceOnStart: true,
@@ -69,7 +69,7 @@ class LeakTrackingForTests {
   ///
   /// Stack trace of the leaked object disposal will be added to diagnostics.
   @useResult
-  LeakTrackingForTests withDisposalStackTrace() {
+  LeakTesting withDisposalStackTrace() {
     return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectStackTraceOnDisposal: true,
@@ -79,7 +79,7 @@ class LeakTrackingForTests {
 
   /// Creates copy of [settings], that collects retaining path for not GCed objects.
   @useResult
-  LeakTrackingForTests withRetainingPath() {
+  LeakTesting withRetainingPath() {
     return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectRetainingPathForNotGCed: true,
@@ -92,7 +92,7 @@ class LeakTrackingForTests {
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
   @useResult
-  LeakTrackingForTests withIgnored({
+  LeakTesting withIgnored({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
@@ -131,7 +131,7 @@ class LeakTrackingForTests {
   ///
   /// Items in [classes] will be removed from all ignore lists.
   @useResult
-  LeakTrackingForTests withTracked({
+  LeakTesting withTracked({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
@@ -149,14 +149,14 @@ class LeakTrackingForTests {
   /// Creates a copy of this object with the given fields replaced
   /// with the new values.
   @useResult
-  LeakTrackingForTests copyWith({
+  LeakTesting copyWith({
     IgnoredLeaks? ignoredLeaks,
     LeakDiagnosticConfig? leakDiagnosticConfig,
     bool? failOnLeaksCollected,
     LeaksCallback? onLeaks,
     bool? ignore,
   }) {
-    return LeakTrackingForTests(
+    return LeakTesting(
       ignoredLeaks: ignoredLeaks ?? this.ignoredLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,
