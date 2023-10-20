@@ -188,7 +188,6 @@ class LeakTrackingForTestsSettings {
     LeakDiagnosticConfig? leakDiagnosticConfig,
     bool? failOnLeaksCollected,
     LeaksCallback? onLeaks,
-    MemoryBaselining? baselining,
     bool? ignore,
   }) {
     return LeakTrackingForTestsSettings(
