@@ -23,7 +23,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// ```dart
 /// testWidgets(
 ///     'initialTimerDuration falls within limit',
-///     leakTracking: LeakTrackingForTests.settings.ignored(),
+///     leakTracking: LeakTrackingForTests.ignored(),
 ///     (WidgetTester tester) async {
 ///       ...
 /// ```
@@ -45,28 +45,28 @@ class LeakTrackingForTests {
   /// Is used by `testWidgets` if configuration is not provided for a test.
   static LeakTrackingForTests settings = const LeakTrackingForTests();
 
-  /// Creates a copy of [settings] with [LeakTrackingForTests.ignore] set to true.
-  static LeakTrackingForTests ignored() => settings.copyWith(ignore: true);
+  /// Copies with [ignore] set to true.
+  LeakTrackingForTests withIgnoredAll() => copyWith(ignore: true);
 
-  /// Creates a copy of [settings] with [LeakTrackingForTests.ignore] set to false.
-  static LeakTrackingForTests tracked() => settings.copyWith(ignore: false);
+  /// Copies with [ignore] set to false.
+  LeakTrackingForTests withTrackedAll() => copyWith(ignore: false);
 
-  /// Creates copy of [settings] to with enabled collection of creation stack trace.
+  /// Copies with enabled collection of creation stack trace.
   ///
   /// Stack trace of the leaked object creation will be added to diagnostics.
-  static LeakTrackingForTests withCreationStackTrace() {
-    return settings.copyWith(
+  LeakTrackingForTests withCreationStackTrace() {
+    return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectStackTraceOnStart: true,
       ),
     );
   }
 
-  /// Creates copy of [settings] to with enabled collection of disposal stack trace.
+  /// Copies with enabled collection of disposal stack trace.
   ///
   /// Stack trace of the leaked object disposal will be added to diagnostics.
-  static LeakTrackingForTests withDisposalStackTrace() {
-    return settings.copyWith(
+  LeakTrackingForTests withDisposalStackTrace() {
+    return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectStackTraceOnDisposal: true,
       ),
@@ -74,8 +74,8 @@ class LeakTrackingForTests {
   }
 
   /// Creates copy of [settings], that collects retaining path for not GCed objects.
-  static LeakTrackingForTests withRetainingPath() {
-    return settings.copyWith(
+  LeakTrackingForTests withRetainingPath() {
+    return copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
         collectRetainingPathForNotGCed: true,
       ),
@@ -86,7 +86,7 @@ class LeakTrackingForTests {
   ///
   /// In the result the skip limit for a class is maximum of two original skip limits.
   /// Items in [classes] will be added to all skip lists.
-  static LeakTrackingForTests withIgnored({
+  LeakTrackingForTests withIgnored({
     Map<String, int?> notGCed = const {},
     bool allNotGCed = false,
     Map<String, int?> notDisposed = const {},
@@ -103,15 +103,15 @@ class LeakTrackingForTests {
       };
     }
 
-    return settings.copyWith(
+    return copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: settings.ignoredLeaks.notGCed.merge(
+        notGCed: ignoredLeaks.notGCed.merge(
           IgnoredLeaksSet(
             byClass: addClassesToMap(notGCed, classes),
             ignoreAll: allNotGCed,
           ),
         ),
-        notDisposed: settings.ignoredLeaks.notDisposed.merge(
+        notDisposed: ignoredLeaks.notDisposed.merge(
           IgnoredLeaksSet(
             byClass: addClassesToMap(notDisposed, classes),
             ignoreAll: allNotDisposed,
@@ -124,16 +124,16 @@ class LeakTrackingForTests {
   /// Returns copy of [settings] with reduced ignore lists.
   ///
   /// Items in [classes] will be removed from all ignore lists.
-  static LeakTrackingForTests withTracked({
+  LeakTrackingForTests withTracked({
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
   }) {
-    final result = settings.copyWith(
+    final result = copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: settings.ignoredLeaks.notGCed.track([...notGCed, ...classes]),
-        notDisposed: settings.ignoredLeaks.notDisposed
-            .track([...notDisposed, ...classes]),
+        notGCed: ignoredLeaks.notGCed.track([...notGCed, ...classes]),
+        notDisposed:
+            ignoredLeaks.notDisposed.track([...notDisposed, ...classes]),
       ),
     );
     return result;
