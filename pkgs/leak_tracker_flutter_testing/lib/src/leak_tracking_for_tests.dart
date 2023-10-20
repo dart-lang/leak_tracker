@@ -12,7 +12,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// Modify [LeakTrackingForTests.settings], to
 /// change default settings for tests that do not set leak tracking configuration,
 /// for package or folder in flutter_test_config.dart and for
-/// a test file library in `setUpAll`.
+/// a test file in `setUpAll`.
 ///
 /// If you update the settings for a group, remember the original value to a local variable
 /// and restore it in `tearDownAll` for the group.
