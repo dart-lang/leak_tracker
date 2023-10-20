@@ -45,13 +45,13 @@ class LeakTrackingForTests {
   /// Is used by `testWidgets` if configuration is not provided for a test.
   static LeakTrackingForTests settings = const LeakTrackingForTests();
 
-  /// Creates a copy of current settings with [LeakTrackingForTests.ignore] set to true.
+  /// Creates a copy of [settings] with [LeakTrackingForTests.ignore] set to true.
   static LeakTrackingForTests ignored() => settings.copyWith(ignore: true);
 
-  /// Creates a copy of current settings with [LeakTrackingForTests.ignore] set to false.
+  /// Creates a copy of [settings] with [LeakTrackingForTests.ignore] set to false.
   static LeakTrackingForTests tracked() => settings.copyWith(ignore: false);
 
-  /// Creates copy of current settings to debug notGCed leaks.
+  /// Creates copy of [settings] to debug notGCed leaks.
   static LeakTrackingForTests withCreationStackTrace() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
@@ -60,7 +60,7 @@ class LeakTrackingForTests {
     );
   }
 
-  /// Creates copy of current settings to debug notDisposed leaks.
+  /// Creates copy of [settings] to debug notDisposed leaks.
   static LeakTrackingForTests withDisposalStackTrace() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
@@ -69,7 +69,7 @@ class LeakTrackingForTests {
     );
   }
 
-  /// Creates copy of current settings, that collects retaining path for not GCed objects.
+  /// Creates copy of [settings], that collects retaining path for not GCed objects.
   static LeakTrackingForTests withRetainingPath() {
     return settings.copyWith(
       leakDiagnosticConfig: const LeakDiagnosticConfig(
