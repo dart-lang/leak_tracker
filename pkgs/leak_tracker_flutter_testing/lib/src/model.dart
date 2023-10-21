@@ -8,6 +8,8 @@ import 'package:leak_tracker/leak_tracker.dart';
 ///
 /// It will be passed to [LeakTracking.start()],
 /// when invoked for first test with leak tracking.
+// TODO(polina-c): remove this class in favor of [LeakTrackingInTests]
+// https://github.com/flutter/devtools/issues/3951
 class LeakTrackingTestSettings {
   LeakTrackingTestSettings({
     this.switches = const Switches(),
@@ -31,6 +33,8 @@ class LeakTrackingTestSettings {
 ///
 /// Customized configuration is needed only for test debugging,
 /// not for regular test runs.
+// TODO(polina-c): remove this class in favor of [LeakTrackingSettings]
+// https://github.com/flutter/devtools/issues/3951
 class LeakTrackingTestConfig {
   /// Creates a new instance of [LeakTrackingTestConfig].
   const LeakTrackingTestConfig({

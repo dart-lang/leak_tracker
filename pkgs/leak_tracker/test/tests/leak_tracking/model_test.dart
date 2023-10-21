@@ -110,4 +110,25 @@ void main() {
       expect(sampler.deltaMax, 1);
     });
   });
+
+  group('$IgnoredLeaksSet', () {
+    test('merges', () {
+      const list1 = IgnoredLeaksSet.byClass({'class1': null});
+      const list2 = IgnoredLeaksSet.byClass({'class2': null});
+
+      final result = list1.merge(list2);
+
+      expect(result.isIgnored('class1'), true);
+      expect(result.isIgnored('class2'), true);
+    });
+
+    test('removes', () {
+      const list = IgnoredLeaksSet.byClass({'class1': null, 'class2': null});
+
+      final result = list.track(['class1']);
+
+      expect(result.isIgnored('class1'), false);
+      expect(result.isIgnored('class2'), true);
+    });
+  });
 }

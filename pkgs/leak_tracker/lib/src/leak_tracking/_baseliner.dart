@@ -41,6 +41,7 @@ class Baseliner {
         throw UnimplementedError(
             'Regression testing for memory consumption is not implemented yet. '
             'Upvote the following issue if interested: https://github.com/dart-lang/leak_tracker/issues/120');
+      case BaseliningMode.none:
     }
   }
 

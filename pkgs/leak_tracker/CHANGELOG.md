@@ -1,3 +1,8 @@
+# 9.0.9
+
+* Define `IgnoredLeaks`.
+* Add item `none` to BaseliningMode.
+
 # 9.0.8
 
 * Enable declaring all not disposed objects as leaks.

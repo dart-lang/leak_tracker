@@ -22,6 +22,8 @@ typedef LeaksCallback = void Function(Leaks leaks);
 /// Useable to temporary disable features in case of
 /// noisinness or performance regression
 /// in applications or tests.
+/// TODO(polina-c): delete after migration to [IgnoredLeaks].
+/// https://github.com/flutter/devtools/issues/3951
 class Switches {
   const Switches({
     this.disableNotGCed = false,
@@ -36,6 +38,113 @@ class Switches {
 
   /// If true, objects are not tracked.
   bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
+}
+
+/// Set of classes to ignore during leak tracking.
+class IgnoredLeaksSet {
+  /// Creates instance of [IgnoredLeaksSet].
+  ///
+  /// Use this constructor to provide both [byClass] and [ignoreAll]
+  /// in case when you want to preserve list of classes, while temporarily turning off
+  /// the entire leak tracking, so that when you turn it back on for a subset of tests
+  /// with `copyWith(ignoreAll: false)`, the list of classes is set to needed value.
+  const IgnoredLeaksSet({this.byClass = const {}, this.ignoreAll = false});
+
+  const IgnoredLeaksSet.ignore() : this(ignoreAll: true, byClass: const {});
+
+  const IgnoredLeaksSet.byClass(this.byClass) : ignoreAll = false;
+
+  /// Classes to ignore during leak tracking.
+  ///
+  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
+  /// to the number of instances of the class that are allowed to leak.
+  ///
+  /// If number of instances is [null], all leaks are ignored.
+  final Map<String, int?> byClass;
+
+  /// If true, all leaks are ignored, otherwise [byClass] defines what is ignored.
+  final bool ignoreAll;
+
+  /// Creates a copy of this object with the given fields replaced
+  /// with the new values.
+  IgnoredLeaksSet copyWith({Map<String, int?>? byClass, bool? ignoreAll}) {
+    return IgnoredLeaksSet(
+      ignoreAll: ignoreAll ?? this.ignoreAll,
+      byClass: byClass ?? this.byClass,
+    );
+  }
+
+  /// Merges two ignore lists.
+  ///
+  /// In the result object the ignore limit for a class is maximum of two original ignore limits.
+  IgnoredLeaksSet merge(IgnoredLeaksSet? other) {
+    if (other == null) return this;
+    final map = {...byClass};
+    for (final theClass in other.byClass.keys) {
+      if (!map.containsKey(theClass)) {
+        map[theClass] = other.byClass[theClass];
+        continue;
+      }
+      final int? otherCount = other.byClass[theClass];
+      final int? thisCount = byClass[theClass];
+      if (thisCount == null || otherCount == null) {
+        map[theClass] = null;
+        continue;
+      }
+      map[theClass] = max(thisCount, otherCount);
+    }
+    return IgnoredLeaksSet(
+      byClass: map,
+      ignoreAll: ignoreAll || other.ignoreAll,
+    );
+  }
+
+  /// Removes the classes from ignore lists.
+  IgnoredLeaksSet track(List<String> list) {
+    if (list.isEmpty) return this;
+    final map = {...byClass};
+    list.forEach(map.remove);
+    return copyWith(byClass: map);
+  }
+
+  /// Returns true if the class should be ignored.
+  ///
+  /// Returns false if limited number of leaks is set to be ignored, that is
+  /// `byClass[className] != null`.
+  bool isIgnored(String className) {
+    if (ignoreAll) return true;
+    return byClass.containsKey(className) && byClass[className] == null;
+  }
+}
+
+/// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
+class IgnoredLeaks {
+  const IgnoredLeaks({
+    this.notGCed = const IgnoredLeaksSet(),
+    this.notDisposed = const IgnoredLeaksSet(),
+  });
+
+  /// Ignore list for notGCed leaks.
+  final IgnoredLeaksSet notGCed;
+
+  /// Ignore list for notDisposed leaks.
+  final IgnoredLeaksSet notDisposed;
+
+  /// Returns true if the class is ignored.
+  ///
+  /// If [leakType] is null, returns true if the class is ignored for all
+  /// leak types.
+  bool isIgnored(String className, {LeakType? leakType}) {
+    switch (leakType) {
+      case null:
+        return notGCed.isIgnored(className) && notDisposed.isIgnored(className);
+      case LeakType.notDisposed:
+        return notDisposed.isIgnored(className);
+      case LeakType.notGCed:
+      case LeakType.gcedLate:
+        return notGCed.isIgnored(className);
+    }
+  }
 }
 
 /// Configuration for diagnostics.
@@ -58,7 +167,7 @@ class LeakDiagnosticConfig {
 
   /// If true, retaining path will be collected for non-GCed objects.
   ///
-  /// The collection of retaining path a blocking asyncronous call.
+  /// The collection of retaining path is a blocking asyncronous call.
   /// In release mode this flag does not work.
   final bool collectRetainingPathForNotGCed;
 
@@ -259,6 +368,10 @@ class MemoryBaselining {
     this.baseline,
   }) : assert(!(mode == BaseliningMode.regression && baseline == null));
 
+  const MemoryBaselining.none()
+      : mode = BaseliningMode.none,
+        baseline = null;
+
   final BaseliningMode mode;
 
   final MemoryBaseline? baseline;
@@ -278,6 +391,9 @@ class MemoryBaselining {
 }
 
 enum BaseliningMode {
+  /// No baselining.
+  none,
+
   /// Measure memory footprint and output to console when phase is finished.
   measure,
 
