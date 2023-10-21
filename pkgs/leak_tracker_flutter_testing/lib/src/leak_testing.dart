@@ -29,7 +29,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// ```
 ///
 /// If [LeakTesting.settings] are updated during a test run,
-/// the updated settings will be used for the next test.
+/// the new value will be used for the next test.
 class LeakTesting {
   @visibleForTesting
   const LeakTesting({
