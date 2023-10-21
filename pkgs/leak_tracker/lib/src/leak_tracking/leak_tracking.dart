@@ -116,7 +116,7 @@ abstract class LeakTracking {
 
   /// Dispatches object creation to the leak tracker.
   ///
-  /// Use [context] to provide additional information, that may help in leek troubleshooting.
+  /// Use [context] to provide additional information, that may help in leak troubleshooting.
   /// The value must be serializable.
   static void dispatchObjectCreated({
     required String library,
