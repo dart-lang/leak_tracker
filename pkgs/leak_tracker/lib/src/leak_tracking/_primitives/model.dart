@@ -115,6 +115,25 @@ class IgnoredLeaksSet {
     if (ignoreAll) return true;
     return byClass.containsKey(className) && byClass[className] == null;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is IgnoredLeaksSet &&
+        other.ignoreAll == ignoreAll &&
+        const DeepCollectionEquality.unordered().equals(other.byClass, byClass);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        ignoreAll,
+        _mapHash(byClass),
+      );
 }
 
 /// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
@@ -145,6 +164,25 @@ class IgnoredLeaks {
         return notGCed.isIgnored(className);
     }
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is IgnoredLeaks &&
+        other.notGCed == notGCed &&
+        other.notDisposed == notDisposed;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        notGCed,
+        notDisposed,
+      );
 }
 
 /// Configuration for diagnostics.

@@ -183,4 +183,23 @@ class LeakTesting {
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is LeakTesting &&
+        other.ignore == ignore &&
+        other.failOnLeaksCollected == failOnLeaksCollected &&
+        other.onLeaks == onLeaks &&
+        other.ignoredLeaks == ignoredLeaks;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(ignore, failOnLeaksCollected, onLeaks, ignoredLeaks);
 }
