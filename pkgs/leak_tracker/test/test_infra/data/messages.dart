@@ -25,7 +25,7 @@ final messages = [
 ];
 
 void verifyTestsCoverAllEnvelopes() {
-  final nonCoveredEnvelopes = Set.from(envelopes.map((e) => e.type));
+  final nonCoveredEnvelopes = Set.of(envelopes.map((e) => e.type));
   for (final message in messages) {
     nonCoveredEnvelopes.remove(message.runtimeType);
   }
