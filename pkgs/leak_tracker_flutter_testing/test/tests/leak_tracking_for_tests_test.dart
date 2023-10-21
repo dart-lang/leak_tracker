@@ -58,8 +58,14 @@ bool _areOnlySkipped(
 }
 
 void main() {
+  late LeakTesting defaults;
+
   setUp(() {
-    LeakTesting.settings = const LeakTesting();
+    defaults = LeakTesting.settings;
+  });
+
+  tearDown(() {
+    LeakTesting.settings = defaults;
   });
 
   test('$LeakTesting can be altered globally or for a library.', () async {

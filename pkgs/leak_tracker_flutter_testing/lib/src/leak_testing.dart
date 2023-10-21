@@ -31,8 +31,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 /// If [LeakTesting.settings] are updated during a test run,
 /// the new value will be used for the next test.
 class LeakTesting {
-  @visibleForTesting
-  const LeakTesting({
+  const LeakTesting._({
     this.ignore = true,
     this.ignoredLeaks = const IgnoredLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
@@ -43,7 +42,7 @@ class LeakTesting {
   /// Current configuration for leak tracking.
   ///
   /// Is used by `testWidgets` if configuration is not provided for a test.
-  static LeakTesting settings = const LeakTesting();
+  static LeakTesting settings = const LeakTesting._();
 
   /// Copies with [ignore] set to true.
   @useResult
@@ -156,7 +155,7 @@ class LeakTesting {
     LeaksCallback? onLeaks,
     bool? ignore,
   }) {
-    return LeakTesting(
+    return LeakTesting._(
       ignoredLeaks: ignoredLeaks ?? this.ignoredLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
       failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,
