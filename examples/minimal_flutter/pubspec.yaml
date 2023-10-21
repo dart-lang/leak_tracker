@@ -2,7 +2,7 @@ name: leak_tracker_minimal_flutter_example
 publish_to: 'none'
 
 environment:
-  sdk: '>=2.19.0-347.0.dev <3.0.0'
+  sdk: ^3.0.0
 
 dependencies:
   flutter:
@@ -13,7 +13,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.0
+  flutter_lints: ^3.0.0
 
 flutter:
   uses-material-design: true
