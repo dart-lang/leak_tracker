@@ -311,10 +311,7 @@ class LeakTrackingConfig {
 /// Can be used to customize leak tracking for individual tests.
 class PhaseSettings {
   const PhaseSettings({
-    this.notGCedAllowList = const {},
-    this.notDisposedAllowList = const {},
-    this.allowAllNotDisposed = false,
-    this.allowAllNotGCed = false,
+    this.ignoredLeaks = const IgnoredLeaks(),
     this.isLeakTrackingPaused = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
@@ -336,27 +333,7 @@ class PhaseSettings {
   /// Can be used to specify name of a test.
   final String? name;
 
-  /// Classes that are allowed to be not garbage collected after disposal.
-  ///
-  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
-  /// to the number of instances of the class that are allowed to be not GCed.
-  ///
-  /// If number of instances is [null], any number of instances is allowed.
-  final Map<String, int?> notGCedAllowList;
-
-  /// Classes that are allowed to be garbage collected without being disposed.
-  ///
-  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
-  /// to the number of instances of the class that are allowed to be not disposed.
-  ///
-  /// If number of instances is [null], any number of instances is allowed.
-  final Map<String, int?> notDisposedAllowList;
-
-  /// If true, all notDisposed leaks will be allowed.
-  final bool allowAllNotDisposed;
-
-  /// If true, all notGCed leaks will be allowed.
-  final bool allowAllNotGCed;
+  final IgnoredLeaks ignoredLeaks;
 
   /// What diagnostic information to collect for leaks.
   final LeakDiagnosticConfig leakDiagnosticConfig;
@@ -374,12 +351,7 @@ class PhaseSettings {
     return other is PhaseSettings &&
         other.isLeakTrackingPaused == isLeakTrackingPaused &&
         other.name == name &&
-        const DeepCollectionEquality.unordered()
-            .equals(other.notDisposedAllowList, notDisposedAllowList) &&
-        const DeepCollectionEquality.unordered()
-            .equals(other.notGCedAllowList, notGCedAllowList) &&
-        other.allowAllNotDisposed == allowAllNotDisposed &&
-        other.allowAllNotGCed == allowAllNotGCed &&
+        other.ignoredLeaks == ignoredLeaks &&
         other.leakDiagnosticConfig == leakDiagnosticConfig &&
         other.baselining == baselining;
   }
@@ -388,10 +360,7 @@ class PhaseSettings {
   int get hashCode => Object.hash(
         isLeakTrackingPaused,
         name,
-        _mapHash(notDisposedAllowList),
-        _mapHash(notGCedAllowList),
-        allowAllNotDisposed,
-        allowAllNotGCed,
+        ignoredLeaks,
         baselining,
       );
 }
