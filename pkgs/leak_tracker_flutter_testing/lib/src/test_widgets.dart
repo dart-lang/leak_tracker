@@ -10,16 +10,6 @@ import 'package:meta/meta.dart';
 
 import 'model.dart';
 
-LeakTrackingTestSettings _leakTrackingTestSettings = LeakTrackingTestSettings();
-
-/// Configures leak tracking settings for each invocation of `testWidgetsWithLeakTracking`.
-void setLeakTrackingTestSettings(LeakTrackingTestSettings settings) {
-  if (LeakTracking.isStarted) {
-    throw StateError('$LeakTrackingTestSettings should be set before start');
-  }
-  _leakTrackingTestSettings = settings;
-}
-
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
 }
@@ -29,13 +19,7 @@ void _setUpTestingWithLeakTracking() {
   if (!_isPlatformSupported) return;
 
   LeakTracking.phase = const PhaseSettings.paused();
-  LeakTracking.start(
-    config: LeakTrackingConfig.passive(
-      switches: _leakTrackingTestSettings.switches,
-      disposalTime: _leakTrackingTestSettings.disposalTime,
-      numberOfGcCycles: _leakTrackingTestSettings.numberOfGcCycles,
-    ),
-  );
+  LeakTracking.start(config: LeakTrackingConfig.passive());
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
@@ -48,6 +32,8 @@ bool _stopConfiguringTearDown = false;
 /// not for every test.
 /// Multiple [tearDownAll] is needed to handle test groups that have
 /// own [tearDownAll].
+///
+/// Single tear down is needed to test leak tracking.
 @visibleForTesting
 void configureLeakTrackingTearDown({
   LeaksCallback? onLeaks,
@@ -69,10 +55,7 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
 
   LeakTracking.declareNotDisposedObjectsAsLeaks();
-  await forceGC(fullGcCycles: _leakTrackingTestSettings.numberOfGcCycles);
-  // This delay is needed to make sure all disposed and not GCed object are
-  // declared as leaks, and thus there is no flakiness in tests.
-  await Future.delayed(_leakTrackingTestSettings.disposalTime);
+  await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   final leaks = await LeakTracking.collectLeaks();
 
   LeakTracking.stop();
@@ -118,14 +101,10 @@ void testWidgetsWithLeakTracking(
       byClass: leakTrackingTestConfig.notDisposedAllowList,
     ),
     notGCed: IgnoredLeaksSet(
-      ignoreAll: leakTrackingTestConfig.allowAllNotDisposed,
-      byClass: leakTrackingTestConfig.notDisposedAllowList,
+      ignoreAll: leakTrackingTestConfig.allowAllNotGCed,
+      byClass: leakTrackingTestConfig.notGCedAllowList,
     ),
   );
-  //   notGCedAllowList: leakTrackingTestConfig.notGCedAllowList,
-  // notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
-  // allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
-  // allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
 
   final phase = PhaseSettings(
     name: description,

@@ -83,7 +83,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        switches: const Switches(),
       );
     });
 
@@ -153,7 +152,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        switches: const Switches(),
       );
     });
 
@@ -342,7 +340,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        switches: const Switches(),
       );
     });
 
@@ -441,7 +438,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: null,
-        switches: const Switches(),
       );
     });
 

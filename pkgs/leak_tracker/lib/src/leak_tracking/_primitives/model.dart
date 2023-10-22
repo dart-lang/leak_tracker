@@ -17,29 +17,6 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
-/// Switches for features of leak tracker.
-///
-/// Useable to temporary disable features in case of
-/// noisinness or performance regression
-/// in applications or tests.
-/// TODO(polina-c): delete after migration to [IgnoredLeaks].
-/// https://github.com/flutter/devtools/issues/3951
-class Switches {
-  const Switches({
-    this.disableNotGCed = false,
-    this.disableNotDisposed = false,
-  });
-
-  /// If true, notGCed leaks will not be tracked.
-  final bool disableNotGCed;
-
-  /// If true, notDisposed leaks will not be tracked.
-  final bool disableNotDisposed;
-
-  /// If true, objects are not tracked.
-  bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
-}
-
 /// Set of classes to ignore during leak tracking.
 class IgnoredLeaksSet {
   /// Creates instance of [IgnoredLeaksSet].
@@ -252,7 +229,6 @@ class LeakTrackingConfig {
     this.disposalTime = const Duration(milliseconds: 100),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.maxRequestsForRetainingPath = 10,
-    this.switches = const Switches(),
   });
 
   /// The leak tracker:
@@ -264,7 +240,6 @@ class LeakTrackingConfig {
     int numberOfGcCycles = defaultNumberOfGcCycles,
     Duration disposalTime = const Duration(),
     int? maxRequestsForRetainingPath = 10,
-    Switches switches = const Switches(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -272,7 +247,6 @@ class LeakTrackingConfig {
           disposalTime: disposalTime,
           numberOfGcCycles: numberOfGcCycles,
           maxRequestsForRetainingPath: maxRequestsForRetainingPath,
-          switches: switches,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
@@ -301,9 +275,6 @@ class LeakTrackingConfig {
   /// If the number is too big, the performance may be seriously impacted.
   /// If null, the path will be srequested without limit.
   final int? maxRequestsForRetainingPath;
-
-  /// Switches for features of leak tracker.
-  final Switches switches;
 }
 
 /// Leak tracking settings for a specific phase of the application execution.

@@ -25,7 +25,6 @@ class MockObjectTracker extends ObjectTracker {
           disposalTime: const Duration(milliseconds: 100),
           numberOfGcCycles: defaultNumberOfGcCycles,
           maxRequestsForRetainingPath: 0,
-          switches: const Switches(),
         );
 
   final events = <Event>[];

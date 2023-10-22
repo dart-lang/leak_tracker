@@ -28,7 +28,6 @@ class ObjectTracker implements LeakProvider {
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
-    required this.switches,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
   }) {
@@ -54,8 +53,6 @@ class ObjectTracker implements LeakProvider {
 
   final int? maxRequestsForRetainingPath;
 
-  final Switches switches;
-
   void startTracking(
     Object object, {
     required Map<String, dynamic>? context,
@@ -63,7 +60,7 @@ class ObjectTracker implements LeakProvider {
     required PhaseSettings phase,
   }) {
     throwIfDisposed();
-    if (phase.isLeakTrackingPaused || switches.isObjectTrackingDisabled) return;
+    if (phase.isLeakTrackingPaused) return;
 
     final record =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
@@ -121,7 +118,6 @@ class ObjectTracker implements LeakProvider {
     required Map<String, dynamic>? context,
   }) {
     throwIfDisposed();
-    if (switches.isObjectTrackingDisabled) return;
 
     final record = _objects.notGCed.record(object);
     // If object is not registered, this may mean that it was created when leak tracking was off.
@@ -143,7 +139,6 @@ class ObjectTracker implements LeakProvider {
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
     throwIfDisposed();
-    if (switches.isObjectTrackingDisabled) return;
 
     final record = _objects.notGCed.record(object);
     // If object is not registered, this may mean that it was created when leak tracking was off.
