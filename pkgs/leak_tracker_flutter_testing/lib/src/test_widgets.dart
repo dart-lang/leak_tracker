@@ -85,6 +85,8 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   }
 }
 
+// TODO(polina-c): retire this class after migration to `testWidgets`.
+// https://github.com/flutter/flutter/issues/135856
 /// Wrapper for [testWidgets] with memory leak tracking.
 ///
 /// The test will fail if instrumented objects in [callback] are
@@ -110,13 +112,25 @@ void testWidgetsWithLeakTracking(
 }) {
   configureLeakTrackingTearDown();
 
+  final ignoredLeaks = IgnoredLeaks(
+    notDisposed: IgnoredLeaksSet(
+      ignoreAll: leakTrackingTestConfig.allowAllNotDisposed,
+      byClass: leakTrackingTestConfig.notDisposedAllowList,
+    ),
+    notGCed: IgnoredLeaksSet(
+      ignoreAll: leakTrackingTestConfig.allowAllNotDisposed,
+      byClass: leakTrackingTestConfig.notDisposedAllowList,
+    ),
+  );
+  //   notGCedAllowList: leakTrackingTestConfig.notGCedAllowList,
+  // notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
+  // allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
+  // allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
+
   final phase = PhaseSettings(
     name: description,
     leakDiagnosticConfig: leakTrackingTestConfig.leakDiagnosticConfig,
-    notGCedAllowList: leakTrackingTestConfig.notGCedAllowList,
-    notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
-    allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
-    allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
+    ignoredLeaks: ignoredLeaks,
     baselining: leakTrackingTestConfig.baselining,
     isLeakTrackingPaused: leakTrackingTestConfig.isLeakTrackingPaused,
   );
