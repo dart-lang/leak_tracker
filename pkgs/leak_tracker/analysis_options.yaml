@@ -4,7 +4,7 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   language:
     strict-casts: true
-    #strict-inference: true # 34 issues
+    strict-inference: true
     #strict-raw-types: true # 103 issues
   errors:
     # treat missing required parameters as a warning (not a hint)

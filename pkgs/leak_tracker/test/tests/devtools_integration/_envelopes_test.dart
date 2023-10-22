@@ -13,12 +13,12 @@ void main() {
   });
 
   test('each code matches exactly one envelope', () {
-    final codesInEnvelopes = Set.from(envelopes.map((e) => e.code));
+    final codesInEnvelopes = Set.of(envelopes.map((e) => e.code));
     expect(codesInEnvelopes, hasLength(Codes.values.length));
   });
 
   test('envelopes are unique by type', () {
-    final types = Set.from(envelopes.map((e) => e.type));
+    final types = Set.of(envelopes.map((e) => e.type));
     expect(types, hasLength(envelopes.length));
   });
 
@@ -26,7 +26,8 @@ void main() {
     test('envelopes preserve original type', () {
       final envelope = envelopeByType(message.runtimeType);
       final envelopedMessage = sealEnvelope(message, envelope.channel);
-      final openedMessage = openEnvelope(envelopedMessage, envelope.channel);
+      final openedMessage =
+          openEnvelope<Object>(envelopedMessage, envelope.channel);
       expect(openedMessage.runtimeType, message.runtimeType);
     });
   }

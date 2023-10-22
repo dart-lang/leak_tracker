@@ -72,7 +72,7 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   await forceGC(fullGcCycles: _leakTrackingTestSettings.numberOfGcCycles);
   // This delay is needed to make sure all disposed and not GCed object are
   // declared as leaks, and thus there is no flakiness in tests.
-  await Future.delayed(_leakTrackingTestSettings.disposalTime);
+  await Future<void>.delayed(_leakTrackingTestSettings.disposalTime);
   final leaks = await LeakTracking.collectLeaks();
 
   LeakTracking.stop();

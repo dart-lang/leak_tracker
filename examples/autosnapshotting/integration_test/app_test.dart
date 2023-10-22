@@ -38,7 +38,8 @@ void main() {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(seconds: 5)));
     expect(pageState.snapshots.length, greaterThan(0));
 
     // Take second threshold
@@ -49,7 +50,8 @@ void main() {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    await tester.runAsync(() => Future.delayed(const Duration(seconds: 5)));
+    await tester
+        .runAsync(() => Future<void>.delayed(const Duration(seconds: 5)));
     expect(pageState.snapshots.length, snapshotsLength + 1);
 
     // Check the directory limit is respected.
@@ -57,10 +59,11 @@ void main() {
         config.autoSnapshottingConfig!.directorySizeLimitMb.mbToBytes()) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
-      await tester.runAsync(() => Future.delayed(const Duration(seconds: 1)));
+      await tester
+          .runAsync(() => Future<void>.delayed(const Duration(seconds: 1)));
     }
     snapshotsLength = pageState.snapshots.length;
-    for (var _ in Iterable.generate(10)) {
+    for (var _ in Iterable<void>.generate(10)) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }

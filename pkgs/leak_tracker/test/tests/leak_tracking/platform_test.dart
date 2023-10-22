@@ -13,7 +13,7 @@ Future<WeakReference<Object>> _createTrackedObject(
   final theObject = Iterable.generate(1000, (_) => DateTime.now());
 
   // Delay to increase chances for the object to get to old gc space.
-  await Future.delayed(const Duration(milliseconds: 10));
+  await Future<void>.delayed(const Duration(milliseconds: 10));
 
   finalizer.attach(theObject, identityHashCode(theObject));
   return WeakReference(theObject);
@@ -42,7 +42,7 @@ void main() {
     while (reachabilityBarrier <= barrier + 2) {
       _allocateMemory();
       // Delay to give space to garbage collector.
-      await Future.delayed(const Duration());
+      await Future<void>.delayed(const Duration());
     }
 
     expect(finalized, true);
