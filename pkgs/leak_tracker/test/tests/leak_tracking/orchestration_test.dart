@@ -30,7 +30,7 @@ void main() {
       const rounds = 100;
       final sw = Stopwatch()..start();
 
-      for (var _ in Iterable.generate(rounds)) {
+      for (var _ in Iterable<void>.generate(rounds)) {
         await forceGC();
       }
 

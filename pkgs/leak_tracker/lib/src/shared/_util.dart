@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 /// This function is better than `as`, because `as` does not provide callstack on failure.
-T cast<T>(value) {
+T cast<T>(Object? value) {
   if (value is T) return value;
   throw ArgumentError(
     '$value is of type ${value.runtimeType} that is not subtype of $T',

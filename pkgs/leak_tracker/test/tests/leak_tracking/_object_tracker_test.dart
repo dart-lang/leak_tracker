@@ -156,7 +156,7 @@ void main() {
     });
 
     test('uses finalizer.', () {
-      const theObject = [];
+      const theObject = <void>[];
       tracker.startTracking(
         theObject,
         context: null,
@@ -171,7 +171,7 @@ void main() {
 
     test('does not false positive.', () {
       // Define object and time.
-      const theObject = [];
+      const theObject = <void>[];
       var time = DateTime(2000);
 
       // Start tracking.
@@ -196,7 +196,7 @@ void main() {
 
     test('tracks ${LeakType.notDisposed}.', () async {
       // Define object.
-      const theObject = [];
+      const theObject = <void>[];
 
       // Start tracking and GC.
       tracker.startTracking(
@@ -213,7 +213,7 @@ void main() {
 
     test('tracks ${LeakType.notGCed}.', () async {
       // Define object and time.
-      const theObject = [];
+      const theObject = <void>[];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -239,7 +239,7 @@ void main() {
 
     test('tracks ${LeakType.gcedLate}.', () async {
       // Define object and time.
-      const theObject = [];
+      const theObject = <void>[];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -266,7 +266,7 @@ void main() {
 
     test('tracks ${LeakType.gcedLate} lifecycle accurately.', () async {
       // Define object and time.
-      const theObject = [];
+      const theObject = <void>[];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -296,7 +296,7 @@ void main() {
 
     test('collects context accurately.', () async {
       // Define object and time.
-      const theObject = [];
+      const theObject = <void>[];
       var time = DateTime(2000);
 
       // Start tracking and dispose.
@@ -319,7 +319,7 @@ void main() {
       await withClock(Clock.fixed(time), () async {
         final leaks = await tracker.collectLeaks();
         final context = leaks.notGCed.first.context!;
-        for (final i in Iterable.generate(3)) {
+        for (final i in Iterable<int>.generate(3)) {
           expect(context[i.toString()], i);
         }
       });
@@ -345,7 +345,7 @@ void main() {
 
     test('collects stack traces.', () async {
       // Define object and time.
-      const theObject = [];
+      const theObject = <void>[];
       var time = DateTime(2000);
 
       // Start tracking and dispose.

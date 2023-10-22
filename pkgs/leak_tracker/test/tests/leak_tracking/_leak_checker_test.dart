@@ -85,33 +85,33 @@ void main() {
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
 
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
 
     // Report leaks and make sure they signaled one time.
     leakProvider.value = _SummaryValues.nonZero;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     stdout.checkStoreAndClear([_SummaryValues.nonZero]);
     devtools.checkStoreAndClear([_SummaryValues.nonZero]);
 
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
 
     // Report the same leak totals and make sure there is no signals.
     leakProvider.value = _SummaryValues.nonZeroCopy;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
 
     // Drop totals and check signal.
     leakProvider.value = _SummaryValues.zero;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     stdout.checkStoreAndClear([_SummaryValues.zero]);
     devtools.checkStoreAndClear([_SummaryValues.zero]);
 
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
   });
@@ -130,38 +130,38 @@ void main() {
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
 
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
 
     // Report leaks and make sure they signaled one time.
     leakProvider.value = _SummaryValues.nonZero;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     listened.checkStoreAndClear([_SummaryValues.nonZero]);
 
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
 
     // Report the same leak totals and make sure there is no signals.
     leakProvider.value = _SummaryValues.nonZeroCopy;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
 
     // Drop totals and check signal.
     leakProvider.value = _SummaryValues.zero;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     listened.checkStoreAndClear([_SummaryValues.zero]);
 
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
@@ -177,14 +177,14 @@ void main() {
     );
 
     // Make sure there is no leaks.
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
 
     // Report leaks and make sure did not signal.
     leakProvider.value = _SummaryValues.nonZero;
-    await Future.delayed(doublePeriod);
+    await Future<void>.delayed(doublePeriod);
     expect(stdout.store, isEmpty);
     expect(devtools.store, isEmpty);
     expect(listened.store, isEmpty);
