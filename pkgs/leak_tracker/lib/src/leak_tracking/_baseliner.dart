@@ -21,7 +21,9 @@ class Baseliner {
     MemoryBaselining? baselining,
   ) {
     oldBaseliner?._finish();
-    if (baselining == null) return null;
+    if (baselining == null || baselining.mode == BaseliningMode.none) {
+      return null;
+    }
     return Baseliner(baselining);
   }
 
