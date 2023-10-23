@@ -11,7 +11,8 @@ import '_primitives/model.dart';
 
 class Baseliner {
   Baseliner(this.baselining)
-      : rss = ValueSampler.start(initialValue: _currentRss());
+      : assert(baselining.mode != BaseliningMode.none),
+        rss = ValueSampler.start(initialValue: _currentRss());
 
   final MemoryBaselining baselining;
   final ValueSampler rss;
