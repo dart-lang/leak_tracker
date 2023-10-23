@@ -8,8 +8,6 @@ import '_primitives/model.dart';
 
 /// Decides which leaks to report based on allow lists of the phase.
 class LeakFilter {
-  LeakFilter();
-
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
 
   bool shouldReport(LeakType leakType, ObjectRecord record) {
@@ -35,16 +33,14 @@ class _PhaseLeakFilter {
         return _shouldReport(
           leakType,
           record,
-          phase.ignoredLeaks.notDisposed.ignoreAll,
-          phase.ignoredLeaks.notDisposed.byClass,
+          phase.ignoredLeaks.notDisposed,
         );
       case LeakType.notGCed:
       case LeakType.gcedLate:
         return _shouldReport(
           leakType,
           record,
-          phase.ignoredLeaks.notGCed.ignoreAll,
-          phase.ignoredLeaks.notGCed.byClass,
+          phase.ignoredLeaks.notGCed,
         );
     }
   }
@@ -52,14 +48,13 @@ class _PhaseLeakFilter {
   bool _shouldReport(
     LeakType leakType,
     ObjectRecord record,
-    bool allAllowed,
-    Map<String, int?> allowList,
+    IgnoredLeaksSet ignoredLeaks,
   ) {
     assert(record.phase == phase);
-    if (allAllowed) return false;
+    if (ignoredLeaks.ignoreAll) return false;
     final objectType = record.type.toString();
-    if (!allowList.containsKey(objectType)) return true;
-    final allowedCount = allowList[objectType];
+    if (!ignoredLeaks.byClass.containsKey(objectType)) return true;
+    final allowedCount = ignoredLeaks.byClass[objectType];
     if (allowedCount == null) return false;
 
     final actualCount = _count.update(

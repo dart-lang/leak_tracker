@@ -45,7 +45,7 @@ class ObjectTracker implements LeakProvider {
 
   final _objects = ObjectRecords();
 
-  late final LeakFilter _leakFilter = LeakFilter();
+  late final _leakFilter = LeakFilter();
 
   bool disposed = false;
 
