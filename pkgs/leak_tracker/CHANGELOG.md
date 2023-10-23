@@ -1,3 +1,7 @@
+# 9.0.10
+
+* Use `IgnoredLeaks`.
+
 # 9.0.9
 
 * Define `IgnoredLeaks`.

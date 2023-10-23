@@ -20,21 +20,21 @@ void main() {
   testWidgetsWithLeakTracking(test1TrackingOnNoLeaks, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
     expect(LeakTracking.phase.name, test1TrackingOnNoLeaks);
-    expect(LeakTracking.phase.isLeakTrackingPaused, false);
+    expect(LeakTracking.phase.ignoreLeaks, false);
     await widgetTester.pumpWidget(Container());
   });
 
   testWidgets(test2TrackingOffLeaks, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
     expect(LeakTracking.phase.name, null);
-    expect(LeakTracking.phase.isLeakTrackingPaused, true);
+    expect(LeakTracking.phase.ignoreLeaks, true);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
   testWidgetsWithLeakTracking(test3TrackingOnLeaks, (widgetTester) async {
     expect(LeakTracking.isStarted, true);
     expect(LeakTracking.phase.name, test3TrackingOnLeaks);
-    expect(LeakTracking.phase.isLeakTrackingPaused, false);
+    expect(LeakTracking.phase.ignoreLeaks, false);
     await widgetTester.pumpWidget(StatelessLeakingWidget());
   });
 
@@ -43,10 +43,10 @@ void main() {
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.name, test4TrackingOnWithStackTrace);
-      expect(LeakTracking.phase.isLeakTrackingPaused, false);
+      expect(LeakTracking.phase.ignoreLeaks, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
-    leakTrackingTestConfig: LeakTrackingTestConfig.debug(),
+    leakTesting: LeakTesting.settings.withCreationStackTrace(),
   );
 
   testWidgetsWithLeakTracking(
@@ -54,9 +54,9 @@ void main() {
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.name, test5TrackingOnWithPath);
-      expect(LeakTracking.phase.isLeakTrackingPaused, false);
+      expect(LeakTracking.phase.ignoreLeaks, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
-    leakTrackingTestConfig: const LeakTrackingTestConfig.retainingPath(),
+    leakTesting: LeakTesting.settings.withRetainingPath(),
   );
 }

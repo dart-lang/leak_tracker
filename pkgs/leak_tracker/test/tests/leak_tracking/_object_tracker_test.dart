@@ -83,7 +83,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        switches: const Switches(),
       );
     });
 
@@ -153,7 +152,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        switches: const Switches(),
       );
     });
 
@@ -342,7 +340,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: 0,
-        switches: const Switches(),
       );
     });
 
@@ -395,11 +392,11 @@ void main() {
     late ObjectTracker tracker;
 
     final objectsToPhases = <Object, PhaseSettings>{
-      Named('0'): const PhaseSettings.paused(),
+      Named('0'): const PhaseSettings.ignored(),
       Named('1'): const PhaseSettings(
         name: '1',
       ),
-      Named('2'): const PhaseSettings.paused(),
+      Named('2'): const PhaseSettings.ignored(),
       Named('3'): const PhaseSettings(
         name: '3',
       ),
@@ -441,7 +438,6 @@ void main() {
         disposalTime: _disposalTime,
         numberOfGcCycles: defaultNumberOfGcCycles,
         maxRequestsForRetainingPath: null,
-        switches: const Switches(),
       );
     });
 
@@ -466,7 +462,7 @@ void main() {
           .where((l) => l.code == identityHashCode(object))
           .onlyOrNull;
 
-      if (phase.isLeakTrackingPaused || phase.allowAllNotDisposed) {
+      if (phase.ignoreLeaks || phase.ignoredLeaks.notDisposed.ignoreAll) {
         expect(leak, isNull);
         return;
       }
@@ -490,7 +486,7 @@ void main() {
           .where((l) => l.code == identityHashCode(object))
           .onlyOrNull;
 
-      if (phase.isLeakTrackingPaused || phase.allowAllNotGCed) {
+      if (phase.ignoreLeaks || phase.ignoredLeaks.notGCed.ignoreAll) {
         expect(leak, isNull);
         return;
       }
@@ -557,8 +553,8 @@ void main() {
             final expectedNotGCed = objectsToPhases.keys
                 .where(
                   (o) =>
-                      !objectsToPhases[o]!.isLeakTrackingPaused &&
-                      !objectsToPhases[o]!.allowAllNotGCed &&
+                      !objectsToPhases[o]!.ignoreLeaks &&
+                      !objectsToPhases[o]!.ignoredLeaks.notGCed.ignoreAll &&
                       !gced &&
                       disposed,
                 )
@@ -566,8 +562,8 @@ void main() {
             final expectedNotDisposed = objectsToPhases.keys
                 .where(
                   (o) =>
-                      !objectsToPhases[o]!.isLeakTrackingPaused &&
-                      !objectsToPhases[o]!.allowAllNotDisposed &&
+                      !objectsToPhases[o]!.ignoreLeaks &&
+                      !objectsToPhases[o]!.ignoredLeaks.notDisposed.ignoreAll &&
                       !disposed &&
                       gced,
                 )

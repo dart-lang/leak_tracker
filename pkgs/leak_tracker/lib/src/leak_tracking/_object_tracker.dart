@@ -28,7 +28,6 @@ class ObjectTracker implements LeakProvider {
     required this.disposalTime,
     required this.numberOfGcCycles,
     required this.maxRequestsForRetainingPath,
-    required this.switches,
     FinalizerBuilder? finalizerBuilder,
     GcCounter? gcCounter,
   }) {
@@ -46,15 +45,13 @@ class ObjectTracker implements LeakProvider {
 
   final _objects = ObjectRecords();
 
-  late final LeakFilter _leakFilter = LeakFilter(switches);
+  late final _leakFilter = LeakFilter();
 
   bool disposed = false;
 
   final int numberOfGcCycles;
 
   final int? maxRequestsForRetainingPath;
-
-  final Switches switches;
 
   void startTracking(
     Object object, {
@@ -63,7 +60,7 @@ class ObjectTracker implements LeakProvider {
     required PhaseSettings phase,
   }) {
     throwIfDisposed();
-    if (phase.isLeakTrackingPaused || switches.isObjectTrackingDisabled) return;
+    if (phase.ignoreLeaks) return;
 
     final record =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
@@ -121,11 +118,10 @@ class ObjectTracker implements LeakProvider {
     required Map<String, dynamic>? context,
   }) {
     throwIfDisposed();
-    if (switches.isObjectTrackingDisabled) return;
 
     final record = _objects.notGCed.record(object);
     // If object is not registered, this may mean that it was created when leak tracking was off.
-    if (record == null || record.phase.isLeakTrackingPaused) return;
+    if (record == null || record.phase.ignoreLeaks) return;
 
     record.mergeContext(context);
 
@@ -143,11 +139,10 @@ class ObjectTracker implements LeakProvider {
 
   void addContext(Object object, {required Map<String, dynamic>? context}) {
     throwIfDisposed();
-    if (switches.isObjectTrackingDisabled) return;
 
     final record = _objects.notGCed.record(object);
     // If object is not registered, this may mean that it was created when leak tracking was off.
-    if (record == null || record.phase.isLeakTrackingPaused) return;
+    if (record == null || record.phase.ignoreLeaks) return;
 
     record.mergeContext(context);
   }

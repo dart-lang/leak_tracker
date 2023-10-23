@@ -30,6 +30,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 ///
 /// If [LeakTesting.settings] are updated during a test run,
 /// the new value will be used for the next test.
+@immutable
 class LeakTesting {
   const LeakTesting._({
     this.ignore = true,
@@ -37,6 +38,7 @@ class LeakTesting {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.failOnLeaksCollected = true,
     this.onLeaks = _emptyLeakHandler,
+    this.baselining = const MemoryBaselining.none(),
   });
 
   /// Current configuration for leak tracking.
@@ -154,6 +156,7 @@ class LeakTesting {
     bool? failOnLeaksCollected,
     LeaksCallback? onLeaks,
     bool? ignore,
+    MemoryBaselining? baselining,
   }) {
     return LeakTesting._(
       ignoredLeaks: ignoredLeaks ?? this.ignoredLeaks,
@@ -161,6 +164,7 @@ class LeakTesting {
       failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,
       onLeaks: onLeaks ?? this.onLeaks,
       ignore: ignore ?? this.ignore,
+      baselining: baselining ?? this.baselining,
     );
   }
 
@@ -183,4 +187,28 @@ class LeakTesting {
   /// Knowing call stack may help to troubleshoot memory leaks.
   /// Customize this parameter to collect stack traces when needed.
   final LeakDiagnosticConfig leakDiagnosticConfig;
+
+  // TODO(polina-c): add documentation for [baselining].
+  // https://github.com/flutter/devtools/issues/6266
+  /// Settings to measure the test's memory footprint.
+  final MemoryBaselining baselining;
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is LeakTesting &&
+        other.ignore == ignore &&
+        other.failOnLeaksCollected == failOnLeaksCollected &&
+        other.onLeaks == onLeaks &&
+        other.ignoredLeaks == ignoredLeaks;
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(ignore, failOnLeaksCollected, onLeaks, ignoredLeaks);
 }

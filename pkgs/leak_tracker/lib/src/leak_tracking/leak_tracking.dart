@@ -126,6 +126,7 @@ abstract class LeakTracking {
   }) {
     assert(() {
       _baseliner?.takeSample();
+      if (phase.ignoredLeaks.isIgnored(className)) return true;
       _leakTracker?.objectTracker.startTracking(
         object,
         context: context,

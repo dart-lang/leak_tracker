@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
 
 import '../../shared/shared_model.dart';
 
@@ -17,30 +18,8 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
-/// Switches for features of leak tracker.
-///
-/// Useable to temporary disable features in case of
-/// noisinness or performance regression
-/// in applications or tests.
-/// TODO(polina-c): delete after migration to [IgnoredLeaks].
-/// https://github.com/flutter/devtools/issues/3951
-class Switches {
-  const Switches({
-    this.disableNotGCed = false,
-    this.disableNotDisposed = false,
-  });
-
-  /// If true, notGCed leaks will not be tracked.
-  final bool disableNotGCed;
-
-  /// If true, notDisposed leaks will not be tracked.
-  final bool disableNotDisposed;
-
-  /// If true, objects are not tracked.
-  bool get isObjectTrackingDisabled => disableNotDisposed && disableNotGCed;
-}
-
 /// Set of classes to ignore during leak tracking.
+@immutable
 class IgnoredLeaksSet {
   /// Creates instance of [IgnoredLeaksSet].
   ///
@@ -115,9 +94,29 @@ class IgnoredLeaksSet {
     if (ignoreAll) return true;
     return byClass.containsKey(className) && byClass[className] == null;
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is IgnoredLeaksSet &&
+        other.ignoreAll == ignoreAll &&
+        const DeepCollectionEquality.unordered().equals(other.byClass, byClass);
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        ignoreAll,
+        _mapHash(byClass),
+      );
 }
 
 /// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
+@immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
     this.notGCed = const IgnoredLeaksSet(),
@@ -145,6 +144,25 @@ class IgnoredLeaks {
         return notGCed.isIgnored(className);
     }
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) {
+      return true;
+    }
+    if (other.runtimeType != runtimeType) {
+      return false;
+    }
+    return other is IgnoredLeaks &&
+        other.notGCed == notGCed &&
+        other.notDisposed == notDisposed;
+  }
+
+  @override
+  int get hashCode => Object.hash(
+        notGCed,
+        notDisposed,
+      );
 }
 
 /// Configuration for diagnostics.
@@ -152,6 +170,7 @@ class IgnoredLeaks {
 /// Stacktrace and retaining path collection can seriously affect performance and memory footprint.
 /// So, it is recommended to have them disabled for leak detection and to enable them
 /// only for leak troubleshooting.
+@immutable
 class LeakDiagnosticConfig {
   const LeakDiagnosticConfig({
     this.collectRetainingPathForNotGCed = false,
@@ -214,7 +233,6 @@ class LeakTrackingConfig {
     this.disposalTime = const Duration(milliseconds: 100),
     this.numberOfGcCycles = defaultNumberOfGcCycles,
     this.maxRequestsForRetainingPath = 10,
-    this.switches = const Switches(),
   });
 
   /// The leak tracker:
@@ -226,7 +244,6 @@ class LeakTrackingConfig {
     int numberOfGcCycles = defaultNumberOfGcCycles,
     Duration disposalTime = const Duration(),
     int? maxRequestsForRetainingPath = 10,
-    Switches switches = const Switches(),
   }) : this(
           stdoutLeaks: false,
           notifyDevTools: false,
@@ -234,7 +251,6 @@ class LeakTrackingConfig {
           disposalTime: disposalTime,
           numberOfGcCycles: numberOfGcCycles,
           maxRequestsForRetainingPath: maxRequestsForRetainingPath,
-          switches: switches,
         );
 
   /// Number of full GC cycles, enough for a non reachable object to be GCed.
@@ -263,33 +279,28 @@ class LeakTrackingConfig {
   /// If the number is too big, the performance may be seriously impacted.
   /// If null, the path will be srequested without limit.
   final int? maxRequestsForRetainingPath;
-
-  /// Switches for features of leak tracker.
-  final Switches switches;
 }
 
 /// Leak tracking settings for a specific phase of the application execution.
 ///
 /// Can be used to customize leak tracking for individual tests.
+@immutable
 class PhaseSettings {
   const PhaseSettings({
-    this.notGCedAllowList = const {},
-    this.notDisposedAllowList = const {},
-    this.allowAllNotDisposed = false,
-    this.allowAllNotGCed = false,
-    this.isLeakTrackingPaused = false,
+    this.ignoredLeaks = const IgnoredLeaks(),
+    this.ignoreLeaks = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.baselining,
   });
 
-  const PhaseSettings.paused() : this(isLeakTrackingPaused: true);
+  const PhaseSettings.ignored() : this(ignoreLeaks: true);
 
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false during the object lifetime.
-  final bool isLeakTrackingPaused;
+  final bool ignoreLeaks;
 
   /// Phase of the application execution.
   ///
@@ -298,27 +309,7 @@ class PhaseSettings {
   /// Can be used to specify name of a test.
   final String? name;
 
-  /// Classes that are allowed to be not garbage collected after disposal.
-  ///
-  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
-  /// to the number of instances of the class that are allowed to be not GCed.
-  ///
-  /// If number of instances is [null], any number of instances is allowed.
-  final Map<String, int?> notGCedAllowList;
-
-  /// Classes that are allowed to be garbage collected without being disposed.
-  ///
-  /// Maps name of the class, as returned by `object.runtimeType.toString()`,
-  /// to the number of instances of the class that are allowed to be not disposed.
-  ///
-  /// If number of instances is [null], any number of instances is allowed.
-  final Map<String, int?> notDisposedAllowList;
-
-  /// If true, all notDisposed leaks will be allowed.
-  final bool allowAllNotDisposed;
-
-  /// If true, all notGCed leaks will be allowed.
-  final bool allowAllNotGCed;
+  final IgnoredLeaks ignoredLeaks;
 
   /// What diagnostic information to collect for leaks.
   final LeakDiagnosticConfig leakDiagnosticConfig;
@@ -334,26 +325,18 @@ class PhaseSettings {
       return false;
     }
     return other is PhaseSettings &&
-        other.isLeakTrackingPaused == isLeakTrackingPaused &&
+        other.ignoreLeaks == ignoreLeaks &&
         other.name == name &&
-        const DeepCollectionEquality.unordered()
-            .equals(other.notDisposedAllowList, notDisposedAllowList) &&
-        const DeepCollectionEquality.unordered()
-            .equals(other.notGCedAllowList, notGCedAllowList) &&
-        other.allowAllNotDisposed == allowAllNotDisposed &&
-        other.allowAllNotGCed == allowAllNotGCed &&
+        other.ignoredLeaks == ignoredLeaks &&
         other.leakDiagnosticConfig == leakDiagnosticConfig &&
         other.baselining == baselining;
   }
 
   @override
   int get hashCode => Object.hash(
-        isLeakTrackingPaused,
+        ignoreLeaks,
         name,
-        _mapHash(notDisposedAllowList),
-        _mapHash(notGCedAllowList),
-        allowAllNotDisposed,
-        allowAllNotGCed,
+        ignoredLeaks,
         baselining,
       );
 }
@@ -362,6 +345,7 @@ int _mapHash(Map<String, int?> map) =>
     Object.hash(Object.hashAll(map.keys), Object.hashAll(map.values));
 
 /// Settings for measuring memory footprint.
+@immutable
 class MemoryBaselining {
   const MemoryBaselining({
     this.mode = BaseliningMode.measure,
@@ -403,6 +387,7 @@ enum BaseliningMode {
 
 const defaultAllowedRssDeviation = 1.3;
 
+@immutable
 class MemoryBaseline {
   const MemoryBaseline({
     // TODO(polina-c): add SDK version after fixing https://github.com/flutter/flutter/issues/61814

@@ -4,31 +4,6 @@
 
 import 'package:leak_tracker/leak_tracker.dart';
 
-/// Configuration, that can be set before testing start.
-///
-/// It will be passed to [LeakTracking.start()],
-/// when invoked for first test with leak tracking.
-// TODO(polina-c): remove this class in favor of [LeakTrackingInTests]
-// https://github.com/flutter/devtools/issues/3951
-class LeakTrackingTestSettings {
-  LeakTrackingTestSettings({
-    this.switches = const Switches(),
-    this.numberOfGcCycles = defaultNumberOfGcCycles,
-    this.disposalTime = Duration.zero,
-  });
-
-  /// Switches for leak tracking features.
-  final Switches switches;
-
-  /// Number of full GC cycles to wait after disposal, to declare leak if the object is still not GCed.
-  final int numberOfGcCycles;
-
-  /// Time to allow the reference to the object to be released
-  /// by garbage collector and for finalizer to be invoked,
-  /// after disposal.
-  final Duration disposalTime;
-}
-
 /// Configuration for leak tracking to pass to an individual unit test.
 ///
 /// Customized configuration is needed only for test debugging,
@@ -143,9 +118,6 @@ class LeakTrackingTestConfig {
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Configuration for memory baselining.
-  ///
-  /// Tests with deeply equal values of [MemoryBaselining],
-  /// if ran sequentially, will be baselined together.
   final MemoryBaselining? baselining;
 
   /// If true, leak tracking will not happen.

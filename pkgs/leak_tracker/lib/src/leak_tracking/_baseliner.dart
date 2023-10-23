@@ -10,8 +10,9 @@ import '_primitives/_print_bytes.dart';
 import '_primitives/model.dart';
 
 class Baseliner {
-  Baseliner(this.baselining)
-      : rss = ValueSampler.start(initialValue: _currentRss());
+  Baseliner._(this.baselining)
+      : assert(baselining.mode != BaseliningMode.none),
+        rss = ValueSampler.start(initialValue: _currentRss());
 
   final MemoryBaselining baselining;
   final ValueSampler rss;
@@ -21,8 +22,10 @@ class Baseliner {
     MemoryBaselining? baselining,
   ) {
     oldBaseliner?._finish();
-    if (baselining == null) return null;
-    return Baseliner(baselining);
+    if (baselining == null || baselining.mode == BaseliningMode.none) {
+      return null;
+    }
+    return Baseliner._(baselining);
   }
 
   void takeSample() {

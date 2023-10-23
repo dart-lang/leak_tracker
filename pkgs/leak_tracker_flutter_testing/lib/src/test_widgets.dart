@@ -8,17 +8,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
 
-import 'model.dart';
-
-LeakTrackingTestSettings _leakTrackingTestSettings = LeakTrackingTestSettings();
-
-/// Configures leak tracking settings for each invocation of `testWidgetsWithLeakTracking`.
-void setLeakTrackingTestSettings(LeakTrackingTestSettings settings) {
-  if (LeakTracking.isStarted) {
-    throw StateError('$LeakTrackingTestSettings should be set before start');
-  }
-  _leakTrackingTestSettings = settings;
-}
+import '../leak_tracker_flutter_testing.dart';
 
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
@@ -28,14 +18,8 @@ void _setUpTestingWithLeakTracking() {
   _printPlatformWarningIfNeeded();
   if (!_isPlatformSupported) return;
 
-  LeakTracking.phase = const PhaseSettings.paused();
-  LeakTracking.start(
-    config: LeakTrackingConfig.passive(
-      switches: _leakTrackingTestSettings.switches,
-      disposalTime: _leakTrackingTestSettings.disposalTime,
-      numberOfGcCycles: _leakTrackingTestSettings.numberOfGcCycles,
-    ),
-  );
+  LeakTracking.phase = const PhaseSettings.ignored();
+  LeakTracking.start(config: LeakTrackingConfig.passive());
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
 }
@@ -48,6 +32,8 @@ bool _stopConfiguringTearDown = false;
 /// not for every test.
 /// Multiple [tearDownAll] is needed to handle test groups that have
 /// own [tearDownAll].
+///
+/// Single tear down is needed to test leak tracking.
 @visibleForTesting
 void configureLeakTrackingTearDown({
   LeaksCallback? onLeaks,
@@ -69,10 +55,7 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   MemoryAllocations.instance.removeListener(_flutterEventToLeakTracker);
 
   LeakTracking.declareNotDisposedObjectsAsLeaks();
-  await forceGC(fullGcCycles: _leakTrackingTestSettings.numberOfGcCycles);
-  // This delay is needed to make sure all disposed and not GCed object are
-  // declared as leaks, and thus there is no flakiness in tests.
-  await Future<void>.delayed(_leakTrackingTestSettings.disposalTime);
+  await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   final leaks = await LeakTracking.collectLeaks();
 
   LeakTracking.stop();
@@ -85,6 +68,8 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   }
 }
 
+// TODO(polina-c): retire this class after migration to `testWidgets`.
+// https://github.com/flutter/flutter/issues/135856
 /// Wrapper for [testWidgets] with memory leak tracking.
 ///
 /// The test will fail if instrumented objects in [callback] are
@@ -105,27 +90,25 @@ void testWidgetsWithLeakTracking(
   bool semanticsEnabled = true,
   TestVariant<Object?> variant = const DefaultTestVariant(),
   dynamic tags,
-  LeakTrackingTestConfig leakTrackingTestConfig =
-      const LeakTrackingTestConfig(),
+  LeakTesting? leakTesting,
 }) {
   configureLeakTrackingTearDown();
 
-  final phase = PhaseSettings(
-    name: description,
-    leakDiagnosticConfig: leakTrackingTestConfig.leakDiagnosticConfig,
-    notGCedAllowList: leakTrackingTestConfig.notGCedAllowList,
-    notDisposedAllowList: leakTrackingTestConfig.notDisposedAllowList,
-    allowAllNotDisposed: leakTrackingTestConfig.allowAllNotDisposed,
-    allowAllNotGCed: leakTrackingTestConfig.allowAllNotGCed,
-    baselining: leakTrackingTestConfig.baselining,
-    isLeakTrackingPaused: leakTrackingTestConfig.isLeakTrackingPaused,
-  );
-
   Future<void> wrappedCallBack(WidgetTester tester) async {
+    final settings = leakTesting ?? LeakTesting.settings;
+
+    final phase = PhaseSettings(
+      name: description,
+      leakDiagnosticConfig: settings.leakDiagnosticConfig,
+      ignoredLeaks: settings.ignoredLeaks,
+      baselining: const MemoryBaselining.none(),
+      ignoreLeaks: settings.ignore,
+    );
+
     if (!LeakTracking.isStarted) _setUpTestingWithLeakTracking();
     LeakTracking.phase = phase;
     await callback(tester);
-    LeakTracking.phase = const PhaseSettings.paused();
+    LeakTracking.phase = const PhaseSettings.ignored();
   }
 
   testWidgets(

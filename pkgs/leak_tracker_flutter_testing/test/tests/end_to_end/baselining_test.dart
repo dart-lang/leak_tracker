@@ -12,12 +12,12 @@ void main() {
     'baselining with baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.isLeakTrackingPaused, true);
+      expect(LeakTracking.phase.ignoreLeaks, true);
 
       await widgetTester.pumpWidget(_materialApp());
     },
-    leakTrackingTestConfig: LeakTrackingTestConfig(
-      isLeakTrackingPaused: true,
+    leakTesting: LeakTesting.settings.copyWith(
+      ignore: true,
       baselining: MemoryBaselining(
         baseline: MemoryBaseline(
           rss: ValueSampler(
@@ -37,13 +37,13 @@ void main() {
     'baselining without baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.isLeakTrackingPaused, true);
+      expect(LeakTracking.phase.ignoreLeaks, true);
 
       await widgetTester.pumpWidget(_materialApp());
     },
-    leakTrackingTestConfig: const LeakTrackingTestConfig(
-      isLeakTrackingPaused: true,
-      baselining: MemoryBaselining(),
+    leakTesting: LeakTesting.settings.copyWith(
+      ignore: true,
+      baselining: const MemoryBaselining(),
     ),
   );
 
@@ -52,13 +52,13 @@ void main() {
       'baselining with multiple runs',
       (widgetTester) async {
         expect(LeakTracking.isStarted, true);
-        expect(LeakTracking.phase.isLeakTrackingPaused, true);
+        expect(LeakTracking.phase.ignoreLeaks, true);
 
         await widgetTester.pumpWidget(_materialApp(seed: i));
       },
-      leakTrackingTestConfig: const LeakTrackingTestConfig(
-        isLeakTrackingPaused: true,
-        baselining: MemoryBaselining(),
+      leakTesting: LeakTesting.settings.copyWith(
+        ignore: true,
+        baselining: const MemoryBaselining(),
       ),
     );
   }

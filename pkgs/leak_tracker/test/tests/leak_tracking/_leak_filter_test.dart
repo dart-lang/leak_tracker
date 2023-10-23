@@ -14,7 +14,7 @@ ObjectRecord _dateTimeRecord(PhaseSettings phase) =>
 
 void main() {
   test('All leaks are reported with default settings.', () {
-    final filter = LeakFilter(const Switches());
+    final filter = LeakFilter();
     final record = _arrayRecord(const PhaseSettings());
 
     expect(filter.shouldReport(LeakType.notDisposed, record), true);
@@ -22,41 +22,58 @@ void main() {
     expect(filter.shouldReport(LeakType.gcedLate, record), true);
   });
 
-  test('$LeakFilter respects allowAllNotDisposed.', () {
-    final filter = LeakFilter(const Switches());
-    final record = _arrayRecord(const PhaseSettings(allowAllNotDisposed: true));
+  test('$LeakFilter ignores all notDisposed.', () {
+    final filter = LeakFilter();
+    final record = _arrayRecord(
+      const PhaseSettings(
+        ignoredLeaks: IgnoredLeaks(notDisposed: IgnoredLeaksSet.ignore()),
+      ),
+    );
 
     expect(filter.shouldReport(LeakType.notDisposed, record), false);
     expect(filter.shouldReport(LeakType.notGCed, record), true);
     expect(filter.shouldReport(LeakType.gcedLate, record), true);
   });
 
-  test('$LeakFilter respects allowAllNotGCed.', () {
-    final filter = LeakFilter(const Switches());
-    final record = _arrayRecord(const PhaseSettings(allowAllNotGCed: true));
+  test('$LeakFilter ignores all notGCed.', () {
+    final filter = LeakFilter();
+    final record = _arrayRecord(
+      const PhaseSettings(
+        ignoredLeaks: IgnoredLeaks(notGCed: IgnoredLeaksSet.ignore()),
+      ),
+    );
 
     expect(filter.shouldReport(LeakType.notDisposed, record), true);
     expect(filter.shouldReport(LeakType.notGCed, record), false);
     expect(filter.shouldReport(LeakType.gcedLate, record), false);
   });
 
-  test('$LeakFilter respects notGCedAllowList.', () {
-    final filter = LeakFilter(const Switches());
-    const phase = PhaseSettings(notGCedAllowList: {'List<dynamic>': null});
+  test('$LeakFilter ignores a notGCed class.', () {
+    final filter = LeakFilter();
+    const phase = PhaseSettings(
+      ignoredLeaks: IgnoredLeaks(
+        notGCed: IgnoredLeaksSet.byClass({'List<dynamic>': null}),
+      ),
+    );
     final arrayRecord = _arrayRecord(phase);
     final dateTimeRecord = _dateTimeRecord(phase);
 
     expect(filter.shouldReport(LeakType.notDisposed, arrayRecord), true);
     expect(filter.shouldReport(LeakType.notGCed, arrayRecord), false);
     expect(filter.shouldReport(LeakType.gcedLate, arrayRecord), false);
+
     expect(filter.shouldReport(LeakType.notDisposed, dateTimeRecord), true);
     expect(filter.shouldReport(LeakType.notGCed, dateTimeRecord), true);
     expect(filter.shouldReport(LeakType.gcedLate, dateTimeRecord), true);
   });
 
-  test('$LeakFilter respects notDisposedAllowList.', () {
-    final filter = LeakFilter(const Switches());
-    const phase = PhaseSettings(notDisposedAllowList: {'List<dynamic>': null});
+  test('$LeakFilter ignored a notDisposed class.', () {
+    final filter = LeakFilter();
+    const phase = PhaseSettings(
+      ignoredLeaks: IgnoredLeaks(
+        notDisposed: IgnoredLeaksSet.byClass({'List<dynamic>': null}),
+      ),
+    );
     final arrayRecord = _arrayRecord(phase);
     final dateTimeRecord = _dateTimeRecord(phase);
 
@@ -69,8 +86,12 @@ void main() {
   });
 
   test('$LeakFilter respects limit.', () {
-    final filter = LeakFilter(const Switches());
-    const phase = PhaseSettings(notDisposedAllowList: {'List<dynamic>': 2});
+    final filter = LeakFilter();
+    const phase = PhaseSettings(
+      ignoredLeaks: IgnoredLeaks(
+        notDisposed: IgnoredLeaksSet.byClass({'List<dynamic>': 2}),
+      ),
+    );
     final arrayRecord = _arrayRecord(phase);
     final dateTimeRecord = _dateTimeRecord(phase);
 

@@ -14,11 +14,8 @@ import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   var leaksDetected = false;
 
-  setLeakTrackingTestSettings(
-    LeakTrackingTestSettings(
-      switches: const Switches(disableNotDisposed: true),
-    ),
-  );
+  LeakTesting.settings =
+      LeakTesting.settings.withTrackedAll().withIgnored(allNotDisposed: true);
 
   // This tear down should be set before leak tracking tear down in
   // order to happen after it and verify that leaks are found.
