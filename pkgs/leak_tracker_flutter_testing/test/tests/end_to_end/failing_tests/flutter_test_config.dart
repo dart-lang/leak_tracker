@@ -16,6 +16,8 @@ import 'failure_test.dart';
 Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   Leaks? leaks;
 
+  LeakTesting.settings = LeakTesting.settings.withTrackedAll();
+
   // This tear down should be set before leak tracking tear down in
   // order to happen after it and verify that leaks are found.
   tearDownAll(() async {
