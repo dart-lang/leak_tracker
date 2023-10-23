@@ -94,17 +94,17 @@ void testWidgetsWithLeakTracking(
 }) {
   configureLeakTrackingTearDown();
 
-  final settings = leakTesting ?? LeakTesting.settings;
-
-  final phase = PhaseSettings(
-    name: description,
-    leakDiagnosticConfig: settings.leakDiagnosticConfig,
-    ignoredLeaks: settings.ignoredLeaks,
-    baselining: const MemoryBaselining.none(),
-    isLeakTrackingPaused: settings.ignore,
-  );
-
   Future<void> wrappedCallBack(WidgetTester tester) async {
+    final settings = leakTesting ?? LeakTesting.settings;
+
+    final phase = PhaseSettings(
+      name: description,
+      leakDiagnosticConfig: settings.leakDiagnosticConfig,
+      ignoredLeaks: settings.ignoredLeaks,
+      baselining: const MemoryBaselining.none(),
+      isLeakTrackingPaused: settings.ignore,
+    );
+
     if (!LeakTracking.isStarted) _setUpTestingWithLeakTracking();
     LeakTracking.phase = phase;
     await callback(tester);
