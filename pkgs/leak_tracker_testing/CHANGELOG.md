@@ -1,3 +1,7 @@
+# 1.0.5
+
+* Stop depending on test.
+
 # 1.0.4
 
 * Bump version of SDK to 3.1.2.

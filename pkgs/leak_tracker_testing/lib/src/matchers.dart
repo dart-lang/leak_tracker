@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:test/test.dart';
+import 'package:matcher/matcher.dart';
 
 /// Checks if the leak collection is empty.
 const Matcher isLeakFree = _IsLeakFree();

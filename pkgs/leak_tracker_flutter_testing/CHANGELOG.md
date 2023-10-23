@@ -1,6 +1,6 @@
 # 1.0.7
 
-* Make configuration adjustable.
+* Set version of leak_tracker_testing to `^1.0.5`.
 
 # 1.0.6
 
