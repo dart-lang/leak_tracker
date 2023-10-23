@@ -30,6 +30,7 @@ void _emptyLeakHandler(Leaks leaks) {}
 ///
 /// If [LeakTesting.settings] are updated during a test run,
 /// the new value will be used for the next test.
+@immutable
 class LeakTesting {
   const LeakTesting._({
     this.ignore = true,

@@ -5,6 +5,7 @@
 import 'dart:math';
 
 import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
 
 import '../../shared/shared_model.dart';
 
@@ -18,6 +19,7 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 typedef LeaksCallback = void Function(Leaks leaks);
 
 /// Set of classes to ignore during leak tracking.
+@immutable
 class IgnoredLeaksSet {
   /// Creates instance of [IgnoredLeaksSet].
   ///
@@ -114,6 +116,7 @@ class IgnoredLeaksSet {
 }
 
 /// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
+@immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
     this.notGCed = const IgnoredLeaksSet(),
@@ -167,6 +170,7 @@ class IgnoredLeaks {
 /// Stacktrace and retaining path collection can seriously affect performance and memory footprint.
 /// So, it is recommended to have them disabled for leak detection and to enable them
 /// only for leak troubleshooting.
+@immutable
 class LeakDiagnosticConfig {
   const LeakDiagnosticConfig({
     this.collectRetainingPathForNotGCed = false,
@@ -280,6 +284,7 @@ class LeakTrackingConfig {
 /// Leak tracking settings for a specific phase of the application execution.
 ///
 /// Can be used to customize leak tracking for individual tests.
+@immutable
 class PhaseSettings {
   const PhaseSettings({
     this.ignoredLeaks = const IgnoredLeaks(),
@@ -340,6 +345,7 @@ int _mapHash(Map<String, int?> map) =>
     Object.hash(Object.hashAll(map.keys), Object.hashAll(map.values));
 
 /// Settings for measuring memory footprint.
+@immutable
 class MemoryBaselining {
   const MemoryBaselining({
     this.mode = BaseliningMode.measure,
@@ -381,6 +387,7 @@ enum BaseliningMode {
 
 const defaultAllowedRssDeviation = 1.3;
 
+@immutable
 class MemoryBaseline {
   const MemoryBaseline({
     // TODO(polina-c): add SDK version after fixing https://github.com/flutter/flutter/issues/61814
