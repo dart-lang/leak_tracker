@@ -10,7 +10,7 @@ import '_primitives/_print_bytes.dart';
 import '_primitives/model.dart';
 
 class Baseliner {
-  Baseliner(this.baselining)
+  Baseliner._(this.baselining)
       : assert(baselining.mode != BaseliningMode.none),
         rss = ValueSampler.start(initialValue: _currentRss());
 
@@ -25,7 +25,7 @@ class Baseliner {
     if (baselining == null || baselining.mode == BaseliningMode.none) {
       return null;
     }
-    return Baseliner(baselining);
+    return Baseliner._(baselining);
   }
 
   void takeSample() {
