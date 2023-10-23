@@ -8,7 +8,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
 
-import 'model.dart';
+import '../leak_tracker_flutter_testing.dart';
 
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
@@ -90,28 +90,18 @@ void testWidgetsWithLeakTracking(
   bool semanticsEnabled = true,
   TestVariant<Object?> variant = const DefaultTestVariant(),
   dynamic tags,
-  LeakTrackingTestConfig leakTrackingTestConfig =
-      const LeakTrackingTestConfig(),
+  LeakTesting? leakTesting,
 }) {
   configureLeakTrackingTearDown();
 
-  final ignoredLeaks = IgnoredLeaks(
-    notDisposed: IgnoredLeaksSet(
-      ignoreAll: leakTrackingTestConfig.allowAllNotDisposed,
-      byClass: leakTrackingTestConfig.notDisposedAllowList,
-    ),
-    notGCed: IgnoredLeaksSet(
-      ignoreAll: leakTrackingTestConfig.allowAllNotGCed,
-      byClass: leakTrackingTestConfig.notGCedAllowList,
-    ),
-  );
+  final settings = leakTesting ?? LeakTesting.settings;
 
   final phase = PhaseSettings(
     name: description,
-    leakDiagnosticConfig: leakTrackingTestConfig.leakDiagnosticConfig,
-    ignoredLeaks: ignoredLeaks,
-    baselining: leakTrackingTestConfig.baselining,
-    isLeakTrackingPaused: leakTrackingTestConfig.isLeakTrackingPaused,
+    leakDiagnosticConfig: settings.leakDiagnosticConfig,
+    ignoredLeaks: settings.ignoredLeaks,
+    baselining: const MemoryBaselining.none(),
+    isLeakTrackingPaused: settings.ignore,
   );
 
   Future<void> wrappedCallBack(WidgetTester tester) async {
