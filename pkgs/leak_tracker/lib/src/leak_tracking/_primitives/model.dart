@@ -294,7 +294,7 @@ class PhaseSettings {
     this.baselining,
   });
 
-  const PhaseSettings.paused() : this(ignoreLeaks: true);
+  const PhaseSettings.ignored() : this(ignoreLeaks: true);
 
   /// When true, added objects will not be tracked.
   ///

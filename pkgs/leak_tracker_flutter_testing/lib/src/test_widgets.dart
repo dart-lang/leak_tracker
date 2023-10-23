@@ -18,7 +18,7 @@ void _setUpTestingWithLeakTracking() {
   _printPlatformWarningIfNeeded();
   if (!_isPlatformSupported) return;
 
-  LeakTracking.phase = const PhaseSettings.paused();
+  LeakTracking.phase = const PhaseSettings.ignored();
   LeakTracking.start(config: LeakTrackingConfig.passive());
 
   MemoryAllocations.instance.addListener(_flutterEventToLeakTracker);
@@ -108,7 +108,7 @@ void testWidgetsWithLeakTracking(
     if (!LeakTracking.isStarted) _setUpTestingWithLeakTracking();
     LeakTracking.phase = phase;
     await callback(tester);
-    LeakTracking.phase = const PhaseSettings.paused();
+    LeakTracking.phase = const PhaseSettings.ignored();
   }
 
   testWidgets(

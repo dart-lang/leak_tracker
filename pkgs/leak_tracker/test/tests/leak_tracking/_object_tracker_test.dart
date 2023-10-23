@@ -392,11 +392,11 @@ void main() {
     late ObjectTracker tracker;
 
     final objectsToPhases = <Object, PhaseSettings>{
-      Named('0'): const PhaseSettings.paused(),
+      Named('0'): const PhaseSettings.ignored(),
       Named('1'): const PhaseSettings(
         name: '1',
       ),
-      Named('2'): const PhaseSettings.paused(),
+      Named('2'): const PhaseSettings.ignored(),
       Named('3'): const PhaseSettings(
         name: '3',
       ),
