@@ -46,7 +46,7 @@ void main() {
       expect(LeakTracking.phase.isLeakTrackingPaused, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
-    leakTrackingTestConfig: LeakTrackingTestConfig.debug(),
+    leakTesting: LeakTesting.settings.withCreationStackTrace(),
   );
 
   testWidgetsWithLeakTracking(
@@ -57,6 +57,6 @@ void main() {
       expect(LeakTracking.phase.isLeakTrackingPaused, false);
       await widgetTester.pumpWidget(StatelessLeakingWidget());
     },
-    leakTrackingTestConfig: const LeakTrackingTestConfig.retainingPath(),
+    leakTesting: LeakTesting.settings.withRetainingPath(),
   );
 }
