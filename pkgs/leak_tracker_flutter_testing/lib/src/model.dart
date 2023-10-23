@@ -118,9 +118,6 @@ class LeakTrackingTestConfig {
   final LeakDiagnosticConfig leakDiagnosticConfig;
 
   /// Configuration for memory baselining.
-  ///
-  /// Tests with deeply equal values of [MemoryBaselining],
-  /// if ran sequentially, will be baselined together.
   final MemoryBaselining? baselining;
 
   /// If true, leak tracking will not happen.
