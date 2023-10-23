@@ -102,7 +102,7 @@ void testWidgetsWithLeakTracking(
       leakDiagnosticConfig: settings.leakDiagnosticConfig,
       ignoredLeaks: settings.ignoredLeaks,
       baselining: const MemoryBaselining.none(),
-      isLeakTrackingPaused: settings.ignore,
+      ignoreLeaks: settings.ignore,
     );
 
     if (!LeakTracking.isStarted) _setUpTestingWithLeakTracking();

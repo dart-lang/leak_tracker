@@ -288,19 +288,19 @@ class LeakTrackingConfig {
 class PhaseSettings {
   const PhaseSettings({
     this.ignoredLeaks = const IgnoredLeaks(),
-    this.isLeakTrackingPaused = false,
+    this.ignoreLeaks = false,
     this.name,
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.baselining,
   });
 
-  const PhaseSettings.paused() : this(isLeakTrackingPaused: true);
+  const PhaseSettings.paused() : this(ignoreLeaks: true);
 
   /// When true, added objects will not be tracked.
   ///
   /// If object is added when the value is true, it will be tracked
   /// even if the value will become false during the object lifetime.
-  final bool isLeakTrackingPaused;
+  final bool ignoreLeaks;
 
   /// Phase of the application execution.
   ///
@@ -325,7 +325,7 @@ class PhaseSettings {
       return false;
     }
     return other is PhaseSettings &&
-        other.isLeakTrackingPaused == isLeakTrackingPaused &&
+        other.ignoreLeaks == ignoreLeaks &&
         other.name == name &&
         other.ignoredLeaks == ignoredLeaks &&
         other.leakDiagnosticConfig == leakDiagnosticConfig &&
@@ -334,7 +334,7 @@ class PhaseSettings {
 
   @override
   int get hashCode => Object.hash(
-        isLeakTrackingPaused,
+        ignoreLeaks,
         name,
         ignoredLeaks,
         baselining,

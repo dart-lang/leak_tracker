@@ -60,7 +60,7 @@ class ObjectTracker implements LeakProvider {
     required PhaseSettings phase,
   }) {
     throwIfDisposed();
-    if (phase.isLeakTrackingPaused) return;
+    if (phase.ignoreLeaks) return;
 
     final record =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
@@ -121,7 +121,7 @@ class ObjectTracker implements LeakProvider {
 
     final record = _objects.notGCed.record(object);
     // If object is not registered, this may mean that it was created when leak tracking was off.
-    if (record == null || record.phase.isLeakTrackingPaused) return;
+    if (record == null || record.phase.ignoreLeaks) return;
 
     record.mergeContext(context);
 
@@ -142,7 +142,7 @@ class ObjectTracker implements LeakProvider {
 
     final record = _objects.notGCed.record(object);
     // If object is not registered, this may mean that it was created when leak tracking was off.
-    if (record == null || record.phase.isLeakTrackingPaused) return;
+    if (record == null || record.phase.ignoreLeaks) return;
 
     record.mergeContext(context);
   }

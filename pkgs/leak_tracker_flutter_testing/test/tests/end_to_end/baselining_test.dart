@@ -12,7 +12,7 @@ void main() {
     'baselining with baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.isLeakTrackingPaused, true);
+      expect(LeakTracking.phase.ignoreLeaks, true);
 
       await widgetTester.pumpWidget(_materialApp());
     },
@@ -37,7 +37,7 @@ void main() {
     'baselining without baseline',
     (widgetTester) async {
       expect(LeakTracking.isStarted, true);
-      expect(LeakTracking.phase.isLeakTrackingPaused, true);
+      expect(LeakTracking.phase.ignoreLeaks, true);
 
       await widgetTester.pumpWidget(_materialApp());
     },
@@ -52,7 +52,7 @@ void main() {
       'baselining with multiple runs',
       (widgetTester) async {
         expect(LeakTracking.isStarted, true);
-        expect(LeakTracking.phase.isLeakTrackingPaused, true);
+        expect(LeakTracking.phase.ignoreLeaks, true);
 
         await widgetTester.pumpWidget(_materialApp(seed: i));
       },
