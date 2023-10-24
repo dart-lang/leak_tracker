@@ -6,14 +6,14 @@
 T cast<T>(Object? value) {
   if (value is T) return value;
   throw ArgumentError(
-    '$value is of type ${value.runtimeType} that is not subtype of $T',
+    '$value is of type ${value.runtimeType} that is not a subtype of $T',
   );
 }
 
 extension IterableExtensions<T> on Iterable<T> {
-  /// Returns the item or null, assuming that the length of the itrable os 0 or 1.
-  // The name is consistent woth other methods names on iterable like
-  // `firstOrNull, lastOrNull and singleOrNull`.
+  /// Returns the item or null, assuming that the length of the iterable is 0 or 1.
+  // The name is consistent with other method names on iterables like
+  // `firstOrNull, lastOrNull, and singleOrNull`.
   T? get onlyOrNull {
     if (length > 1) throw StateError('Length should not be more than one.');
     return firstOrNull;
