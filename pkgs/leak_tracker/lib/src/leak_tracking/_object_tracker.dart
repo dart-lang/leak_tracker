@@ -18,7 +18,7 @@ import '_primitives/_retaining_path/_retaining_path.dart';
 import '_primitives/model.dart';
 
 /// Keeps collection of object records until
-/// disposal and garbage gollection.
+/// disposal and garbage collection.
 ///
 /// If disposal and garbage collection happened abnormally,
 /// marks the object as leaked.
