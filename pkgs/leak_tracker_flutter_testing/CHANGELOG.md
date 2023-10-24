@@ -1,3 +1,7 @@
+# 1.0.9
+
+* Update `testWidgetsWithLeakTracking` to avoid duplicated leak tracking by testWidgets.
+
 # 1.0.8
 
 * Make configuration adjustable.

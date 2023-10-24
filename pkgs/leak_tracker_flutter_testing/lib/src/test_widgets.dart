@@ -68,7 +68,7 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
   }
 }
 
-// TODO(polina-c): retire this class after migration to `testWidgets`.
+// TODO(polina-c): retire this function after migration to `testWidgets`.
 // https://github.com/flutter/flutter/issues/135856
 /// Wrapper for [testWidgets] with memory leak tracking.
 ///
@@ -111,15 +111,23 @@ void testWidgetsWithLeakTracking(
     LeakTracking.phase = const PhaseSettings.ignored();
   }
 
-  testWidgets(
-    description,
-    wrappedCallBack,
-    skip: skip,
-    timeout: timeout,
-    semanticsEnabled: semanticsEnabled,
-    variant: variant,
-    tags: tags,
-  );
+  // Temporarily turn off leak tracking, so that `testWidgests` does not track leaks in addition.
+  final originalGlobalSettings = LeakTesting.settings;
+  LeakTesting.settings = LeakTesting.settings.withIgnoredAll();
+
+  try {
+    testWidgets(
+      description,
+      wrappedCallBack,
+      skip: skip,
+      timeout: timeout,
+      semanticsEnabled: semanticsEnabled,
+      variant: variant,
+      tags: tags,
+    );
+  } finally {
+    LeakTesting.settings = originalGlobalSettings;
+  }
 }
 
 bool _notSupportedWarningPrinted = false;

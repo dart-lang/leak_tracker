@@ -5,13 +5,9 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:logging/logging.dart';
-
 import '../shared/_formatting.dart';
 import '_primitives/_retaining_path/_connection.dart';
 import '_primitives/_retaining_path/_retaining_path.dart';
-
-final _log = Logger('orchestration.dart');
 
 /// Forces garbage collection by aggressive memory allocation.
 ///
@@ -30,7 +26,6 @@ Future<void> forceGC({
   Duration? timeout,
   int fullGcCycles = 1,
 }) async {
-  _log.info('Forcing garbage collection with fullGcCycles = $fullGcCycles...');
   final Stopwatch? stopwatch = timeout == null ? null : (Stopwatch()..start());
   final int barrier = reachabilityBarrier;
 
@@ -50,7 +45,6 @@ Future<void> forceGC({
     await Future<void>.delayed(Duration.zero);
     allocateMemory();
   }
-  _log.info('Done forcing garbage collection.');
 }
 
 /// Returns nicely formatted retaining path for the [ref.target].
