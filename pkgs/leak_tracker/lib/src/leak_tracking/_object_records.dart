@@ -33,7 +33,7 @@ class ObjectRecords {
   /// GCed objects that were late to be GCed.
   final List<ObjectRecord> gcedLateLeaks = <ObjectRecord>[];
 
-  /// GCed ibjects that were not disposed.
+  /// GCed objects that were not disposed.
   final List<ObjectRecord> gcedNotDisposedLeaks = <ObjectRecord>[];
 
   void _assertNotWatchedToBeGCed(ObjectRecord record) {
