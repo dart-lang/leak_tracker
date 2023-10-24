@@ -53,7 +53,7 @@ String retainingPathToString(RetainingPath retainingPath) {
   return buffer.toString();
 }
 
-/// Proprties of [RetainingObject] that are needed in the object's formatting.
+/// Properties of [RetainingObject] that are needed in the object's formatting.
 enum RetainingObjectProperty {
   lib([
     ['value', 'class', 'library', 'name'],
