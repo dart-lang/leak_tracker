@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
-import 'package:logging/logging.dart';
 
 // We duplicate testing for retaining path here,
 // because there were cases when the tests were passing for dart,
@@ -21,23 +20,7 @@ class MyArgClass<T> {
   MyArgClass();
 }
 
-final _logs = <String>[];
-late StreamSubscription<LogRecord> subscription;
-
 void main() {
-  setUpAll(() {
-    subscription = Logger.root.onRecord
-        .listen((LogRecord record) => _logs.add(record.message));
-  });
-
-  setUp(() {
-    _logs.clear();
-  });
-
-  tearDownAll(() async {
-    await subscription.cancel();
-  });
-
   testWidgets('Path for $MyClass instance is found.',
       (WidgetTester tester) async {
     final instance = MyClass();
@@ -75,11 +58,9 @@ void main() {
       retainingPath(connection, instance2),
     ];
 
-    await Future.wait(obtainers);
+    final paths = await Future.wait(obtainers);
 
-    expect(
-      _logs.where((item) => item == 'Connecting to VM service protocol...'),
-      hasLength(1),
-    );
+    expect(paths, hasLength(2));
+    expect(paths.where((p) => p == null).toList(), hasLength(0));
   });
 }
