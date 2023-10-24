@@ -5,8 +5,6 @@
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:meta/meta.dart';
 
-void _emptyLeakHandler(Leaks leaks) {}
-
 /// Leak tracker settings for tests.
 ///
 /// Set [LeakTesting.settings], to
@@ -36,8 +34,6 @@ class LeakTesting {
     this.ignore = true,
     this.ignoredLeaks = const IgnoredLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
-    this.failOnLeaksCollected = true,
-    this.onLeaks = _emptyLeakHandler,
     this.baselining = const MemoryBaselining.none(),
   });
 
@@ -161,8 +157,6 @@ class LeakTesting {
     return LeakTesting._(
       ignoredLeaks: ignoredLeaks ?? this.ignoredLeaks,
       leakDiagnosticConfig: leakDiagnosticConfig ?? this.leakDiagnosticConfig,
-      failOnLeaksCollected: failOnLeaksCollected ?? this.failOnLeaksCollected,
-      onLeaks: onLeaks ?? this.onLeaks,
       ignore: ignore ?? this.ignore,
       baselining: baselining ?? this.baselining,
     );
@@ -170,14 +164,6 @@ class LeakTesting {
 
   /// If true, leak tracking is paused.
   final bool ignore;
-
-  /// If true, tests will fail on leaks.
-  ///
-  /// Set to true to test that tests collect expected leaks.
-  final bool failOnLeaksCollected;
-
-  /// Callback to invoke before the test fails when [failOnLeaksCollected] is true and if leaks were found.
-  final LeaksCallback onLeaks;
 
   /// Leaks to ignore.
   final IgnoredLeaks ignoredLeaks;
@@ -203,12 +189,12 @@ class LeakTesting {
     }
     return other is LeakTesting &&
         other.ignore == ignore &&
-        other.failOnLeaksCollected == failOnLeaksCollected &&
-        other.onLeaks == onLeaks &&
-        other.ignoredLeaks == ignoredLeaks;
+        other.ignoredLeaks == ignoredLeaks &&
+        other.leakDiagnosticConfig == leakDiagnosticConfig &&
+        other.baselining == baselining;
   }
 
   @override
   int get hashCode =>
-      Object.hash(ignore, failOnLeaksCollected, onLeaks, ignoredLeaks);
+      Object.hash(ignore, ignoredLeaks, leakDiagnosticConfig, baselining);
 }
