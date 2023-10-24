@@ -1,6 +1,7 @@
 # 9.0.11
 
 * Remove dependency on logging.
+* Avoid double leak tracking.
 
 # 9.0.10
 
