@@ -7,7 +7,7 @@ The text below is under construction.
 This page describes leak tracking concepts.
 See other information on memory leaks [here](../README.md).
 
-Before reading about leak tracking, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
+Before reading about leak-tracking, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
 
 ## Addressed leak types
 
@@ -50,7 +50,7 @@ the following types of leaks:
 ### Disposed, but not GCed, without path (not-GCed-without-path)
 
 - **Definition**: an object
-   was disposed and not GCed when expected, but retaining path
+   was disposed and not GCed when expected, but the retaining path
    is not detected; that means that the object will be most likely GCed in
    the next GC cycle,
    and the leak will convert to [GCed-late](#gced-late) leak.
@@ -62,7 +62,7 @@ something is wrong with the tool.
 
 ## Culprits and victims
 
-If you have a set of not-GCed objects, some of them (victims)
+If you have a set of non-GCed objects, some of them (victims)
 might not be GC-ed because they are held by others (culprits).
 Normally, to fix the leaks, you need to only fix the culprits.
 
