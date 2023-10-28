@@ -4,7 +4,7 @@
 
 typedef ObjectGcCallback = void Function(Object token);
 
-/// Finilizer builder to mock standard [Finalizer].
+/// Finalizer builder to mock standard [Finalizer].
 typedef FinalizerBuilder = FinalizerWrapper Function(
   ObjectGcCallback onObjectGc,
 );

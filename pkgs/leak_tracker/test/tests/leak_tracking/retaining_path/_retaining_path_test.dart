@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/_primitives/_retaining_path/_retaining_path.dart';
-import 'package:logging/logging.dart';
 import 'package:test/test.dart';
 
 class MyClass {
@@ -17,23 +16,7 @@ class MyArgClass<T> {
   MyArgClass();
 }
 
-final _logs = <String>[];
-late StreamSubscription<LogRecord> subscription;
-
 void main() {
-  setUpAll(() {
-    subscription = Logger.root.onRecord
-        .listen((LogRecord record) => _logs.add(record.message));
-  });
-
-  setUp(() {
-    _logs.clear();
-  });
-
-  tearDownAll(() async {
-    await subscription.cancel();
-  });
-
   test('Path for $MyClass instance is found.', () async {
     final instance = MyClass();
     final connection = await connect();
@@ -67,11 +50,8 @@ void main() {
       retainingPath(connection, instance2),
     ];
 
-    await Future.wait(obtainers);
+    final result = await Future.wait(obtainers);
 
-    expect(
-      _logs.where((item) => item == 'Connecting to VM service protocol...'),
-      hasLength(1),
-    );
+    expect(result.where((p) => p == null), hasLength(0));
   });
 }
