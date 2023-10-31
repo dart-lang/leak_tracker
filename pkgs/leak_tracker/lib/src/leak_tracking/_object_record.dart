@@ -4,8 +4,8 @@
 
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
-import '_primitives/_gc_counter.dart';
-import '_primitives/model.dart';
+import 'primitives/_gc_counter.dart';
+import 'primitives/model.dart';
 
 /// Information about an object, tracked for leaks.
 class ObjectRecord {

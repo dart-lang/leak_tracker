@@ -4,7 +4,7 @@
 
 import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
 import 'package:leak_tracker/src/leak_tracking/_object_record_set.dart';
-import 'package:leak_tracker/src/leak_tracking/_primitives/model.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/model.dart';
 import 'package:leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 

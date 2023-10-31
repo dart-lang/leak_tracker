@@ -6,7 +6,7 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/src/leak_tracking/_primitives/_dispatcher.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/_dispatcher.dart';
 
 import '../test_infra/event_tracker.dart';
 
