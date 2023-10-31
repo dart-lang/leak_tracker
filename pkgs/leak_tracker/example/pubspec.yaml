@@ -1,4 +1,5 @@
 name: leak_tracker_minimal_dart_example
+publish_to: none
 
 environment:
   sdk: ^3.0.0

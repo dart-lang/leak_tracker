@@ -32,7 +32,7 @@ jobs:
         run: sh ./tool/analyze.sh
 
       - name: dart test
-        run: dart test test
+        run: dart test
         working-directory: pkgs/leak_tracker
 
       - name: flutter test
