@@ -1,0 +1,3 @@
+dependency_overrides:
+  leak_tracker:
+    path: ../leak_tracker
