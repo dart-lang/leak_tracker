@@ -8,6 +8,35 @@ import 'package:leak_tracker_flutter_testing/src/leak_testing.dart';
 
 void main() {
   group('$LeakTesting', () {
+    group('withIgnored', () {
+      test('not provided args do not affect the instance, tracked', () {
+        final settings = LeakTesting.settings.withTrackedAll();
+        expect(settings.ignore, false);
+        expect(settings.ignoredLeaks.notDisposed.ignoreAll, false);
+        expect(settings.ignoredLeaks.notDisposed.byClass, <String, int?>{});
+        expect(settings.ignoredLeaks.notGCed.ignoreAll, false);
+        expect(settings.ignoredLeaks.notGCed.byClass, <String, int?>{});
+
+        expect(settings.withIgnored(), settings);
+      });
+
+      test('not provided args do not affect the instance, ignored', () {
+        final settings = LeakTesting.settings.withIgnoredAll().withIgnored(
+          allNotDisposed: true,
+          allNotGCed: true,
+          classes: ['MyClass'],
+        );
+
+        expect(settings.ignore, true);
+        expect(settings.ignoredLeaks.notDisposed.ignoreAll, true);
+        expect(settings.ignoredLeaks.notDisposed.byClass, hasLength(1));
+        expect(settings.ignoredLeaks.notGCed.ignoreAll, true);
+        expect(settings.ignoredLeaks.notGCed.byClass, hasLength(1));
+
+        expect(settings.withIgnored(), settings);
+      });
+    });
+
     group('equals', () {
       test('trivial', () {
         final settings1 = LeakTesting.settings.copyWith();

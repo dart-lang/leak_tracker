@@ -205,10 +205,18 @@ class LeakTesting {
         other.ignore == ignore &&
         other.failOnLeaksCollected == failOnLeaksCollected &&
         other.onLeaks == onLeaks &&
-        other.ignoredLeaks == ignoredLeaks;
+        other.ignoredLeaks == ignoredLeaks &&
+        other.baselining == baselining &&
+        other.leakDiagnosticConfig == leakDiagnosticConfig;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(ignore, failOnLeaksCollected, onLeaks, ignoredLeaks);
+  int get hashCode => Object.hash(
+        ignore,
+        failOnLeaksCollected,
+        onLeaks,
+        ignoredLeaks,
+        baselining,
+        leakDiagnosticConfig,
+      );
 }

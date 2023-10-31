@@ -1,3 +1,7 @@
+# 1.0.10
+
+* Fix bug in equality for LeakTracking.
+
 # 1.0.9
 
 * Update `testWidgetsWithLeakTracking` to avoid duplicated leak tracking by testWidgets.
