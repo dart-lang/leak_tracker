@@ -23,14 +23,6 @@ Help us to prioritize future work by upvoting and commenting [potential new feat
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
-### How to enable logs
-
-To temporary enable logs, add this line to `main`:
-
-```dart
-Logger.root.onRecord.listen((LogRecord record) => print(record.message));
-```
-
 ### How to regenerate diagrams
 
 To regenerate diagrams, run:
