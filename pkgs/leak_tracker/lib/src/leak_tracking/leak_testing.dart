@@ -2,8 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/leak_tracker.dart';
 import 'package:meta/meta.dart';
+
+import '../shared/shared_model.dart';
+import 'primitives/model.dart';
 
 void _emptyLeakHandler(Leaks leaks) {}
 

@@ -6,8 +6,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import '../shared/_formatting.dart';
-import '_primitives/_retaining_path/_connection.dart';
-import '_primitives/_retaining_path/_retaining_path.dart';
+import 'primitives/_retaining_path/_connection.dart';
+import 'primitives/_retaining_path/_retaining_path.dart';
 
 /// Forces garbage collection by aggressive memory allocation.
 ///

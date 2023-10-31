@@ -4,7 +4,7 @@
 
 import '../shared/shared_model.dart';
 import '_object_record.dart';
-import '_primitives/model.dart';
+import 'primitives/model.dart';
 
 /// Decides which leaks to report based on allow lists of the phase.
 class LeakFilter {

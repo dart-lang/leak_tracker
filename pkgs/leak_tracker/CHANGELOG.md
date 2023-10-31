@@ -1,3 +1,7 @@
+# 9.0.13
+
+* Define `LeakTesting`.
+
 # 9.0.12
 
 * Update `vm_service` dependency to `>=11.0.0 <14.0.0`.

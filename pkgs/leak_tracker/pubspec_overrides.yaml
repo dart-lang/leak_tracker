@@ -1,3 +1,0 @@
-dependency_overrides:
-  leak_tracker_testing:
-    path: ../leak_tracker_testing

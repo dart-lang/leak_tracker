@@ -1,3 +1,7 @@
+# 1.0.11
+
+* Move LeakTesting out of this package to leak_tracker.
+
 # 1.0.10
 
 * Fix bug in equality for LeakTracking.

@@ -11,11 +11,11 @@ import '../shared/shared_model.dart';
 import '_leak_filter.dart';
 import '_object_record.dart';
 import '_object_records.dart';
-import '_primitives/_finalizer.dart';
-import '_primitives/_gc_counter.dart';
-import '_primitives/_retaining_path/_connection.dart';
-import '_primitives/_retaining_path/_retaining_path.dart';
-import '_primitives/model.dart';
+import 'primitives/_finalizer.dart';
+import 'primitives/_gc_counter.dart';
+import 'primitives/_retaining_path/_connection.dart';
+import 'primitives/_retaining_path/_retaining_path.dart';
+import 'primitives/model.dart';
 
 /// Keeps collection of object records until
 /// disposal and garbage gollection.
