@@ -6,7 +6,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:test/test.dart';
 
-import '../../test_infra/data/dart_classes.dart';
+import '../../leak_tracker/test/test_infra/data/dart_classes.dart';
 
 void main() {
   tearDown(() => LeakTracking.stop());
