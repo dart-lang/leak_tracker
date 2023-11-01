@@ -23,6 +23,23 @@ Help us to prioritize future work by upvoting and commenting [potential new feat
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
+### How to upgrade `testWidgets` with new version of leak_tracker
+
+To upgrade leak_tracker version used by `testWidgets`:
+
+1. Publish new version of leak_tracker and/or leak_tracker_testing.
+
+2. Update leak_tracker commint hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
+
+3. Upgrade [Flutter](https://github.com/flutter/flutter):
+
+    Update versions of leak_tracker and/or leak_tracker_testing in the files:
+
+    - packages/flutter/pubspec.yaml
+    - packages/flutter_test/pubspec.yaml
+    - packages/flutter_tools/lib/src/commands/update_packages.dart
+
+
 ### How to regenerate diagrams
 
 To regenerate diagrams, run:
