@@ -6,7 +6,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:vm_service/vm_service.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../_web_socket_channel/channel.dart';
 
 Future<Uri> _serviceUri() async {
   Uri? uri = (await Service.getInfo()).serverWebSocketUri;
