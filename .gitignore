@@ -15,11 +15,11 @@ pubspec.lock
 GeneratedPluginRegistrant.swift
 
 # Platforms
-more_examples/**/ios/
-more_examples/**/web/
-more_examples/**/windows/
-more_examples/**/macos/
-more_examples/**/.metadata
+examples/**/ios/
+examples/**/web/
+examples/**/windows/
+examples/**/macos/
+examples/**/.metadata
 
 # OS
 .DS_Store

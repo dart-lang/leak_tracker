@@ -1,7 +1,3 @@
-Coming soon! See https://github.com/flutter/devtools/issues/5606.
-
-The text below is under construction.
-
 # Memory usage tracking and auto-snapshotting
 
 This page describes how to configure memory usage tracking.
@@ -18,16 +14,16 @@ https://user-images.githubusercontent.com/12115586/234953319-6f864d25-9854-4126-
 
 Use the function `trackMemoryUsage` to configure usage events and auto-snapshotting.
 
-See [example](../more_examples/autosnapshotting/).
+See [example](../examples/autosnapshotting/).
 
 We recommend to have auto-snapshotting off by default, with possibility
 to enable it via command line arguments in case of reported memory issues.
 
-## Configure autosnapshotting
-
 ## Analyse snapshots
 
-TODO (polina-c): enable snapshot analysis.
+Use [CLI](https://github.com/dart-lang/sdk/tree/main/runtime/tools/heapsnapshot#cli-usage) to analyse the collected snapshots.
+
+Upvote [the issue](https://github.com/dart-lang/leak_tracker/issues/125) to enable graphical snapshot analysis with DevTools.
 
 ## Auto-snapshotting limitations
 
