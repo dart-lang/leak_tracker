@@ -1,3 +1,7 @@
+# 9.0.14
+
+* Remove dependency on web_socket_channel.
+
 # 9.0.13
 
 * Define `LeakTesting`.
