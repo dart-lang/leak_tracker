@@ -9,7 +9,6 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   intl: ^0.18.1
-  # The version is `any` because it is defined Dart SDK.
   memory_usage: any
 
 dev_dependencies:

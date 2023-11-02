@@ -1,7 +1,7 @@
-[![pub package](https://img.shields.io/pub/v/leak_tracker.svg)](https://pub.dev/packages/leak_tracker)
-[![package publisher](https://img.shields.io/pub/publisher/leak_tracker.svg)](https://pub.dev/packages/leak_tracker/publisher)
+[![pub package](https://img.shields.io/pub/v/memory_usage.svg)](https://pub.dev/packages/memory_usage)
+[![package publisher](https://img.shields.io/pub/publisher/memory_usage.svg)](https://pub.dev/packages/memory_usage/publisher)
 
-Coming soon! See https://github.com/flutter/devtools/issues/3951 and https://github.com/flutter/devtools/issues/5606.
+# memory_usage
 
 ## Status: Experimental
 
