@@ -14,19 +14,9 @@ It enables:
 
 ## Usage
 
-### Leak tracking
-
 First, [understand leak tracking concepts](https://github.com/dart-lang/leak_tracker/blob/main/doc/CONCEPTS.md).
 
-TODO(polina-c): add usage information.
+Use [leak_tracker_flutter_testing](https://github.com/dart-lang/leak_tracker/blob/main/pkgs/leak_tracker_flutter_testing/README.md)
+to leak track your flutter tests.
 
 See the [the guidance](https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md) to troubleshoot memory leaks.
-
-### Memory usage tracking
-
-Use the function `trackMemoryUsage` to configure usage events and auto-snapshotting
-in your Dart or Flutter application.
-
-See
-[usage tracking guidance](https://github.com/dart-lang/leak_tracker/blob/main/doc/USAGE.md)
-for more details.
