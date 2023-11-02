@@ -3,5 +3,5 @@
 // found in the LICENSE file.
 
 extension SizeConversion on int {
-  int mbToBytes() => this * 1024 * 1024;
+  int get mbToBytes => this * 1024 * 1024;
 }

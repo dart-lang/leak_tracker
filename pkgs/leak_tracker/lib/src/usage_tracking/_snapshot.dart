@@ -28,7 +28,7 @@ class AutoSnapshotter {
 
   Future<void> _maybeTakeSnapshot() async {
     final rss = ProcessInfo.currentRss;
-    if (rss < config.thresholdMb.mbToBytes()) {
+    if (rss < config.thresholdMb.mbToBytes) {
       return;
     }
 
@@ -58,7 +58,7 @@ class AutoSnapshotter {
       return;
     }
 
-    final nextThreshold = previous.rss + stepMb.mbToBytes();
+    final nextThreshold = previous.rss + stepMb.mbToBytes;
     if (rss >= nextThreshold) {
       _takeSnapshot(rss: rss);
     }
@@ -82,7 +82,7 @@ class AutoSnapshotter {
         .whereType<File>()
         .map((f) => f.lengthSync())
         .fold<int>(0, (a, b) => a + b);
-    return directorySize >= config.directorySizeLimitMb.mbToBytes();
+    return directorySize >= config.directorySizeLimitMb.mbToBytes;
   }
 }
 

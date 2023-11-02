@@ -26,7 +26,7 @@ class UsageEventCreator {
     final rss = ProcessInfo.currentRss;
     final delta = (rss - _previousEvent.rss).abs();
 
-    if (delta < config.deltaMb.mbToBytes()) return;
+    if (delta < config.deltaMb.mbToBytes) return;
 
     _triggerEvent(
       MemoryUsageEvent(

@@ -12,8 +12,8 @@ late String _snapshotDirectory;
 
 extension SizeConversion on int {
   static const _bytesInMB = 1024 * 1024;
-  int mbToBytes() => this * _bytesInMB;
-  int bytesToMB() => (this / _bytesInMB).round();
+  int get mbToBytes => this * _bytesInMB;
+  int get bytesToMB => (this / _bytesInMB).round();
 }
 
 void main(List<String> args, {String? snapshotDirectory}) {
@@ -99,7 +99,7 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   String _formatSize(int bytes) {
-    return '${_formatter.format(bytes)} (${_formatter.format(bytes.bytesToMB())} MB)';
+    return '${_formatter.format(bytes)} (${_formatter.format(bytes.bytesToMB)} MB)';
   }
 
   String _formatSnapshots() {
@@ -132,7 +132,7 @@ class MyHomePageState extends State<MyHomePage> {
             ),
             space,
             Text(
-              '-- Usage Events (MB) --\n${usageEvents.map((e) => _formatter.format(e.rss.bytesToMB())).join('; ')}',
+              '-- Usage Events (MB) --\n${usageEvents.map((e) => _formatter.format(e.rss.bytesToMB)).join('; ')}',
             ),
             space,
             Text(
