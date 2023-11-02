@@ -6,7 +6,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:leak_tracker/leak_tracker.dart';
+import 'package:memory_usage/memory_usage.dart';
 
 late String _snapshotDirectory;
 
