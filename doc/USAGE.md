@@ -23,9 +23,11 @@ See [example](../more_examples/autosnapshotting/).
 We recommend to have auto-snapshotting off by default, with possibility
 to enable it via command line arguments in case of reported memory issues.
 
+## Configure autosnapshotting
+
 ## Analyse snapshots
 
-TODO (polina-c): add link to DevTools help section.
+TODO (polina-c): enable snapshot analysis.
 
 ## Auto-snapshotting limitations
 

@@ -28,3 +28,7 @@ cd -
 cd pkgs/leak_tracker_testing
 dart analyze --fatal-infos
 cd -
+
+cd pkgs/memory_usage
+dart analyze --fatal-infos
+cd -

@@ -26,3 +26,7 @@ cd -
 cd pkgs/leak_tracker_testing
 flutter pub get
 cd -
+
+cd pkgs/memory_usage
+dart pub get
+cd -
