@@ -15,7 +15,7 @@ cd examples/autosnapshotting
 flutter analyze  --fatal-infos
 cd -
 
-cd examples/minimal_flutter
+cd examples/leak_tracking
 flutter analyze --fatal-infos
 cd -
 
