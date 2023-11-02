@@ -1,8 +1,20 @@
-import 'package:leak_tracker/leak_tracker.dart';
+import 'package:memory_usage/memory_usage.dart';
 
 void main(List<String> arguments) {
-  LeakTracking.start();
-  // ignore: avoid_print
-  print('Hello, world!');
-  LeakTracking.stop();
+  final config = UsageTrackingConfig(
+    autoSnapshottingConfig: AutoSnapshottingConfig(
+      onSnapshot: (SnapshotEvent event) {},
+      thresholdMb: 400,
+      increaseMb: 100,
+      directorySizeLimitMb: 500,
+      directory: 'snapshots',
+      minDelayBetweenSnapshots: const Duration(seconds: 5),
+    ),
+    usageEventsConfig: UsageEventsConfig(
+      (MemoryUsageEvent event) {},
+      deltaMb: 100,
+    ),
+  );
+
+  trackMemoryUsage(config);
 }

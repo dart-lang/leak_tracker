@@ -1,5 +1,5 @@
 name: memory_usage
-version: 1.0.0
+version: 0.1.0
 description: A framework for memory usage tracking and snapshotting.
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/memory_usage
 

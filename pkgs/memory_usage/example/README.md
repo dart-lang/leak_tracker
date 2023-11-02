@@ -1,1 +1,1 @@
-Minimal Dart application with leak tracker enabled.
+Minimal Dart application with memory usage tracking enabled.

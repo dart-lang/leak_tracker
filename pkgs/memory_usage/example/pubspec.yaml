@@ -5,7 +5,9 @@ environment:
   sdk: ^3.0.0
 
 dependencies:
-  memory_usage: ^1.0.0
+  memory_usage: ^0.1.0
 
 dependency_overrides:
   flutter_lints: ^3.0.0
+  memory_usage:
+    path: ..
