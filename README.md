@@ -9,9 +9,20 @@ This is a framework for detecting memory issues in Dart and Flutter applications
 
 | Package | Description | Version |
 | --- | --- | --- |
-| [leak_tracker](pkgs/leak_tracker/) | A framework for detecting memory issues for Dart and Flutter applications. | [![pub package](https://img.shields.io/pub/v/leak_tracker.svg)](https://pub.dev/packages/leak_tracker) |
-| [leak_tracker_flutter_testing](pkgs/leak_tracker_flutter_testing/) | Leak tracking helpers intended for usage in Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_flutter_testing.svg)](https://pub.dev/packages/leak_tracker_flutter_testing) |
-| [leak_tracker_testing](pkgs/leak_tracker_testing/) | Leak tracking helpers intended for usage in Dart and Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
+| [leak_tracker](pkgs/leak_tracker/) | (work in progress, used by flutter_test) A framework for detecting memory issues for Dart and Flutter applications. | [![pub package](https://img.shields.io/pub/v/leak_tracker.svg)](https://pub.dev/packages/leak_tracker) |
+| [leak_tracker_testing](pkgs/leak_tracker_testing/) | (work in progress, used by flutter_test) Leak tracking helpers intended for usage in Dart and Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
+| [leak_tracker_flutter_testing](pkgs/leak_tracker_flutter_testing/) | Internal package to test leak tracker with Flutter. | [![pub package](https://img.shields.io/pub/v/leak_tracker_flutter_testing.svg)](https://pub.dev/packages/leak_tracker_flutter_testing) |
+| [memory_usage](pkgs/memory_usage/) | (used by Dart SDK) Functions to listen memory usage events and to auto-snapshot memory in case of overuse. | [![pub package](https://img.shields.io/pub/v/memory_usage.svg)](https://pub.dev/packages/memory_usage) |
+
+## Guidance
+
+[Memory usage](doc/USAGE.md)
+
+Under construction:
+[Leak tracking concepts](doc/CONCEPTS.md)
+[Detect memory leaks](doc/DETECT.md)
+[Troubleshoot memory leaks](doc/TROUBLESHOOT.md)
+[Baseline memory](doc/BASELINE.md)
 
 ## Roadmap
 
@@ -23,13 +34,18 @@ Help us to prioritize future work by upvoting and commenting [potential new feat
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
-### How to upgrade `testWidgets` with new version of leak_tracker
+### How to upgrade Dart SDK
 
-To upgrade leak_tracker version used by `testWidgets`:
+To upgrade Dart SDK with new version of `memory_usage` update leak_tracker commit
+hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
 
-1. Publish new version of leak_tracker and/or leak_tracker_testing.
+### How to upgrade flutter_test
 
-2. Update leak_tracker commint hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
+To upgrade versions of leak_tracker and/or leak_tracker_testing used by `testWidgets`:
+
+1. Publish new version of the packages.
+
+2. Ask a googler to refresh the packages with copybara in G3.
 
 3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
@@ -39,8 +55,7 @@ To upgrade leak_tracker version used by `testWidgets`:
     - packages/flutter_test/pubspec.yaml
     - packages/flutter_tools/lib/src/commands/update_packages.dart
 
-
-### How to regenerate diagrams
+### How to regenerate DEPENDENCIES.md
 
 To regenerate diagrams, run:
 
