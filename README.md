@@ -12,7 +12,7 @@ This is a framework for detecting memory issues in Dart and Flutter applications
 | [leak_tracker](pkgs/leak_tracker/) | (work in progress, used by flutter_test) A framework for detecting memory issues for Dart and Flutter applications. | [![pub package](https://img.shields.io/pub/v/leak_tracker.svg)](https://pub.dev/packages/leak_tracker) |
 | [leak_tracker_testing](pkgs/leak_tracker_testing/) | (work in progress, used by flutter_test) Leak tracking helpers intended for usage in Dart and Flutter tests. | [![pub package](https://img.shields.io/pub/v/leak_tracker_testing.svg)](https://pub.dev/packages/leak_tracker_testing) |
 | [leak_tracker_flutter_testing](pkgs/leak_tracker_flutter_testing/) | Internal package to test leak tracker with Flutter. | [![pub package](https://img.shields.io/pub/v/leak_tracker_flutter_testing.svg)](https://pub.dev/packages/leak_tracker_flutter_testing) |
-| [memory_usage](pkgs/memory_usage/) | (experimental, used by Dart SDK) Functions to listen memory usage events and to auto-snapshot memory in case of overuse. | [![pub package](https://img.shields.io/pub/v/memory_usage.svg)](https://pub.dev/packages/memory_usage) |
+| [memory_usage](pkgs/memory_usage/) | (experimental) Functionality to listen to memory usage events and to auto-snapshot memory in case of overuse. | [![pub package](https://img.shields.io/pub/v/memory_usage.svg)](https://pub.dev/packages/memory_usage) |
 
 ## Guidance
 
