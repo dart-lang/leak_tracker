@@ -4,8 +4,8 @@
 
 import 'dart:io';
 
-import 'model.dart';
 import '_util.dart';
+import 'model.dart';
 
 class UsageEventCreator {
   UsageEventCreator(this.config);
