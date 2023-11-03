@@ -2,7 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
 /// A record of a taken snapshot.
@@ -104,12 +103,6 @@ class UsageEventsConfig {
 
   /// Change in memory usage to trigger [onUsageEvent].
   final int deltaMb;
-
-  @override
-  String toString() {
-    final formatter = NumberFormat('#,###,000');
-    return 'usageEvent.deltaMb: ${formatter.format(deltaMb)}';
-  }
 }
 
 /// Configures auto-snapshotting, based on the value of `ProcessInfo.currentRss` (dart:io).
@@ -174,15 +167,4 @@ class AutoSnapshottingConfig {
 
   /// The absolute path to the [directory].
   String get directoryAbsolute => path.absolute(directory);
-
-  @override
-  String toString() {
-    final formatter = NumberFormat('#,###,000');
-    return 'thresholdMb: ${formatter.format(thresholdMb)}\n'
-        'autosnapshot.increaseMb: ${increaseMb == null ? 'null' : formatter.format(increaseMb)}\n'
-        'directorySizeLimitMb: ${formatter.format(directorySizeLimitMb)}\n'
-        'directory: $directory\n'
-        'directoryAbsolute: $directoryAbsolute\n'
-        'minDelayBetweenSnapshots: $minDelayBetweenSnapshots';
-  }
 }
