@@ -8,6 +8,24 @@ import 'package:test/test.dart';
 
 void main() {
   group('$LeakTesting', () {
+    group('withTracked', () {
+      test('not provided args do not affect the instance, tracked', () {
+        final settings = LeakTesting.settings.withTrackedAll().withIgnored(
+              allNotDisposed: true,
+              allNotGCed: true,
+            );
+
+        expect(settings.ignoredLeaks.notDisposed.ignoreAll, true);
+        expect(settings.ignoredLeaks.notGCed.ignoreAll, true);
+
+        final tracked =
+            settings.withTracked(allNotDisposed: true, allNotGCed: true);
+
+        expect(tracked.ignoredLeaks.notDisposed.ignoreAll, false);
+        expect(tracked.ignoredLeaks.notGCed.ignoreAll, false);
+      });
+    });
+
     group('withIgnored and withTracked', () {
       test('not provided args do not affect the instance, tracked', () {
         final settings = LeakTesting.settings.withTrackedAll();
