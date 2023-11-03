@@ -1,5 +1,5 @@
 name: leak_tracker_minimal_flutter_example
-publish_to: 'none'
+publish_to: none
 
 environment:
   sdk: ^3.0.0
@@ -7,8 +7,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  leak_tracker:
-    path: ../../pkgs/leak_tracker
+  # The version is `any` because it is defined by flutter_test, whish depends on leak_tracker.
+  leak_tracker: any
 
 dev_dependencies:
   flutter_test:

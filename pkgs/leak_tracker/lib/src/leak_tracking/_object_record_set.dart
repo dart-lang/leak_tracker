@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '_object_record.dart';
-import '_primitives/model.dart';
+import 'primitives/model.dart';
 
 @visibleForTesting
 class ObjectRecordSet {

@@ -6,8 +6,8 @@
 
 import 'dart:io';
 
-import '_primitives/_print_bytes.dart';
-import '_primitives/model.dart';
+import 'primitives/_print_bytes.dart';
+import 'primitives/model.dart';
 
 class Baseliner {
   Baseliner._(this.baselining)

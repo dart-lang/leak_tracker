@@ -4,7 +4,6 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker_flutter_testing/src/leak_testing.dart';
 
 class _Classes {
   static const anyLeak1 = 'anyLeak1';

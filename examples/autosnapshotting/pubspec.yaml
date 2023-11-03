@@ -1,6 +1,5 @@
-name: autosnapshotting
-description: A new Flutter project.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+name: autosnapshotting_example
+publish_to: none
 
 version: 1.0.0+1
 
@@ -12,8 +11,9 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   intl: ^0.18.1
-  leak_tracker:
-    path: ../../pkgs/leak_tracker
+  # The version is `any` because it is defined by integration_test, that depends on flutter_test,
+  # whish depends on leak_tracker.
+  leak_tracker: any
 
 dev_dependencies:
   flutter_test:
@@ -24,4 +24,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-

@@ -2,8 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/leak_tracker.dart';
 import 'package:meta/meta.dart';
+
+import '../shared/shared_model.dart';
+import 'primitives/model.dart';
 
 void _emptyLeakHandler(Leaks leaks) {}
 
@@ -205,10 +207,18 @@ class LeakTesting {
         other.ignore == ignore &&
         other.failOnLeaksCollected == failOnLeaksCollected &&
         other.onLeaks == onLeaks &&
-        other.ignoredLeaks == ignoredLeaks;
+        other.ignoredLeaks == ignoredLeaks &&
+        other.baselining == baselining &&
+        other.leakDiagnosticConfig == leakDiagnosticConfig;
   }
 
   @override
-  int get hashCode =>
-      Object.hash(ignore, failOnLeaksCollected, onLeaks, ignoredLeaks);
+  int get hashCode => Object.hash(
+        ignore,
+        failOnLeaksCollected,
+        onLeaks,
+        ignoredLeaks,
+        baselining,
+        leakDiagnosticConfig,
+      );
 }
