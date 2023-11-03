@@ -18,7 +18,7 @@ enum Channel {
   responseFromApp,
 }
 
-/// Codes to identify event types in interaction between appliocation and DevTools.
+/// Codes to identify event types in interaction between application and DevTools.
 ///
 /// When application starts real tracking, it sends [started]. As soon as it
 /// catch new leaks, it sends [summary] information about collected leaks.
@@ -35,7 +35,7 @@ enum Codes {
   // Requests to app.
   detailsRequest,
 
-  // Successfull responses from app.
+  // Successful responses from app.
   leakDetails,
 
   // Error responses from app.
@@ -79,7 +79,7 @@ T openEnvelope<T>(
 class _Envelope<T> {
   const _Envelope(this.code, this.channel, this.decode, this.encode);
 
-  /// Serialization code, that corresponts to [T].
+  /// Serialization code, that corresponds to [T].
   final Codes code;
 
   /// Communication channel, that should be used for messages of type [T].
