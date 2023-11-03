@@ -75,8 +75,6 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
 /// garbage collected without being disposed or not garbage
 /// collected soon after disposal.
 ///
-/// [testExecutableWithLeakTracking] must be invoked for this test run.
-///
 /// More about leak tracking: https://github.com/dart-lang/leak_tracker.
 @isTest
 void testWidgetsWithLeakTracking(
