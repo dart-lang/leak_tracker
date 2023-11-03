@@ -2,15 +2,16 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker/src/leak_tracking/leak_testing.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/model.dart';
+import 'package:test/test.dart';
 
 void main() {
   group('$LeakTesting', () {
-    group('withIgnored', () {
+    group('withIgnored and withTracked', () {
       test('not provided args do not affect the instance, tracked', () {
         final settings = LeakTesting.settings.withTrackedAll();
+
         expect(settings.ignore, false);
         expect(settings.ignoredLeaks.notDisposed.ignoreAll, false);
         expect(settings.ignoredLeaks.notDisposed.byClass, <String, int?>{});
@@ -18,6 +19,7 @@ void main() {
         expect(settings.ignoredLeaks.notGCed.byClass, <String, int?>{});
 
         expect(settings.withIgnored(), settings);
+        expect(settings.withTracked(), settings);
       });
 
       test('not provided args do not affect the instance, ignored', () {
@@ -34,6 +36,7 @@ void main() {
         expect(settings.ignoredLeaks.notGCed.byClass, hasLength(1));
 
         expect(settings.withIgnored(), settings);
+        expect(settings.withTracked(), settings);
       });
     });
 
