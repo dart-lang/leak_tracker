@@ -14,7 +14,9 @@ typedef LeakSummaryCallback = void Function(LeakSummary);
 
 /// Handler to collect leak information.
 ///
-/// Used by [LeakTrackingTestConfig.onLeaks].
+/// This is used by `LeakTrackingTestConfig.onLeaks` in
+/// `package:leak_tracker_flutter_testing`.
+///
 /// The parameter [leaks] contains details about found leaks.
 typedef LeaksCallback = void Function(Leaks leaks);
 
@@ -38,7 +40,7 @@ class IgnoredLeaksSet {
   /// Maps name of the class, as returned by `object.runtimeType.toString()`,
   /// to the number of instances of the class that are allowed to leak.
   ///
-  /// If number of instances is [null], all leaks are ignored.
+  /// If number of instances is `null`, all leaks are ignored.
   final Map<String, int?> byClass;
 
   /// If true, all leaks are ignored, otherwise [byClass] defines what is ignored.

@@ -85,9 +85,10 @@ bool _registerServiceExtension(
     _extentsionRegistered = true;
 
     return true;
+    // ignore: avoid_catching_errors
   } on ArgumentError catch (ex) {
     // Return false if extension is already registered.
-    final bool isAlreadyRegisteredError = ex.toString().contains('registered');
+    final isAlreadyRegisteredError = ex.toString().contains('registered');
     if (isAlreadyRegisteredError) {
       return false;
     } else {

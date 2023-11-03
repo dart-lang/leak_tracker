@@ -5,10 +5,10 @@ environment:
   sdk: ^3.0.0
 
 dependencies:
-  leak_tracker: ^1.0.0-dev.1.3
+  leak_tracker: any
 
 dev_dependencies:
-    flutter_lints: ^3.0.0
+  lints: ^3.0.0
 
 dependency_overrides:
   leak_tracker:

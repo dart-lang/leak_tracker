@@ -1,6 +1,7 @@
 ## 9.0.15
 
 * Add arguments allNotGCed and allNotDisposed to withTracked.
+* Updated to use `package:lints/recommended.yaml` for analysis.
 
 ## 9.0.14
 
