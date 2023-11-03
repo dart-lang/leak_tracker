@@ -94,7 +94,7 @@ class LeakTrackingTestConfig {
   /// Maps name of the class, as returned by `object.runtimeType.toString()`,
   /// to the number of instances of the class that are allowed to be not GCed.
   ///
-  /// If number of instances is [null], any number of instances is allowed.
+  /// If number of instances is `null`, any number of instances is allowed.
   final Map<String, int?> notGCedAllowList;
 
   /// Classes that are allowed to be garbage collected without being disposed.
@@ -102,7 +102,7 @@ class LeakTrackingTestConfig {
   /// Maps name of the class, as returned by `object.runtimeType.toString()`,
   /// to the number of instances of the class that are allowed to be not disposed.
   ///
-  /// If number of instances is [null], any number of instances is allowed.
+  /// If number of instances is `null`, any number of instances is allowed.
   final Map<String, int?> notDisposedAllowList;
 
   /// If true, all notDisposed leaks will be allowed.
