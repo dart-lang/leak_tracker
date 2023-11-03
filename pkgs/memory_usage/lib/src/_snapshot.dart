@@ -48,7 +48,8 @@ class AutoSnapshotter {
 
     if (stepMb == null) {
       throw StateError(
-        'Autosnapshotting should be off if step is null and there is a snapshot already taken',
+        'Autosnapshotting should be off if step is null and there is a '
+        'snapshot already taken',
       );
     }
 

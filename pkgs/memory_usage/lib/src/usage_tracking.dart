@@ -13,7 +13,8 @@ Timer? timer;
 AutoSnapshotter? autoSnapshotter;
 UsageEventCreator? usageEventCreator;
 
-/// Enables memory usage tracking, based on the value of [ProcessInfo.currentRss] (dart:io).
+/// Enables memory usage tracking, based on the value of
+/// [ProcessInfo.currentRss] (dart:io).
 ///
 /// If tracking is already enabled, resets it.
 /// See [UsageTrackingConfig] for details.
