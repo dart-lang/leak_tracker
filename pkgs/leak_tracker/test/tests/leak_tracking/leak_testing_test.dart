@@ -20,6 +20,11 @@ void main() {
 
         expect(settings.withIgnored(), settings);
         expect(settings.withTracked(), settings);
+
+        final withPath = settings
+            .withRetainingPath()
+            .copyWith(leakDiagnosticConfig: const LeakDiagnosticConfig());
+        expect(withPath, settings);
       });
 
       test('not provided args do not affect the instance, ignored', () {
@@ -37,6 +42,11 @@ void main() {
 
         expect(settings.withIgnored(), settings);
         expect(settings.withTracked(), settings);
+
+        final withPath = settings
+            .withRetainingPath()
+            .copyWith(leakDiagnosticConfig: const LeakDiagnosticConfig());
+        expect(withPath, settings);
       });
     });
 
