@@ -1,8 +1,6 @@
 name: autosnapshotting_example
 publish_to: none
 
-version: 1.0.0+1
-
 environment:
   sdk: '>=3.1.2 <4.0.0'
 
@@ -11,9 +9,7 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   intl: ^0.18.1
-  # The version is `any` because it is defined by integration_test, that depends on flutter_test,
-  # whish depends on leak_tracker.
-  leak_tracker: any
+  memory_usage: any
 
 dev_dependencies:
   flutter_test:
@@ -24,3 +20,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+dependency_overrides:
+  memory_usage:
+    path: ../../pkgs/memory_usage

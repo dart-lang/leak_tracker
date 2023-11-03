@@ -7,7 +7,7 @@ import 'dart:io';
 
 import 'package:path/path.dart' as path;
 
-import '../shared/_util.dart';
+import '_util.dart';
 import 'model.dart';
 
 class AutoSnapshotter {

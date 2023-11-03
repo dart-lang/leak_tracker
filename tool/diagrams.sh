@@ -4,33 +4,21 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# Runs `analyze` for all code in the repo.
+# Regenerates dependency disgrams for all packages in the repo.
 
 # Fast fail the script on failures.
 set -ex
 
 sh ./tool/pub_get.sh
 
-cd examples/autosnapshotting
-flutter analyze  --fatal-infos
-cd -
-
-cd examples/leak_tracking
-flutter analyze --fatal-infos
-cd -
-
 cd pkgs/leak_tracker
-dart analyze --fatal-infos
-cd -
-
-cd pkgs/leak_tracker_flutter_testing
-flutter analyze --fatal-infos
+dart run layerlens
 cd -
 
 cd pkgs/leak_tracker_testing
-dart analyze --fatal-infos
+dart run layerlens
 cd -
 
 cd pkgs/memory_usage
-dart analyze --fatal-infos
+dart run layerlens
 cd -

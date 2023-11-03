@@ -32,8 +32,7 @@ void main() {
     final theButton = find.byTooltip('Allocate more memory');
 
     // Take first snapshot
-    final firstThreshold =
-        config.autoSnapshottingConfig!.thresholdMb.mbToBytes();
+    final firstThreshold = config.autoSnapshottingConfig!.thresholdMb.mbToBytes;
     while (pageState.lastRss <= firstThreshold) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
@@ -44,7 +43,7 @@ void main() {
 
     // Take second threshold
     final secondThreshold = pageState.lastRss +
-        config.autoSnapshottingConfig!.increaseMb!.mbToBytes();
+        config.autoSnapshottingConfig!.increaseMb!.mbToBytes;
     int snapshotsLength = pageState.snapshots.length;
     while (pageState.lastRss <= secondThreshold) {
       await tester.tap(theButton);
@@ -56,7 +55,7 @@ void main() {
 
     // Check the directory limit is respected.
     while (directorySize(config.autoSnapshottingConfig!.directory) <=
-        config.autoSnapshottingConfig!.directorySizeLimitMb.mbToBytes()) {
+        config.autoSnapshottingConfig!.directorySizeLimitMb.mbToBytes) {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
       await tester

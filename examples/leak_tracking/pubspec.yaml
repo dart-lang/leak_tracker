@@ -7,7 +7,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # The version is `any` because it is defined by flutter_test, whish depends on leak_tracker.
+  # The version is `any` because it is defined by Flutter SDK.
   leak_tracker: any
 
 dev_dependencies:
