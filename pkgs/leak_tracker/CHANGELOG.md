@@ -1,3 +1,7 @@
+## 9.0.15
+
+* Add arguments allNotGCed and allNotDisposed to withTracked.
+
 ## 9.0.14
 
 * Remove the dependency on `package:web_socket_channel`.

@@ -90,10 +90,10 @@ class LeakTesting {
     );
   }
 
-  /// Returns copy of [settings] with extended skip lists.
+  /// Returns copy of [settings] with extended ignore lists.
   ///
-  /// In the result the skip limit for a class is maximum of two original skip limits.
-  /// Items in [classes] will be added to all skip lists.
+  /// In the result the ignored limit for a class is maximum of two original ignored limits.
+  /// Items in [classes] will be added to all ignore lists.
   @useResult
   LeakTesting withIgnored({
     Map<String, int?> notGCed = const {},
@@ -138,12 +138,24 @@ class LeakTesting {
     List<String> notGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
+    bool allNotGCed = false,
+    bool allNotDisposed = false,
   }) {
+    var newNotGCed = ignoredLeaks.notGCed.track([...notGCed, ...classes]);
+    if (allNotGCed) {
+      newNotGCed = newNotGCed.copyWith(ignoreAll: false);
+    }
+
+    var newNotDisposed =
+        ignoredLeaks.notDisposed.track([...notDisposed, ...classes]);
+    if (allNotDisposed) {
+      newNotDisposed = newNotDisposed.copyWith(ignoreAll: false);
+    }
+
     final result = copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: ignoredLeaks.notGCed.track([...notGCed, ...classes]),
-        notDisposed:
-            ignoredLeaks.notDisposed.track([...notDisposed, ...classes]),
+        notGCed: newNotGCed,
+        notDisposed: newNotDisposed,
       ),
     );
     return result;
