@@ -102,11 +102,13 @@ class Leaks {
           ),
         ),
       );
+
   final Map<LeakType, List<LeakReport>> byType;
 
   List<LeakReport> get notGCed => byType[LeakType.notGCed] ?? [];
   List<LeakReport> get notDisposed => byType[LeakType.notDisposed] ?? [];
   List<LeakReport> get gcedLate => byType[LeakType.gcedLate] ?? [];
+  List<LeakReport> get all => byType.values.flattened.toList();
 
   Map<String, dynamic> toJson() => byType.map(
         (key, value) =>
