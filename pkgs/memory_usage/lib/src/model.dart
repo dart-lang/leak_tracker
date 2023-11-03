@@ -39,12 +39,12 @@ class MemoryUsageEvent {
 
   /// Difference with previouse rss value.
   ///
-  /// Equals to [null] for first event.
+  /// Equals to `null` for first event.
   final int? delta;
 
   /// Time since previous event.
   ///
-  /// Equals to [null] for first event.
+  /// Equals to `null` for first event.
   late Duration? period;
 
   /// RSS memory usage.
@@ -105,10 +105,11 @@ class UsageEventsConfig {
   final int deltaMb;
 }
 
-/// Configures auto-snapshotting, based on the value of `ProcessInfo.currentRss` (dart:io).
+/// Configures auto-snapshotting, based on the value of `ProcessInfo.currentRss`
+/// (dart:io).
 ///
-/// Automatic snapshots will begin to be taken when the rss value exceeds [thresholdMb].
-/// The snapshots will be saved to [directory].
+/// Automatic snapshots will begin to be taken when the rss value exceeds
+/// [thresholdMb]. The snapshots will be saved to [directory].
 ///
 /// The snapshots will be re-taken when the value
 /// increases more than by [increaseMb] since previous snapshot,
@@ -117,7 +118,8 @@ class UsageEventsConfig {
 ///
 /// The [onSnapshot] callback is called when a snapshot is taken.
 ///
-/// Set [minDelayBetweenSnapshots] to make sure snapshots do not trigger each other.
+/// Set [minDelayBetweenSnapshots] to make sure snapshots do not trigger each
+/// other.
 class AutoSnapshottingConfig {
   AutoSnapshottingConfig({
     this.thresholdMb = 1024, // 1Gb
@@ -149,7 +151,8 @@ class AutoSnapshottingConfig {
   ///
   /// If the directory does not exist, it will be created.
   ///
-  /// If the path is relative, it will be relative to the current working directory.
+  /// If the path is relative, it will be relative to the current working
+  /// directory.
   final String directory;
 
   /// The size limit for the [directory] in Mb.

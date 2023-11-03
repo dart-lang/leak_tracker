@@ -8,7 +8,7 @@ dependencies:
   memory_usage: ^0.1.0
 
 dev_dependencies:
-  flutter_lints: ^3.0.0
+  lints: ^3.0.0
 
 dependency_overrides:
   memory_usage:
