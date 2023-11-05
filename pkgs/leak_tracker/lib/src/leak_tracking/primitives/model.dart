@@ -190,6 +190,21 @@ class LeakDiagnosticConfig {
   /// In release mode this flag does not work.
   final bool collectRetainingPathForNotGCed;
 
+  LeakDiagnosticConfig copyWith({
+    bool? collectRetainingPathForNotGCed,
+    bool? collectStackTraceOnStart,
+    bool? collectStackTraceOnDisposal,
+  }) {
+    return LeakDiagnosticConfig(
+      collectRetainingPathForNotGCed:
+          collectRetainingPathForNotGCed ?? this.collectRetainingPathForNotGCed,
+      collectStackTraceOnStart:
+          collectStackTraceOnStart ?? this.collectStackTraceOnStart,
+      collectStackTraceOnDisposal:
+          collectStackTraceOnDisposal ?? this.collectStackTraceOnDisposal,
+    );
+  }
+
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) {
