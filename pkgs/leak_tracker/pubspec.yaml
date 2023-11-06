@@ -12,7 +12,6 @@ environment:
 dependencies:
   clock: ^1.1.1
   collection: ^1.15.0
-  intl: ^0.18.0
   meta: ^1.8.0
   path: ^1.8.3
   vm_service: '>=11.10.0 <14.0.0'
