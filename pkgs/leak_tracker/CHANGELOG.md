@@ -1,6 +1,7 @@
 ## 9.0.15
 
 * Add arguments allNotGCed and allNotDisposed to withTracked.
+* Remove the dependency on `package:intl`.
 
 ## 9.0.14
 
