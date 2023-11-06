@@ -2,8 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:intl/intl.dart';
-
 String? prettyPrintBytes(
   num? bytes, {
   int kbFractionDigits = 0,
@@ -52,14 +50,12 @@ String? prettyPrintBytes(
 }
 
 String printKB(num bytes, {int fractionDigits = 0, bool includeUnit = false}) {
-  final NumberFormat kbPattern = NumberFormat.decimalPattern()
-    ..maximumFractionDigits = fractionDigits;
-
   // We add ((1024/2)-1) to the value before formatting so that a non-zero byte
-  // value doesn't round down to 0. If showing decimal points, let it round normally.
+  // value doesn't round down to 0. If showing decimal points, let it round
+  // normally.
   // TODO(peterdjlee): Round up to the respective digit when fractionDigits > 0.
   final processedBytes = fractionDigits == 0 ? bytes + 511 : bytes;
-  var output = kbPattern.format(processedBytes / 1024);
+  var output = (processedBytes / 1024.0).toStringAsFixed(fractionDigits);
   if (includeUnit) {
     output += ' KB';
   }
