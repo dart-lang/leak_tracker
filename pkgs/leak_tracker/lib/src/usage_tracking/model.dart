@@ -39,12 +39,12 @@ class MemoryUsageEvent {
 
   /// Difference with previouse rss value.
   ///
-  /// Equals to [null] for first event.
+  /// Equals to `null` for first event.
   final int? delta;
 
   /// Time since previous event.
   ///
-  /// Equals to [null] for first event.
+  /// Equals to `null` for first event.
   late Duration? period;
 
   /// RSS memory usage.

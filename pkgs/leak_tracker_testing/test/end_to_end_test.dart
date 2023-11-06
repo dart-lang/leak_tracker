@@ -127,7 +127,7 @@ void main() {
           predicate(
             (e) {
               if (e is! TestFailure) {
-                throw 'Unexpected exception type: ${e.runtimeType}';
+                throw Exception('Unexpected exception type: ${e.runtimeType}');
               }
               expect(pathHeader.allMatches(e.message!), hasLength(2));
               return true;
@@ -172,7 +172,7 @@ void main() {
           predicate(
             (e) {
               if (e is! TestFailure) {
-                throw 'Unexpected exception type: ${e.runtimeType}';
+                throw Exception('Unexpected exception type: ${e.runtimeType}');
               }
               _verifyRetainingPath(expectedRetainingPathTails, e.message!);
               return true;

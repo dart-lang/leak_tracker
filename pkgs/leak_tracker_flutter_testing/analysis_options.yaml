@@ -1,1 +1,12 @@
-include: ../leak_tracker/analysis_options.yaml
+include: package:lints/recommended.yaml
+
+analyzer:
+  language:
+    strict-casts: true
+    strict-inference: true
+
+linter:
+  rules:
+    - avoid_catching_errors
+    - comment_references
+    - only_throw_errors

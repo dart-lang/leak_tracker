@@ -601,17 +601,18 @@ class _MockFinalizerWrapper implements FinalizerWrapper {
   @override
   void attach(Object object, Object finalizationToken, {Object? detach}) {
     if (attached.containsValue(object)) {
-      throw '`attach` should not be invoked twice';
+      throw Exception('`attach` should not be invoked twice');
     }
     if (attached.containsKey(finalizationToken)) {
-      throw 'tokens should not duplicate';
+      throw Exception('tokens should not duplicate');
     }
     attached[finalizationToken as ObjectRecord] = object;
   }
 
   void finalize(Object finalizationToken) {
     if (finalizationToken is! ObjectRecord) {
-      throw 'Unexpected type of token: ${finalizationToken.runtimeType}';
+      throw Exception(
+          'Unexpected type of token: ${finalizationToken.runtimeType}');
     }
     if (!attached.containsKey(finalizationToken)) return;
     onGc(finalizationToken);

@@ -76,7 +76,9 @@ class ObjectTracker implements LeakProvider {
 
   void _onObjectGarbageCollected(Object record) {
     if (disposed) return;
-    if (record is! ObjectRecord) throw 'record should be $ObjectRecord.';
+    if (record is! ObjectRecord) {
+      throw Exception('record should be $ObjectRecord');
+    }
 
     _objects.assertRecordIntegrity(record);
     record.setGCed(_gcCounter.gcCount, clock.now());

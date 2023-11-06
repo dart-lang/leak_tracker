@@ -22,7 +22,7 @@ Future<void> testExecutable(FutureOr<void> Function() testMain) async {
   // order to happen after it and verify that leaks are found.
   tearDownAll(() async {
     final theLeaks = leaks;
-    if (theLeaks == null) throw 'leaks should be detected';
+    if (theLeaks == null) throw Exception('leaks should be detected');
 
     expect(
       theLeaks.notDisposed.where((l) => l.phase == twoControllers),
