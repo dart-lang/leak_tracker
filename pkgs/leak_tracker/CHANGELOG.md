@@ -1,3 +1,7 @@
+## 9.0.16
+
+* Fix: debug information should not wipe other settings.
+
 ## 9.0.15
 
 * Add arguments allNotGCed and allNotDisposed to withTracked.
