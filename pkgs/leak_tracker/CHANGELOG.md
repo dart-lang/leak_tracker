@@ -1,5 +1,6 @@
 ## 9.0.15
 
+* Fix: debug information should not wipe other settings.
 * Add arguments allNotGCed and allNotDisposed to withTracked.
 * Remove the dependency on `package:intl`.
 * Updated to use `package:lints/recommended.yaml` for analysis.

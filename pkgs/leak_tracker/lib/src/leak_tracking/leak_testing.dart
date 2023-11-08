@@ -62,7 +62,7 @@ class LeakTesting {
   @useResult
   LeakTesting withCreationStackTrace() {
     return copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig(
+      leakDiagnosticConfig: leakDiagnosticConfig.copyWith(
         collectStackTraceOnStart: true,
       ),
     );
@@ -74,7 +74,7 @@ class LeakTesting {
   @useResult
   LeakTesting withDisposalStackTrace() {
     return copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig(
+      leakDiagnosticConfig: leakDiagnosticConfig.copyWith(
         collectStackTraceOnDisposal: true,
       ),
     );
@@ -84,7 +84,7 @@ class LeakTesting {
   @useResult
   LeakTesting withRetainingPath() {
     return copyWith(
-      leakDiagnosticConfig: const LeakDiagnosticConfig(
+      leakDiagnosticConfig: leakDiagnosticConfig.copyWith(
         collectRetainingPathForNotGCed: true,
       ),
     );

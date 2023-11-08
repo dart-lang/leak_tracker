@@ -8,6 +8,31 @@ import 'package:test/test.dart';
 
 void main() {
   group('$LeakTesting', () {
+    test('debug info preserves other settings', () {
+      final settings = LeakTesting.settings
+          .withIgnored(notDisposed: {'MyClass': 1})
+          .withCreationStackTrace()
+          .withDisposalStackTrace()
+          .withRetainingPath();
+
+      expect(
+        settings.leakDiagnosticConfig.collectRetainingPathForNotGCed,
+        true,
+      );
+      expect(
+        settings.leakDiagnosticConfig.collectStackTraceOnDisposal,
+        true,
+      );
+      expect(
+        settings.leakDiagnosticConfig.collectStackTraceOnStart,
+        true,
+      );
+      expect(
+        settings.ignoredLeaks.notDisposed.byClass.keys.firstOrNull,
+        'MyClass',
+      );
+    });
+
     group('withTracked', () {
       test('not provided args do not affect the instance, tracked', () {
         final settings = LeakTesting.settings.withTrackedAll().withIgnored(
