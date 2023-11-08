@@ -47,7 +47,7 @@ Future<void> forceGC({
   }
 }
 
-/// Returns nicely formatted retaining path for the [ref.target].
+/// Returns nicely formatted retaining path for the [WeakReference.target].
 ///
 /// If the object is garbage collected or not retained, returns null.
 ///

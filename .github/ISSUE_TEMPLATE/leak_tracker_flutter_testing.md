@@ -1,0 +1,5 @@
+---
+name: "package:leak_tracker_flutter_testing"
+about: "Create a bug or file a feature request against package:leak_tracker_flutter_testing."
+labels: "package:leak_tracker_flutter_testing"
+---

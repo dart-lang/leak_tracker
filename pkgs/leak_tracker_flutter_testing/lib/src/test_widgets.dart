@@ -68,17 +68,14 @@ Future<void> _tearDownTestingWithLeakTracking(LeaksCallback? onLeaks) async {
 
 // TODO(polina-c): retire this function after migration to `testWidgets`.
 // https://github.com/flutter/flutter/issues/135856
+
 /// Wrapper for [testWidgets] with memory leak tracking.
 ///
 /// The test will fail if instrumented objects in [callback] are
 /// garbage collected without being disposed or not garbage
 /// collected soon after disposal.
 ///
-/// [testExecutableWithLeakTracking] must be invoked
-/// for this test run.
-///
-/// More about leak tracking:
-/// https://github.com/dart-lang/leak_tracker.
+/// More about leak tracking: https://github.com/dart-lang/leak_tracker.
 @isTest
 void testWidgetsWithLeakTracking(
   String description,

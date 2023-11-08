@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:isolate';
+
 import 'package:vm_service/vm_service.dart' hide Isolate;
 
 /// Returns retaining path for an object, if it can be detected.

@@ -1,0 +1,16 @@
+# Configuration for .github/workflows/pull_request_label.yml.
+
+'type-infra':
+  - '.github/**'
+
+'package:leak_tracker':
+  - 'pkgs/leak_tracker/**'
+
+'package:leak_tracker_flutter_testing':
+  - 'pkgs/leak_tracker_flutter_testing/**'
+
+'package:leak_tracker_testing':
+  - 'pkgs/leak_tracker_testing/**'
+
+'package:memory_usage':
+  - 'pkgs/memory_usage/**'
