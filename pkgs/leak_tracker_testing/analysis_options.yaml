@@ -8,5 +8,6 @@ analyzer:
 linter:
   rules:
     - avoid_catching_errors
+    - avoid_print
     - comment_references
     - only_throw_errors

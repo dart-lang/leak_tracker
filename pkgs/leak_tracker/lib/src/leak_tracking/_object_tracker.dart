@@ -230,7 +230,7 @@ class ObjectTracker implements LeakProvider {
   }
 
   @override
-  Future<void> checkNonGCed() async {
+  Future<void> checkNotGCed() async {
     throwIfDisposed();
     await _checkForNewNotGCedLeaks();
   }
@@ -238,6 +238,7 @@ class ObjectTracker implements LeakProvider {
   @override
   Future<Leaks> collectLeaks() async {
     throwIfDisposed();
+
     await _checkForNewNotGCedLeaks();
 
     final result = Leaks({
