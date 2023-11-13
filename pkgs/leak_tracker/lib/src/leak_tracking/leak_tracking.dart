@@ -199,7 +199,7 @@ abstract class LeakTracking {
     Future<void>? result;
 
     assert(() {
-      result = _leakTracker?.objectTracker.checkNonGCed();
+      result = _leakTracker?.objectTracker.checkNotGCed();
       return true;
     }());
 

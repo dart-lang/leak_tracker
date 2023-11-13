@@ -249,5 +249,5 @@ class _MockLeakProvider implements LeakProvider {
   Future<Leaks> collectLeaks() async => throw UnimplementedError();
 
   @override
-  Future<void> checkNonGCed() => throw UnimplementedError();
+  Future<void> checkNotGCed() => throw UnimplementedError();
 }

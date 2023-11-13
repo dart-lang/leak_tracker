@@ -1,3 +1,7 @@
+## 9.0.16
+
+* Stub web implementation for retaining path to serve G3.
+
 ## 9.0.15
 
 * Fix: debug information should not wipe other settings.
