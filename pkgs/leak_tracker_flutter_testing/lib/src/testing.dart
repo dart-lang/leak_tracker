@@ -18,7 +18,7 @@ void mayBeSetupLeakTrackingForTest(
     return;
   }
 
-  _setUpLeakTracking();
+  _maybeStartLeakTracking();
 
   final PhaseSettings phase = PhaseSettings(
     name: testDescription,
@@ -42,15 +42,11 @@ Future<void> maybeTearDownLeakTracking() async {
   }
 
   MemoryAllocations.instance.removeListener(_dispatchFlutterEventToLeakTracker);
-
   LeakTracking.declareNotDisposedObjectsAsLeaks();
   await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   final Leaks leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
 
-  if (leaks.total == 0) {
-    return;
-  }
   collectedLeaksReporter(leaks);
 }
 
@@ -93,8 +89,9 @@ bool _checkPlatformAndMayBePrintWarning(
   return false;
 }
 
-void _setUpLeakTracking() {
-  assert(!LeakTracking.isStarted);
+/// Starts leak tracking with all leaks ignored.
+void _maybeStartLeakTracking() {
+  if (LeakTracking.isStarted) return;
 
   LeakTracking.phase = const PhaseSettings.ignored();
   LeakTracking.start(config: LeakTrackingConfig.passive());
