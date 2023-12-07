@@ -23,8 +23,7 @@ enum LeakType {
   /// Disposed and garbage collected later than expected.
   gcedLate;
 
-  static LeakType byName(String name) =>
-      LeakType.values.firstWhere((e) => e.name == name);
+  static LeakType byName(String name) => LeakType.values.byName(name);
 }
 
 /// Names for json fields.
