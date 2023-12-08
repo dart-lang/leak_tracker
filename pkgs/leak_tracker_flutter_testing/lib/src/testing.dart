@@ -7,7 +7,12 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:matcher/expect.dart';
 
-void setupLeakTrackingForTest(
+/// Makes sure leak tracking is set up for a test.
+///
+/// If `settings.ignore` is true, the method is noop.
+/// If leak tracking is not started, starts it.
+/// Configures `LeakTracking.phase` to match [settings].
+void maybeSetupLeakTrackingForTest(
   LeakTesting settings,
   String testDescription,
 ) {
@@ -31,7 +36,9 @@ void setupLeakTrackingForTest(
   LeakTracking.phase = phase;
 }
 
-void tearDownLeakTrackingForTest() {
+/// If leak tracking is enabled, stops it and declares notDisposed objects as leaks.
+void maybeTearDownLeakTrackingForTest() {
+  if (LeakTracking.phase.ignoreLeaks) return;
   LeakTracking.phase = const PhaseSettings.ignored();
   LeakTracking.declareNotDisposedObjectsAsLeaks();
 }
