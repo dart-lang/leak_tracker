@@ -8,6 +8,9 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:meta/meta.dart';
 
+// TODO: remove this library
+// https://github.com/flutter/flutter/issues/135856
+
 void _flutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
 }

@@ -7,7 +7,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:matcher/expect.dart';
 
-void mayBeSetupLeakTrackingForTest(
+void setupLeakTrackingForTest(
   LeakTesting settings,
   String testDescription,
 ) {
@@ -31,18 +31,22 @@ void mayBeSetupLeakTrackingForTest(
   LeakTracking.phase = phase;
 }
 
-void ignoreAllLeaks() {
+void tearDownLeakTrackingForTest() {
   LeakTracking.phase = const PhaseSettings.ignored();
+  LeakTracking.declareNotDisposedObjectsAsLeaks();
 }
 
 /// Should be invoked after execution of all tests to report found leaks.
-Future<void> maybeTearDownLeakTracking() async {
+///
+/// Is noop if leak tracking is not started.
+Future<void> maybeTearDownLeakTrackingForAll() async {
   if (!LeakTracking.isStarted) {
     return;
   }
 
+  // The listener is not added/removed for each test,
+  // because GC may happen after test is complete.
   MemoryAllocations.instance.removeListener(_dispatchFlutterEventToLeakTracker);
-  LeakTracking.declareNotDisposedObjectsAsLeaks();
   await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   final Leaks leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
