@@ -4,7 +4,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-# Regenerates dependency disgrams for all packages in the repo.
+# Regenerates dependency diagrams for all packages in the repo.
 
 # Fast fail the script on failures.
 set -ex

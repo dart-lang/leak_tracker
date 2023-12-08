@@ -15,7 +15,7 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 
 1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
 2. **Disposal**. The owner should invoke the object's `dispose`.
-3. **Release**. The owner should null referernce to the disposed object, if its `dispose` happens earlier than owner's disposal.
+3. **Release**. The owner should null reference to the disposed object, if its `dispose` happens earlier than owner's disposal.
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
    release the references before the owner disposed the object.
 
@@ -100,7 +100,7 @@ TODO: link DevTools documentation with explanation
 ## Verify object references
 
 If you expect an object to be not referenced at some point,
-but not sure, you can validate it by temporaryly adding assertion.
+but not sure, you can validate it by temporarily adding assertion.
 
 ```dart
 final ref = WeakReference(myObject);

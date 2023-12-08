@@ -37,7 +37,7 @@ class MemoryUsageEvent {
     }
   }
 
-  /// Difference with previouse rss value.
+  /// Difference with previous rss value.
   ///
   /// Equals to `null` for first event.
   final int? delta;

@@ -66,7 +66,7 @@ Flutter tests.
 
 ## Regression testing
 
-If you want your tests to fail in case of significant diviation from baseline,
+If you want your tests to fail in case of significant deviation from baseline,
 please, upvote and comment the issue: https://github.com/dart-lang/leak_tracker/issues/120.
 
 ## Other than RSS values
