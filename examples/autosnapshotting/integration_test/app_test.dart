@@ -23,6 +23,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Snapshots are not taken after reaching limit', (tester) async {
+    // Delay needed to detect memory usage is increased and take snapshot.
     final delayForSnapshot = const Duration(seconds: 10);
     app.main([], snapshotDirectory: '$_testDirRoot/$pid');
     await tester.pumpAndSettle();
