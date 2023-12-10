@@ -3,7 +3,7 @@
 This page describes how to configure memory usage tracking.
 See other information on memory leaks [here](../README.md).
 
-Dart and Flutter applications can be confugured to automatically
+Dart and Flutter applications can be configured to automatically
 trigger memory usage events and, in case of memory overuse, to save
 memory heap snapshots to hard drive.
 The snapshots can be later analysed in DevTools.

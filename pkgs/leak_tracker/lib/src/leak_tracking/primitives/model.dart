@@ -188,7 +188,7 @@ class LeakDiagnosticConfig {
 
   /// If true, retaining path will be collected for non-GCed objects.
   ///
-  /// The collection of retaining path is a blocking asyncronous call.
+  /// The collection of retaining path is a blocking asynchronous call.
   /// In release mode this flag does not work.
   final bool collectRetainingPathForNotGCed;
 
@@ -294,7 +294,7 @@ class LeakTrackingConfig {
   /// of validation for leaks.
   ///
   /// If the number is too big, the performance may be seriously impacted.
-  /// If null, the path will be srequested without limit.
+  /// If null, the path will be requested without limit.
   final int? maxRequestsForRetainingPath;
 }
 
