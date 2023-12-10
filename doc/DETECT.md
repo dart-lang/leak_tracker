@@ -184,6 +184,6 @@ Leak tracking impacts CPU in two areas:
    in profile mode on `macos`.
 
 2. Regular asynchronous analysis of the tracked objects.
-   Took ~2.5 millisectonds for
+   Took ~2.5 milliseconds for
    [Gallery](https://github.com/flutter/gallery) home page in
    profile mode on `macos`.

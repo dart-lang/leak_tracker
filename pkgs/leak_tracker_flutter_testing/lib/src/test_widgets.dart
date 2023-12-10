@@ -90,7 +90,7 @@ void testWidgetsWithLeakTracking(
   dynamic tags,
   LeakTesting? leakTesting,
 }) {
-  configureLeakTrackingTearDown();
+  configureLeakTrackingTearDown(onLeaks: leakTesting?.onLeaks);
 
   Future<void> wrappedCallBack(WidgetTester tester) async {
     final settings = leakTesting ?? LeakTesting.settings;
@@ -109,7 +109,7 @@ void testWidgetsWithLeakTracking(
     LeakTracking.phase = const PhaseSettings.ignored();
   }
 
-  // Temporarily turn off leak tracking, so that `testWidgests` does not track leaks in addition.
+  // Temporarily turn off leak tracking, so that `testWidgets` does not track leaks in addition.
   final originalGlobalSettings = LeakTesting.settings;
   LeakTesting.settings = LeakTesting.settings.withIgnoredAll();
 

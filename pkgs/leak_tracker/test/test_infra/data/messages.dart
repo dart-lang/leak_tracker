@@ -15,7 +15,7 @@ final messages = [
   // Requests to app.
   RequestForLeakDetails(),
 
-  // Successfull responses from app.
+  // Successful responses from app.
   Leaks({}),
 
   // Error responses from app.
