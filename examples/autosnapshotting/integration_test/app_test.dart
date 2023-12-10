@@ -23,6 +23,7 @@ void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   testWidgets('Snapshots are not taken after reaching limit', (tester) async {
+    final delayForSnapshot = const Duration(seconds: 10);
     app.main([], snapshotDirectory: '$_testDirRoot/$pid');
     await tester.pumpAndSettle();
 
@@ -37,8 +38,7 @@ void main() {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    await tester
-        .runAsync(() => Future<void>.delayed(const Duration(seconds: 5)));
+    await tester.runAsync(() => Future<void>.delayed(delayForSnapshot));
     expect(pageState.snapshots.length, greaterThan(0));
 
     // Take second threshold
@@ -49,8 +49,7 @@ void main() {
       await tester.tap(theButton);
       await tester.pumpAndSettle();
     }
-    await tester
-        .runAsync(() => Future<void>.delayed(const Duration(seconds: 5)));
+    await tester.runAsync(() => Future<void>.delayed(delayForSnapshot));
     expect(pageState.snapshots.length, snapshotsLength + 1);
 
     // Check the directory limit is respected.
