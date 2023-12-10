@@ -87,7 +87,7 @@ void testWidgetsWithLeakTracking(
   dynamic tags,
   LeakTesting? leakTesting,
 }) {
-  configureLeakTrackingTearDown();
+  configureLeakTrackingTearDown(onLeaks: leakTesting?.onLeaks);
 
   Future<void> wrappedCallBack(WidgetTester tester) async {
     final settings = leakTesting ?? LeakTesting.settings;
