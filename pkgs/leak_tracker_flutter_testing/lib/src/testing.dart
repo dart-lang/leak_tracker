@@ -38,7 +38,7 @@ void maybeSetupLeakTrackingForTest(
 
 /// If leak tracking is enabled, stops it and declares notDisposed objects as leaks.
 void maybeTearDownLeakTrackingForTest() {
-  if (LeakTracking.phase.ignoreLeaks) return;
+  if (!LeakTracking.isStarted || LeakTracking.phase.ignoreLeaks) return;
   LeakTracking.phase = const PhaseSettings.ignored();
   LeakTracking.declareNotDisposedObjectsAsLeaks();
 }
