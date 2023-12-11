@@ -29,11 +29,15 @@ class IgnoredLeaksSet {
   /// in case when you want to preserve list of classes, while temporarily turning off
   /// the entire leak tracking, so that when you turn it back on for a subset of tests
   /// with `copyWith(ignoreAll: false)`, the list of classes is set to needed value.
-  const IgnoredLeaksSet({this.byClass = const {}, this.ignoreAll = false});
+  const IgnoredLeaksSet({
+    this.byClass = const {},
+    this.ignoreAll = false,
+  });
 
   const IgnoredLeaksSet.ignore() : this(ignoreAll: true, byClass: const {});
 
-  const IgnoredLeaksSet.byClass(this.byClass) : ignoreAll = false;
+  const IgnoredLeaksSet.byClass(Map<String, int?> byClass)
+      : this(byClass: byClass);
 
   /// Classes to ignore during leak tracking.
   ///
@@ -123,6 +127,7 @@ class IgnoredLeaks {
   const IgnoredLeaks({
     this.notGCed = const IgnoredLeaksSet(),
     this.notDisposed = const IgnoredLeaksSet(),
+    this.creationFrames = const {},
   });
 
   /// Ignore list for notGCed leaks.
@@ -130,6 +135,9 @@ class IgnoredLeaks {
 
   /// Ignore list for notDisposed leaks.
   final IgnoredLeaksSet notDisposed;
+
+  /// A leak will be ignored if one of the object creation stack frames is listed in [creationFrames].
+  final Set<String> creationFrames;
 
   /// Returns true if the class is ignored.
   ///
