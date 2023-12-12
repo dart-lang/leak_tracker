@@ -5,7 +5,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
-import 'package:matcher/expect.dart';
 
 /// Makes sure leak tracking is set up for a test.
 ///
@@ -58,18 +57,8 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   final Leaks leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
 
-  collectedLeaksReporter(leaks);
+  LeakTesting.collectedLeaksReporter(leaks);
 }
-
-/// Handler for memory leaks found in tests.
-///
-/// Set it to analyse the leaks programmatically.
-/// The handler is invoked on tear down of the test run.
-/// The default reporter fails in case of found leaks.
-///
-/// Used to test leak tracking functionality.
-LeaksCallback collectedLeaksReporter =
-    (Leaks leaks) => expect(leaks, isLeakFree);
 
 void _dispatchFlutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
