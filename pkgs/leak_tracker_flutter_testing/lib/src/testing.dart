@@ -12,10 +12,11 @@ import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 /// If leak tracking is not started, starts it.
 /// Configures `LeakTracking.phase` to match [settings].
 void maybeSetupLeakTrackingForTest(
-  LeakTesting settings,
+  LeakTesting? settings,
   String testDescription,
 ) {
-  if (settings.ignore) return;
+  final leakTesting = settings ?? LeakTesting.settings;
+  if (leakTesting.ignore) return;
 
   if (!_checkPlatformAndMayBePrintWarning(
       platformName: defaultTargetPlatform.name, isBrowser: kIsWeb)) {
@@ -26,10 +27,10 @@ void maybeSetupLeakTrackingForTest(
 
   final PhaseSettings phase = PhaseSettings(
     name: testDescription,
-    leakDiagnosticConfig: settings.leakDiagnosticConfig,
-    ignoredLeaks: settings.ignoredLeaks,
-    baselining: settings.baselining,
-    ignoreLeaks: settings.ignore,
+    leakDiagnosticConfig: leakTesting.leakDiagnosticConfig,
+    ignoredLeaks: leakTesting.ignoredLeaks,
+    baselining: leakTesting.baselining,
+    ignoreLeaks: leakTesting.ignore,
   );
 
   LeakTracking.phase = phase;
