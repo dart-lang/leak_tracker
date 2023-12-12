@@ -1,4 +1,4 @@
-## 1.0.11
+## 1.0.12
 
 * Update to use `package:lints/recommended.yaml` for analysis.
 * Add API to integrate with testWidgets.
