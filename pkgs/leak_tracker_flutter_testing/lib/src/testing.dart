@@ -40,7 +40,6 @@ void maybeSetupLeakTrackingForTest(
 void maybeTearDownLeakTrackingForTest() {
   if (!LeakTracking.isStarted || LeakTracking.phase.ignoreLeaks) return;
   LeakTracking.phase = const PhaseSettings.ignored();
-  LeakTracking.declareNotDisposedObjectsAsLeaks();
 }
 
 /// Should be invoked after execution of all tests to report found leaks.
@@ -55,6 +54,7 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   // because GC may happen after test is complete.
   MemoryAllocations.instance.removeListener(_dispatchFlutterEventToLeakTracker);
   await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+  LeakTracking.declareNotDisposedObjectsAsLeaks();
   final Leaks leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
 
