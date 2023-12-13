@@ -2,10 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:matcher/expect.dart';
 import 'package:meta/meta.dart';
 
-import '../shared/shared_model.dart';
-import 'primitives/model.dart';
+import 'matchers.dart';
 
 void _emptyLeakHandler(Leaks leaks) {}
 
@@ -42,6 +43,16 @@ class LeakTesting {
     this.onLeaks = _emptyLeakHandler,
     this.baselining = const MemoryBaselining.none(),
   });
+
+  /// Handler for memory leaks found in tests.
+  ///
+  /// Set it to analyse the leaks programmatically.
+  /// The handler is invoked on tear down of the test run.
+  /// The default reporter fails in case of found leaks.
+  ///
+  /// Used to test leak tracking functionality.
+  static LeaksCallback collectedLeaksReporter =
+      (Leaks leaks) => expect(leaks, isLeakFree);
 
   /// Current configuration for leak tracking.
   ///

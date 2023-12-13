@@ -5,9 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
-import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 import '../../../test_infra/dart_classes.dart';
 import 'per_test_config_test.dart';

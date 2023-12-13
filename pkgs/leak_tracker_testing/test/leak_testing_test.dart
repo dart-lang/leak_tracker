@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/src/leak_tracking/leak_testing.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/model.dart';
+import 'package:leak_tracker_testing/src/leak_testing.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -1,6 +1,7 @@
-## 1.0.11-wip
+## 1.0.12
 
-* Updated to use `package:lints/recommended.yaml` for analysis.
+* Update to use `package:lints/recommended.yaml` for analysis.
+* Add API to integrate with testWidgets.
 
 ## 1.0.10
 
