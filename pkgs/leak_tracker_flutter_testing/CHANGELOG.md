@@ -1,4 +1,4 @@
-## 1.0.13
+## 2.0.0
 
 * Remove declaration of testWidgetsWithLeakTracking.
 
