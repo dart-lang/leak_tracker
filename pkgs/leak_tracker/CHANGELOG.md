@@ -1,3 +1,7 @@
+## 9.0.18
+
+* Update `vm_service` dependency to `>=11.0.0 <15.0.0`.
+
 ## 9.0.17
 
 * Move LeakTesting to leak_tracker_testing.
