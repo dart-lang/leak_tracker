@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Remove declaration of testWidgetsWithLeakTracking.
+
 ## 1.0.12
 
 * Update to use `package:lints/recommended.yaml` for analysis.

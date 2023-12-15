@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:matcher/matcher.dart';
 
 /// Invokes [callback] and collects events dispatched to [MemoryAllocations.instance] for [type].
 Future<List<ObjectEvent>> memoryEvents(

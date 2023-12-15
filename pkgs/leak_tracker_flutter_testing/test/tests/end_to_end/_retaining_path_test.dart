@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter_test/flutter_test.dart';
+import 'package:test/test.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/_retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/_retaining_path/_retaining_path.dart';
 
@@ -19,20 +19,17 @@ class MyArgClass<T> {
 }
 
 void main() {
-  testWidgets('Path for $MyClass instance is found.',
-      (WidgetTester tester) async {
+  test('Path for $MyClass instance is found.', () async {
     final instance = MyClass();
 
-    await tester.runAsync(() async {
-      final connection = await connect();
+    final connection = await connect();
 
-      final path = await retainingPath(
-        connection,
-        instance,
-      );
+    final path = await retainingPath(
+      connection,
+      instance,
+    );
 
-      expect(path!.elements, isNotEmpty);
-    });
+    expect(path!.elements, isNotEmpty);
   });
 
   test('Path for class with generic arg is found.', () async {
