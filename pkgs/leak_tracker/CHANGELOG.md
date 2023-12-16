@@ -1,3 +1,7 @@
+## 10.0.0
+
+* Remove memory_usage.
+
 ## 9.0.18
 
 * Update `vm_service` dependency to `>=11.0.0 <15.0.0`.

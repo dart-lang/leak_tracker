@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Remove fields failOnLeaksCollected and onLeaks from LeakTesting.
+
 ## 1.0.6
 
 * Updated to use `package:lints/recommended.yaml` for analysis.
