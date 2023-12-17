@@ -1,6 +1,6 @@
 ## 2.0.0
 
-* Remove fields failOnLeaksCollected and onLeaks from LeakTesting.
+* Remove fields `failOnLeaksCollected` and `onLeaks` from `LeakTesting`.
 
 ## 1.0.6
 
