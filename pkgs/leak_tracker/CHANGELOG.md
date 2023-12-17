@@ -1,3 +1,15 @@
+## 10.0.0
+
+* Remove `memory_usage`, as it is moved to https://github.com/dart-lang/leak_tracker/tree/main/pkgs/memory_usage.
+
+## 9.0.18
+
+* Update `vm_service` dependency to `>=11.0.0 <15.0.0`.
+
+## 9.0.17
+
+* Move LeakTesting to leak_tracker_testing.
+
 ## 9.0.16
 
 * Stub web implementation for retaining path to serve G3.

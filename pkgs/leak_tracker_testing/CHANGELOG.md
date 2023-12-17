@@ -1,6 +1,11 @@
-## 1.0.6-wip
+## 2.0.0
+
+* Remove fields `failOnLeaksCollected` and `onLeaks` from `LeakTesting`.
+
+## 1.0.6
 
 * Updated to use `package:lints/recommended.yaml` for analysis.
+* Move LeakTesting from leak_tracker to this library.
 
 ## 1.0.5
 
