@@ -102,15 +102,11 @@ void main() {
       });
 
       test('customized equal', () {
-        void onLeaks(_) {}
-
         final settings1 = LeakTesting.settings.copyWith(
-          onLeaks: onLeaks,
           leakDiagnosticConfig: const LeakDiagnosticConfig(),
           ignoredLeaks: const IgnoredLeaks(),
         );
         final settings2 = LeakTesting.settings.copyWith(
-          onLeaks: onLeaks,
           leakDiagnosticConfig: const LeakDiagnosticConfig(),
           ignoredLeaks: const IgnoredLeaks(),
         );
