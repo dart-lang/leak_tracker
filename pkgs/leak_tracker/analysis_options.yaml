@@ -11,3 +11,4 @@ linter:
     - avoid_print
     - comment_references
     - only_throw_errors
+    - unawaited_futures

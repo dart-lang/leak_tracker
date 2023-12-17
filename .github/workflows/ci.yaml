@@ -35,6 +35,10 @@ jobs:
         run: dart test
         working-directory: pkgs/leak_tracker
 
+      - name: dart test
+        run: dart test
+        working-directory: pkgs/leak_tracker_testing
+
       - name: flutter test
         run: flutter test --enable-vmservice
         working-directory: pkgs/leak_tracker_flutter_testing
