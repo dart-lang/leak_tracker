@@ -2,9 +2,39 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:flutter/cupertino.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_flutter_testing/src/test_classes.dart';
 import 'package:test/test.dart';
 
-/// These tests
+/// These tests verify that value of
+/// [IgnoredLeaks.createdByTestHelpers] is respected.
 void main() {
-  test('Leak is declared without helper', () {});
+  setUp(() {
+    LeakTracking.start(config: LeakTrackingConfig.passive());
+    LeakTracking.phase =
+        PhaseSettings(ignoredLeaks: IgnoredLeaks(createdByTestHelpers: true));
+  });
+
+  tearDown(() {
+    LeakTracking.stop();
+  });
+
+  test('Prod leak is detected.', () async {
+    StatelessLeakingWidget();
+
+    LeakTracking.declareNotDisposedObjectsAsLeaks();
+    final leaks = await LeakTracking.collectLeaks();
+    expect(leaks.notDisposed.length, 1);
+  });
+
+  test('Test leak is ignored.', () async {
+    createTestWidget();
+
+    LeakTracking.declareNotDisposedObjectsAsLeaks();
+    final leaks = await LeakTracking.collectLeaks();
+    expect(leaks.notDisposed.length, 0);
+  });
 }
+
+StatelessLeakingWidget createTestWidget() => StatelessLeakingWidget();

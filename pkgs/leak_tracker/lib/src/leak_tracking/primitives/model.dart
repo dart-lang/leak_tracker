@@ -127,7 +127,7 @@ class IgnoredLeaks {
   const IgnoredLeaks({
     this.notGCed = const IgnoredLeaksSet(),
     this.notDisposed = const IgnoredLeaksSet(),
-    this.creationFrames = const {},
+    this.createdByTestHelpers = false,
   });
 
   /// Ignore list for notGCed leaks.
@@ -136,8 +136,8 @@ class IgnoredLeaks {
   /// Ignore list for notDisposed leaks.
   final IgnoredLeaksSet notDisposed;
 
-  /// A leak will be ignored if one of the object creation stack frames is listed in [creationFrames].
-  final Set<String> creationFrames;
+  /// Leaking objects created by test helpers will be ignored.
+  final bool createdByTestHelpers;
 
   /// Returns true if the class is ignored.
   ///

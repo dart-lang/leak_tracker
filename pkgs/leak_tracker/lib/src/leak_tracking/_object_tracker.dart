@@ -89,7 +89,7 @@ class ObjectTracker implements LeakProvider {
   void _declareNotDisposedLeak(ObjectRecord record) {
     if (record.isGCedLateLeak(disposalTime, numberOfGcCycles)) {
       _objects.gcedLateLeaks.add(record);
-    } else if (record.isNotDisposedLeak) {
+    } else if (!record.isDisposed) {
       _objects.gcedNotDisposedLeaks.add(record);
     }
 
