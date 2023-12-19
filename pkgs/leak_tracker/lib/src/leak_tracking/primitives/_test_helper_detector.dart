@@ -5,7 +5,9 @@
 /// Frames pointing the folder `test` or the package `flutter_test`.
 const _testHelperFrame = r'(?:\/test\/|\(package:flutter_test\/)';
 
-/// If a stack frame contains this string, it is start of test.
+/// Stack frame, containing this string, is start of a test.
+///
+/// There are many spaces to make RegEx faster.
 const _testClosureSign = r'      main.<anonymous closure> \(file:\/\/\/';
 
 const _anyText = r'[\S\s]*';
