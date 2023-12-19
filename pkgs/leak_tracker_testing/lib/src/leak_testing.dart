@@ -149,6 +149,7 @@ class LeakTesting {
     List<String> classes = const [],
     bool allNotGCed = false,
     bool allNotDisposed = false,
+    bool createdByTestHelpers = false,
   }) {
     var newNotGCed = ignoredLeaks.notGCed.track([...notGCed, ...classes]);
     if (allNotGCed) {
@@ -165,6 +166,7 @@ class LeakTesting {
       ignoredLeaks: IgnoredLeaks(
         notGCed: newNotGCed,
         notDisposed: newNotDisposed,
+        createdByTestHelpers: !createdByTestHelpers,
       ),
     );
     return result;
