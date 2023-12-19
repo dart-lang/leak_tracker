@@ -4,6 +4,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'package:leak_tracker_flutter_testing/src/test_classes.dart';
 import 'package:test/test.dart';
 
@@ -11,13 +12,18 @@ import 'package:test/test.dart';
 /// [IgnoredLeaks.createdByTestHelpers] is respected.
 void main() {
   setUp(() {
-    LeakTracking.start(config: LeakTrackingConfig.passive());
-    LeakTracking.phase =
-        PhaseSettings(ignoredLeaks: IgnoredLeaks(createdByTestHelpers: true));
+    LeakTesting.collectedLeaksReporter = (leaks) {};
+    maybeSetupLeakTrackingForTest(
+      LeakTesting.settings.withTrackedAll().withIgnored(
+            allNotGCed: true,
+            createdByTestHelpers: true,
+          ),
+      '-',
+    );
   });
 
   tearDown(() {
-    LeakTracking.stop();
+    maybeTearDownLeakTrackingForAll();
   });
 
   test('Prod leak is detected.', () async {

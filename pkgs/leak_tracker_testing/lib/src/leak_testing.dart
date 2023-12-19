@@ -108,6 +108,7 @@ class LeakTesting {
     Map<String, int?> notDisposed = const {},
     bool allNotDisposed = false,
     List<String> classes = const [],
+    bool createdByTestHelpers = false,
   }) {
     Map<String, int?> addClassesToMap(
       Map<String, int?> map,
@@ -133,6 +134,7 @@ class LeakTesting {
             ignoreAll: allNotDisposed,
           ),
         ),
+        createdByTestHelpers: createdByTestHelpers,
       ),
     );
   }
