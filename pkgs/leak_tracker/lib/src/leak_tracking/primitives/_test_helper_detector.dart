@@ -8,12 +8,12 @@ const _testHelperFrame = r'(?:\/test\/|\(package:flutter_test\/)';
 /// Stack frame, containing this string, is start of a test.
 ///
 /// There are many spaces to make RegEx faster.
-const _testClosureSign = r'      main.<anonymous closure> \(file:\/\/\/';
+const _testStartFrame = r'      main.<anonymous closure> \(file:\/\/\/';
 
 const _anyText = r'[\S\s]*';
 
 final _expr =
-    RegExp('$_testHelperFrame$_anyText$_testClosureSign', multiLine: true);
+    RegExp('$_testHelperFrame$_anyText$_testStartFrame', multiLine: true);
 
 bool isCreatedByTestHelper(StackTrace trace) {
   return _expr.hasMatch(trace.toString());
