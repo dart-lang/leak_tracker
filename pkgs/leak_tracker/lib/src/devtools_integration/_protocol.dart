@@ -7,7 +7,8 @@ import 'package:meta/meta.dart';
 import '../shared/shared_model.dart';
 import 'messages.dart';
 
-/// Generic parameter is not used for encoder, because the message type cannot be detected in runtime.
+/// Generic parameter is not used for encoder, because
+/// the message type cannot be detected in runtime.
 typedef AppMessageEncoder = Map<String, dynamic> Function(dynamic message);
 
 typedef AppMessageDecoder<T> = T Function(Map<String, dynamic> message);
@@ -18,14 +19,15 @@ enum Channel {
   responseFromApp,
 }
 
-/// Codes to identify event types in interaction between application and DevTools.
+/// Codes to identify event types in interaction between
+/// an application and DevTools.
 ///
 /// When application starts real tracking, it sends [started]. As soon as it
 /// catch new leaks, it sends [summary] information about collected leaks.
 ///
-/// When user wants to get more about the collected leaks, they request details in
-/// DevTools, devtools sends [detailsRequest] to the app, and the app responds with
-/// [leakDetails].
+/// When user wants to get more info about the collected leaks, they
+/// request details in DevTools, DevTools sends [detailsRequest] to the app,
+/// and the app responds with [leakDetails].
 @visibleForTesting
 enum Codes {
   // Events from app.
@@ -102,13 +104,13 @@ final envelopes = [
   _Envelope<LeakTrackingStarted>(
     Codes.started,
     Channel.eventFromApp,
-    (Map<String, dynamic> json) => LeakTrackingStarted.fromJson(json),
+    LeakTrackingStarted.fromJson,
     (message) => (message as LeakTrackingStarted).toJson(),
   ),
   _Envelope<LeakSummary>(
     Codes.summary,
     Channel.eventFromApp,
-    (Map<String, dynamic> json) => LeakSummary.fromJson(json),
+    LeakSummary.fromJson,
     (message) => (message as LeakSummary).toJson(),
   ),
 
@@ -126,7 +128,7 @@ final envelopes = [
   _Envelope<Leaks>(
     Codes.leakDetails,
     Channel.responseFromApp,
-    (Map<String, dynamic> json) => Leaks.fromJson(json),
+    Leaks.fromJson,
     (message) => (message as Leaks).toJson(),
   ),
 
@@ -140,14 +142,14 @@ final envelopes = [
   _Envelope<UnexpectedRequestTypeError>(
     Codes.unexpectedRequestTypeError,
     Channel.responseFromApp,
-    (Map<String, dynamic> json) => UnexpectedRequestTypeError.fromJson(json),
+    UnexpectedRequestTypeError.fromJson,
     (message) => (message as UnexpectedRequestTypeError).toJson(),
   ),
 
   _Envelope<UnexpectedError>(
     Codes.unexpectedError,
     Channel.responseFromApp,
-    (Map<String, dynamic> json) => UnexpectedError.fromJson(json),
+    UnexpectedError.fromJson,
     (message) => (message as UnexpectedError).toJson(),
   ),
 ];

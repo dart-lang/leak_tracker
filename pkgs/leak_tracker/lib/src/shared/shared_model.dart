@@ -96,7 +96,7 @@ class Leaks {
             LeakType.byName(key),
             (value as List)
                 .cast<Map<String, dynamic>>()
-                .map((e) => LeakReport.fromJson(e))
+                .map(LeakReport.fromJson)
                 .toList(growable: false),
           ),
         ),

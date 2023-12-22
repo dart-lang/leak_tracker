@@ -13,11 +13,9 @@ Future<String> loadPageHtmlContent(String url) async {
   final completer = Completer<String>();
   final content = StringBuffer();
   response.transform(utf8.decoder).listen(
-    (data) {
-      content.write(data);
-    },
-    onDone: () => completer.complete(content.toString()),
-  );
+        content.write,
+        onDone: () => completer.complete(content.toString()),
+      );
   await completer.future;
   return content.toString();
 }

@@ -16,9 +16,7 @@ void main() {
           .toList(),
   };
 
-  setUpAll(() {
-    verifyTestsCoverAllEnvelopes();
-  });
+  setUpAll(verifyTestsCoverAllEnvelopes);
 
   for (final message in messagesByChannel[Channel.eventFromApp]!) {
     test('$EventFromApp serializes ${message.runtimeType}', () {

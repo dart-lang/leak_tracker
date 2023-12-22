@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 import '../../leak_tracker/test/test_infra/data/dart_classes.dart';
 
 void main() {
-  tearDown(() => LeakTracking.stop());
+  tearDown(LeakTracking.stop);
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
     test('Passive leak tracking detects leaks, $numberOfGcCycles.', () async {
@@ -205,8 +205,8 @@ void _verifyRetainingPath(
     expect(
       RegExp('^').allMatches(stringBetweenItems).length,
       1,
-      reason:
-          'There should be only one line break between items in retaining path.',
+      reason: 'There should be only one line break between '
+          'items in retaining path.',
     );
     previousIndex = index;
   }

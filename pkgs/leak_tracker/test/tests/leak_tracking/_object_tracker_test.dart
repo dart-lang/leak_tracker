@@ -20,7 +20,7 @@ void main() {
   group('processIfNeeded', () {
     for (var items in [null, <int>[]]) {
       test('is noop for empty list, $items', () async {
-        int processorCalls = 0;
+        var processorCalls = 0;
 
         await ObjectTracker.processIfNeeded<int>(
           items: items,
@@ -38,7 +38,7 @@ void main() {
       test('processes all for no limit or large limit, $limit', () async {
         final itemsToProcess = [1, 2, 3];
 
-        int processorCalls = 0;
+        var processorCalls = 0;
         late final List<int> processedItems;
 
         await ObjectTracker.processIfNeeded<int>(
@@ -58,7 +58,7 @@ void main() {
     test('cuts for limit', () async {
       final itemsToProcess = [1, 2, 3];
 
-      int processorCalls = 0;
+      var processorCalls = 0;
       late final List<int> processedItems;
 
       await ObjectTracker.processIfNeeded<int>(
@@ -189,9 +189,7 @@ void main() {
       gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles * 1000;
 
       // Verify no leaks.
-      withClock(Clock.fixed(time), () {
-        verifyNoLeaks();
-      });
+      withClock(Clock.fixed(time), verifyNoLeaks);
     });
 
     test('tracks ${LeakType.notDisposed}.', () async {
@@ -521,8 +519,8 @@ void main() {
         false,
       ]) {
         test(
-            'when objects are tracked with different settings, disposed=$disposed, gced=$gced.',
-            () async {
+            'when objects are tracked with different settings, '
+            'disposed=$disposed, gced=$gced.', () async {
           var time = DateTime(2000);
 
           // Start tracking.
