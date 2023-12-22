@@ -40,6 +40,21 @@ class LeakTesting {
     this.baselining = const MemoryBaselining.none(),
   });
 
+  static bool _enabled = false;
+
+  /// If true leak tracking is inabled.
+  ///
+  /// If value is true before test method is invoked, [settings] will be respected.
+  /// Use this property to enable leak tracking.
+  ///
+  /// To turn leak tracking off/on for individual tests use [ignore].
+  static bool get enabled => _enabled;
+
+  /// Invoke in flutter_test_config.dart to enable leak tracking.
+  ///
+  /// Set [ignore] to true, to pause leak tracking after it is enabled.
+  static void enable() => _enabled = true;
+
   /// Handler for memory leaks found in tests.
   ///
   /// Set it to analyse the leaks programmatically.

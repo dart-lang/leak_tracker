@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Add LeakTesting.enabled.
+
 ## 2.0.0
 
 * Remove fields `failOnLeaksCollected` and `onLeaks` from `LeakTesting`.
