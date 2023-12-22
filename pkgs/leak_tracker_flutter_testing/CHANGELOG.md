@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Upgrade to leak_tracker 10.0.0 and leak_trecker_testing 2.0.1.
+
 ## 2.0.0
 
 * Remove declaration of testWidgetsWithLeakTracking.
