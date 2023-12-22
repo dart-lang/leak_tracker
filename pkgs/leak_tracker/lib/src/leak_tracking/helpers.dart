@@ -17,8 +17,8 @@ import 'primitives/_retaining_path/_retaining_path.dart';
 /// Use [timeout] to limit waiting time.
 /// Use [fullGcCycles] to force multiple garbage collections.
 ///
-/// The method is helpful for testing in combination with [WeakReference] to ensure
-/// an object is not held by another object from garbage collection.
+/// The method is helpful for testing in combination with [WeakReference] to
+/// ensure an object is not held by another object from garbage collection.
 ///
 /// For code example see
 /// https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md
@@ -26,10 +26,10 @@ Future<void> forceGC({
   Duration? timeout,
   int fullGcCycles = 1,
 }) async {
-  final Stopwatch? stopwatch = timeout == null ? null : (Stopwatch()..start());
-  final int barrier = reachabilityBarrier;
+  final stopwatch = timeout == null ? null : (Stopwatch()..start());
+  final barrier = reachabilityBarrier;
 
-  final List<List<int>> storage = <List<int>>[];
+  final storage = <List<int>>[];
 
   void allocateMemory() {
     storage.add(List.generate(30000, (n) => n));

@@ -34,7 +34,7 @@ void main() {
 
   test('Non-referenced object is finalized and gced after barrier increase.',
       () async {
-    bool finalized = false;
+    var finalized = false;
     final finalizer = Finalizer<Object>((token) => finalized = true);
     final ref = await _createTrackedObject(finalizer);
     final barrier = reachabilityBarrier;

@@ -43,7 +43,7 @@ String removeLeakTrackingLines(String stackTrace) {
 }
 
 String retainingPathToString(RetainingPath retainingPath) {
-  final StringBuffer buffer = StringBuffer();
+  final buffer = StringBuffer();
   buffer.writeln(
     'References that retain the object from garbage collection.',
   );
@@ -78,7 +78,8 @@ enum RetainingObjectProperty {
 
   const RetainingObjectProperty(this.paths);
 
-  /// Itemizes possible paths in [RetainingObject.toJson] to get the value of a property.
+  /// Itemizes possible paths in [RetainingObject.toJson] to
+  /// get the value of a property.
   final List<List<String>> paths;
 }
 

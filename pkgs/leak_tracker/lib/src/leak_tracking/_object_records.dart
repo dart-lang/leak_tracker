@@ -12,7 +12,8 @@ import '_object_record_set.dart';
 /// On registration, each object enters the collections [notGCed].
 /// On disposal it is added to [notGCedDisposedOk]. Then, if it is overdue
 /// to be GCed it migrates from to [notGCedDisposedLate].
-/// Then, if the leak is collected, it migrates to [notGCedDisposedLateCollected].
+/// Then, if the leak is collected, it
+/// migrates to [notGCedDisposedLateCollected].
 ///
 /// If the object gets GCed, it is removed from all notGCed... collections,
 /// and, if it was GCed wrongly, added to one of gced... collections.

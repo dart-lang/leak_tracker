@@ -8,9 +8,7 @@ import 'package:test/test.dart';
 import '../../test_infra/data/messages.dart';
 
 void main() {
-  setUpAll(() {
-    verifyTestsCoverAllEnvelopes();
-  });
+  setUpAll(verifyTestsCoverAllEnvelopes);
 
   test('each code matches exactly one envelope', () {
     final codesInEnvelopes = Set.of(envelopes.map((e) => e.code));

@@ -54,7 +54,7 @@ ObjectRecord _addItemAndValidate(ObjectRecordSet theSet, Object item) {
   expect(theSet.putIfAbsent(item, {}, _phase, ''), record);
   expect(theSet.length, length + 1);
 
-  int count = 0;
+  var count = 0;
   theSet.forEach((record) => count++);
   expect(count, theSet.length);
 
@@ -73,7 +73,7 @@ void _removeItemAndValidate(ObjectRecordSet theSet, ObjectRecord record) {
   expect(theSet.contains(record), false);
   expect(theSet.contains(_record), false);
 
-  int count = 0;
+  var count = 0;
   theSet.forEach((record) => count++);
   expect(count, theSet.length);
 

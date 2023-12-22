@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:test/test.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+import 'package:test/test.dart';
 
 final LeakTesting settings =
     LeakTesting.settings.withIgnored(allNotDisposed: true, allNotGCed: true);
@@ -14,9 +14,7 @@ void main() {
       LeakTesting.settings = LeakTesting.settings.withTrackedAll();
     });
 
-    tearDown(() {
-      LeakTracking.stop();
-    });
+    tearDown(LeakTracking.stop);
 
     test('If settings is null, respects globals', () {
       maybeSetupLeakTrackingForTest(null, 'myTest1');
@@ -47,11 +45,9 @@ void main() {
       maybeSetupLeakTrackingForTest(null, 'myTest1');
     });
 
-    tearDown(() {
-      LeakTracking.stop();
-    });
+    tearDown(LeakTracking.stop);
 
-    test('Pauses leak tracking and can be invoiked twice', () {
+    test('Pauses leak tracking and can be invoked twice', () {
       maybeTearDownLeakTrackingForTest();
       expect(LeakTracking.phase.name, null);
       expect(LeakTracking.isStarted, true);
@@ -71,9 +67,7 @@ void main() {
       maybeTearDownLeakTrackingForTest();
     });
 
-    tearDown(() {
-      LeakTracking.stop();
-    });
+    tearDown(LeakTracking.stop);
 
     test('Stops leak tracking', () async {
       await maybeTearDownLeakTrackingForAll();

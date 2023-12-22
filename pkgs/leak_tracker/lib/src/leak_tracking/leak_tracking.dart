@@ -71,7 +71,8 @@ abstract class LeakTracking {
 
       if (config.notifyDevTools) {
         // While [leakTracker] will push summary leak notifications to DevTools,
-        // DevTools may request leak details from the application via integration.
+        // DevTools may request leak details from
+        // the application via integration.
         // That's why it needs [_leakProvider].
         initializeDevToolsIntegration(_leakProvider);
       } else {
@@ -110,7 +111,8 @@ abstract class LeakTracking {
 
   /// Dispatches object creation to the leak tracker.
   ///
-  /// Use [context] to provide additional information, that may help in leak troubleshooting.
+  /// Use [context] to provide additional information,
+  /// that may help in leak troubleshooting.
   /// The value must be serializable.
   static void dispatchObjectCreated({
     required String library,

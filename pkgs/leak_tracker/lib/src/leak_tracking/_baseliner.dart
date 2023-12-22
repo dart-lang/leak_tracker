@@ -78,7 +78,8 @@ class Baseliner {
     }
 
     buffer.writeln(
-      'samples: ${current.samples} - ${golden.samples} = ${current.samples - golden.samples}',
+      'samples: ${current.samples} - ${golden.samples} = '
+      '${current.samples - golden.samples}',
     );
     return buffer.toString();
   }
@@ -87,6 +88,7 @@ class Baseliner {
     String format(num size) => prettyPrintBytes(size, includeUnit: true) ?? '';
     final delta = current - golden;
     final deltaPercent = (delta / golden * 100).toStringAsFixed(2);
-    return '$name: ${format(current)} - ${format(golden)} = ${format(delta)} ($deltaPercent%)';
+    return '$name: ${format(current)} - ${format(golden)} = '
+        '${format(delta)} ($deltaPercent%)';
   }
 }

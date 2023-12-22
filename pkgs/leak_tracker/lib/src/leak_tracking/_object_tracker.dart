@@ -103,10 +103,12 @@ class ObjectTracker implements LeakProvider {
 
   /// Declares all not disposed objects as leaks, even if they are not GCed yet.
   ///
-  /// Is used to make sure all disposables are disposed by the the end of the test.
+  /// Is used to make sure all disposables are disposed
+  /// by the the end of the test.
   void declareAllNotDisposedAsLeaks() {
     throwIfDisposed();
-    // We need this temporary storage to avoid error 'concurrent modification during iteration'
+    // We need this temporary storage to avoid error
+    // 'concurrent modification during iteration'
     // for internal iterables in `_objects.notGCed`.
     final notGCedAndNotDisposed = <ObjectRecord>[];
     _objects.notGCed.forEach((record) {
@@ -122,7 +124,8 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
 
     final record = _objects.notGCed.record(object);
-    // If object is not registered, this may mean that it was created when leak tracking was off.
+    // If object is not registered, this may mean that
+    // it was created when leak tracking was off.
     if (record == null || record.phase.ignoreLeaks) return;
 
     record.mergeContext(context);
@@ -143,7 +146,8 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
 
     final record = _objects.notGCed.record(object);
-    // If object is not registered, this may mean that it was created when leak tracking was off.
+    // If object is not registered, this may mean that
+    // it was created when leak tracking was off.
     if (record == null || record.phase.ignoreLeaks) return;
 
     record.mergeContext(context);
@@ -164,11 +168,10 @@ class ObjectTracker implements LeakProvider {
   Future<void> _checkForNewNotGCedLeaks({bool summary = false}) async {
     _objects.assertIntegrity();
 
-    final List<ObjectRecord>? objectsToGetPath = summary ? null : [];
+    final objectsToGetPath = summary ? null : <ObjectRecord>[];
 
     final now = clock.now();
-    for (ObjectRecord record
-        in _objects.notGCedDisposedOk.toList(growable: false)) {
+    for (final record in _objects.notGCedDisposedOk.toList(growable: false)) {
       if (record.isNotGCedLeak(
         _gcCounter.gcCount,
         now,
@@ -192,7 +195,8 @@ class ObjectTracker implements LeakProvider {
     _objects.assertIntegrity();
   }
 
-  /// Runs [processor] for first items from [items], at most [limit] items will be processed.
+  /// Runs [processor] for first items from [items],
+  /// at most [limit] items will be processed.
   ///
   /// Noop if [items] is null or empty.
   /// Processes all items if [limit] is null.
