@@ -67,7 +67,7 @@ class ObjectTracker implements LeakProvider {
 
     if (phase.ignoredLeaks.createdByTestHelpers) {
       stackTrace = StackTrace.current;
-      if (isCreatedByTestHelper(stackTrace)) return;
+      if (isCreatedByTestHelper(stackTrace.toString())) return;
     }
 
     final record =
