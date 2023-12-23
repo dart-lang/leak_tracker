@@ -44,7 +44,8 @@ class LeakTesting {
 
   /// If true leak tracking is inabled.
   ///
-  /// If value is true before test method is invoked, [settings] will be respected.
+  /// If value is true before test method is invoked,
+  /// [settings] will be respected.
   /// Use this property to enable leak tracking.
   ///
   /// To turn leak tracking off/on for individual tests use [ignore].

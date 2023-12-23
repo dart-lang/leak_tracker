@@ -52,7 +52,8 @@ void maybeTearDownLeakTrackingForTest() {
 /// Is noop if leak tracking is not started.
 Future<void> maybeTearDownLeakTrackingForAll() async {
   if (!LeakTesting.enabled || !LeakTracking.isStarted) {
-    // Reporter is invoked so that test can verify the number of collected leaks is as expected.
+    // Reporter is invoked so that tests can verify the number of
+    // collected leaks is as expected.
     LeakTesting.collectedLeaksReporter(Leaks({}));
     return;
   }
