@@ -11,6 +11,8 @@ void main() {
     test('debug info preserves other settings', () {
       final settings = LeakTesting.settings
           .withIgnored(notDisposed: {'MyClass': 1})
+          .withIgnored(createdByTestHelpers: true)
+          .withIgnored()
           .withCreationStackTrace()
           .withDisposalStackTrace()
           .withRetainingPath();
@@ -30,6 +32,10 @@ void main() {
       expect(
         settings.ignoredLeaks.notDisposed.byClass.keys.firstOrNull,
         'MyClass',
+      );
+      expect(
+        settings.ignoredLeaks.createdByTestHelpers,
+        true,
       );
     });
 

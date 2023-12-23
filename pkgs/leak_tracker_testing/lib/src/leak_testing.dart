@@ -152,7 +152,8 @@ class LeakTesting {
             ignoreAll: allNotDisposed,
           ),
         ),
-        createdByTestHelpers: createdByTestHelpers,
+        createdByTestHelpers:
+            ignoredLeaks.createdByTestHelpers || createdByTestHelpers,
       ),
     );
   }
