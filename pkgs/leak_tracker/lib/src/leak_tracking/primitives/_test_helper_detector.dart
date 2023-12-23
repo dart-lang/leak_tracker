@@ -14,11 +14,11 @@ final _expr =
     RegExp('$_testHelperFrame$_anyText$_testStartFrame', multiLine: true);
 
 bool isCreatedByTestHelper(StackTrace trace) {
-  print(trace);
-  print('\n\n\n');
+  // print(trace);
+  // print('\n\n\n');
   final result = _expr.hasMatch(trace.toString());
-  print(result);
-  print('\n\n\n');
+  // print(result);
+  // print('\n\n\n');
   return result;
 }
 
