@@ -16,8 +16,25 @@ final _expr =
     RegExp('$_testHelperFrame$_anyText$_testStartFrame', multiLine: true);
 
 bool isCreatedByTestHelper(StackTrace trace) {
+  // print(trace);
+  // print('\n\n\n');
   return _expr.hasMatch(trace.toString());
 }
+
+
+// #0      ObjectTracker.startTracking (package:leak_tracker/src/leak_tracking/_object_tracker.dart:69:31)
+// #1      LeakTracking.dispatchObjectCreated.<anonymous closure> (package:leak_tracker/src/leak_tracking/leak_tracking.dart:124:35)
+// #2      LeakTracking.dispatchObjectCreated (package:leak_tracker/src/leak_tracking/leak_tracking.dart:133:6)
+// #3      new LeakTrackedClass (file:///Users/polinach/_/flutter_dev/packages/flutter_test/test/utils/leaking_classes.dart:10:18)
+// #4      new StatelessLeakingWidget (file:///Users/polinach/_/flutter_dev/packages/flutter_test/test/utils/leaking_classes.dart:39:27)
+// #5      main.<anonymous closure> (file:///Users/polinach/_/flutter_dev/packages/flutter_test/test/widget_tester_leaks_test.dart:58:35)
+// #6      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:183:29)
+// <asynchronous suspension>
+// #7      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1017:5)
+// <asynchronous suspension>
+// #8      StackZoneSpecification._registerCallback.<anonymous closure> (package:stack_trace/src/stack_zone_specification.dart:114:42)
+// <asynchronous suspension>
+
 
 // #0      ObjectTracker.startTracking (package:leak_tracker/src/leak_tracking/_object_tracker.dart:69:31)
 // #1      LeakTracking.dispatchObjectCreated.<anonymous closure> (package:leak_tracker/src/leak_tracking/leak_tracking.dart:124:35)

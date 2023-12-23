@@ -7,9 +7,9 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 // The classes are declared not under `test` to test [IgnoredLeaks.testHelpers].
 
-final _notGcedStorage = <LeakTrackedClass>[];
+final _notGcedStorage = <InstrumentedDisposable>[];
 
-@visibleForTesting
+/// Example of stateless leaking widget.
 class StatelessLeakingWidget extends StatelessWidget {
   StatelessLeakingWidget({
     super.key,
@@ -17,11 +17,11 @@ class StatelessLeakingWidget extends StatelessWidget {
     this.notDisposed = true,
   }) {
     if (notGCed) {
-      _notGcedStorage.add(LeakTrackedClass()..dispose());
+      _notGcedStorage.add(InstrumentedDisposable()..dispose());
     }
     if (notDisposed) {
       // ignore: unused_local_variable
-      final notDisposedObject = LeakTrackedClass();
+      final notDisposedObject = InstrumentedDisposable();
     }
   }
 
@@ -34,12 +34,12 @@ class StatelessLeakingWidget extends StatelessWidget {
   }
 }
 
-@visibleForTesting
-class LeakTrackedClass {
-  LeakTrackedClass() {
+/// Example of instrumented disposable
+class InstrumentedDisposable {
+  InstrumentedDisposable() {
     LeakTracking.dispatchObjectCreated(
       library: library,
-      className: '$LeakTrackedClass',
+      className: '$InstrumentedDisposable',
       object: this,
     );
   }
@@ -51,11 +51,11 @@ class LeakTrackedClass {
   }
 }
 
-final _notGCedObjects = <LeakTrackedClass>[];
+final _notGCedObjects = <InstrumentedDisposable>[];
 
-@visibleForTesting
+/// Example of leaking class.
 class LeakingClass {
   LeakingClass() {
-    _notGCedObjects.add(LeakTrackedClass()..dispose());
+    _notGCedObjects.add(InstrumentedDisposable()..dispose());
   }
 }
