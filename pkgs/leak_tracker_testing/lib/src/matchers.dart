@@ -25,7 +25,8 @@ class _IsLeakFree extends Matcher {
     if (item is! Leaks) {
       return mismatchDescription
         ..add(
-          'The matcher applies to $Leaks and cannot be applied to ${item.runtimeType}',
+          'The matcher applies to $Leaks and cannot be '
+          'applied to ${item.runtimeType}',
         );
     }
 

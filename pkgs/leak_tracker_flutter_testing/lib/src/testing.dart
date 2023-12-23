@@ -27,7 +27,7 @@ void maybeSetupLeakTrackingForTest(
 
   _maybeStartLeakTracking();
 
-  final PhaseSettings phase = PhaseSettings(
+  final phase = PhaseSettings(
     name: testDescription,
     leakDiagnosticConfig: leakTesting.leakDiagnosticConfig,
     ignoredLeaks: leakTesting.ignoredLeaks,
@@ -38,7 +38,8 @@ void maybeSetupLeakTrackingForTest(
   LeakTracking.phase = phase;
 }
 
-/// If leak tracking is enabled, stops it and declares notDisposed objects as leaks.
+/// If leak tracking is enabled, stops it and
+/// declares notDisposed objects as leaks.
 void maybeTearDownLeakTrackingForTest() {
   if (!LeakTesting.enabled ||
       !LeakTracking.isStarted ||
@@ -61,7 +62,7 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   MemoryAllocations.instance.removeListener(_dispatchFlutterEventToLeakTracker);
   await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   LeakTracking.declareNotDisposedObjectsAsLeaks();
-  final Leaks leaks = await LeakTracking.collectLeaks();
+  final leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
 
   LeakTesting.collectedLeaksReporter(leaks);
@@ -73,9 +74,11 @@ void _dispatchFlutterEventToLeakTracker(ObjectEvent event) {
 
 bool _notSupportedWarningPrinted = false;
 
-/// Checks if platform supported and, if no, prints warning if the warning is needed.
+/// Checks if platform supported and, if no,
+/// prints warning if the warning is needed.
 ///
-/// Warning is printed one time if `LeakTracking.warnForNotSupportedPlatforms` is true.
+/// Warning is printed one time if
+/// `LeakTracking.warnForNotSupportedPlatforms` is `true`.
 bool _checkPlatformAndMayBePrintWarning(
     {required String platformName, required bool isBrowser}) {
   final isSupported = !isBrowser;
@@ -90,7 +93,8 @@ bool _checkPlatformAndMayBePrintWarning(
   _notSupportedWarningPrinted = true;
   debugPrint(
     "Leak tracking is not supported on the platform '$platformName'.\n"
-    'To turn off this message, set `LeakTracking.warnForNotSupportedPlatforms` to false.',
+    'To turn off this message, set '
+    '`LeakTracking.warnForNotSupportedPlatforms` to false.',
   );
 
   return false;

@@ -2,7 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/// This function is better than `as`, because `as` does not provide callstack on failure.
+/// This function is better than `as`,
+/// because `as` does not provide callstack on failure.
 T cast<T>(Object? value) {
   if (value is T) return value;
   throw ArgumentError(
@@ -11,7 +12,8 @@ T cast<T>(Object? value) {
 }
 
 extension IterableExtensions<T> on Iterable<T> {
-  /// Returns the item or null, assuming that the length of the iterable is 0 or 1.
+  /// Returns the item or null, assuming that
+  /// the length of the iterable is 0 or 1.
   // The name is consistent with other method names on iterables like
   // `firstOrNull, lastOrNull, and singleOrNull`.
   T? get onlyOrNull {

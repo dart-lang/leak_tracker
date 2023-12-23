@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:test/test.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
+import 'package:test/test.dart';
 
 class _Classes {
   static const anyLeak1 = 'anyLeak1';
@@ -35,7 +35,8 @@ class _Classes {
       all.where((c) => !classes.contains(c)).toList();
 }
 
-/// Returns true, if the provided [classes] are skipped and all other classes from [_Classes] are tracked.
+/// Returns true, if the provided [classes] are skipped and
+/// all other classes from [_Classes] are tracked.
 bool _areOnlySkipped(
   List<String> classes, {
   LeakType? leakType,

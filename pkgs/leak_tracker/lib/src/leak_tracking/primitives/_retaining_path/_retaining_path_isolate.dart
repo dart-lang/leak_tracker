@@ -10,8 +10,8 @@ import 'package:vm_service/vm_service.dart' hide Isolate;
 
 /// Returns retaining path for an object, if it can be detected.
 ///
-/// If [object] is null or object reference cannot be obtained or isolate cannot be obtained,
-/// returns null.
+/// If [object] is null or object reference cannot be obtained or
+/// isolate cannot be obtained, returns null.
 Future<RetainingPath?> retainingPathImpl(
   VmService service,
   Object? object,

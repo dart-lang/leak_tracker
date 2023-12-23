@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:test/test.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/_retaining_path/_connection.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/_retaining_path/_retaining_path.dart';
+import 'package:test/test.dart';
 
 // We duplicate testing for retaining path here,
 // because there were cases when the tests were passing for dart,

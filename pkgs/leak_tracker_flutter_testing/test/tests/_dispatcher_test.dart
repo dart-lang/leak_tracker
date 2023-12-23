@@ -5,8 +5,8 @@
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
-import 'package:test/test.dart';
 import 'package:leak_tracker/src/leak_tracking/primitives/_dispatcher.dart';
+import 'package:test/test.dart';
 
 import '../test_infra/event_tracker.dart';
 
@@ -45,9 +45,9 @@ void main() {
 }
 
 Picture _createPicture() {
-  final PictureRecorder recorder = PictureRecorder();
-  final Canvas canvas = Canvas(recorder);
-  const Rect rect = Rect.fromLTWH(0.0, 0.0, 100.0, 100.0);
+  final recorder = PictureRecorder();
+  final canvas = Canvas(recorder);
+  const rect = Rect.fromLTWH(0.0, 0.0, 100.0, 100.0);
   canvas.clipRect(rect);
   return recorder.endRecording();
 }

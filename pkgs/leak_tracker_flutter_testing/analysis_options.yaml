@@ -1,4 +1,4 @@
-include: package:lints/recommended.yaml
+include: package:dart_flutter_team_lints/analysis_options.yaml
 
 analyzer:
   language:
@@ -7,7 +7,4 @@ analyzer:
 
 linter:
   rules:
-    - avoid_catching_errors
     - avoid_print
-    - comment_references
-    - only_throw_errors
