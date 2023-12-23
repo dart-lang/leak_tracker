@@ -7,11 +7,7 @@ export 'package:leak_tracker/leak_tracker.dart'
 export 'package:leak_tracker_testing/leak_tracker_testing.dart'
     show LeakTesting, isLeakFree;
 
+export 'src/examples.dart';
 export 'src/matchers.dart';
 export 'src/model.dart';
 export 'src/testing.dart';
-export 'src/examples.dart';
-export 'package:leak_tracker/leak_tracker.dart'
-    show Leaks, LeakTracking, IgnoredLeaks, LeakType, LeakReport;
-export 'package:leak_tracker_testing/leak_tracker_testing.dart'
-    show isLeakFree, LeakTesting;
