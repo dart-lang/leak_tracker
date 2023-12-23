@@ -19,9 +19,7 @@ void main() {
     );
   });
 
-  tearDown(() {
-    maybeTearDownLeakTrackingForAll();
-  });
+  tearDown(maybeTearDownLeakTrackingForAll);
 
   test('Prod leak is detected.', () async {
     StatelessLeakingWidget();
