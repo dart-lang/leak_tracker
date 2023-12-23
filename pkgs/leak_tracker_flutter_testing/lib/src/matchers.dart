@@ -7,7 +7,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:matcher/matcher.dart';
 
-/// Invokes [callback] and collects events dispatched to [MemoryAllocations.instance] for [type].
+/// Invokes [callback] and collects
+/// events dispatched to [MemoryAllocations.instance] for [type].
 Future<List<ObjectEvent>> memoryEvents(
   FutureOr<void> Function() callback,
   Type type,
@@ -27,7 +28,8 @@ Future<List<ObjectEvent>> memoryEvents(
   return events;
 }
 
-/// Checks if Iterable<ObjectEvent> contains two events, first `ObjectCreated` and then `ObjectDisposed`.
+/// Checks if Iterable<ObjectEvent> contains two events,
+/// first `ObjectCreated` and then `ObjectDisposed`.
 Matcher areCreateAndDispose = const _AreCreateAndDispose();
 
 class _AreCreateAndDispose extends Matcher {
@@ -48,8 +50,8 @@ class _AreCreateAndDispose extends Matcher {
       return true;
     }
 
-    matchState[_key] =
-        'The events are expected to be first $ObjectCreated and then $ObjectDisposed.\n'
+    matchState[_key] = 'The events are expected to be first '
+        '$ObjectCreated and then $ObjectDisposed.\n'
         'Instead, they are ${item.length} events:\n$item.';
 
     return false;

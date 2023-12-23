@@ -26,13 +26,12 @@ class IgnoredLeaksSet {
   /// Creates instance of [IgnoredLeaksSet].
   ///
   /// Use this constructor to provide both [byClass] and [ignoreAll]
-  /// in case when you want to preserve list of classes, while temporarily turning off
-  /// the entire leak tracking, so that when you turn it back on for a subset of tests
-  /// with `copyWith(ignoreAll: false)`, the list of classes is set to needed value.
-  const IgnoredLeaksSet({
-    this.byClass = const {},
-    this.ignoreAll = false,
-  });
+  /// in case when you want to preserve list of classes,
+  /// while temporarily turning off the entire leak tracking,
+  /// so that when you turn it back on for a subset of tests
+  /// with `copyWith(ignoreAll: false)`,
+  /// the list of classes is set to needed value.
+  const IgnoredLeaksSet({this.byClass = const {}, this.ignoreAll = false});
 
   const IgnoredLeaksSet.ignore() : this(ignoreAll: true, byClass: const {});
 
@@ -47,7 +46,8 @@ class IgnoredLeaksSet {
   /// If number of instances is `null`, all leaks are ignored.
   final Map<String, int?> byClass;
 
-  /// If true, all leaks are ignored, otherwise [byClass] defines what is ignored.
+  /// If true, all leaks are ignored, otherwise
+  /// [byClass] defines what is ignored.
   final bool ignoreAll;
 
   /// Creates a copy of this object with the given fields replaced
@@ -61,7 +61,8 @@ class IgnoredLeaksSet {
 
   /// Merges two ignore lists.
   ///
-  /// In the result object the ignore limit for a class is maximum of two original ignore limits.
+  /// In the result object the ignore limit for a class is
+  /// the maximum of two original ignore limits.
   IgnoredLeaksSet merge(IgnoredLeaksSet? other) {
     if (other == null) return this;
     final map = {...byClass};
@@ -70,8 +71,8 @@ class IgnoredLeaksSet {
         map[theClass] = other.byClass[theClass];
         continue;
       }
-      final int? otherCount = other.byClass[theClass];
-      final int? thisCount = byClass[theClass];
+      final otherCount = other.byClass[theClass];
+      final thisCount = byClass[theClass];
       if (thisCount == null || otherCount == null) {
         map[theClass] = null;
         continue;
@@ -177,9 +178,10 @@ class IgnoredLeaks {
 
 /// Configuration for diagnostics.
 ///
-/// Stacktrace and retaining path collection can seriously affect performance and memory footprint.
-/// So, it is recommended to have them disabled for leak detection and to enable them
-/// only for leak troubleshooting.
+/// Stacktrace and retaining path collection can
+/// seriously affect performance and memory footprint.
+/// So, it is recommended to have them disabled for leak detection and
+/// to enable them only for leak troubleshooting.
 @immutable
 class LeakDiagnosticConfig {
   const LeakDiagnosticConfig({
@@ -188,10 +190,12 @@ class LeakDiagnosticConfig {
     this.collectStackTraceOnDisposal = false,
   });
 
-  /// If true, stack trace will be collected on start of tracking for all classes.
+  /// If true, stack trace will be collected on
+  /// start of tracking for all classes.
   final bool collectStackTraceOnStart;
 
-  /// If true, stack trace will be collected on disposal for all tracked classes.
+  /// If true, stack trace will be collected on
+  /// disposal for all tracked classes.
   final bool collectStackTraceOnDisposal;
 
   /// If true, retaining path will be collected for non-GCed objects.
@@ -237,7 +241,8 @@ class LeakDiagnosticConfig {
       );
 }
 
-/// The default value for number of full GC cycles, enough for a non reachable object to be GCed.
+/// The default value for number of full GC cycles,
+/// enough for a non reachable object to be GCed.
 ///
 /// It is pessimistic assuming that user will want to
 /// detect leaks not more often than a second.
@@ -263,7 +268,8 @@ class LeakTrackingConfig {
   /// The leak tracker:
   /// - will not auto check leaks
   /// - when leak checking is invoked, will not send notifications
-  /// - will set [disposalTime] to zero, to assume the methods `dispose` are completed
+  /// - will set [disposalTime] to zero, to assume
+  ///   the methods `dispose` are completed
   /// at the moment of leak checking
   LeakTrackingConfig.passive({
     int numberOfGcCycles = defaultNumberOfGcCycles,

@@ -9,8 +9,8 @@ import '_retaining_path_web.dart'
 
 /// Returns retaining path for an object, if it can be detected.
 ///
-/// If [object] is null or object reference cannot be obtained or isolate cannot be obtained,
-/// returns null.
+/// If [object] is null or object reference cannot be obtained or
+/// isolate cannot be obtained, returns null.
 Future<RetainingPath?> retainingPath(
   VmService service,
   Object? object,

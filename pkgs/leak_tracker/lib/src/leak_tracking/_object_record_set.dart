@@ -36,7 +36,7 @@ class ObjectRecordSet {
   void remove(ObjectRecord record) {
     final list = _records[record.code];
     if (list == null) return;
-    bool removed = false;
+    var removed = false;
     list.removeWhere((r) {
       if (r == record) {
         assert(!removed);

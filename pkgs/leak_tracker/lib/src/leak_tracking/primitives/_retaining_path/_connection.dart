@@ -9,7 +9,7 @@ import 'package:vm_service/vm_service.dart';
 import 'package:vm_service/vm_service_io.dart';
 
 Future<Uri> _serviceUri() async {
-  Uri? uri = (await Service.getInfo()).serverWebSocketUri;
+  var uri = (await Service.getInfo()).serverWebSocketUri;
   if (uri != null) return uri;
 
   uri = (await Service.controlWebServer(enable: true)).serverWebSocketUri;

@@ -2,7 +2,7 @@ name: leak_tracker_minimal_flutter_example
 publish_to: none
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.1.0
 
 dependencies:
   flutter:

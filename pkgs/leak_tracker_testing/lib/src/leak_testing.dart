@@ -15,8 +15,8 @@ import 'matchers.dart';
 /// Set it for package or folder in flutter_test_config.dart and for
 /// a test file in `setUpAll`.
 ///
-/// If you update the settings for a group, remember the original value to a local variable
-/// and restore it in `tearDownAll` for the group.
+/// If you update the settings for a group, remember the original value to a
+/// local variable and restore it in `tearDownAll` for the group.
 ///
 /// Use methods that return adjusted [LeakTesting.settings]
 /// to customize default for an individual test:
@@ -102,7 +102,8 @@ class LeakTesting {
     );
   }
 
-  /// Creates copy of [settings], that collects retaining path for not GCed objects.
+  /// Creates copy of [settings], that
+  /// collects the retaining path for not GCed objects.
   @useResult
   LeakTesting withRetainingPath() {
     return copyWith(
@@ -114,7 +115,8 @@ class LeakTesting {
 
   /// Returns copy of [settings] with extended ignore lists.
   ///
-  /// In the result the ignored limit for a class is maximum of two original ignored limits.
+  /// In the result the ignored limit for a class is the
+  /// maximum of two original ignored limits.
   /// Items in [classes] will be added to all ignore lists.
   @useResult
   LeakTesting withIgnored({
