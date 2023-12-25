@@ -22,7 +22,7 @@ typedef TestCallback = Future<void> Function(
   RunAsyncCallback<dynamic>? runAsyncCallback,
 );
 
-class TestCase {
+class LeakTestCase {
   final String name;
   final TestCallback body;
   final int notDisposedTotal;
@@ -30,7 +30,7 @@ class TestCase {
   final int notDisposedInHelpers;
   final int notGCedInHelpers;
 
-  TestCase({
+  LeakTestCase({
     required this.name,
     required this.body,
     this.notDisposedTotal = 0,
@@ -40,42 +40,59 @@ class TestCase {
   });
 
   /// Verifies [leaks] contain expected number of leaks for the test [testDescription].
-  void _verifyLeaks(Leaks leaks, String testDescription, LeakTesting settings) {
-    for (final LeakType type in expectedContextKeys.keys) {
-      final List<LeakReport> leaks = testLeaks.byType[type] ?? <LeakReport>[];
-      final List<String> expectedKeys = expectedContextKeys[type]!..sort();
-      for (final LeakReport leak in leaks) {
-        final List<String> actualKeys =
-            leak.context?.keys.toList() ?? <String>[];
-        expect(actualKeys..sort(), equals(expectedKeys),
-            reason: '$testDescription, $type');
-      }
+  void verifyLeaks(Leaks leaks, String testDescription, LeakTesting settings) {
+    final expectedContextKeys = <String>[
+      if (settings.leakDiagnosticConfig.collectStackTraceOnStart)
+        ContextKeys.startCallstack,
+      if (settings.leakDiagnosticConfig.collectStackTraceOnDisposal)
+        ContextKeys.disposalCallstack,
+    ];
+
+    _verifyLeakList(
+      testDescription,
+      LeakType.notDisposed,
+      leaks,
+      expectedCount: notDisposedTotal -
+          (settings.ignoredLeaks.createdByTestHelpers
+              ? notDisposedInHelpers
+              : 0),
+      expectedContextKeys: expectedContextKeys,
+    );
+
+    if (settings.leakDiagnosticConfig.collectRetainingPathForNotGCed) {
+      expectedContextKeys.add(ContextKeys.retainingPath);
     }
 
     _verifyLeakList(
-      testLeaks.notDisposed,
-      notDisposed,
-      name,
-    );
-    _verifyLeakList(
-      testLeaks.notGCed,
-      notGCed,
       testDescription,
+      LeakType.notGCed,
+      leaks,
+      expectedCount: notGCedTotal -
+          (settings.ignoredLeaks.createdByTestHelpers ? notGCedInHelpers : 0),
+      expectedContextKeys: expectedContextKeys,
     );
   }
 
   void _verifyLeakList(
-    List<LeakReport> list,
-    int expectedTotalLeaks,
-    int expectedInHelpersLeaks,
     String testDescription,
-    List<String> expectedContextKeys,
-    bool ignoreHelpers,
-  ) {
-    final expectedCount = ignoreHelpers
-        ? expectedTotalLeaks - expectedInHelpersLeaks
-        : expectedTotalLeaks;
+    LeakType type,
+    Leaks leaks, {
+    required int expectedCount,
+    required List<String> expectedContextKeys,
+  }) {
+    final list = leaks.byType[type] ?? <LeakReport>[];
 
-    expect(list.length, expectedCount, reason: testDescription);
+    expect(
+      list.length,
+      expectedCount,
+      reason: testDescription,
+    );
+
+    // Verify context keys.
+    for (final leak in list) {
+      final actualKeys = leak.context?.keys.toList() ?? <String>[];
+      expect(actualKeys..sort(), equals(expectedContextKeys..sort()),
+          reason: '$testDescription, $type');
+    }
   }
 }
