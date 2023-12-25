@@ -42,7 +42,7 @@ class LeakTesting {
 
   static bool _enabled = false;
 
-  /// If true leak tracking is enabled.
+  /// If true, leak tracking is enabled.
   ///
   /// If value is true before a test `main` started,
   /// [settings] will be respected during testing.
