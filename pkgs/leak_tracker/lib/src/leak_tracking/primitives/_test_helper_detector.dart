@@ -5,20 +5,20 @@
 /// Frames pointing the folder `test` or the package `flutter_test`.
 const _testHelperFrame = r'(?:\/test\/|\(package:flutter_test\/)';
 
-/// Stack frame, containing this string, is start of a test.
-const _testStartFrame =
+/// Frames inside flutter_test, but not pointing a test helper.
+const _exception =
+    r'(?:WidgetTester.runAsync \(package:flutter_test/src/widget_tester.dart:)';
+
+/// Start of a test or closure inside test.
+const _startFrame =
     r'(?:TestAsyncUtils.guard.<anonymous closure>| main.<anonymous closure>)';
 
-const _anyText = r'[\S\s]*';
-
-final _expr =
-    RegExp('$_testHelperFrame$_anyText$_testStartFrame', multiLine: true);
-
 bool isCreatedByTestHelper(String trace) {
-  // print(trace);
-  // print('\n\n\n');
-  final result = _expr.hasMatch(trace);
-  // print(result);
-  // print('\n\n\n');
-  return result;
+  final frames = trace.split('\n');
+  for (final frame in frames) {
+    if (RegExp(_exception).hasMatch(frame)) continue;
+    if (RegExp(_testHelperFrame).hasMatch(frame)) return true;
+    if (RegExp(_startFrame).hasMatch(frame)) return false;
+  }
+  return false;
 }

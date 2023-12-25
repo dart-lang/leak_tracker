@@ -116,6 +116,20 @@ class Leaks {
 
   int get total => byType.values.map((e) => e.length).sum;
 
+  late final Map<String?, Leaks> byPhase = () {
+    final leaks = <String?, Map<LeakType, List<LeakReport>>>{};
+    for (final entry in byType.entries) {
+      for (final leak in entry.value) {
+        leaks[leak.phase] ??= {};
+        leaks[leak.phase]![entry.key] ??= [];
+        leaks[leak.phase]![entry.key]!.add(leak);
+      }
+    }
+    return {
+      for (final entry in leaks.entries) entry.key: Leaks(entry.value),
+    };
+  }();
+
   String toYaml({required bool phasesAreTests}) {
     if (total == 0) return '';
     final leaks = LeakType.values
