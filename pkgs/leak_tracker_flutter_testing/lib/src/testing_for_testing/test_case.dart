@@ -39,7 +39,7 @@ class LeakTestCase {
     this.notGCedInHelpers = 0,
   });
 
-  /// Verifies [leaks] contain expected number of leaks for the test [testDescription].
+  /// Verifies [leaks] contain expected leaks for the test.
   void verifyLeaks(Leaks leaks, String testDescription, LeakTesting settings) {
     final expectedContextKeys = <String>[
       if (settings.leakDiagnosticConfig.collectStackTraceOnStart)
