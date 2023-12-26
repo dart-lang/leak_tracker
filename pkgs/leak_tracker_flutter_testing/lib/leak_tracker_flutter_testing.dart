@@ -10,4 +10,6 @@ export 'package:leak_tracker_testing/leak_tracker_testing.dart'
 export 'src/matchers.dart';
 export 'src/model.dart';
 export 'src/testing.dart';
-export 'src/testing_for_testing/examples.dart';
+export 'src/testing_for_testing/leaking_classes.dart';
+export 'src/testing_for_testing/test_case.dart';
+export 'src/testing_for_testing/test_settings.dart';
