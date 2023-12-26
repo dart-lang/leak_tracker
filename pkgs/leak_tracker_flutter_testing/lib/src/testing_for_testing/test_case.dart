@@ -40,7 +40,7 @@ class LeakTestCase {
   });
 
   /// Verifies [leaks] contain expected leaks for the test.
-  void verifyLeaks(Leaks leaks, String testDescription, LeakTesting settings) {
+  void verifyLeaks(Leaks leaks, LeakTesting settings, {String testDescription}) {
     final expectedContextKeys = <String>[
       if (settings.leakDiagnosticConfig.collectStackTraceOnStart)
         ContextKeys.startCallstack,

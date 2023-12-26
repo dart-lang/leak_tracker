@@ -90,6 +90,8 @@ class LeakSummary {
 class Leaks {
   Leaks(this.byType);
 
+  Leaks.empty() : this({});
+
   factory Leaks.fromJson(Map<String, dynamic> json) => Leaks(
         json.map(
           (key, value) => MapEntry(
