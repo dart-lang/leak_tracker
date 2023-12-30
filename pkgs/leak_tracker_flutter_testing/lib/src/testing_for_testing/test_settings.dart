@@ -9,8 +9,8 @@ final _trackingOn = LeakTesting.settings
     .withTracked(allNotDisposed: true, allNotGCed: true);
 
 final Map<String, LeakTesting> leakTestingSettingsCases = {
-  'on': _trackingOn,
-  'off': _trackingOn.withIgnoredAll(),
+  'tracking on': _trackingOn,
+  'tracking off': _trackingOn.withIgnoredAll(),
   'notGCed off': _trackingOn.withIgnored(allNotGCed: true),
   'notDisposed off': _trackingOn.withIgnored(allNotDisposed: true),
   'testHelpers off': _trackingOn.withIgnored(createdByTestHelpers: true),
