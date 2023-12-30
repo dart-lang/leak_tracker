@@ -10,7 +10,7 @@
 set -ex
 
 # The directory that this script is located in.
-TOOL_DIR=`dirname "${BASH_SOURCE[0]}"`
+TOOL_DIR=`dirname "$0"`
 
 cd $TOOL_DIR/../examples/autosnapshotting
 flutter pub get

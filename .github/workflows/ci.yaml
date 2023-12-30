@@ -20,28 +20,25 @@ jobs:
       - name: clone the repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
 
-      - name: tmp
-        run: sh ./tool/temp.sh
+      - name: install Flutter sdk
+        uses: subosito/flutter-action@2783a3f08e1baf891508463f8c6653c258246225
+        with:
+          channel: 'master'
 
-      # - name: install Flutter sdk
-      #   uses: subosito/flutter-action@2783a3f08e1baf891508463f8c6653c258246225
-      #   with:
-      #     channel: 'master'
+      - name: version
+        run: flutter --version
 
-      # - name: version
-      #   run: flutter --version
+      - name: analyze
+        run: sh ./tool/analyze.sh
 
-      # - name: analyze
-      #   run: sh ./tool/analyze.sh
+      - name: dart test
+        run: dart test
+        working-directory: pkgs/leak_tracker
 
-      # - name: dart test
-      #   run: dart test
-      #   working-directory: pkgs/leak_tracker
+      - name: flutter test
+        run: flutter test --enable-vmservice
+        working-directory: pkgs/leak_tracker_flutter_testing
 
-      # - name: flutter test
-      #   run: flutter test --enable-vmservice
-      #   working-directory: pkgs/leak_tracker_flutter_testing
-
-      # - name: integration test
-      #   run: flutter test integration_test/app_test.dart -d flutter-tester
-      #   working-directory: examples/autosnapshotting
+      - name: integration test
+        run: flutter test integration_test/app_test.dart -d flutter-tester
+        working-directory: examples/autosnapshotting
