@@ -9,14 +9,17 @@
 # Fast fail the script on failures.
 set -ex
 
-cd pkgs/leak_tracker
+# The directory that this script is located in.
+TOOL_DIR=`dirname "${BASH_SOURCE[0]}"`
+
+cd $TOOL_DIR/../pkgs/leak_tracker
 dart pub publish
 cd -
 
-cd pkgs/leak_tracker_testing
+cd $TOOL_DIR/../pkgs/leak_tracker_testing
 dart pub publish
 cd -
 
-cd pkgs/leak_tracker_flutter_testing
+cd $TOOL_DIR/../pkgs/leak_tracker_flutter_testing
 flutter pub publish
 cd -

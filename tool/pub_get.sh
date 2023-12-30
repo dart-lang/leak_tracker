@@ -9,26 +9,29 @@
 # Fast fail the script on failures.
 set -ex
 
-cd examples/autosnapshotting
+# The directory that this script is located in.
+TOOL_DIR=`dirname "${BASH_SOURCE[0]}"`
+
+cd $TOOL_DIR/../examples/autosnapshotting
 flutter pub get
 cd -
 
-cd examples/leak_tracking
+cd $TOOL_DIR/../examples/leak_tracking
 flutter pub get
 cd -
 
-cd pkgs/leak_tracker
+cd $TOOL_DIR/../pkgs/leak_tracker
 dart pub get
 cd -
 
-cd pkgs/leak_tracker_flutter_testing
+cd $TOOL_DIR/../pkgs/leak_tracker_flutter_testing
 flutter pub get
 cd -
 
-cd pkgs/leak_tracker_testing
+cd $TOOL_DIR/../pkgs/leak_tracker_testing
 flutter pub get
 cd -
 
-cd pkgs/memory_usage
+cd $TOOL_DIR/../pkgs/memory_usage
 dart pub get
 cd -
