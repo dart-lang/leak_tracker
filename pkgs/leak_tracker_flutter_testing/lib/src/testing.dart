@@ -15,6 +15,8 @@ void maybeSetupLeakTrackingForTest(
   LeakTesting? settings,
   String testDescription,
 ) {
+  if (!LeakTesting.enabled) return;
+
   final leakTesting = settings ?? LeakTesting.settings;
   if (leakTesting.ignore) return;
 
@@ -39,7 +41,9 @@ void maybeSetupLeakTrackingForTest(
 /// If leak tracking is enabled, stops it and
 /// declares notDisposed objects as leaks.
 void maybeTearDownLeakTrackingForTest() {
-  if (!LeakTracking.isStarted || LeakTracking.phase.ignoreLeaks) return;
+  if (!LeakTesting.enabled ||
+      !LeakTracking.isStarted ||
+      LeakTracking.phase.ignoreLeaks) return;
   LeakTracking.phase = const PhaseSettings.ignored();
 }
 
@@ -47,7 +51,10 @@ void maybeTearDownLeakTrackingForTest() {
 ///
 /// Is noop if leak tracking is not started.
 Future<void> maybeTearDownLeakTrackingForAll() async {
-  if (!LeakTracking.isStarted) {
+  if (!LeakTesting.enabled || !LeakTracking.isStarted) {
+    // Reporter is invoked so that tests can verify the number of
+    // collected leaks is as expected.
+    LeakTesting.collectedLeaksReporter(Leaks({}));
     return;
   }
 

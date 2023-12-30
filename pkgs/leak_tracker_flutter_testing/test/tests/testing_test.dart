@@ -11,6 +11,7 @@ final LeakTesting settings =
 void main() {
   group('maybeSetupLeakTrackingForTest', () {
     setUp(() {
+      LeakTesting.enable();
       LeakTesting.settings = LeakTesting.settings.withTrackedAll();
     });
 
