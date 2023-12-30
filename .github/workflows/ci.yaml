@@ -17,11 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: tmp
-        run: sh ./tool/temp.sh
-
       - name: clone the repo
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+
+      - name: tmp
+        run: sh ./tool/temp.sh
 
       - name: install Flutter sdk
         uses: subosito/flutter-action@2783a3f08e1baf891508463f8c6653c258246225
