@@ -1,16 +1,21 @@
 # Configuration for .github/workflows/pull_request_label.yml.
 
 'type-infra':
-  - '.github/**'
+  - changed-files:
+      - any-glob-to-any-file: '.github/**'
 
 'package:leak_tracker':
-  - 'pkgs/leak_tracker/**'
+  - changed-files:
+      - any-glob-to-any-file: 'pkgs/leak_tracker/**'
 
 'package:leak_tracker_flutter_testing':
-  - 'pkgs/leak_tracker_flutter_testing/**'
+  - changed-files:
+      - any-glob-to-any-file: 'pkgs/leak_tracker_flutter_testing/**'
 
 'package:leak_tracker_testing':
-  - 'pkgs/leak_tracker_testing/**'
+  - changed-files:
+      - any-glob-to-any-file: 'pkgs/leak_tracker_testing/**'
 
 'package:memory_usage':
-  - 'pkgs/memory_usage/**'
+  - changed-files:
+      - any-glob-to-any-file: 'pkgs/memory_usage/**'
