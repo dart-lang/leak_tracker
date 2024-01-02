@@ -8,7 +8,7 @@ import 'package:test/test.dart';
 
 class _TrackedClass {
   _TrackedClass() {
-    MemoryAllocations.instance.dispatchObjectCreated(
+    FlutterMemoryAllocations.instance.dispatchObjectCreated(
       library: 'library',
       className: '_TrackedClass',
       object: this,
@@ -16,7 +16,7 @@ class _TrackedClass {
   }
 
   void dispose() {
-    MemoryAllocations.instance.dispatchObjectDisposed(object: this);
+    FlutterMemoryAllocations.instance.dispatchObjectDisposed(object: this);
   }
 }
 
