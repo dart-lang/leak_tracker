@@ -1,3 +1,7 @@
+## 2.0.2
+
+* Replaced depracated `MemoryAllocations` with `FlutterMemoryAllocations`.
+
 ## 2.0.1
 
 * Upgrade to leak_tracker 10.0.0 and leak_tracker_testing 2.0.1.
