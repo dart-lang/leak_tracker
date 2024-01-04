@@ -14,7 +14,7 @@ void main() {
   test('dispatchObjectEvent dispatches Flutter SDK instrumentation.', () {
     final tracker = EventTracker();
 
-    MemoryAllocations.instance.addListener(
+    FlutterMemoryAllocations.instance.addListener(
       (event) => dispatchObjectEvent(
         event.toMap(),
         onStartTracking: tracker.dispatchObjectCreated,

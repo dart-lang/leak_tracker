@@ -60,7 +60,8 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
 
   // The listener is not added/removed for each test,
   // because GC may happen after test is complete.
-  MemoryAllocations.instance.removeListener(_dispatchFlutterEventToLeakTracker);
+  FlutterMemoryAllocations.instance
+      .removeListener(_dispatchFlutterEventToLeakTracker);
   await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   LeakTracking.declareNotDisposedObjectsAsLeaks();
   final leaks = await LeakTracking.collectLeaks();
@@ -107,5 +108,6 @@ void _maybeStartLeakTracking() {
 
   LeakTracking.phase = const PhaseSettings.ignored();
   LeakTracking.start(config: LeakTrackingConfig.passive());
-  MemoryAllocations.instance.addListener(_dispatchFlutterEventToLeakTracker);
+  FlutterMemoryAllocations.instance
+      .addListener(_dispatchFlutterEventToLeakTracker);
 }
