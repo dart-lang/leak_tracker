@@ -19,6 +19,8 @@ final Map<String, LeakTesting Function(LeakTesting settings)>
   'notDisposed off': (s) => _trackingOn(s).withIgnored(allNotDisposed: true),
   'testHelpers off': (s) =>
       _trackingOn(s).withIgnored(createdByTestHelpers: true),
+  'testHelpers on': (s) =>
+      _trackingOn(s).withTracked(createdByTestHelpers: true),
   'creation trace': (s) => _trackingOn(s).withCreationStackTrace(),
   'disposal trace': (s) => _trackingOn(s).withDisposalStackTrace(),
   'retaining path': (s) => _trackingOn(s).withRetainingPath(),
