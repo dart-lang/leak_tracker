@@ -129,6 +129,7 @@ class IgnoredLeaks {
     this.notGCed = const IgnoredLeaksSet(),
     this.notDisposed = const IgnoredLeaksSet(),
     this.createdByTestHelpers = false,
+    this.testHelperExceptions = const [],
   });
 
   /// Ignore list for notGCed leaks.
@@ -139,6 +140,12 @@ class IgnoredLeaks {
 
   /// Leaking objects created by test helpers will be ignored.
   final bool createdByTestHelpers;
+
+  /// If a stack frame matches this pattern, it will not be considered as test helper.
+  ///
+  /// Is used when [createdByTestHelpers] is true, to test functionality of
+  /// the leak tracker.
+  final List<RegExp> testHelperExceptions;
 
   /// Returns true if the class is ignored.
   ///

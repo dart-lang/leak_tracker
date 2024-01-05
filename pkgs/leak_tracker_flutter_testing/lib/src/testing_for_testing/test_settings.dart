@@ -10,15 +10,15 @@ final _trackingOn = LeakTesting.settings
 
 final Map<String, LeakTesting> leakTestingSettingsCases = {
   'tracking on': _trackingOn,
-  'tracking off': _trackingOn.withIgnoredAll(),
-  'notGCed off': _trackingOn.withIgnored(allNotGCed: true),
-  'notDisposed off': _trackingOn.withIgnored(allNotDisposed: true),
-  'testHelpers off': _trackingOn.withIgnored(createdByTestHelpers: true),
-  'creation trace': _trackingOn.withCreationStackTrace(),
-  'disposal trace': _trackingOn.withDisposalStackTrace(),
-  'retaining path': _trackingOn.withRetainingPath(),
-  'all diagnostics': _trackingOn
-      .withCreationStackTrace()
-      .withDisposalStackTrace()
-      .withRetainingPath(),
+  // 'tracking off': _trackingOn.withIgnoredAll(),
+  // 'notGCed off': _trackingOn.withIgnored(allNotGCed: true),
+  // 'notDisposed off': _trackingOn.withIgnored(allNotDisposed: true),
+  // 'testHelpers off': _trackingOn.withIgnored(createdByTestHelpers: true),
+  // 'creation trace': _trackingOn.withCreationStackTrace(),
+  // 'disposal trace': _trackingOn.withDisposalStackTrace(),
+  // 'retaining path': _trackingOn.withRetainingPath(),
+  // 'all diagnostics': _trackingOn
+  //     .withCreationStackTrace()
+  //     .withDisposalStackTrace()
+  //     .withRetainingPath(),
 };

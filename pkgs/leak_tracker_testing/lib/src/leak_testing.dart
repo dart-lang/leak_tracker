@@ -129,6 +129,7 @@ class LeakTesting {
     bool allNotDisposed = false,
     List<String> classes = const [],
     bool createdByTestHelpers = false,
+    List<RegExp> testHelperExceptions = const [],
   }) {
     Map<String, int?> addClassesToMap(
       Map<String, int?> map,
@@ -156,6 +157,8 @@ class LeakTesting {
         ),
         createdByTestHelpers:
             ignoredLeaks.createdByTestHelpers || createdByTestHelpers,
+        testHelperExceptions:
+          ignoredLeaks.testHelperExceptions.addAll(ignoredLeaks.testHelperExceptions),
       ),
     );
   }
