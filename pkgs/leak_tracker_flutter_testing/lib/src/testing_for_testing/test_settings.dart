@@ -4,11 +4,15 @@
 
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
-final _trackingOn = LeakTesting.settings
-    .withTrackedAll()
-    .withTracked(allNotDisposed: true, allNotGCed: true);
+LeakTesting _trackingOn(LeakTesting settings) {
+  final result = settings
+      .withTrackedAll()
+      .withTracked(allNotDisposed: true, allNotGCed: true);
+  return result;
+}
 
-final Map<String, LeakTesting> leakTestingSettingsCases = {
+final Map<String, LeakTesting Function(LeakTesting settings)>
+    leakTestingSettingsCases = {
   'tracking on': _trackingOn,
   // 'tracking off': _trackingOn.withIgnoredAll(),
   // 'notGCed off': _trackingOn.withIgnored(allNotGCed: true),

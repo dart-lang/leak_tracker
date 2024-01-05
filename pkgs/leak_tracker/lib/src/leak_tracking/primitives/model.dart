@@ -141,7 +141,7 @@ class IgnoredLeaks {
   /// Leaking objects created by test helpers will be ignored.
   final bool createdByTestHelpers;
 
-  /// If a stack frame matches this pattern, it will not be considered as test helper.
+  /// Stack frames that match this pattern, will not be treated as test helpers.
   ///
   /// Is used when [createdByTestHelpers] is true, to test functionality of
   /// the leak tracker.
@@ -173,13 +173,20 @@ class IgnoredLeaks {
     }
     return other is IgnoredLeaks &&
         other.notGCed == notGCed &&
-        other.notDisposed == notDisposed;
+        other.notDisposed == notDisposed &&
+        other.createdByTestHelpers == createdByTestHelpers &&
+        const DeepCollectionEquality().equals(
+          other.testHelperExceptions,
+          testHelperExceptions,
+        );
   }
 
   @override
   int get hashCode => Object.hash(
         notGCed,
         notDisposed,
+        createdByTestHelpers,
+        testHelperExceptions,
       );
 }
 

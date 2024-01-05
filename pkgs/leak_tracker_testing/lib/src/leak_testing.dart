@@ -157,8 +157,10 @@ class LeakTesting {
         ),
         createdByTestHelpers:
             ignoredLeaks.createdByTestHelpers || createdByTestHelpers,
-        testHelperExceptions:
-          ignoredLeaks.testHelperExceptions.addAll(ignoredLeaks.testHelperExceptions),
+        testHelperExceptions: [
+          ...ignoredLeaks.testHelperExceptions,
+          ...testHelperExceptions,
+        ],
       ),
     );
   }
@@ -190,7 +192,9 @@ class LeakTesting {
       ignoredLeaks: IgnoredLeaks(
         notGCed: newNotGCed,
         notDisposed: newNotDisposed,
-        createdByTestHelpers: !createdByTestHelpers,
+        createdByTestHelpers:
+            ignoredLeaks.createdByTestHelpers && !createdByTestHelpers,
+        testHelperExceptions: ignoredLeaks.testHelperExceptions,
       ),
     );
     return result;

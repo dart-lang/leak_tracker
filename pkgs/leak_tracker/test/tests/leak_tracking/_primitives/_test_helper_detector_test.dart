@@ -124,7 +124,7 @@ final _tests = [
 void main() {
   for (final t in _tests) {
     test('isCreatedByTestHelper: ${t.name}', () {
-      expect(isCreatedByTestHelper(t.stackTrace), t.isHelper);
+      expect(isCreatedByTestHelper(t.stackTrace, []), t.isHelper);
     });
   }
 }
