@@ -45,14 +45,13 @@ class LeakTestCase {
     final expectedContextKeys = <String>[
       if (settings.leakDiagnosticConfig.collectStackTraceOnStart)
         ContextKeys.startCallstack,
-      if (settings.leakDiagnosticConfig.collectStackTraceOnDisposal)
-        ContextKeys.disposalCallstack,
     ];
 
     _verifyLeakList(
       testDescription,
       LeakType.notDisposed,
       leaks,
+      ignore: settings.ignore || settings.ignoredLeaks.notDisposed.ignoreAll,
       expectedCount: notDisposedTotal -
           (settings.ignoredLeaks.createdByTestHelpers
               ? notDisposedInHelpers
@@ -60,14 +59,19 @@ class LeakTestCase {
       expectedContextKeys: expectedContextKeys,
     );
 
+    // Add diagnostics that is relevant for notGCed only.
     if (settings.leakDiagnosticConfig.collectRetainingPathForNotGCed) {
       expectedContextKeys.add(ContextKeys.retainingPath);
+    }
+    if (settings.leakDiagnosticConfig.collectStackTraceOnDisposal) {
+      expectedContextKeys.add(ContextKeys.disposalCallstack);
     }
 
     _verifyLeakList(
       testDescription,
       LeakType.notGCed,
       leaks,
+      ignore: settings.ignore || settings.ignoredLeaks.notGCed.ignoreAll,
       expectedCount: notGCedTotal -
           (settings.ignoredLeaks.createdByTestHelpers ? notGCedInHelpers : 0),
       expectedContextKeys: expectedContextKeys,
@@ -80,12 +84,13 @@ class LeakTestCase {
     Leaks leaks, {
     required int expectedCount,
     required List<String> expectedContextKeys,
+    required bool ignore,
   }) {
     final list = leaks.byType[type] ?? <LeakReport>[];
 
     expect(
       list.length,
-      expectedCount,
+      ignore ? 0 : expectedCount,
       reason: testDescription,
     );
 
