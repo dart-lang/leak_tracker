@@ -7,11 +7,17 @@ final _testHelperFrame = RegExp(r'(?:\/test\/|\(package:flutter_test\/)');
 
 /// Frames that match [_testHelperFrame], but are not test helpers.
 final _exception = RegExp(
-    r'(?:WidgetTester.runAsync \(package:flutter_test/src/widget_tester.dart:)');
+  '(?:'
+  r'AutomatedTestWidgetsFlutterBinding.\w|'
+  r'WidgetTester.\w)',
+);
 
 /// Start of a test or closure inside test.
 final _startFrame = RegExp(
-    r'(?:TestAsyncUtils.guard.<anonymous closure>| main.<anonymous closure>)');
+  r'(?:'
+  r'TestAsyncUtils.guard.<anonymous closure>|'
+  r' main.<anonymous closure>)',
+);
 
 bool isCreatedByTestHelper(String trace, List<RegExp> exceptions) {
   final frames = trace.split('\n');
