@@ -6,13 +6,13 @@
 final _testHelperFrame = RegExp(r'(?:\/test\/|\(package:flutter_test\/)');
 
 /// Frames that match [_testHelperFrame], but are not test helpers.
-final _exception = RegExp(
+final _exceptions = RegExp(
   '(?:'
   r'AutomatedTestWidgetsFlutterBinding.\w|'
   r'WidgetTester.\w)',
 );
 
-/// Start of a test or closure inside test.
+/// Test body or closure inside test body.
 final _startFrame = RegExp(
   r'(?:'
   r'TestAsyncUtils.guard.<anonymous closure>|'
@@ -27,9 +27,11 @@ bool isCreatedByTestHelper(String trace, List<RegExp> exceptions) {
     }
     if (_testHelperFrame.hasMatch(frame)) {
       if (exceptions.any((exception) => exception.hasMatch(frame)) ||
-          _exception.hasMatch(frame)) {
+          _exceptions.hasMatch(frame)) {
         continue;
       }
+      print('!!!!!');
+      print(frame);
       return true;
     }
   }

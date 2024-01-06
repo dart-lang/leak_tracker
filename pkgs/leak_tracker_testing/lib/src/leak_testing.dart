@@ -34,7 +34,7 @@ import 'matchers.dart';
 @immutable
 class LeakTesting {
   const LeakTesting._({
-    this.ignore = true,
+    this.ignore = false,
     this.ignoredLeaks = const IgnoredLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.baselining = const MemoryBaselining.none(),
