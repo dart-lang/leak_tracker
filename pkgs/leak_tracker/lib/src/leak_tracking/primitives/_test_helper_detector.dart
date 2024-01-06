@@ -3,20 +3,28 @@
 // BSD-style license that can be found in the LICENSE file.
 
 /// Frames pointing the folder `test` or the package `flutter_test`.
-final _testHelperFrame = RegExp(r'(?:\/test\/|\(package:flutter_test\/)');
+final _testHelperFrame = RegExp(
+  r'(?:' +
+      RegExp.escape(r'/test/') +
+      r'|' +
+      RegExp.escape(r'(package:flutter_test/') +
+      r')',
+);
 
 /// Frames that match [_testHelperFrame], but are not test helpers.
 final _exceptions = RegExp(
-  '(?:'
+  r'(?:'
   r'AutomatedTestWidgetsFlutterBinding.\w|'
-  r'WidgetTester.\w)',
+  r'WidgetTester.\w'
+  ')',
 );
 
 /// Test body or closure inside test body.
 final _startFrame = RegExp(
   r'(?:'
   r'TestAsyncUtils.guard.<anonymous closure>|'
-  r' main.<anonymous closure>)',
+  r' main.<anonymous closure>'
+  r')',
 );
 
 bool isCreatedByTestHelper(String trace, List<RegExp> exceptions) {
@@ -30,8 +38,6 @@ bool isCreatedByTestHelper(String trace, List<RegExp> exceptions) {
           _exceptions.hasMatch(frame)) {
         continue;
       }
-      print('!!!!!');
-      print(frame);
       return true;
     }
   }
