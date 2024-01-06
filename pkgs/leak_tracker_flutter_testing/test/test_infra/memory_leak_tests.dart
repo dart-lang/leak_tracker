@@ -6,6 +6,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
+import 'test_helpers.dart';
+
 /// Objects that should not be GCed during.
 final List<InstrumentedDisposable> _retainer = <InstrumentedDisposable>[];
 
@@ -45,6 +47,17 @@ final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
     },
     notDisposedTotal: 1,
     notGCedTotal: 1,
+  ),
+  LeakTestCase(
+    name: 'leaks from test helpers',
+    body: (PumpWidgetsCallback? pumpWidgets,
+        RunAsyncCallback<dynamic>? runAsync) async {
+      createLeakingWidget();
+    },
+    notDisposedTotal: 1,
+    notGCedTotal: 1,
+    notDisposedInHelpers: 1,
+    notGCedInHelpers: 1,
   ),
 ];
 

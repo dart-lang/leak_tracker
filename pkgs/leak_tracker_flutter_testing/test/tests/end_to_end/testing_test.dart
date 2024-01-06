@@ -25,7 +25,7 @@ void main() {
   LeakTesting.enable();
   LeakTesting.settings = LeakTesting.settings.withIgnored(
     createdByTestHelpers: true,
-    testHelperExceptions: [RegExp(RegExp.escape(r'/test/test_infra/'))],
+    testHelperExceptions: [RegExp(RegExp.escape(memoryLeakTestsFilePath()))],
   );
 
   tearDown(maybeTearDownLeakTrackingForTest);
