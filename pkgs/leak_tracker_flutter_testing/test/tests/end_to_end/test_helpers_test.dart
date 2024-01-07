@@ -8,6 +8,8 @@ import 'package:test/test.dart';
 /// These tests verify that value of
 /// [IgnoredLeaks.createdByTestHelpers] is respected.
 void main() {
+  setUpAll(LeakTesting.enable);
+
   setUp(() {
     LeakTesting.collectedLeaksReporter = (leaks) {};
     maybeSetupLeakTrackingForTest(
