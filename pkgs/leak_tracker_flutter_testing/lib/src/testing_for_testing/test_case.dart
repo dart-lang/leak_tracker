@@ -8,26 +8,41 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:matcher/expect.dart';
 
+/// Siugnature of `pumpWidget` method.
 typedef PumpWidgetsCallback = Future<void> Function(
   Widget widget, [
   Duration? duration,
 ]);
 
+/// Siugnature of `runAsync` method.
 typedef RunAsyncCallback<T> = Future<T?> Function(
   Future<T> Function() callback,
 );
 
+/// Callback for test body, with access to Flutter specific test methods.
 typedef TestCallback = Future<void> Function(
   PumpWidgetsCallback? pumpWidgets,
   RunAsyncCallback<dynamic>? runAsync,
 );
 
+/// A test case to verify leak detection.
 class LeakTestCase {
+  /// Name of the test.
   final String name;
+
+  /// Test body.
   final TestCallback body;
+
+  /// Expected number of not disposed objects.
   final int notDisposedTotal;
+
+  /// Expected number of not GCed objects.
   final int notGCedTotal;
+
+  /// Expected number of not disposed objects created by test helpers.
   final int notDisposedInHelpers;
+
+  /// Expected number of not GCed objects created by test helpers.
   final int notGCedInHelpers;
 
   LeakTestCase({
@@ -40,6 +55,12 @@ class LeakTestCase {
   });
 
   /// Verifies [leaks] contain expected leaks for the test.
+  ///
+  /// [settings] is used to determine:
+  /// * if some leaks should be ignored
+  /// * which diagnostics should be collected
+  ///
+  /// [testDescription] is used in description for the failed expectations.
   void verifyLeaks(Leaks leaks, LeakTesting settings,
       {required String testDescription}) {
     final expectedContextKeys = <String>[

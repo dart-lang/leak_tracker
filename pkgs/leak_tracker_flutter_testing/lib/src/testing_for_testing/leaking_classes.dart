@@ -5,8 +5,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:leak_tracker/leak_tracker.dart';
 
-// The classes are declared not under `test` to test [IgnoredLeaks.testHelpers].
-
 final _notGcedStorage = <InstrumentedDisposable>[];
 
 /// Example of stateless leaking widget.
@@ -34,7 +32,7 @@ class StatelessLeakingWidget extends StatelessWidget {
   }
 }
 
-/// Example of instrumented disposable
+/// Example of instrumented disposable.
 class InstrumentedDisposable {
   InstrumentedDisposable() {
     LeakTracking.dispatchObjectCreated(

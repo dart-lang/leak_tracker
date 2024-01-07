@@ -138,12 +138,19 @@ class IgnoredLeaks {
   /// Ignore list for notDisposed leaks.
   final IgnoredLeaksSet notDisposed;
 
-  /// Leaking objects created by test helpers will be ignored.
+  /// If true, leaking objects created by test helpers will be ignored.
+  ///
+  /// An object counts as created by a test helper if the stack trace of
+  /// start of leak tracking contains a frame, loactaed after the test body
+  /// frame, thet points to the folder `test` or the package `flutter_test`,
+  /// except:
+  /// * methods intended to be called from test body like `runAsunc` or `pump`
+  /// * frames that match [testHelperExceptions]
   final bool createdByTestHelpers;
 
   /// Stack frames that match this pattern, will not be treated as test helpers.
   ///
-  /// Is used when [createdByTestHelpers] is true, to test functionality of
+  /// Is used to test functionality of
   /// the leak tracker.
   final List<RegExp> testHelperExceptions;
 

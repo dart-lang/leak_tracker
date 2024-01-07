@@ -11,6 +11,7 @@ LeakTesting _trackingOn(LeakTesting settings) {
   return result;
 }
 
+/// Test cases for leak detection settings.
 final Map<String, LeakTesting Function(LeakTesting settings)>
     leakTestingSettingsCases = {
   'tracking on': _trackingOn,
