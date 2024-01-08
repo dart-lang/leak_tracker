@@ -152,7 +152,6 @@ class IgnoredLeaks {
   ///
   /// Is used to test functionality of
   /// the leak tracker.
-  @visibleForTesting
   final List<RegExp> testHelperExceptions;
 
   /// Returns true if the class is ignored.
