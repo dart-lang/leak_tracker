@@ -122,9 +122,10 @@ class Leaks {
     final leaks = <String?, Map<LeakType, List<LeakReport>>>{};
     for (final entry in byType.entries) {
       for (final leak in entry.value) {
-        leaks[leak.phase] ??= {};
-        leaks[leak.phase]![entry.key] ??= [];
-        leaks[leak.phase]![entry.key]!.add(leak);
+        leaks
+            .putIfAbsent(leak.phase, () => {})
+            .putIfAbsent(entry.key, () => <LeakReport>[])
+            .add(leak);
       }
     }
     return {

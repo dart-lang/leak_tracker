@@ -1,4 +1,4 @@
-// Copyright (c) 2023, the Dart project authors.  Please see the AUTHORS file
+// Copyright (c) 2024, the Dart project authors.  Please see the AUTHORS file
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
@@ -27,8 +27,16 @@ final _startFrame = RegExp(
   r')',
 );
 
-bool isCreatedByTestHelper(String trace, List<RegExp> exceptions) {
-  final frames = trace.split('\n');
+/// If true, leaking objects created by test helpers will be ignored.
+///
+/// Frames, that match [exceptions] will be ignored.
+///
+/// See details in doc for `LeakTesting.createdByTestHelpers`.
+bool isCreatedByTestHelper(
+  String objectCreationTrace,
+  List<RegExp> exceptions,
+) {
+  final frames = objectCreationTrace.split('\n');
   for (final frame in frames) {
     if (_startFrame.hasMatch(frame)) {
       return false;

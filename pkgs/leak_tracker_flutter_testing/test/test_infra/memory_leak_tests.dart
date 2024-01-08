@@ -1,6 +1,6 @@
-// Copyright 2014 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// Copyright (c) 2024, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +9,12 @@ import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'test_helpers.dart';
 
 /// Objects that should not be GCed during.
-final List<InstrumentedDisposable> _retainer = <InstrumentedDisposable>[];
+final _retainer = <InstrumentedDisposable>[];
 
 /// Test cases for memory leaks.
 ///
-/// They are separate from test execution to allow to except only them
-/// from test helpers.
+/// They are separate from test execution to allow to allow
+/// excluding them from test helpers.
 final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
   LeakTestCase(
     name: 'no leaks',

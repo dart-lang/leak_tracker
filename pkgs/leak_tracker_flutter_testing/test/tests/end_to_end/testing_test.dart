@@ -8,8 +8,11 @@ import 'package:test/test.dart';
 import '../../test_infra/memory_leak_tests.dart';
 
 class _TestExecution {
-  _TestExecution(
-      {required this.settings, required this.settingName, required this.test});
+  _TestExecution({
+    required this.settings,
+    required this.settingName,
+    required this.test,
+  });
 
   final String settingName;
   final LeakTesting settings;

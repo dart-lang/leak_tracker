@@ -1,3 +1,7 @@
+// Copyright (c) 2024, the Dart project authors.  Please see the AUTHORS file
+// for details. All rights reserved. Use of this source code is governed by a
+// BSD-style license that can be found in the LICENSE file.
+
 import 'package:leak_tracker/src/leak_tracking/primitives/_test_helper_detector.dart';
 import 'package:test/test.dart';
 
@@ -104,19 +108,19 @@ final _tests = [
     name: 'test-only factory method',
     isHelper: true,
     stackTrace: '''
-// #0      ObjectTracker.startTracking (package:leak_tracker/src/leak_tracking/_object_tracker.dart:69:31)
-// #1      LeakTracking.dispatchObjectCreated.<anonymous closure> (package:leak_tracker/src/leak_tracking/leak_tracking.dart:124:35)
-// #2      LeakTracking.dispatchObjectCreated (package:leak_tracker/src/leak_tracking/leak_tracking.dart:133:6)
-// #3      new LeakTrackedClass (package:leak_tracker_flutter_testing/src/test_classes.dart:40:18)
-// #4      new StatelessLeakingWidget (package:leak_tracker_flutter_testing/src/test_classes.dart:20:27)
-// #5      createTestWidget (file:///Users/polinach/_/leak_tracker/pkgs/leak_tracker_flutter_testing/test/tests/end_to_end/test_helpers_test.dart:46:46)
-// #6      main.<anonymous closure> (file:///Users/polinach/_/leak_tracker/pkgs/leak_tracker_flutter_testing/test/tests/end_to_end/test_helpers_test.dart:38:5)
-// #7      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:215:19)
-// <asynchronous suspension>
-// #8      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:213:7)
-// <asynchronous suspension>
-// #9      Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:258:9)
-// <asynchronous suspension>
+#0      ObjectTracker.startTracking (package:leak_tracker/src/leak_tracking/_object_tracker.dart:69:31)
+#1      LeakTracking.dispatchObjectCreated.<anonymous closure> (package:leak_tracker/src/leak_tracking/leak_tracking.dart:124:35)
+#2      LeakTracking.dispatchObjectCreated (package:leak_tracker/src/leak_tracking/leak_tracking.dart:133:6)
+#3      new LeakTrackedClass (package:leak_tracker_flutter_testing/src/test_classes.dart:40:18)
+#4      new StatelessLeakingWidget (package:leak_tracker_flutter_testing/src/test_classes.dart:20:27)
+#5      createTestWidget (file:///Users/polinach/_/leak_tracker/pkgs/leak_tracker_flutter_testing/test/tests/end_to_end/test_helpers_test.dart:46:46)
+#6      main.<anonymous closure> (file:///Users/polinach/_/leak_tracker/pkgs/leak_tracker_flutter_testing/test/tests/end_to_end/test_helpers_test.dart:38:5)
+#7      Declarer.test.<anonymous closure>.<anonymous closure> (package:test_api/src/backend/declarer.dart:215:19)
+<asynchronous suspension>
+#8      Declarer.test.<anonymous closure> (package:test_api/src/backend/declarer.dart:213:7)
+<asynchronous suspension>
+#9      Invoker._waitForOutstandingCallbacks.<anonymous closure> (package:test_api/src/backend/invoker.dart:258:9)
+<asynchronous suspension>
 ''',
   ),
 ];
