@@ -10,30 +10,24 @@
 set -ex
 
 # The directory that this script is located in.
-TOOL_DIR=`dirname "$0"`
+TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 sh $TOOL_DIR/pub_get.sh
 
 cd $TOOL_DIR/../examples/autosnapshotting
 flutter analyze  --fatal-infos
-cd -
 
 cd $TOOL_DIR/../examples/leak_tracking
 flutter analyze --fatal-infos
-cd -
 
 cd $TOOL_DIR/../pkgs/leak_tracker
 dart analyze --fatal-infos
-cd -
 
 cd $TOOL_DIR/../pkgs/leak_tracker_flutter_testing
 flutter analyze --fatal-infos
-cd -
 
 cd $TOOL_DIR/../pkgs/leak_tracker_testing
 dart analyze --fatal-infos
-cd -
 
 cd $TOOL_DIR/../pkgs/memory_usage
 dart analyze --fatal-infos
-cd -
