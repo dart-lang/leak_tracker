@@ -30,7 +30,7 @@ cd $TOOL_DIR/../pkgs/leak_tracker_flutter_testing
 flutter analyze --fatal-infos
 cd -
 
-cd pkgs/leak_tracker_testing
+cd $TOOL_DIR/../pkgs/leak_tracker_testing
 dart analyze --fatal-infos
 cd -
 
