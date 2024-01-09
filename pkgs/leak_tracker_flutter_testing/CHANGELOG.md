@@ -1,3 +1,8 @@
+## 2.0.3
+
+* Allow to ignore objects created by test helpers.
+* Upgrade to leak_tracker 10.0.1 and leak_tracker_testing 2.0.2.
+
 ## 2.0.2
 
 * Replaced depracated `MemoryAllocations` with `FlutterMemoryAllocations`.

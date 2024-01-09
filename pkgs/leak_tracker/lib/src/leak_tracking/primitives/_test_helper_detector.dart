@@ -27,11 +27,13 @@ final _startFrame = RegExp(
   r')',
 );
 
-/// If true, leaking objects created by test helpers will be ignored.
+/// Returns whether the leak reported by [objectCreationTrace]
+/// was created by a test helper.
 ///
 /// Frames, that match [exceptions] will be ignored.
 ///
-/// See details in doc for `LeakTesting.createdByTestHelpers`.
+/// See details on what means to be created by a test helper
+/// in doc for `LeakTesting.createdByTestHelpers`.
 bool isCreatedByTestHelper(
   String objectCreationTrace,
   List<RegExp> exceptions,

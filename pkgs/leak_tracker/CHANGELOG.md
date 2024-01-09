@@ -1,3 +1,7 @@
+# 10.0.1
+
+* Allow to ignore objects created by test helpers.
+
 ## 10.0.0
 
 * Remove `memory_usage`, as it is moved to https://github.com/dart-lang/leak_tracker/tree/main/pkgs/memory_usage.

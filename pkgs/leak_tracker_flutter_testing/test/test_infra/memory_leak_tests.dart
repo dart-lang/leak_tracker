@@ -13,7 +13,7 @@ final _retainer = <InstrumentedDisposable>[];
 
 /// Test cases for memory leaks.
 ///
-/// They are separate from test execution to allow to allow
+/// They are separate from test execution to allow
 /// excluding them from test helpers.
 final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
   LeakTestCase(
