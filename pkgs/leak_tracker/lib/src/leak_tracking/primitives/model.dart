@@ -35,8 +35,7 @@ class IgnoredLeaksSet {
 
   const IgnoredLeaksSet.ignore() : this(ignoreAll: true, byClass: const {});
 
-  const IgnoredLeaksSet.byClass(Map<String, int?> byClass)
-      : this(byClass: byClass);
+  const IgnoredLeaksSet.byClass(this.byClass) : ignoreAll = false;
 
   /// Classes to ignore during leak tracking.
   ///
@@ -128,8 +127,6 @@ class IgnoredLeaks {
   const IgnoredLeaks({
     this.notGCed = const IgnoredLeaksSet(),
     this.notDisposed = const IgnoredLeaksSet(),
-    this.createdByTestHelpers = false,
-    this.testHelperExceptions = const [],
   });
 
   /// Ignore list for notGCed leaks.
@@ -137,22 +134,6 @@ class IgnoredLeaks {
 
   /// Ignore list for notDisposed leaks.
   final IgnoredLeaksSet notDisposed;
-
-  /// If true, leaking objects created by test helpers will be ignored.
-  ///
-  /// An object counts as created by a test helper if the stack trace of
-  /// start of leak tracking contains a frame, located after the test body
-  /// frame, that points to the folder `test` or the package `flutter_test`,
-  /// except:
-  /// * methods intended to be called from test body like `runAsunc` or `pump`
-  /// * frames that match [testHelperExceptions]
-  final bool createdByTestHelpers;
-
-  /// Stack frames that match this pattern will not be treated as test helpers.
-  ///
-  /// Is used to test functionality of
-  /// the leak tracker.
-  final List<RegExp> testHelperExceptions;
 
   /// Returns true if the class is ignored.
   ///
@@ -180,20 +161,13 @@ class IgnoredLeaks {
     }
     return other is IgnoredLeaks &&
         other.notGCed == notGCed &&
-        other.notDisposed == notDisposed &&
-        other.createdByTestHelpers == createdByTestHelpers &&
-        const DeepCollectionEquality().equals(
-          other.testHelperExceptions,
-          testHelperExceptions,
-        );
+        other.notDisposed == notDisposed;
   }
 
   @override
   int get hashCode => Object.hash(
         notGCed,
         notDisposed,
-        createdByTestHelpers,
-        testHelperExceptions,
       );
 }
 

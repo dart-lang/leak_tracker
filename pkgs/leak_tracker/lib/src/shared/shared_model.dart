@@ -90,8 +90,6 @@ class LeakSummary {
 class Leaks {
   Leaks(this.byType);
 
-  Leaks.empty() : this({});
-
   factory Leaks.fromJson(Map<String, dynamic> json) => Leaks(
         json.map(
           (key, value) => MapEntry(
@@ -117,21 +115,6 @@ class Leaks {
       );
 
   int get total => byType.values.map((e) => e.length).sum;
-
-  late final Map<String?, Leaks> byPhase = () {
-    final leaks = <String?, Map<LeakType, List<LeakReport>>>{};
-    for (final entry in byType.entries) {
-      for (final leak in entry.value) {
-        leaks
-            .putIfAbsent(leak.phase, () => {})
-            .putIfAbsent(entry.key, () => <LeakReport>[])
-            .add(leak);
-      }
-    }
-    return {
-      for (final entry in leaks.entries) entry.key: Leaks(entry.value),
-    };
-  }();
 
   String toYaml({required bool phasesAreTests}) {
     if (total == 0) return '';

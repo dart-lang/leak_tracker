@@ -11,8 +11,6 @@ void main() {
     test('debug info preserves other settings', () {
       final settings = LeakTesting.settings
           .withIgnored(notDisposed: {'MyClass': 1})
-          .withIgnored(createdByTestHelpers: true)
-          .withIgnored()
           .withCreationStackTrace()
           .withDisposalStackTrace()
           .withRetainingPath();
@@ -33,20 +31,14 @@ void main() {
         settings.ignoredLeaks.notDisposed.byClass.keys.firstOrNull,
         'MyClass',
       );
-      expect(
-        settings.ignoredLeaks.createdByTestHelpers,
-        true,
-      );
     });
 
     group('withTracked', () {
       test('not provided args do not affect the instance, tracked', () {
         final settings = LeakTesting.settings.withTrackedAll().withIgnored(
-          allNotDisposed: true,
-          allNotGCed: true,
-          createdByTestHelpers: true,
-          testHelperExceptions: [RegExp('my_test.dart')],
-        );
+              allNotDisposed: true,
+              allNotGCed: true,
+            );
 
         expect(settings.ignoredLeaks.notDisposed.ignoreAll, true);
         expect(settings.ignoredLeaks.notGCed.ignoreAll, true);
@@ -56,8 +48,6 @@ void main() {
 
         expect(tracked.ignoredLeaks.notDisposed.ignoreAll, false);
         expect(tracked.ignoredLeaks.notGCed.ignoreAll, false);
-        expect(tracked.ignoredLeaks.createdByTestHelpers, true);
-        expect(tracked.ignoredLeaks.testHelperExceptions, hasLength(1));
       });
     });
 
@@ -85,7 +75,6 @@ void main() {
           allNotDisposed: true,
           allNotGCed: true,
           classes: ['MyClass'],
-          testHelperExceptions: [RegExp('my_test.dart')],
         );
 
         expect(settings.ignore, true);
