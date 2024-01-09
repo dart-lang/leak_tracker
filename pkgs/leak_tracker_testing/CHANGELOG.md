@@ -1,3 +1,8 @@
+## 2.0.2
+
+* Allow to ignore objects created by test helpers.
+* Set `ignore = false` by default.
+
 ## 2.0.1
 
 * Add LeakTesting.enabled.
