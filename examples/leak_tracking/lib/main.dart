@@ -4,7 +4,8 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 void main() {
   LeakTracking.start();
-  MemoryAllocations.instance.addListener(
+  // Dispatch memory events from the Flutter engine to LeakTracking.
+  FlutterMemoryAllocations.instance.addListener(
     (ObjectEvent event) => LeakTracking.dispatchObjectEvent(event.toMap()),
   );
 

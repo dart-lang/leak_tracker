@@ -8,7 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:matcher/matcher.dart';
 
 /// Invokes [callback] and collects
-/// events dispatched to [MemoryAllocations.instance] for [type].
+/// events dispatched to [FlutterMemoryAllocations.instance] for [type].
 Future<List<ObjectEvent>> memoryEvents(
   FutureOr<void> Function() callback,
   Type type,
@@ -21,9 +21,9 @@ Future<List<ObjectEvent>> memoryEvents(
     }
   }
 
-  MemoryAllocations.instance.addListener(listener);
+  FlutterMemoryAllocations.instance.addListener(listener);
   await callback();
-  MemoryAllocations.instance.removeListener(listener);
+  FlutterMemoryAllocations.instance.removeListener(listener);
 
   return events;
 }

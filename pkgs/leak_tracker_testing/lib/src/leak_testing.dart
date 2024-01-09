@@ -34,7 +34,7 @@ import 'matchers.dart';
 @immutable
 class LeakTesting {
   const LeakTesting._({
-    this.ignore = true,
+    this.ignore = false,
     this.ignoredLeaks = const IgnoredLeaks(),
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.baselining = const MemoryBaselining.none(),
@@ -128,6 +128,8 @@ class LeakTesting {
     Map<String, int?> notDisposed = const {},
     bool allNotDisposed = false,
     List<String> classes = const [],
+    bool createdByTestHelpers = false,
+    List<RegExp> testHelperExceptions = const [],
   }) {
     Map<String, int?> addClassesToMap(
       Map<String, int?> map,
@@ -153,6 +155,12 @@ class LeakTesting {
             ignoreAll: allNotDisposed,
           ),
         ),
+        createdByTestHelpers:
+            ignoredLeaks.createdByTestHelpers || createdByTestHelpers,
+        testHelperExceptions: [
+          ...ignoredLeaks.testHelperExceptions,
+          ...testHelperExceptions,
+        ],
       ),
     );
   }
@@ -167,6 +175,7 @@ class LeakTesting {
     List<String> classes = const [],
     bool allNotGCed = false,
     bool allNotDisposed = false,
+    bool createdByTestHelpers = false,
   }) {
     var newNotGCed = ignoredLeaks.notGCed.track([...notGCed, ...classes]);
     if (allNotGCed) {
@@ -183,6 +192,9 @@ class LeakTesting {
       ignoredLeaks: IgnoredLeaks(
         notGCed: newNotGCed,
         notDisposed: newNotDisposed,
+        createdByTestHelpers:
+            ignoredLeaks.createdByTestHelpers && !createdByTestHelpers,
+        testHelperExceptions: ignoredLeaks.testHelperExceptions,
       ),
     );
     return result;
