@@ -10,7 +10,7 @@
 set -ex
 
 # The directory that this script is located in.
-TOOL_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+TOOL_DIR=$( cd -- "$( dirname -- "$0" )" &> /dev/null && pwd )
 
 cd $TOOL_DIR/../pkgs/leak_tracker
 dart pub publish
