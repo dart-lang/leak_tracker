@@ -4,7 +4,8 @@ The text below is under construction.
 
 # Troubleshoot memory leaks
 
-This page describes how to troubleshoot memory leaks. See other information on memory leaks [here](../README.md).
+This page describes how to troubleshoot memory leaks.
+Read more about leak tracking in [overview](OVERVIEW.md).
 
 If leak tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
 switch to [more complicated troubleshooting](#more-complicated-cases).

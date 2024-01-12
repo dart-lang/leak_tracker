@@ -5,9 +5,9 @@ The text below is under construction.
 # Understand Memory Leak Tracking Concepts
 
 This page describes leak tracking concepts.
-See other information on memory leaks [here](../README.md).
+Read more about leak tracking in [overview](OVERVIEW.md).
 
-Before reading about leak tracking, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
+Before reading about leak tracking cocepts, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
 
 ## Addressed leak types
 

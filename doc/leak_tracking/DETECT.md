@@ -6,7 +6,7 @@ The text below is under construction.
 # Detect Memory Leaks
 
 This page describes how to auto-detect certain types of memory leaks in Dart and Flutter applications and tests.
-See other information on memory leaks [here](../README.md).
+Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Quick start to track leaks for Flutter
 
