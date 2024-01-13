@@ -5,12 +5,38 @@ The text below is under construction.
 
 # Detect Memory Leaks
 
-This page describes how to auto-detect certain types of memory leaks in Dart and Flutter applications and tests.
+This page describes how to auto-detect certain types of memory leaks.
 Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Quick start to track leaks for Flutter
 
+### Flutter tests
+
+Enable leak tracking in your [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
+
+```dart
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+
+...
+
+Future<void> testExecutable(FutureOr<void> Function() testMain) {
+  LeakTesting.enable();
+
+  ...
+
+  await testMain();
+}
+```
+
+See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) on how to adjust leak tracking settings.
+
+### Instrument more disposables
+
+Use [this example](https://github.com/flutter/flutter/pull/138804/files) to add your disposables to leak trascking.
+
 ### Flutter application
+
+TODO(polina-c): implement and test this scenario
 
 1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
 
@@ -31,32 +57,20 @@ runApp(...
 ```
 
 3. Run the application in debug mode and watch for a leak related warnings.
-If you see a warning, open the link to investigate the leaks.
 
-TODO(polina-c): implement the link and add example of the warning.
-
-### Flutter tests
-
-Wrap your tests with `withLeakTracking` to setup automated leak verification:
-
-```dart
-test('...', () async {
-  final leaks = await withLeakTracking(
-    () async {
-      ...
-    },
-  );
-
-  expect(leaks, leakFree);
-});
-```
-
+TODO(polina-c): add example of the warning.
 
 ## Limitations
 
-### By platform
+### By environment
 
-Leak tracker does not work for web platform.
+Leak tracker is enabled for unit tests in Flutter packages.
+
+Leak tracker is off for:
+
+1. Web platform
+2. Running applications
+3. Pure Dart packages
 
 ### By tracked classes
 
@@ -65,7 +79,7 @@ objects (See [concepts](CONCEPTS.md) for details).
 
 However, the good news is:
 
-1. Most disposable Flutter Framework classes include instrumentation.
+1. Disposables in Flutter Framework are instrumented.
 If how your Flutter app manages widgets results in leaks,
 Flutter will catch them.
 
@@ -87,7 +101,7 @@ Leak tracking is fully available.
 
 **Flutter profile**
 
-Leak tracking is available, but MemoryAllocations that listens to
+Leak tracking is available, but FlutterMemoryAllocations that listens to
 Flutter instrumented objects,
 should be [turned on](https://github.com/flutter/flutter/blob/15af81782e19ebe7273872f8b07ac71df4e749f2/packages/flutter/lib/src/foundation/memory_allocations.dart#L13)
 if you want to track Flutter Framework objects.
@@ -97,68 +111,6 @@ if you want to track Flutter Framework objects.
 Leak tracking is disabled.
 
 NOTE: If you are interested in enabling leak tracking for release mode, please, comment [here](https://github.com/dart-lang/leak_tracker/issues/25).
-
-## Instrument your code
-
-If you want to catch leaks for objects outside of Flutter Framework
-(that are already instrumented), you need to instrument them.
-
-For each tracked object the library should get two signals from your code:
-(1) the object is created and (2) the object is not in use.
-It is most convenient to give the first signal in the constructor
-and the second signal in the `dispose` method:
-
-```dart
-import 'package:leak_tracker/src/leak_tracker.dart';
-
-class InstrumentedClass {
-  InstrumentedClass() {
-    dispatchObjectCreated(
-      library: library,
-      className: '$InstrumentedClass',
-      object: this,
-    );
-  }
-
-  static const library = 'package:my_package/lib/src/my_lib.dart';
-
-  void dispose() {
-    dispatchObjectDisposed(object: this);
-  }
-}
-```
-
-## Start/stop leak tracking
-
-To start leak tracking, invoke `enableLeakTracking()`,
-to stop: `disableLeakTracking()`.
-
-TODO(polina-c): note that Flutter Framework enables leak tracking by default,
-when it is the case.
-
-## Collect leaks
-
-There are two steps in leak collection: (1) get signal that leaks happened
-(leak summary) and (2) get details about the leaks.
-
-By default, the leak tracker checks for leaks every second, and,
-if there are some, outputs the
-summary to console and sends it to DevTools. Then you can get
-leak details either by
-requesting them from DevTools or by invoking `collectLeaks()`
-programmatically.
-
-You can change the default behavior by passing customized
-[configuration](https://github.com/dart-lang/leak_tracker/blob/29fa7c0e7fb950c974d15f838636bc97a03a5bcc/lib/src/leak_tracker_model.dart)
-to `enableLeakTracking()`:
-
-1. Disable regular leak checking and check the leaks by calling `checkLeaks()`.
-2. Disable output to console or to DevTools.
-3. Listen to the leaks with custom handler.
-
-See `DevTools > Memory > Leaks` guidance on how to interact with leak tracker.
-
-TODO: add link to DevTools documentation.
 
 ## Performance impact
 

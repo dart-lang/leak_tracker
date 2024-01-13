@@ -30,11 +30,7 @@ addTearDown(focusNode.dispose());
 
 ## Known simple cases
 
-### 1. The test holds a disposed object
-
-TODO: add example and steps.
-
-### 2. The test creates OverlayEntry
+### 1. The test creates OverlayEntry
 
 If your code creates an OverlayEntry, it should both remove and dispose it:
 
@@ -43,7 +39,7 @@ final OverlayEntry overlayEntry = OverlayEntry(...);
 addTearDown(() => overlayEntry..remove()..dispose());
 ```
 
-### 3. The test starts a gesture
+### 2. The test starts a gesture
 
 If your test starts a test gesture, make sure to finish it to release resources:
 
@@ -80,23 +76,20 @@ impact performance and memory footprint.
 
 **Tests**
 
-For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig`,
-specific for the debugged leak type, to the test:
+For collecting debugging information in a test, temporarily
+specify what information you need in the test settigs:
 
 ```dart
-testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
+testWidgets('My test',
+experimentalLeakTesting: LeakTesting.settings.withCreationStackTrace(),
+(WidgetTester tester) async {
   ...
-}, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
+});
 ```
 
 **Applications**
 
-For collecting debugging information in your running application, the options are:
-
-1. Pass `LeakTrackingConfiguration` to `enableLeakTracking`
-2. Use the interactive UI in DevTools > Memory > Leaks
-
-TODO: link DevTools documentation with explanation
+TODO: add documentation
 
 ## Verify object references
 
@@ -104,6 +97,9 @@ If you expect an object to be not referenced at some point,
 but not sure, you can validate it by temporarily adding assertion.
 
 ```dart
+import 'package:leak_tracker/leak_tracker.dart';
+
+...
 final ref = WeakReference(myObject);
 myObject = null;
 await forceGC();
@@ -115,10 +111,8 @@ if (ref.target == null) {
 }
 ```
 
-IMPORTANT: this code will not work in release mode, so
-you need to run it with flag `--debug` or `--profile`
-([not available](https://github.com/flutter/flutter/issues/127331) for Flutter tests),
-or, if it is a test, by clicking `Debug` near the test name in IDE.
+NOTE: this code will not work in release mode, so
+you need to run it with flag `--debug` or `--profile`.
 
 ## More complicated cases
 
