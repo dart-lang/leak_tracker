@@ -373,24 +373,6 @@ void main() {
     });
   });
 
-  group('$ObjectTracker with stack traces', () {
-    late _MockFinalizerBuilder finalizerBuilder;
-    late _MockGcCounter gcCounter;
-    late ObjectTracker tracker;
-
-    setUp(() {
-      finalizerBuilder = _MockFinalizerBuilder();
-      gcCounter = _MockGcCounter();
-      tracker = ObjectTracker(
-        finalizerBuilder: finalizerBuilder.build,
-        gcCounter: gcCounter,
-        disposalTime: _disposalTime,
-        numberOfGcCycles: defaultNumberOfGcCycles,
-        maxRequestsForRetainingPath: 0,
-      );
-    });
-  });
-
   PhaseSettings phaseSettings({
     IgnoredLeaks ignoredLeaks = const IgnoredLeaks(
       experimentalNotGCed: IgnoredLeaksSet(),
