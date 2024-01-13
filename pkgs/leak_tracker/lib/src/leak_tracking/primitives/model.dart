@@ -122,7 +122,9 @@ class IgnoredLeaksSet {
       );
 }
 
-/// The total set of ignored leaks for both [experimentalNotGCed] and [notDisposed] leaks.
+/// The total set of ignored leaks.
+///
+/// Includes both [experimentalNotGCed] and [notDisposed] leaks.
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
