@@ -112,14 +112,6 @@ void main() {
     late ObjectTracker tracker;
 
     Future<void> verifyOneLeakIsRegistered(Object object, LeakType type) async {
-      var summary = await tracker.leaksSummary();
-      expect(summary.total, 1);
-
-      // Second leak summary should be the same.
-      summary = await tracker.leaksSummary();
-      expect(summary.total, 1);
-      expect(summary.totals[type], 1);
-
       var leaks = await tracker.collectLeaks();
       expect(leaks.total, 1);
 
@@ -129,17 +121,12 @@ void main() {
       expect(theLeak.trackedClass, _trackedClass);
 
       // Second leak collection should not return results.
-      summary = await tracker.leaksSummary();
       leaks = await tracker.collectLeaks();
-      expect(summary.total, 0);
       expect(leaks.total, 0);
     }
 
     void verifyNoLeaks() async {
-      final summary = await tracker.leaksSummary();
       final leaks = await tracker.collectLeaks();
-
-      expect(summary.total, 0);
       expect(leaks.total, 0);
     }
 
@@ -231,7 +218,7 @@ void main() {
 
       // Verify leak is registered.
       await withClock(Clock.fixed(time), () async {
-        await verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+        verifyNoLeaks();
       });
     });
 
@@ -258,7 +245,7 @@ void main() {
       // GC and verify leak is registered.
       await withClock(Clock.fixed(time), () async {
         finalizerBuilder.gc(theObject);
-        await verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+        verifyNoLeaks();
       });
     });
 
@@ -283,13 +270,30 @@ void main() {
       gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
       await withClock(Clock.fixed(time), () async {
-        // Verify notGCed leak is registered.
-        await verifyOneLeakIsRegistered(theObject, LeakType.notGCed);
+        verifyNoLeaks();
 
-        // GC and verify gcedLate leak is registered.
+        // GC and verify no leaks.
         finalizerBuilder.gc(theObject);
-        await verifyOneLeakIsRegistered(theObject, LeakType.gcedLate);
+        verifyNoLeaks();
       });
+    });
+  });
+
+  group('Enabled notGCed', () {
+    late _MockFinalizerBuilder finalizerBuilder;
+    late _MockGcCounter gcCounter;
+    late ObjectTracker tracker;
+
+    setUp(() {
+      finalizerBuilder = _MockFinalizerBuilder();
+      gcCounter = _MockGcCounter();
+      tracker = ObjectTracker(
+        finalizerBuilder: finalizerBuilder.build,
+        gcCounter: gcCounter,
+        disposalTime: _disposalTime,
+        numberOfGcCycles: defaultNumberOfGcCycles,
+        maxRequestsForRetainingPath: 0,
+      );
     });
 
     test('collects context accurately.', () async {
@@ -303,7 +307,9 @@ void main() {
           theObject,
           context: {'0': 0},
           trackedClass: _trackedClass,
-          phase: const PhaseSettings(),
+          phase: const PhaseSettings(
+            ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
+          ),
         );
         tracker.addContext(theObject, context: {'1': 1});
         tracker.dispatchDisposal(theObject, context: {'2': 2});
@@ -322,24 +328,6 @@ void main() {
         }
       });
     });
-  });
-
-  group('$ObjectTracker with stack traces', () {
-    late _MockFinalizerBuilder finalizerBuilder;
-    late _MockGcCounter gcCounter;
-    late ObjectTracker tracker;
-
-    setUp(() {
-      finalizerBuilder = _MockFinalizerBuilder();
-      gcCounter = _MockGcCounter();
-      tracker = ObjectTracker(
-        finalizerBuilder: finalizerBuilder.build,
-        gcCounter: gcCounter,
-        disposalTime: _disposalTime,
-        numberOfGcCycles: defaultNumberOfGcCycles,
-        maxRequestsForRetainingPath: 0,
-      );
-    });
 
     test('collects stack traces.', () async {
       // Define object and time.
@@ -353,6 +341,7 @@ void main() {
           context: null,
           trackedClass: _trackedClass,
           phase: const PhaseSettings(
+            ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
             leakDiagnosticConfig: LeakDiagnosticConfig(
               collectStackTraceOnStart: true,
               collectStackTraceOnDisposal: true,
@@ -384,35 +373,68 @@ void main() {
     });
   });
 
+  group('$ObjectTracker with stack traces', () {
+    late _MockFinalizerBuilder finalizerBuilder;
+    late _MockGcCounter gcCounter;
+    late ObjectTracker tracker;
+
+    setUp(() {
+      finalizerBuilder = _MockFinalizerBuilder();
+      gcCounter = _MockGcCounter();
+      tracker = ObjectTracker(
+        finalizerBuilder: finalizerBuilder.build,
+        gcCounter: gcCounter,
+        disposalTime: _disposalTime,
+        numberOfGcCycles: defaultNumberOfGcCycles,
+        maxRequestsForRetainingPath: 0,
+      );
+    });
+  });
+
+  PhaseSettings phaseSettings({
+    IgnoredLeaks ignoredLeaks = const IgnoredLeaks(
+      experimentalNotGCed: IgnoredLeaksSet(),
+    ),
+    bool ignoreLeaks = false,
+    String? name,
+    LeakDiagnosticConfig leakDiagnosticConfig = const LeakDiagnosticConfig(),
+  }) =>
+      PhaseSettings(
+        ignoredLeaks: ignoredLeaks,
+        ignoreLeaks: ignoreLeaks,
+        name: name,
+        leakDiagnosticConfig: leakDiagnosticConfig,
+      );
+
   group('$ObjectTracker respects phase settings,', () {
     late _MockFinalizerBuilder finalizerBuilder;
     late _MockGcCounter gcCounter;
     late ObjectTracker tracker;
 
     final objectsToPhases = <Object, PhaseSettings>{
-      Named('0'): const PhaseSettings.ignored(),
-      Named('1'): const PhaseSettings(
+      Named('0'): phaseSettings(ignoreLeaks: true),
+      Named('1'): phaseSettings(
         name: '1',
       ),
-      Named('2'): const PhaseSettings.ignored(),
-      Named('3'): const PhaseSettings(
+      Named('2'): phaseSettings(ignoreLeaks: true),
+      Named('3'): phaseSettings(
         name: '3',
       ),
-      Named('4'): const PhaseSettings(
+      Named('4'): phaseSettings(
         name: '4',
-        leakDiagnosticConfig: LeakDiagnosticConfig(
+        leakDiagnosticConfig: const LeakDiagnosticConfig(
           collectRetainingPathForNotGCed: true,
         ),
       ),
-      Named('5'): const PhaseSettings(
+      Named('5'): phaseSettings(
         name: '5',
-        leakDiagnosticConfig: LeakDiagnosticConfig(
+        leakDiagnosticConfig: const LeakDiagnosticConfig(
           collectStackTraceOnDisposal: true,
         ),
       ),
-      Named('6'): const PhaseSettings(
+      Named('6'): phaseSettings(
         name: '6',
-        leakDiagnosticConfig: LeakDiagnosticConfig(
+        leakDiagnosticConfig: const LeakDiagnosticConfig(
           collectStackTraceOnStart: true,
         ),
       ),
