@@ -48,9 +48,10 @@ Item #3 is not covered by leak_tracker. There are no known tools to automate it 
 How large can a memory leak be when disposal is forgotten or when an object is referenced after disposal?
 
 The cases below are selected from the GitHub issue history and illustrate three types of memory issues:
+
 1. Out of memory crash
 2. 100K+ leaks
-3. Leaks with no numbers recorded, but significant enough to create, investigate and fix the issue.
+3. Leaks with no numbers recorded, but significant enough to file, investigate and fix the issue
 
 ### Forgotten `dispose`
 
@@ -68,25 +69,13 @@ Some of them are disposed disposables, detectable by leak tracker.
 
 ### Fixed `dispose`
 
-Issues here are fixed by updating ‘dispose’ (not invoking it).
+Issues here are fixed by updating ‘dispose’, not invoking it.
 That means not invoked ‘dispose’ would cause a significant leak.
 
-Class
-Description
-Vertices
-Crash: https://github.com/flutter/flutter/issues/54762
-VideoPlayerController
-Leak 25MB: https://github.com/flutter/flutter/issues/86477
-AnimationController
-Significant: https://github.com/flutter/flutter/issues/84730
-ImageShader
-Significant:https://github.com/flutter/flutter/issues/82832
-Google map
-Crash: https://github.com/flutter/flutter/issues/35243
-Images in GridView
-Crash: https://github.com/flutter/flutter/issues/19558
-CanvasImage
-Significant: https://github.com/flutter/flutter/issues/57746
-
-
-
+1. `Vertices` causes app crash: https://github.com/flutter/flutter/issues/54762
+2. `VideoPlayerController` causes leak 25MB: https://github.com/flutter/flutter/issues/86477
+3. `AnimationController` causes significant leak: https://github.com/flutter/flutter/issues/84730
+4. `ImageShader` causes significant leak: https://github.com/flutter/flutter/issues/82832
+5. Google map causes app crash: https://github.com/flutter/flutter/issues/35243
+6. Images in `GridView` causes crash: https://github.com/flutter/flutter/issues/19558
+7. `CanvasImage` causes significant leak: https://github.com/flutter/flutter/issues/57746
