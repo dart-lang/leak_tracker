@@ -10,9 +10,9 @@ Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Quick start to track leaks for Flutter
 
-### Flutter tests
+### Test cover with `testWidgts`
 
-Enable leak tracking in your [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
+To make `testWidgts` detecting leaks in your tests, enable leak tracking in [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
 
 ```dart
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
