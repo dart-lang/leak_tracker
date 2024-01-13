@@ -20,6 +20,8 @@ void main() {
         ),
       );
 
+      LeakTracking.phase = const PhaseSettings.experimentalNotGCedOn();
+
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.ignoreLeaks, false);
 
@@ -49,6 +51,7 @@ void main() {
     );
 
     LeakTracking.phase = const PhaseSettings(
+      ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
       leakDiagnosticConfig: LeakDiagnosticConfig(
         collectStackTraceOnDisposal: true,
         collectStackTraceOnStart: true,
@@ -103,6 +106,7 @@ void main() {
       expect(LeakTracking.phase.ignoreLeaks, false);
 
       LeakTracking.phase = const PhaseSettings(
+        ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNotGCed: true,
         ),
@@ -148,6 +152,7 @@ void main() {
       );
 
       LeakTracking.phase = const PhaseSettings(
+        ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNotGCed: true,
         ),

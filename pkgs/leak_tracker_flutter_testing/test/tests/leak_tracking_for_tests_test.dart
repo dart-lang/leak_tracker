@@ -102,7 +102,7 @@ void main() {
     // Start tracking classes.
     LeakTesting.settings = LeakTesting.settings.withTracked(
       classes: [_Classes.anyLeak1],
-      notGCed: [_Classes.notGCed1],
+      experimentalNotGCed: [_Classes.notGCed1],
       notDisposed: [_Classes.notDisposed1],
     );
 

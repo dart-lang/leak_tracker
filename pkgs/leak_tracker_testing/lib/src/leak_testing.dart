@@ -170,16 +170,16 @@ class LeakTesting {
   /// Items in [classes] will be removed from all ignore lists.
   @useResult
   LeakTesting withTracked({
-    List<String> notGCed = const [],
+    List<String> experimentalNotGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
-    bool allNotGCed = false,
+    bool experimantalAllNotGCed = false,
     bool allNotDisposed = false,
     bool createdByTestHelpers = false,
   }) {
-    var newNotGCed =
-        ignoredLeaks.experimentalNotGCed.track([...notGCed, ...classes]);
-    if (allNotGCed) {
+    var newNotGCed = ignoredLeaks.experimentalNotGCed
+        .track([...experimentalNotGCed, ...classes]);
+    if (experimantalAllNotGCed) {
       newNotGCed = newNotGCed.copyWith(ignoreAll: false);
     }
 
