@@ -59,13 +59,10 @@ bool _areOnlySkipped(
 }
 
 void main() {
-  late LeakTesting defaults;
+  final defaults =
+      LeakTesting.settings.withTracked(experimantalAllNotGCed: true);
 
   setUp(() {
-    defaults = LeakTesting.settings;
-  });
-
-  tearDown(() {
     LeakTesting.settings = defaults;
   });
 
