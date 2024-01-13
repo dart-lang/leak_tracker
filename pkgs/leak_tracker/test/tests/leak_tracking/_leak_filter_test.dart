@@ -15,7 +15,7 @@ ObjectRecord _dateTimeRecord(PhaseSettings phase) =>
 void main() {
   test('All leaks are reported with default settings.', () {
     final filter = LeakFilter();
-    final record = _arrayRecord(const PhaseSettings());
+    final record = _arrayRecord(const PhaseSettings.experimentalNotGCedOn());
 
     expect(filter.shouldReport(LeakType.notDisposed, record), true);
     expect(filter.shouldReport(LeakType.notGCed, record), true);
@@ -26,7 +26,10 @@ void main() {
     final filter = LeakFilter();
     final record = _arrayRecord(
       const PhaseSettings(
-        ignoredLeaks: IgnoredLeaks(notDisposed: IgnoredLeaksSet.ignore()),
+        ignoredLeaks: IgnoredLeaks(
+          notDisposed: IgnoredLeaksSet.ignore(),
+          experimentalNotGCed: IgnoredLeaksSet(),
+        ),
       ),
     );
 
@@ -72,8 +75,8 @@ void main() {
     final filter = LeakFilter();
     const phase = PhaseSettings(
       ignoredLeaks: IgnoredLeaks(
-        notDisposed: IgnoredLeaksSet.byClass({'List<dynamic>': null}),
-      ),
+          notDisposed: IgnoredLeaksSet.byClass({'List<dynamic>': null}),
+          experimentalNotGCed: IgnoredLeaksSet()),
     );
     final arrayRecord = _arrayRecord(phase);
     final dateTimeRecord = _dateTimeRecord(phase);

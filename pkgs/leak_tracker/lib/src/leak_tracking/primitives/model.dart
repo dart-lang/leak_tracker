@@ -351,6 +351,12 @@ class PhaseSettings {
     this.baselining,
   });
 
+  const PhaseSettings.experimentalNotGCedOn()
+      : this(
+          ignoredLeaks:
+              const IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
+        );
+
   const PhaseSettings.ignored() : this(ignoreLeaks: true);
 
   /// When true, added objects will not be tracked.
