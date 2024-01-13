@@ -484,7 +484,8 @@ void main() {
           .where((l) => l.code == identityHashCode(object))
           .onlyOrNull;
 
-      if (phase.ignoreLeaks || phase.ignoredLeaks.notGCed.ignoreAll) {
+      if (phase.ignoreLeaks ||
+          phase.ignoredLeaks.experimentalNotGCed.ignoreAll) {
         expect(leak, isNull);
         return;
       }
@@ -552,7 +553,10 @@ void main() {
                 .where(
                   (o) =>
                       !objectsToPhases[o]!.ignoreLeaks &&
-                      !objectsToPhases[o]!.ignoredLeaks.notGCed.ignoreAll &&
+                      !objectsToPhases[o]!
+                          .ignoredLeaks
+                          .experimentalNotGCed
+                          .ignoreAll &&
                       !gced &&
                       disposed,
                 )

@@ -72,6 +72,11 @@ Leak tracker is off for:
 2. Running applications
 3. Pure Dart packages
 
+### By leak types
+
+Leak tracking for not-GCed leaks is experimental and is off by default.
+For now it is recommended to track only not-disposed leaks.
+
 ### By tracked classes
 
 The leak tracker will catch leaks only for instrumented

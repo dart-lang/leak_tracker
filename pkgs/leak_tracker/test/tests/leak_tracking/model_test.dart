@@ -145,12 +145,12 @@ void main() {
         const list1 = IgnoredLeaks(
           notDisposed:
               IgnoredLeaksSet(byClass: {'MyClass1': null, 'MyClass2': null}),
-          notGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
+          experimentalNotGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
         );
         const list2 = IgnoredLeaks(
           notDisposed:
               IgnoredLeaksSet(byClass: {'MyClass2': null, 'MyClass1': null}),
-          notGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
+          experimentalNotGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
         );
         expect(list1 == list2, true);
       });
@@ -158,11 +158,11 @@ void main() {
       test('different', () {
         const list1 = IgnoredLeaks(
           notDisposed: IgnoredLeaksSet(byClass: {'MyClass': null}),
-          notGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
+          experimentalNotGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
         );
         const list2 = IgnoredLeaks(
           notDisposed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
-          notGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
+          experimentalNotGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
         );
         expect(list1 == list2, false);
       });

@@ -1,3 +1,7 @@
+## 3.0.0
+
+* Rename `IgnoredLeaks.notGCed` to `IgnoredLeaks.experimentalNotGCed` and make ignored by default.
+
 ## 2.0.2
 
 * Allow to ignore objects created by test helpers.

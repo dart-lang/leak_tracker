@@ -49,13 +49,13 @@ void main() {
         );
 
         expect(settings.ignoredLeaks.notDisposed.ignoreAll, true);
-        expect(settings.ignoredLeaks.notGCed.ignoreAll, true);
+        expect(settings.ignoredLeaks.experimentalNotGCed.ignoreAll, true);
 
         final tracked =
             settings.withTracked(allNotDisposed: true, allNotGCed: true);
 
         expect(tracked.ignoredLeaks.notDisposed.ignoreAll, false);
-        expect(tracked.ignoredLeaks.notGCed.ignoreAll, false);
+        expect(tracked.ignoredLeaks.experimentalNotGCed.ignoreAll, false);
         expect(tracked.ignoredLeaks.createdByTestHelpers, true);
         expect(tracked.ignoredLeaks.testHelperExceptions, hasLength(1));
       });
@@ -68,8 +68,9 @@ void main() {
         expect(settings.ignore, false);
         expect(settings.ignoredLeaks.notDisposed.ignoreAll, false);
         expect(settings.ignoredLeaks.notDisposed.byClass, <String, int?>{});
-        expect(settings.ignoredLeaks.notGCed.ignoreAll, false);
-        expect(settings.ignoredLeaks.notGCed.byClass, <String, int?>{});
+        expect(settings.ignoredLeaks.experimentalNotGCed.ignoreAll, false);
+        expect(settings.ignoredLeaks.experimentalNotGCed.byClass,
+            <String, int?>{});
 
         expect(settings.withIgnored(), settings);
         expect(settings.withTracked(), settings);
@@ -91,8 +92,8 @@ void main() {
         expect(settings.ignore, true);
         expect(settings.ignoredLeaks.notDisposed.ignoreAll, true);
         expect(settings.ignoredLeaks.notDisposed.byClass, hasLength(1));
-        expect(settings.ignoredLeaks.notGCed.ignoreAll, true);
-        expect(settings.ignoredLeaks.notGCed.byClass, hasLength(1));
+        expect(settings.ignoredLeaks.experimentalNotGCed.ignoreAll, true);
+        expect(settings.ignoredLeaks.experimentalNotGCed.byClass, hasLength(1));
 
         expect(settings.withIgnored(), settings);
         expect(settings.withTracked(), settings);
@@ -128,11 +129,11 @@ void main() {
       test('different', () {
         const list1 = IgnoredLeaks(
           notDisposed: IgnoredLeaksSet(byClass: {'MyClass': null}),
-          notGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
+          experimentalNotGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
         );
         const list2 = IgnoredLeaks(
           notDisposed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
-          notGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
+          experimentalNotGCed: IgnoredLeaksSet(byClass: {'MyClass': 1}),
         );
         expect(list1 == list2, false);
       });

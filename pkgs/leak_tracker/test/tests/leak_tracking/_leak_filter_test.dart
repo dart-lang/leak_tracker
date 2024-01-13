@@ -39,7 +39,8 @@ void main() {
     final filter = LeakFilter();
     final record = _arrayRecord(
       const PhaseSettings(
-        ignoredLeaks: IgnoredLeaks(notGCed: IgnoredLeaksSet.ignore()),
+        ignoredLeaks:
+            IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet.ignore()),
       ),
     );
 
@@ -52,7 +53,7 @@ void main() {
     final filter = LeakFilter();
     const phase = PhaseSettings(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: IgnoredLeaksSet.byClass({'List<dynamic>': null}),
+        experimentalNotGCed: IgnoredLeaksSet.byClass({'List<dynamic>': null}),
       ),
     );
     final arrayRecord = _arrayRecord(phase);

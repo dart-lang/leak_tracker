@@ -143,7 +143,7 @@ class LeakTesting {
 
     return copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: ignoredLeaks.notGCed.merge(
+        experimentalNotGCed: ignoredLeaks.experimentalNotGCed.merge(
           IgnoredLeaksSet(
             byClass: addClassesToMap(notGCed, classes),
             ignoreAll: allNotGCed,
@@ -177,7 +177,8 @@ class LeakTesting {
     bool allNotDisposed = false,
     bool createdByTestHelpers = false,
   }) {
-    var newNotGCed = ignoredLeaks.notGCed.track([...notGCed, ...classes]);
+    var newNotGCed =
+        ignoredLeaks.experimentalNotGCed.track([...notGCed, ...classes]);
     if (allNotGCed) {
       newNotGCed = newNotGCed.copyWith(ignoreAll: false);
     }
@@ -190,7 +191,7 @@ class LeakTesting {
 
     final result = copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: newNotGCed,
+        experimentalNotGCed: newNotGCed,
         notDisposed: newNotDisposed,
         createdByTestHelpers:
             ignoredLeaks.createdByTestHelpers && !createdByTestHelpers,

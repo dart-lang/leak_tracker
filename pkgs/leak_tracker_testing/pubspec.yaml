@@ -1,5 +1,5 @@
 name: leak_tracker_testing
-version: 2.0.2
+version: 3.0.0
 description: Leak tracking code intended for usage in tests.
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_testing
 

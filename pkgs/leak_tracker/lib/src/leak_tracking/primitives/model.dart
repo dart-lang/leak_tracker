@@ -122,18 +122,20 @@ class IgnoredLeaksSet {
       );
 }
 
-/// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
+/// The total set of ignored leaks for both [experimentalNotGCed] and [notDisposed] leaks.
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
-    this.notGCed = const IgnoredLeaksSet(),
+    this.experimentalNotGCed = const IgnoredLeaksSet.ignore(),
     this.notDisposed = const IgnoredLeaksSet(),
     this.createdByTestHelpers = false,
     this.testHelperExceptions = const [],
   });
 
   /// Ignore list for notGCed leaks.
-  final IgnoredLeaksSet notGCed;
+  ///
+  /// This list is experimental and may be removed in the future.
+  final IgnoredLeaksSet experimentalNotGCed;
 
   /// Ignore list for notDisposed leaks.
   final IgnoredLeaksSet notDisposed;
@@ -161,12 +163,13 @@ class IgnoredLeaks {
   bool isIgnored(String className, {LeakType? leakType}) {
     switch (leakType) {
       case null:
-        return notGCed.isIgnored(className) && notDisposed.isIgnored(className);
+        return experimentalNotGCed.isIgnored(className) &&
+            notDisposed.isIgnored(className);
       case LeakType.notDisposed:
         return notDisposed.isIgnored(className);
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return notGCed.isIgnored(className);
+        return experimentalNotGCed.isIgnored(className);
     }
   }
 
@@ -179,7 +182,7 @@ class IgnoredLeaks {
       return false;
     }
     return other is IgnoredLeaks &&
-        other.notGCed == notGCed &&
+        other.experimentalNotGCed == experimentalNotGCed &&
         other.notDisposed == notDisposed &&
         other.createdByTestHelpers == createdByTestHelpers &&
         const DeepCollectionEquality().equals(
@@ -190,7 +193,7 @@ class IgnoredLeaks {
 
   @override
   int get hashCode => Object.hash(
-        notGCed,
+        experimentalNotGCed,
         notDisposed,
         createdByTestHelpers,
         testHelperExceptions,
