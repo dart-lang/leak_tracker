@@ -34,7 +34,7 @@ See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/45
 
 Use [this example](https://github.com/flutter/flutter/pull/138804/files) to add your disposables to leak trascking.
 
-### Flutter application
+### See leaks in a running Flutter application
 
 TODO(polina-c): implement and test this scenario
 
@@ -66,7 +66,7 @@ TODO(polina-c): add example of the warning.
 
 Leak tracker is enabled for unit tests in Flutter packages.
 
-Leak tracker is off for:
+Current version of leak tracker is off for:
 
 1. Web platform
 2. Running applications
