@@ -15,16 +15,17 @@ Read more about leak tracking in [overview](OVERVIEW.md).
 To make `testWidgts` detecting leaks in your tests, enable leak tracking in [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
 
 ```dart
+import 'dart:async';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 ...
 
-Future<void> testExecutable(FutureOr<void> Function() testMain) {
+FutureOr<void> testExecutable(FutureOr<void> Function() testMain) {
   LeakTesting.enable();
 
   ...
 
-  await testMain();
+  return testMain();
 }
 ```
 
@@ -50,7 +51,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 ...
 
 enableLeakTracking();
-MemoryAllocations.instance
+FlutterMemoryAllocations.instance
       .addListener((ObjectEvent event) => dispatchObjectEvent(event.toMap()));
 runApp(...
 
