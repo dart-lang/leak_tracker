@@ -1,4 +1,4 @@
-## 2.0.4-wip
+## 2.0.4
 
 * Require Dart SDK 3.2.0 or later.
 

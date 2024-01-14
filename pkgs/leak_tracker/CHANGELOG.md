@@ -1,4 +1,4 @@
-# 10.0.2-wip
+# 10.0.2
 
 * Require Dart SDK 3.2.0 or later.
 
