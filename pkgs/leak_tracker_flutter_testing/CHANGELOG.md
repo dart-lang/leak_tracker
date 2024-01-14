@@ -1,3 +1,7 @@
+## 2.0.4-wip
+
+* Require Dart SDK 3.2.0 or later.
+
 ## 2.0.3
 
 * Allow to ignore objects created by test helpers.
@@ -5,7 +9,7 @@
 
 ## 2.0.2
 
-* Replaced depracated `MemoryAllocations` with `FlutterMemoryAllocations`.
+* Replaced deprecated `MemoryAllocations` with `FlutterMemoryAllocations`.
 
 ## 2.0.1
 

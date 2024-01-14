@@ -2,7 +2,7 @@ name: memory_usage_example
 publish_to: none
 
 environment:
-  sdk: ^3.0.0
+  sdk: ^3.2.0
 
 dependencies:
   memory_usage: ^0.1.0

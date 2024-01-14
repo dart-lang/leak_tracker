@@ -1,10 +1,10 @@
 name: leak_tracker_testing
-version: 2.0.2
+version: 2.0.3-wip
 description: Leak tracking code intended for usage in tests.
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_testing
 
 environment:
-  sdk: '>=3.1.2 <4.0.0'
+  sdk: ^3.2.0
 
 # All dependencies here will become Flutter transitive dependencies.
 # Follow the process when adding:
