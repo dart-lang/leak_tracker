@@ -1,3 +1,7 @@
+# 10.0.2
+
+* Require Dart SDK 3.2.0 or later.
+
 # 10.0.1
 
 * Allow to ignore objects created by test helpers.

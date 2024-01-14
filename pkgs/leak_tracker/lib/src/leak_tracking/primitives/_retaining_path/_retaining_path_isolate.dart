@@ -23,7 +23,6 @@ Future<RetainingPath?> retainingPathImpl(
   if (objRef == null) return null;
 
   try {
-    // ignore: sdk_version_since
     final isolateId = Service.getIsolateId(Isolate.current);
 
     if (isolateId == null) {
