@@ -16,6 +16,7 @@ To make `testWidgts` detecting leaks in your tests, enable leak tracking in [`te
 
 ```dart
 import 'dart:async';
+
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
 ...
