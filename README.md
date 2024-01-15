@@ -35,7 +35,7 @@ Help us to prioritize future work by upvoting and commenting [potential new feat
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
-### How to upgrade Dart SDK to newer versions of this packages in this repo
+### How to roll the latest version of this package to the Dart SDK repo
 
 To upgrade Dart SDK with new version of `memory_usage` update leak_tracker commit
 hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
