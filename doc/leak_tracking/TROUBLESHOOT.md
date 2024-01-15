@@ -77,7 +77,7 @@ impact performance and memory footprint.
 **Tests**
 
 For collecting debugging information in a test, temporarily
-specify what information you need in the test settigs:
+specify what information you need in the test settings:
 
 ```dart
 testWidgets('My test',
@@ -179,7 +179,7 @@ TODO: add example (if you have a good example, please, contribute)
 Such cases are hard to troubleshoot. One way to fix them is to convert all closures,
 which reference the leaked type, to named methods.
 
-### 3. Leak is originated in a depandency
+### 3. Leak is originated in a dependency
 
 If a found leak is originated in Flutter Framework or a dependent package, file a bug or donate a fix to the repo.
 
