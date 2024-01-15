@@ -9,7 +9,7 @@
 
 ## 2.0.2
 
-* Replaced depracated `MemoryAllocations` with `FlutterMemoryAllocations`.
+* Replaced deprecated `MemoryAllocations` with `FlutterMemoryAllocations`.
 
 ## 2.0.1
 

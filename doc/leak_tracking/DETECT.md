@@ -10,9 +10,9 @@ Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Quick start to track leaks for Flutter
 
-### Test cover with `testWidgts`
+### Test cover with `testWidgets`
 
-To make `testWidgts` detecting leaks in your tests, enable leak tracking in [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
+To make `testWidgets` detecting leaks in your tests, enable leak tracking in [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
 
 ```dart
 import 'dart:async';
@@ -36,7 +36,7 @@ See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/45
 
 ### Instrument more disposables
 
-Use [this example](https://github.com/flutter/flutter/pull/138804/files) to add your disposables to leak trascking.
+Use [this example](https://github.com/flutter/flutter/pull/138804/files) to add your disposables to leak tracking.
 
 ### See leaks in a running Flutter application
 

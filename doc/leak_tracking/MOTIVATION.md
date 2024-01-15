@@ -37,7 +37,7 @@ Engineers want their applications to be memory efficient, but they want to minim
 Leak tracker fully automates item #1, and almost fully automates item #2.
 (‘Almost’ means with the assumption that, if a large chunk of objects is held from GC longer than needed, some of them are disposables and thus will be detected by the leak tracker. This assumption is not always true: in rare cases a large chunk of objects is held from being GCed, but there are no disposables.)
 
-As a result, leak_traker increases confidence and reduces effort related to memory efficiency.
+As a result, leak_tracker increases confidence and reduces effort related to memory efficiency.
 
 Item #3 is not covered by leak_tracker. There are no known tools to automate it so far. All known methods are manual:
 1. Analyzing the consumed memory Memory using DevTools snapshotting and diffing
