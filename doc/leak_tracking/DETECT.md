@@ -12,7 +12,11 @@ Read more about leak tracking in [overview](OVERVIEW.md).
 
 ### Test cover with `testWidgets`
 
-To make `testWidgets` detecting leaks in your tests, enable leak tracking in [`test/flutter_test_config.dart`](see hhttps://api.flutter.dev/flutter/flutter_test/flutter_test-library.html):
+The Flutter test method `testWidgets` can be configured to track and detect leaks
+from all instrumented classes. To enable leak tracking for your entire test suite
+and to configure leak tracking settings, add or modify your
+[`test/flutter_test_config.dart`](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html)
+file:
 
 ```dart
 import 'dart:async';
@@ -32,11 +36,21 @@ FutureOr<void> testExecutable(FutureOr<void> Function() testMain) {
 }
 ```
 
-See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) on how to adjust leak tracking settings.
+You can also adjust leak tracking settings for individual test cases:
+
+```dart
+  testWidgets('Images are rendered ad expected.',
+  // TODO(polina-c): make sure images are disposed, https://github.com/polina-c/my_repo/issues/141388
+  experimentalLeakTesting: LeakTesting.settings.withIgnored(classes: ['Image']),
+  (WidgetTester tester) async {
+    ...
+```
+
+See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) for mor information.
 
 ### Instrument more disposables
 
-Use [this example](https://github.com/flutter/flutter/pull/138804/files) to add your disposables to leak tracking.
+Use [this example](https://github.com/flutter/flutter/pull/141526/files) to add your disposables to leak tracking.
 
 ### See leaks in a running Flutter application
 
@@ -56,7 +70,7 @@ import 'package:leak_tracker/leak_tracker.dart';
 enableLeakTracking();
 FlutterMemoryAllocations.instance
       .addListener((ObjectEvent event) => dispatchObjectEvent(event.toMap()));
-runApp(...
+runApp(...);
 
 ```
 

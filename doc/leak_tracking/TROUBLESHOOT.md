@@ -128,6 +128,15 @@ To make debugging easier, invoke [ChangeNotifier.maybeDispatchObjectCreation]
 in constructor of the class. It will help
 to identify the owner in case of leaks.
 
+Check for compile time constant `kFlutterMemoryAllocationsEnabled` will make this
+block is included if only memory allocation events are enabled.
+
+```
+if (kFlutterMemoryAllocationsEnabled) {
+  maybeDispatchObjectCreation(this);
+}
+```
+
 ### 2. Static or global object causes notGCed leaks
 
 If you see notGCed leaks, where the retaining path starts with global or static variable,

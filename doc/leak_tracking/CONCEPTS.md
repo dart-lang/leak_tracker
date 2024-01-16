@@ -13,10 +13,10 @@ Before reading about leak tracking concepts, understand [Dart memory concepts](h
 
 ### Instrumented disposables
 
-Instrumented disposable is a disposable class, instrumented to be tracked by tools
-like leak tracker, by dispatching its creation and disposal to the class
-FlutterMemoryAllocations (listened by the class LeakTracking)
-or directly to the class LeakTracking.
+An instrumented disposable is a disposable class whose creation and disposal are instrumented for
+tracking by tools like leak tracker. The instrumentation is done by dispatching events directly
+to the `LeakTracking` class, or by dispatching events to the `FlutterMemoryAllocations` class,
+which is listened to by `LeakTracking`.
 
 ### Package disposables
 
