@@ -67,8 +67,8 @@ The cases below are selected from the GitHub issue history and illustrate three 
 1. Disposed but not GCed Route is leaking: https://github.com/flutter/flutter/issues/88073.
 (A route may reference the entire page widget tree.)
 
-2. [Internal Google app](http://b/179704144) leaked at least 300K of notGCed objects at startup.
-Some of them are disposed disposables, detectable by leak tracker.
+2. A Flutter customer building a large application found the application was leaking over 300KB at startup. Many of the leaked objects would be detected by this package.
+<!-- Internal Google reference: http://b/179704144 -->
 
 ### Fixed `dispose`
 
