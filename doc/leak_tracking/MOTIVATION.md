@@ -10,15 +10,16 @@ Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Why do disposables exist?
 
-In most cases object lifecycle is managed well by a garbage collector.
+In most cases, objects' lifecycle is managed well by the Dart garbage collector.
 
-However, some objects (memory-risky objects) require special care, to avoid risk of memory leaks:
+However, some objects (memory-risky objects) require special care to avoid the risk of memory leaks:
 1. Objects that allocate significant memory for their members
-2. Objects that may reference a significant number of other objects, designed to be short living (like the entire widget tree), and prevent them from being GCed in time.
+2. Objects that reference a significant number of other objects, designed to be short living (like the entire widget tree),
+and therefore prevent them from being GCed in time.
 
 ![leak](images/leak.png "Leak")
 
-Such objects have method `dispose`, which has two purposes:
+Such objects usually have a method `dispose`, which has two purposes:
 
 1. Releases the resources, to make sure they do not stay longer than needed.
 2. Explicitly marks the object as not needed, to make lifecycle management easier. For example:
@@ -34,12 +35,14 @@ To ensure **memory efficiency** of applications, engineers should watch that:
 
 Engineers want their applications to be memory efficient, but they want to minimize time and mental effort spent worrying about the items above.
 
-Leak tracker fully automates item #1, and almost fully automates item #2.
-(‘Almost’ means with the assumption that, if a large chunk of objects is held from GC longer than needed, some of them are disposables and thus will be detected by the leak tracker. This assumption is not always true: in rare cases a large chunk of objects is held from being GCed, but there are no disposables.)
+Leak tracker fully automates item #1, and almost* fully automates item #2.
 
-As a result, leak_tracker increases confidence and reduces effort related to memory efficiency.
+> [!NOTE]
+> *If a large set of objects is held from GC longer than needed, some of them are likely to be disposables, and thus leaks will be detected by the leak tracker. This is not always true, though; in rare cases, a large set of objects is held from GC, but the set does not contain any disposables tracked by leak tracker.
 
-Item #3 is not covered by leak_tracker. There are no known tools to automate it so far. All known methods are manual:
+As a result, `leak_tracker` increases confidence and reduces engineering effort related to memory efficiency.
+
+Item #3 is not covered by `leak_tracker`. There are no known tools to automate it so far. All known methods are manual:
 1. Analyzing the consumed memory Memory using DevTools snapshotting and diffing
 2. [Memory baselining](../BASELINE.md) in regression tests
 

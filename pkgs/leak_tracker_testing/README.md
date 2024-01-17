@@ -5,7 +5,7 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 ## What is this?
 
-This is test-only APIs of [leak_tracker](https://pub.dev/packages/leak_tracker).
+This package contains the test-only leak tracking APIs.
 
 They are separated from `leak_tracker` to make sure
 testing code is not used in production.

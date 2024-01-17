@@ -36,21 +36,22 @@ FutureOr<void> testExecutable(FutureOr<void> Function() testMain) {
 }
 ```
 
-You can also adjust leak tracking settings for individual test cases:
+You can also adjust leak tracking settings for individual tests:
 
 ```dart
-  testWidgets('Images are rendered ad expected.',
-  // TODO(polina-c): make sure images are disposed, https://github.com/polina-c/my_repo/issues/141388
+  testWidgets('Images are rendered as expected.',
+  // TODO(polina-c): make sure images are disposed, https://github.com/polina-c/my_repo/issues/141
   experimentalLeakTesting: LeakTesting.settings.withIgnored(classes: ['Image']),
   (WidgetTester tester) async {
     ...
 ```
 
-See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) for mor information.
+See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) for more information.
 
 ### Instrument more disposables
 
-Use [this example](https://github.com/flutter/flutter/pull/141526/files) to add your disposables to leak tracking.
+To instrument a disposable class for leak tracking, you need to dispatch object creation and disposal events to leak tracker.
+Use [this example](https://github.com/flutter/flutter/pull/141526/files) as a guide.
 
 ### See leaks in a running Flutter application
 
@@ -82,9 +83,9 @@ TODO(polina-c): add example of the warning.
 
 ### By environment
 
-Leak tracker is enabled for unit tests in Flutter packages.
+At this time, leak tracking is supported only for unit tests within Flutter packages.
 
-Current version of leak tracker is off for:
+With the latest version of leak tracker, leak tracking is not supported for:
 
 1. Web platform
 2. Running applications
@@ -93,18 +94,18 @@ Current version of leak tracker is off for:
 ### By leak types
 
 Leak tracking for not-GCed leaks is experimental and is off by default.
-For now it is recommended to track only not-disposed leaks.
+At this time, it is recommended to track only not-disposed leaks.
 
 ### By tracked classes
 
 The leak tracker will catch leaks only for instrumented
-objects (See [concepts](CONCEPTS.md) for details).
+objects (see [concepts](CONCEPTS.md) for details).
 
 However, the good news is:
 
-1. Disposables in Flutter Framework are instrumented.
-If how your Flutter app manages widgets results in leaks,
-Flutter will catch them.
+1. Disposables in the Flutter Framework are instrumented.
+If your Flutter app manages widgets in a way that results in leaks,
+`leak_tracker` will catch them.
 
 2. If a leak involves at least one instrumented object,
 the leak will be caught and all
@@ -124,7 +125,7 @@ Leak tracking is fully available.
 
 **Flutter profile**
 
-Leak tracking is available, but FlutterMemoryAllocations that listens to
+Leak tracking is available, but `FlutterMemoryAllocations` that listens to
 Flutter instrumented objects,
 should be [turned on](https://github.com/flutter/flutter/blob/15af81782e19ebe7273872f8b07ac71df4e749f2/packages/flutter/lib/src/foundation/memory_allocations.dart#L13)
 if you want to track Flutter Framework objects.
