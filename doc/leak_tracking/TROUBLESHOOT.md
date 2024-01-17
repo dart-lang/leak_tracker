@@ -89,7 +89,7 @@ experimentalLeakTesting: LeakTesting.settings.withCreationStackTrace(),
 
 **Applications**
 
-TODO: add documentation
+TODO: add documentation, https://github.com/dart-lang/leak_tracker/issues/172
 
 ## Verify object references
 
@@ -183,7 +183,7 @@ class C {
 If a method contains more than one closures, they share the context and thus all
 instances of the context will be alive while at least one of the closures is alive.
 
-TODO: add example (if you have a good example, please, contribute)
+TODO: add example (if you have a good example, please, contribute), https://github.com/dart-lang/leak_tracker/issues/207
 
 Such cases are hard to troubleshoot. One way to fix them is to convert all closures,
 which reference the leaked type, to named methods.
