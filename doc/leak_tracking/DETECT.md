@@ -55,7 +55,7 @@ Use [this example](https://github.com/flutter/flutter/pull/141526/files) as a gu
 
 ### See leaks in a running Flutter application
 
-TODO(polina-c): implement and test this scenario
+TODO(polina-c): implement and test this scenario https://github.com/dart-lang/leak_tracker/issues/172
 
 1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
 
@@ -77,7 +77,7 @@ runApp(...);
 
 3. Run the application in debug mode and watch for a leak related warnings.
 
-TODO(polina-c): add example of the warning.
+TODO(polina-c): add example of the warning https://github.com/dart-lang/leak_tracker/issues/172
 
 ## Limitations
 
