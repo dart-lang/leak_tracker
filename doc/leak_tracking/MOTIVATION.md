@@ -43,7 +43,7 @@ Leak tracker fully automates item #1, and almost* fully automates item #2.
 As a result, `leak_tracker` increases confidence and reduces engineering effort related to memory efficiency.
 
 Item #3 is not covered by `leak_tracker`. There are no known tools to automate it so far. All known methods are manual:
-1. Analyzing the consumed memory Memory using DevTools snapshotting and diffing
+1. Analyzing the consumed memory using DevTools snapshotting and diffing
 2. [Memory baselining](../BASELINE.md) in regression tests
 
 ## How large can memory leaks be?
@@ -52,9 +52,9 @@ How large can a memory leak be when disposal is forgotten or when an object is r
 
 The cases below are selected from the GitHub issue history and illustrate three types of memory issues:
 
-1. Out of memory crash
-2. 100K+ leaks
-3. Leaks with no numbers recorded, but significant enough to file, investigate and fix the issue
+* Out of memory crash
+* 100K+ leaks
+* Leaks with no numbers recorded, but significant enough to file, investigate and fix the issue
 
 ### Forgotten `dispose`
 

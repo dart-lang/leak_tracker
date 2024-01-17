@@ -190,7 +190,7 @@ which reference the leaked type, to named methods.
 
 ### 3. Leak is originated in a dependency
 
-If a found leak is originated in Flutter Framework or a dependent package, file a bug or donate a fix to the repo.
+If a found leak is originated in the Flutter Framework or a dependent package, file a bug or contribute a fix to the repo.
 
 See the [tracking issue](https://github.com/flutter/flutter/issues/134787) for memory leak clean up in Flutter Framework.
 See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) on how to ignore leaks while fix is on the way.
