@@ -39,11 +39,11 @@ FutureOr<void> testExecutable(FutureOr<void> Function() testMain) {
 You can also adjust leak tracking settings for individual tests:
 
 ```dart
-  testWidgets('Images are rendered as expected.',
-  // TODO(polina-c): make sure images are disposed, https://github.com/polina-c/my_repo/issues/141
-  experimentalLeakTesting: LeakTesting.settings.withIgnored(classes: ['Image']),
-  (WidgetTester tester) async {
-    ...
+testWidgets('Images are rendered as expected.',
+// TODO(polina-c): make sure images are disposed, https://github.com/polina-c/my_repo/issues/141
+experimentalLeakTesting: LeakTesting.settings.withIgnored(classes: ['Image']),
+(WidgetTester tester) async {
+  ...
 ```
 
 See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) for more information.
