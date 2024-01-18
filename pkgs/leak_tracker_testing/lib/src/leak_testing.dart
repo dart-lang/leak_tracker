@@ -60,7 +60,7 @@ class LeakTesting {
 
   /// Handler for memory leaks found in tests.
   ///
-  /// Set it to analyse the leaks programmatically.
+  /// Set it to analyze the leaks programmatically.
   /// The handler is invoked on tear down of the test run.
   /// The default reporter fails in case of found leaks.
   ///
@@ -121,6 +121,10 @@ class LeakTesting {
   /// In the result the ignored limit for a class is the
   /// maximum of two original ignored limits.
   /// Items in [classes] will be added to all ignore lists.
+  ///
+  /// Setting [createdByTestHelpers] to true may cause significant
+  /// performance impact on the test run, caused by conversion of
+  /// creation call stack to String.
   @useResult
   LeakTesting withIgnored({
     Map<String, int?> notGCed = const {},
