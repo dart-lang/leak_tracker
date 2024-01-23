@@ -4,6 +4,7 @@
 
 import '../shared/shared_model.dart';
 import '_object_record.dart';
+import 'primitives/_test_helper_detector.dart';
 import 'primitives/model.dart';
 
 /// Decides which leaks to report based on allow lists of the phase.
@@ -53,21 +54,33 @@ class _PhaseLeakFilter {
 
     // Check for test helpers should happen only in case of leak because
     // it is performance heavy.
-    bool shouldCheckForTestHelpers =
+    final shouldCheckForTestHelpers =
         phase.ignoredLeaks.createdByTestHelpers && result;
 
     if (!shouldCheckForTestHelpers) return result;
 
-    // if (!phase.ignoredLeaks.createdByTestHelpers || !result) return result;
+    return _shouldReportByCreator(record);
+  }
 
+  /// Returns true if the leak should not be ignored because of the creator.
+  ///
+  /// Removes [ContextKeys.startCallstack] from [ObjectRecord.context] if
+  /// it is not needed.
+  bool _shouldReportByCreator(ObjectRecord record) {
     final stackTrace =
         record.context![ContextKeys.startCallstack]! as StackTrace;
 
     if (!phase.leakDiagnosticConfig.collectStackTraceOnStart) {
       record.context!.remove(ContextKeys.startCallstack);
     }
+
+    return !isCreatedByTestHelper(
+      stackTrace.toString(),
+      phase.ignoredLeaks.testHelperExceptions,
+    );
   }
 
+  /// Returns true if the leak should not be ignored because of type or class.
   bool _shouldReportByTypeAndClass(
     LeakType leakType,
     ObjectRecord record,
