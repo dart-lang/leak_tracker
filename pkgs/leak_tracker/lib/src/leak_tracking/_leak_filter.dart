@@ -10,6 +10,11 @@ import 'primitives/model.dart';
 class LeakFilter {
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
 
+  /// Returns true if the leak should be reported.
+  ///
+  /// Removes [ContextKeys.startCallstack] from [ObjectRecord.context] if
+  /// it is not needed for debugging, but only needed to detect if the leak
+  /// should be ignored.
   bool shouldReport(LeakType leakType, ObjectRecord record) {
     final filter = _phases.putIfAbsent(
       record.phase,

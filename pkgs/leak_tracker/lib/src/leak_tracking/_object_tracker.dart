@@ -15,7 +15,6 @@ import 'primitives/_finalizer.dart';
 import 'primitives/_gc_counter.dart';
 import 'primitives/_retaining_path/_connection.dart';
 import 'primitives/_retaining_path/_retaining_path.dart';
-import 'primitives/_test_helper_detector.dart';
 import 'primitives/model.dart';
 
 /// Keeps collection of object records until
@@ -63,22 +62,12 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     if (phase.ignoreLeaks) return;
 
-    StackTrace? stackTrace;
-
-    if (phase.ignoredLeaks.createdByTestHelpers) {
-      stackTrace = StackTrace.current;
-      if (isCreatedByTestHelper(
-        stackTrace.toString(),
-        phase.ignoredLeaks.testHelperExceptions,
-      )) return;
-    }
-
     final record =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
 
-    if (phase.leakDiagnosticConfig.collectStackTraceOnStart) {
-      stackTrace ??= StackTrace.current;
-      record.setContext(ContextKeys.startCallstack, stackTrace);
+    if (phase.leakDiagnosticConfig.collectStackTraceOnStart ||
+        phase.ignoredLeaks.createdByTestHelpers) {
+      record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
 
     _finalizer.attach(object, record);
