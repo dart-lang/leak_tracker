@@ -45,7 +45,7 @@ class _PhaseLeakFilter {
         );
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return result = _shouldReportByTypeAndClass(
+        result = _shouldReportByTypeAndClass(
           leakType,
           record,
           phase.ignoredLeaks.notGCed,
