@@ -12,8 +12,9 @@ class LeakFilter {
 
   /// Returns true if the leak should be reported.
   ///
-  /// Removes [ContextKeys.startCallstack] from [ObjectRecord.context] if
-  /// it is not needed for debugging, but only needed to detect if the leak
+  /// If result is true, removes [ContextKeys.startCallstack]
+  /// from [ObjectRecord.context] the call stack
+  /// is not needed for debugging, but only needed to detect if the leak
   /// should be ignored.
   bool shouldReport(LeakType leakType, ObjectRecord record) {
     final filter = _phases.putIfAbsent(
@@ -33,24 +34,41 @@ class _PhaseLeakFilter {
   final PhaseSettings phase;
 
   bool shouldReport(LeakType leakType, ObjectRecord record) {
+    final bool result;
     switch (leakType) {
       case LeakType.notDisposed:
-        return _shouldReport(
+        result = _shouldReportByTypeAndClass(
           leakType,
           record,
           phase.ignoredLeaks.notDisposed,
         );
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return _shouldReport(
+        return result = _shouldReportByTypeAndClass(
           leakType,
           record,
           phase.ignoredLeaks.notGCed,
         );
     }
+
+    // Check for test helpers should happen only in case of leak because
+    // it is performance heavy.
+    bool shouldCheckForTestHelpers =
+        phase.ignoredLeaks.createdByTestHelpers && result;
+
+    if (!shouldCheckForTestHelpers) return result;
+
+    // if (!phase.ignoredLeaks.createdByTestHelpers || !result) return result;
+
+    final stackTrace =
+        record.context![ContextKeys.startCallstack]! as StackTrace;
+
+    if (!phase.leakDiagnosticConfig.collectStackTraceOnStart) {
+      record.context!.remove(ContextKeys.startCallstack);
+    }
   }
 
-  bool _shouldReport(
+  bool _shouldReportByTypeAndClass(
     LeakType leakType,
     ObjectRecord record,
     IgnoredLeaksSet ignoredLeaks,
