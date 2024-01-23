@@ -3,7 +3,8 @@
     "terminal.integrated.cwd": "pkgs/leak_tracker",
     "cSpell.words": [
         "baselining",
-        "Callstack",
+        "callstack",
+        "cupertino",
         "finalizer",
         "gced",
         "polina",
