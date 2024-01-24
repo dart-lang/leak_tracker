@@ -94,7 +94,7 @@ abstract class LeakTracking {
     }());
   }
 
-  /// Dispatches an object event to the leak tracker.
+  /// Dispatches an object event to the leak_tracker.
   ///
   /// Consumes the MemoryAllocations event format:
   /// https://github.com/flutter/flutter/blob/a479718b02a818fb4ac8d4900bf08ca389cd8e7d/packages/flutter/lib/src/foundation/memory_allocations.dart#L51
@@ -109,7 +109,7 @@ abstract class LeakTracking {
     }());
   }
 
-  /// Dispatches object creation to the leak tracker.
+  /// Dispatches object creation to the leak_tracker.
   ///
   /// Use [context] to provide additional information,
   /// that may help in leak troubleshooting.
@@ -135,7 +135,7 @@ abstract class LeakTracking {
     }());
   }
 
-  /// Dispatches object disposal to the leak tracker.
+  /// Dispatches object disposal to the leak_tracker.
   ///
   /// See [dispatchObjectCreated] for parameters documentation.
   static void dispatchObjectDisposed({
@@ -149,7 +149,7 @@ abstract class LeakTracking {
     }());
   }
 
-  /// Dispatches additional context information to the leak tracker.
+  /// Dispatches additional context information to the leak_tracker.
   ///
   /// See [dispatchObjectCreated] for parameters documentation.
   static void dispatchObjectTrace({

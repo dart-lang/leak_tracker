@@ -20,6 +20,8 @@ void main() {
         ),
       );
 
+      LeakTracking.phase = const PhaseSettings.experimentalNotGCedOn();
+
       expect(LeakTracking.isStarted, true);
       expect(LeakTracking.phase.ignoreLeaks, false);
 
@@ -42,13 +44,14 @@ void main() {
     });
   }
 
-  test('Stack trace does not start with leak tracker calls', () async {
+  test('Stack trace does not start with leak_tracker calls', () async {
     LeakTracking.start(
       resetIfAlreadyStarted: true,
       config: LeakTrackingConfig.passive(),
     );
 
     LeakTracking.phase = const PhaseSettings(
+      ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
       leakDiagnosticConfig: LeakDiagnosticConfig(
         collectStackTraceOnDisposal: true,
         collectStackTraceOnStart: true,
@@ -89,7 +92,7 @@ void main() {
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
     test(
-        'Leak tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
+        'leak_tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
         () async {
       LeakTracking.start(
         resetIfAlreadyStarted: true,
@@ -103,6 +106,7 @@ void main() {
       expect(LeakTracking.phase.ignoreLeaks, false);
 
       LeakTracking.phase = const PhaseSettings(
+        ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNotGCed: true,
         ),
@@ -148,6 +152,7 @@ void main() {
       );
 
       LeakTracking.phase = const PhaseSettings(
+        ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
         leakDiagnosticConfig: LeakDiagnosticConfig(
           collectRetainingPathForNotGCed: true,
         ),

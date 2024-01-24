@@ -5,18 +5,9 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 ## What is this?
 
-This is helper for testing [leak_tracker](https://pub.dev/packages/leak_tracker).
+This package contains the test-only leak tracking APIs.
 
 They are separated from `leak_tracker` to make sure
 testing code is not used in production.
 
-## How to use the helpers?
-
-To test for leaks with descriptive messages, use `isLeakFree` against a `Leaks` instance:
-
-```dart
-final leaks = await LeakTracking.collectLeaks();
-expect(leaks, isLeakFree);
-```
-
-See more examples in [end_to_end_test.dart](https://github.com/dart-lang/leak_tracker/blob/main/pkgs/leak_tracker/test/tests/leak_tracking/end_to_end_test.dart).
+Read more in [leak tracking overview](https://github.com/dart-lang/leak_tracker/blob/main/doc/leak_tracking/OVERVIEW.md).

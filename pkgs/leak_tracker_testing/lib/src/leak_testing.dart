@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import 'matchers.dart';
 
-/// Leak tracker settings for tests.
+/// leak_tracker settings for tests.
 ///
 /// Set [LeakTesting.settings], to
 /// change default leak tracking settings for tests.
@@ -147,7 +147,7 @@ class LeakTesting {
 
     return copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: ignoredLeaks.notGCed.merge(
+        experimentalNotGCed: ignoredLeaks.experimentalNotGCed.merge(
           IgnoredLeaksSet(
             byClass: addClassesToMap(notGCed, classes),
             ignoreAll: allNotGCed,
@@ -174,15 +174,16 @@ class LeakTesting {
   /// Items in [classes] will be removed from all ignore lists.
   @useResult
   LeakTesting withTracked({
-    List<String> notGCed = const [],
+    List<String> experimentalNotGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
-    bool allNotGCed = false,
+    bool experimantalAllNotGCed = false,
     bool allNotDisposed = false,
     bool createdByTestHelpers = false,
   }) {
-    var newNotGCed = ignoredLeaks.notGCed.track([...notGCed, ...classes]);
-    if (allNotGCed) {
+    var newNotGCed = ignoredLeaks.experimentalNotGCed
+        .track([...experimentalNotGCed, ...classes]);
+    if (experimantalAllNotGCed) {
       newNotGCed = newNotGCed.copyWith(ignoreAll: false);
     }
 
@@ -194,7 +195,7 @@ class LeakTesting {
 
     final result = copyWith(
       ignoredLeaks: IgnoredLeaks(
-        notGCed: newNotGCed,
+        experimentalNotGCed: newNotGCed,
         notDisposed: newNotDisposed,
         createdByTestHelpers:
             ignoredLeaks.createdByTestHelpers && !createdByTestHelpers,

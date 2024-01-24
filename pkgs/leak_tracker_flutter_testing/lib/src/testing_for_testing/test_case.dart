@@ -92,7 +92,8 @@ class LeakTestCase {
       testDescription,
       LeakType.notGCed,
       leaks,
-      ignore: settings.ignore || settings.ignoredLeaks.notGCed.ignoreAll,
+      ignore: settings.ignore ||
+          settings.ignoredLeaks.experimentalNotGCed.ignoreAll,
       expectedCount: notGCedTotal -
           (settings.ignoredLeaks.createdByTestHelpers ? notGCedInHelpers : 0),
       expectedContextKeys: expectedContextKeys,

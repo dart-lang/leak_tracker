@@ -122,18 +122,22 @@ class IgnoredLeaksSet {
       );
 }
 
-/// The total set of ignored leaks for both [notGCed] and [notDisposed] leaks.
+/// The total set of ignored leaks.
+///
+/// Includes both [experimentalNotGCed] and [notDisposed] leaks.
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
-    this.notGCed = const IgnoredLeaksSet(),
+    this.experimentalNotGCed = const IgnoredLeaksSet.ignore(),
     this.notDisposed = const IgnoredLeaksSet(),
     this.createdByTestHelpers = false,
     this.testHelperExceptions = const [],
   });
 
   /// Ignore list for notGCed leaks.
-  final IgnoredLeaksSet notGCed;
+  ///
+  /// This list is experimental and may be removed in the future.
+  final IgnoredLeaksSet experimentalNotGCed;
 
   /// Ignore list for notDisposed leaks.
   final IgnoredLeaksSet notDisposed;
@@ -151,7 +155,7 @@ class IgnoredLeaks {
   /// Stack frames that match this pattern will not be treated as test helpers.
   ///
   /// Is used to test functionality of
-  /// the leak tracker.
+  /// the leak_tracker.
   final List<RegExp> testHelperExceptions;
 
   /// Returns true if the class is ignored.
@@ -161,12 +165,13 @@ class IgnoredLeaks {
   bool isIgnored(String className, {LeakType? leakType}) {
     switch (leakType) {
       case null:
-        return notGCed.isIgnored(className) && notDisposed.isIgnored(className);
+        return experimentalNotGCed.isIgnored(className) &&
+            notDisposed.isIgnored(className);
       case LeakType.notDisposed:
         return notDisposed.isIgnored(className);
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return notGCed.isIgnored(className);
+        return experimentalNotGCed.isIgnored(className);
     }
   }
 
@@ -179,7 +184,7 @@ class IgnoredLeaks {
       return false;
     }
     return other is IgnoredLeaks &&
-        other.notGCed == notGCed &&
+        other.experimentalNotGCed == experimentalNotGCed &&
         other.notDisposed == notDisposed &&
         other.createdByTestHelpers == createdByTestHelpers &&
         const DeepCollectionEquality().equals(
@@ -190,7 +195,7 @@ class IgnoredLeaks {
 
   @override
   int get hashCode => Object.hash(
-        notGCed,
+        experimentalNotGCed,
         notDisposed,
         createdByTestHelpers,
         testHelperExceptions,
@@ -286,7 +291,7 @@ class LeakTrackingConfig {
     this.maxRequestsForRetainingPath = 10,
   });
 
-  /// The leak tracker:
+  /// The leak_tracker:
   /// - will not auto check leaks
   /// - when leak checking is invoked, will not send notifications
   /// - will set [disposalTime] to zero, to assume
@@ -345,6 +350,12 @@ class PhaseSettings {
     this.leakDiagnosticConfig = const LeakDiagnosticConfig(),
     this.baselining,
   });
+
+  const PhaseSettings.experimentalNotGCedOn()
+      : this(
+          ignoredLeaks:
+              const IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
+        );
 
   const PhaseSettings.ignored() : this(ignoreLeaks: true);
 

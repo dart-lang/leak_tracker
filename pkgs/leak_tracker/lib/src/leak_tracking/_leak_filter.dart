@@ -42,7 +42,7 @@ class _PhaseLeakFilter {
         result = _shouldReportByTypeAndClass(
           leakType,
           record,
-          phase.ignoredLeaks.notGCed,
+          phase.ignoredLeaks.experimentalNotGCed,
         );
     }
 

@@ -1,7 +1,7 @@
 
 [![CI](https://github.com/dart-lang/leak_tracker/actions/workflows/ci.yaml/badge.svg)](https://github.com/dart-lang/leak_tracker/actions/workflows/ci.yaml)
 
-# Memory Leak Tracker
+# Memory leak_tracker
 
 This is a framework for detecting memory issues in Dart and Flutter applications.
 
@@ -22,10 +22,8 @@ Ready for use:
 
 Under construction:
 
-- [Leak tracking concepts](doc/CONCEPTS.md)
-- [Detect memory leaks](doc/DETECT.md)
-- [Troubleshoot memory leaks](doc/TROUBLESHOOT.md)
-- [Baseline memory](doc/BASELINE.md)
+- [Memory leak tracking](doc/leak_tracking/OVERVIEW.md)
+- [Memory baselining](doc/BASELINE.md)
 
 ## Roadmap
 
@@ -37,12 +35,12 @@ Help us to prioritize future work by upvoting and commenting [potential new feat
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
-### How to upgrade Dart SDK
+### How to roll the latest version of this package to the Dart SDK repo
 
 To upgrade Dart SDK with new version of `memory_usage` update leak_tracker commit
 hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
 
-### How to upgrade flutter_test
+### How to roll the latest version of this package to Flutter
 
 To upgrade versions of leak_tracker and/or leak_tracker_testing used by `testWidgets`:
 
