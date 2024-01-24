@@ -1,3 +1,7 @@
+## 2.0.5
+
+* Upgrade to leak_tracker 10.0.3.
+
 ## 2.0.4
 
 * Require Dart SDK 3.2.0 or later.

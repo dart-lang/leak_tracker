@@ -1,3 +1,7 @@
+# 10.0.3
+
+* Improve performance of the case with ignored test helpers.
+
 # 10.0.2
 
 * Require Dart SDK 3.2.0 or later.
