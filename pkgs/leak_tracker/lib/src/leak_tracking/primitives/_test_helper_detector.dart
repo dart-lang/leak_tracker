@@ -50,16 +50,21 @@ bool isCreatedByTestHelper(
   return false;
 }
 
+/// Postponed detector of test helpers.
+///
+/// It is used to detect if the leak was created by a test helper,
+/// only if the leak is detected.
+///
+/// It is needed because the detection is a heavy operation
+/// and should not be done for every tracked object.
 class CreationChecker {
   StackTrace? _creationStack;
   List<RegExp>? _exceptions;
 
-  /// Returns whether the leak was created by a test helper.
+  /// True, if the leak was created by a test helper.
   ///
-  /// Frames, that match `exceptions` passed to constructor will be ignored.
-  ///
-  /// See details on what means to be created by a test helper
-  /// in doc for `LeakTesting.createdByTestHelpers`.
+  /// This value is cached. The first calculation of the value
+  /// is performance heavy.
   late final bool createdByTestHelpers = () {
     final result = isCreatedByTestHelper(
       _creationStack!.toString(),
@@ -70,6 +75,9 @@ class CreationChecker {
     return result;
   }();
 
+  /// Creates instance of [CreationChecker].
+  ///
+  /// Frames, that match [exceptions] will be ignored.
   CreationChecker(
       {required StackTrace creationStack, required List<RegExp> exceptions})
       : _creationStack = creationStack,
