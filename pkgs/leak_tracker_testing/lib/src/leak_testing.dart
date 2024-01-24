@@ -8,7 +8,7 @@ import 'package:meta/meta.dart';
 
 import 'matchers.dart';
 
-/// Leak tracker settings for tests.
+/// leak_tracker settings for tests.
 ///
 /// Set [LeakTesting.settings], to
 /// change default leak tracking settings for tests.

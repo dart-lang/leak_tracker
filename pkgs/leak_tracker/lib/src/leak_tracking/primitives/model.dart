@@ -155,7 +155,7 @@ class IgnoredLeaks {
   /// Stack frames that match this pattern will not be treated as test helpers.
   ///
   /// Is used to test functionality of
-  /// the leak tracker.
+  /// the leak_tracker.
   final List<RegExp> testHelperExceptions;
 
   /// Returns true if the class is ignored.
@@ -291,7 +291,7 @@ class LeakTrackingConfig {
     this.maxRequestsForRetainingPath = 10,
   });
 
-  /// The leak tracker:
+  /// The leak_tracker:
   /// - will not auto check leaks
   /// - when leak checking is invoked, will not send notifications
   /// - will set [disposalTime] to zero, to assume

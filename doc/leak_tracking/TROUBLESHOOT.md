@@ -7,7 +7,7 @@ The text below is under construction.
 This page describes how to troubleshoot memory leaks.
 Read more about leak tracking in [overview](OVERVIEW.md).
 
-If leak tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
+If leak_tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
 switch to [more complicated troubleshooting](#more-complicated-cases).
 
 ## General rules
@@ -71,7 +71,7 @@ To understand the root cause of a memory leak, you may want to gather additional
     - **Retaining path**: shows which objects hold the leaked one from garbage collection.
 
 
-By default, the leak tracker does not gather the information, because the collection may
+By default, the leak_tracker does not gather the information, because the collection may
 impact performance and memory footprint.
 
 **Tests**
@@ -128,8 +128,11 @@ To make debugging easier, invoke [ChangeNotifier.maybeDispatchObjectCreation]
 in constructor of the class. It will help
 to identify the owner in case of leaks.
 
-Check for compile time constant `kFlutterMemoryAllocationsEnabled` will make this
-block is included if only memory allocation events are enabled.
+Be sure to guard the invocation behind the
+[`kFlutterMemoryAllocationsEnabled`](https://api.flutter.dev/flutter/foundation/kFlutterMemoryAllocationsEnabled-constant.html)
+flag.
+This will ensure that body of `maybeDispatchObjectCreation` is only compiled into your app
+if memory allocation events are enabled.
 
 ```
 if (kFlutterMemoryAllocationsEnabled) {
@@ -193,4 +196,4 @@ which reference the leaked type, to named methods.
 If a found leak is originated in the Flutter Framework or a dependent package, file a bug or contribute a fix to the repo.
 
 See the [tracking issue](https://github.com/flutter/flutter/issues/134787) for memory leak clean up in Flutter Framework.
-See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) on how to ignore leaks while fix is on the way.
+See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) on how to ignore leaks while fix is on the way.

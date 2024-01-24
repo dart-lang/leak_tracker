@@ -46,12 +46,12 @@ experimentalLeakTesting: LeakTesting.settings.withIgnored(classes: ['Image']),
   ...
 ```
 
-See [documentation for `testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) for more information.
+See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) for more information.
 
 ### Instrument more disposables
 
-To instrument a disposable class for leak tracking, you need to dispatch object creation and disposal events to leak tracker.
-Use [this example](https://github.com/flutter/flutter/pull/141526/files) as a guide.
+To instrument a disposable class for leak tracking, you need to dispatch object creation and disposal events to leak_tracker.
+Use the [example](https://github.com/flutter/flutter/pull/141526/files) as a guide.
 
 ### See leaks in a running Flutter application
 
@@ -85,7 +85,7 @@ TODO(polina-c): add example of the warning https://github.com/dart-lang/leak_tra
 
 At this time, leak tracking is supported only for unit tests within Flutter packages.
 
-With the latest version of leak tracker, leak tracking is not supported for:
+With the latest version of leak_tracker, leak tracking is not supported for:
 
 1. Web platform
 2. Running applications
@@ -98,7 +98,7 @@ At this time, it is recommended to track only not-disposed leaks.
 
 ### By tracked classes
 
-The leak tracker will catch leaks only for instrumented
+The leak_tracker will catch leaks only for instrumented
 objects (see [concepts](CONCEPTS.md) for details).
 
 However, the good news is:
@@ -115,7 +115,7 @@ See [the instrumentation guidance](#instrument-your-code).
 
 ### By build mode
 
-The leak tracker availability differs by build modes.
+The leak_tracker availability differs by build modes.
 See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436)
 or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).
 
@@ -140,7 +140,7 @@ NOTE: If you are interested in enabling leak tracking for release mode, please, 
 
 ### Memory
 
-The Leak Tracker stores a small additional record for each
+The leak_tracker stores a small additional record for each
 tracked alive object and for each
 detected leak, that increases the memory footprint.
 

@@ -44,7 +44,7 @@ void main() {
     });
   }
 
-  test('Stack trace does not start with leak tracker calls', () async {
+  test('Stack trace does not start with leak_tracker calls', () async {
     LeakTracking.start(
       resetIfAlreadyStarted: true,
       config: LeakTrackingConfig.passive(),
@@ -92,7 +92,7 @@ void main() {
 
   for (var numberOfGcCycles in [1, defaultNumberOfGcCycles]) {
     test(
-        'Leak tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
+        'leak_tracker respects maxRequestsForRetainingPath, $numberOfGcCycles.',
         () async {
       LeakTracking.start(
         resetIfAlreadyStarted: true,

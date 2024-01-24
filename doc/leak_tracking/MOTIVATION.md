@@ -10,7 +10,7 @@ Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Why do disposables exist?
 
-In most cases, objects' lifecycle is managed well by the Dart garbage collector.
+In most cases, an object's lifecycle is managed well by the Dart garbage collector.
 
 However, some objects (memory-risky objects) require special care to avoid the risk of memory leaks:
 1. Objects that allocate significant memory for their members
@@ -30,15 +30,15 @@ Such objects usually have a method `dispose`, which has two purposes:
 
 To ensure **memory efficiency** of applications, engineers should watch that:
 1. All disposables are disposed when they are not needed any more.
-2. Large objects and objects, which reference big sets of other objects, are not reachable after usage.
+2. Large objects and objects that reference large sets of other objects are not reachable after usage.
 3. Objects allocate a reasonable amount of memory necessary to perform their tasks.
 
 Engineers want their applications to be memory efficient, but they want to minimize time and mental effort spent worrying about the items above.
 
-Leak tracker fully automates item #1, and almost* fully automates item #2.
+leak_tracker fully automates item #1, and almost* fully automates item #2.
 
 > [!NOTE]
-> *If a large set of objects is held from GC longer than needed, some of them are likely to be disposables, and thus leaks will be detected by the leak tracker. This is not always true, though; in rare cases, a large set of objects is held from GC, but the set does not contain any disposables tracked by leak tracker.
+> *If a large set of objects is held from GC longer than needed, some of them are likely to be disposables, and thus leaks will be detected by the leak_tracker. This is not always true, though; in rare cases, a large set of objects is held from GC, but the set does not contain any disposables tracked by leak_tracker.
 
 As a result, `leak_tracker` increases confidence and reduces engineering effort related to memory efficiency.
 

@@ -1,7 +1,7 @@
 
 [![CI](https://github.com/dart-lang/leak_tracker/actions/workflows/ci.yaml/badge.svg)](https://github.com/dart-lang/leak_tracker/actions/workflows/ci.yaml)
 
-# Memory Leak Tracker
+# Memory leak_tracker
 
 This is a framework for detecting memory issues in Dart and Flutter applications.
 
