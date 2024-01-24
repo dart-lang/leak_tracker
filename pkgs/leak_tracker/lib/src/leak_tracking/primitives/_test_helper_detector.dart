@@ -2,6 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:meta/meta.dart';
+
 /// Frames pointing the folder `test` or the package `flutter_test`.
 final _testHelperFrame = RegExp(
   r'(?:' +
@@ -27,13 +29,7 @@ final _startFrame = RegExp(
   r')',
 );
 
-/// Returns whether the leak reported by [objectCreationTrace]
-/// was created by a test helper.
-///
-/// Frames, that match [exceptions] will be ignored.
-///
-/// See details on what means to be created by a test helper
-/// in doc for `LeakTesting.createdByTestHelpers`.
+@visibleForTesting
 bool isCreatedByTestHelper(
   String objectCreationTrace,
   List<RegExp> exceptions,
@@ -52,4 +48,30 @@ bool isCreatedByTestHelper(
     }
   }
   return false;
+}
+
+class CreationChecker {
+  StackTrace? _creationStack;
+  List<RegExp>? _exceptions;
+
+  /// Returns whether the leak was created by a test helper.
+  ///
+  /// Frames, that match `exceptions` passed to constructor will be ignored.
+  ///
+  /// See details on what means to be created by a test helper
+  /// in doc for `LeakTesting.createdByTestHelpers`.
+  late final bool createdByTestHelpers = () {
+    final result = isCreatedByTestHelper(
+      _creationStack!.toString(),
+      _exceptions!,
+    );
+    _creationStack = null;
+    _exceptions = null;
+    return result;
+  }();
+
+  CreationChecker(
+      {required StackTrace creationStack, required List<RegExp> exceptions})
+      : _creationStack = creationStack,
+        _exceptions = exceptions;
 }
