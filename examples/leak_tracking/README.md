@@ -1,1 +1,1 @@
-Minimal Flutter application with leak tracker enabled.
+Minimal Flutter application with leak_tracker enabled.

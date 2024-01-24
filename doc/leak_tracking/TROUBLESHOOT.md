@@ -4,9 +4,10 @@ The text below is under construction.
 
 # Troubleshoot memory leaks
 
-This page describes how to troubleshoot memory leaks. See other information on memory leaks [here](../README.md).
+This page describes how to troubleshoot memory leaks.
+Read more about leak tracking in [overview](OVERVIEW.md).
 
-If leak tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
+If leak_tracker detected a leak in your application or test, first check if the leak matches a [known simple case](#known-simple-cases), and, if no,
 switch to [more complicated troubleshooting](#more-complicated-cases).
 
 ## General rules
@@ -29,11 +30,7 @@ addTearDown(focusNode.dispose());
 
 ## Known simple cases
 
-### 1. The test holds a disposed object
-
-TODO: add example and steps.
-
-### 2. The test creates OverlayEntry
+### 1. The test creates OverlayEntry
 
 If your code creates an OverlayEntry, it should both remove and dispose it:
 
@@ -42,7 +39,7 @@ final OverlayEntry overlayEntry = OverlayEntry(...);
 addTearDown(() => overlayEntry..remove()..dispose());
 ```
 
-### 3. The test starts a gesture
+### 2. The test starts a gesture
 
 If your test starts a test gesture, make sure to finish it to release resources:
 
@@ -74,28 +71,25 @@ To understand the root cause of a memory leak, you may want to gather additional
     - **Retaining path**: shows which objects hold the leaked one from garbage collection.
 
 
-By default, the leak tracker does not gather the information, because the collection may
+By default, the leak_tracker does not gather the information, because the collection may
 impact performance and memory footprint.
 
 **Tests**
 
-For collecting debugging information in tests, temporarily pass an instance of `LeakTrackingTestConfig`,
-specific for the debugged leak type, to the test:
+For collecting debugging information in a test, temporarily
+specify what information you need in the test settings:
 
 ```dart
-testWidgetsWithLeakTracking('My test', (WidgetTester tester) async {
+testWidgets('My test',
+experimentalLeakTesting: LeakTesting.settings.withCreationStackTrace(),
+(WidgetTester tester) async {
   ...
-}, leakTrackingTestConfig: LeakTrackingTestConfig.debugNotGCed());
+});
 ```
 
 **Applications**
 
-For collecting debugging information in your running application, the options are:
-
-1. Pass `LeakTrackingConfiguration` to `enableLeakTracking`
-2. Use the interactive UI in DevTools > Memory > Leaks
-
-TODO: link DevTools documentation with explanation
+TODO: add documentation, https://github.com/dart-lang/leak_tracker/issues/172
 
 ## Verify object references
 
@@ -103,6 +97,9 @@ If you expect an object to be not referenced at some point,
 but not sure, you can validate it by temporarily adding assertion.
 
 ```dart
+import 'package:leak_tracker/leak_tracker.dart';
+
+...
 final ref = WeakReference(myObject);
 myObject = null;
 await forceGC();
@@ -114,10 +111,8 @@ if (ref.target == null) {
 }
 ```
 
-IMPORTANT: this code will not work in release mode, so
-you need to run it with flag `--debug` or `--profile`
-([not available](https://github.com/flutter/flutter/issues/127331) for Flutter tests),
-or, if it is a test, by clicking `Debug` near the test name in IDE.
+NOTE: this code will not work in release mode, so
+you need to run it with flag `--debug` or `--profile`.
 
 ## More complicated cases
 
@@ -132,6 +127,18 @@ in creation stack trace pointing to `addListener`, not to constructor.
 To make debugging easier, invoke [ChangeNotifier.maybeDispatchObjectCreation]
 in constructor of the class. It will help
 to identify the owner in case of leaks.
+
+Be sure to guard the invocation behind the
+[`kFlutterMemoryAllocationsEnabled`](https://api.flutter.dev/flutter/foundation/kFlutterMemoryAllocationsEnabled-constant.html)
+flag.
+This will ensure the body of `maybeDispatchObjectCreation` is only compiled into your app
+if memory allocation events are enabled.
+
+```
+if (kFlutterMemoryAllocationsEnabled) {
+  maybeDispatchObjectCreation(this);
+}
+```
 
 ### 2. Static or global object causes notGCed leaks
 
@@ -179,7 +186,15 @@ class C {
 If a method contains more than one closures, they share the context and thus all
 instances of the context will be alive while at least one of the closures is alive.
 
-TODO: add example
+TODO: add example (if you have a good example, please, contribute), https://github.com/dart-lang/leak_tracker/issues/207
 
 Such cases are hard to troubleshoot. One way to fix them is to convert all closures,
 which reference the leaked type, to named methods.
+
+### 3. Leak is originated in a dependency
+
+If a found leak is originated in the Flutter Framework or a dependent package, file a bug or contribute a fix to the repo.
+
+See the [tracking issue](https://github.com/flutter/flutter/issues/134787) for memory leak clean up in Flutter Framework.
+See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122)
+to learn how to ignore leaks while a fix is on the way.

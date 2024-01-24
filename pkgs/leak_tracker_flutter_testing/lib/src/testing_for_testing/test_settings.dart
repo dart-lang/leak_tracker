@@ -7,7 +7,7 @@ import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 LeakTesting _trackingOn(LeakTesting settings) {
   final result = settings
       .withTrackedAll()
-      .withTracked(allNotDisposed: true, allNotGCed: true);
+      .withTracked(allNotDisposed: true, experimantalAllNotGCed: true);
   return result;
 }
 

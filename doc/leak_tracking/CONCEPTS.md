@@ -5,13 +5,27 @@ The text below is under construction.
 # Understand Memory Leak Tracking Concepts
 
 This page describes leak tracking concepts.
-See other information on memory leaks [here](../README.md).
+Read more about leak tracking in [overview](OVERVIEW.md).
 
-Before reading about leak tracking, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
+Before reading about leak tracking concepts, understand [Dart memory concepts](https://docs.flutter.dev/development/tools/devtools/memory#basic-memory-concepts).
+
+## Object types
+
+### Instrumented disposables
+
+An instrumented disposable is a [disposable](https://docs.flutter.dev/tools/devtools/memory#disposable-object)
+class whose creation and disposal are instrumented for
+tracking by tools like leak_tracker. The instrumentation is done by dispatching events directly
+to the `LeakTracking` class, or by dispatching events to the `FlutterMemoryAllocations` class,
+which is listened to by `LeakTracking`.
+
+### Package disposables
+
+All [disposable](https://docs.flutter.dev/tools/devtools/memory#disposable-object) objects defined in a package.
 
 ## Addressed leak types
 
-The leak tracker catches leaks related to the timing of object disposal and garbage collection (GC). When memory is being managed properly, an object's disposal and GC should occur in quick succession. After disposal, an object should be garbage collected during the next GC cycle. The tool uses this assumption to catch cases that do not follow this pattern.
+The leak_tracker catches leaks related to the timing of object disposal and garbage collection (GC). When memory is being managed properly, an object's disposal and GC should occur in quick succession. After disposal, an object should be garbage collected during the next GC cycle. The tool uses this assumption to catch cases that do not follow this pattern.
 
 By monitoring disposal and GC events, the tool detects
 the following types of leaks:

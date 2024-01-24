@@ -1,3 +1,8 @@
+## 3.0.0
+
+* Rename `IgnoredLeaks.notGCed` to `IgnoredLeaks.experimentalNotGCed`
+and make notGCed leaks ignored by leak tracking tests by default.
+
 ## 2.0.3
 
 * Require Dart SDK 3.2.0 or later.

@@ -26,7 +26,7 @@ void _allocateMemory() {
 }
 
 /// Tests for non-guaranteed assumptions about Dart garbage collector,
-/// the leak tracker relies on.
+/// the leak_tracker relies on.
 void main() {
   setUp(() => _storage = []);
 

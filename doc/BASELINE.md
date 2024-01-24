@@ -13,7 +13,7 @@ because. The numbers can be used only as relative measure, when the only change 
 is the code.
 All other parameters, like version of Dart/Flutter SDK, target platform, build mode, hardware,
 should stay the same.
-ß
+
 ## How to use it?
 
 To take baseline of memory footprint for your `testWidgetsWithLeakTracking`, pass baselining configuration to the test. It is recommended

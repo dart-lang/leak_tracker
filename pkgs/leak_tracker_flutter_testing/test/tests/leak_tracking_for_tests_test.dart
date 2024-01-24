@@ -59,13 +59,10 @@ bool _areOnlySkipped(
 }
 
 void main() {
-  late LeakTesting defaults;
+  final defaults =
+      LeakTesting.settings.withTracked(experimantalAllNotGCed: true);
 
   setUp(() {
-    defaults = LeakTesting.settings;
-  });
-
-  tearDown(() {
     LeakTesting.settings = defaults;
   });
 
@@ -102,7 +99,7 @@ void main() {
     // Start tracking classes.
     LeakTesting.settings = LeakTesting.settings.withTracked(
       classes: [_Classes.anyLeak1],
-      notGCed: [_Classes.notGCed1],
+      experimentalNotGCed: [_Classes.notGCed1],
       notDisposed: [_Classes.notDisposed1],
     );
 

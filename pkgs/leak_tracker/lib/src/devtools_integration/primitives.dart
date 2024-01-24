@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-/// Name of extension to integrate the leak tracker with DevTools.
+/// Name of extension to integrate the leak_tracker with DevTools.
 const String memoryLeakTrackingExtensionName = 'ext.dart.memoryLeakTracking';
 
 /// Version of protocol, executed by the application.
