@@ -56,7 +56,9 @@ class _PhaseLeakFilter {
 
     if (!shouldCheckCreator) return result;
 
-    return !(record.creationChecker?.createdByTestHelpers ?? false);
+    final createdByTestHelpers =
+        record.creationChecker?.createdByTestHelpers ?? false;
+    return !createdByTestHelpers;
   }
 
   /// Returns whether the leak should be reported based on its type and class.

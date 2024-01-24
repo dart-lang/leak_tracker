@@ -20,6 +20,7 @@ class ObjectRecord {
         type = object.runtimeType,
         code = identityHashCode(object);
 
+  /// Weak reference to the tracked object.
   final WeakReference<Object> ref;
 
   /// [IdentityHashCode] of the object.
@@ -28,6 +29,10 @@ class ObjectRecord {
   /// the object is already GCed and thus there is no access to its code.
   final IdentityHashCode code;
 
+  /// [CreationChecker] that contains knowledge about creation.
+  ///
+  /// Is not used in the record, but can be used
+  /// that can be used by owners of this object.
   final CreationChecker? creationChecker;
 
   Map<String, dynamic>? context;
