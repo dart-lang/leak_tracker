@@ -7,6 +7,7 @@ import 'package:meta/meta.dart';
 
 import '../shared/_primitives.dart';
 import '_object_record.dart';
+import 'primitives/_test_helper_detector.dart';
 import 'primitives/model.dart';
 
 @visibleForTesting
@@ -61,7 +62,20 @@ class ObjectRecordSet {
     final existing = list.firstWhereOrNull((r) => r.ref.target == object);
     if (existing != null) return existing;
 
-    final result = ObjectRecord(object, context, trackedClass, phase);
+    final creationChecker = phase.ignoredLeaks.createdByTestHelpers
+        ? CreationChecker(
+            creationStack: StackTrace.current,
+            exceptions: phase.ignoredLeaks.testHelperExceptions)
+        : null;
+
+    final result = ObjectRecord(
+      object,
+      context,
+      trackedClass,
+      phase,
+      creationChecker: creationChecker,
+    );
+
     list.add(result);
     _length++;
     return result;

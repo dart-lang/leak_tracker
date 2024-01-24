@@ -65,8 +65,7 @@ class ObjectTracker implements LeakProvider {
     final record =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
 
-    if (phase.leakDiagnosticConfig.collectStackTraceOnStart ||
-        phase.ignoredLeaks.createdByTestHelpers) {
+    if (phase.leakDiagnosticConfig.collectStackTraceOnStart) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);
     }
 
