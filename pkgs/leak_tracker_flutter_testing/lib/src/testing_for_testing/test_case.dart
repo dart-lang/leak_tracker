@@ -8,13 +8,13 @@ import 'package:leak_tracker/leak_tracker.dart';
 import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:matcher/expect.dart';
 
-/// Siugnature of `pumpWidget` method.
+/// Signature of `pumpWidget` method.
 typedef PumpWidgetsCallback = Future<void> Function(
   Widget widget, [
   Duration? duration,
 ]);
 
-/// Siugnature of `runAsync` method.
+/// Signature of `runAsync` method.
 typedef RunAsyncCallback<T> = Future<T?> Function(
   Future<T> Function() callback,
 );
@@ -27,6 +27,15 @@ typedef TestCallback = Future<void> Function(
 
 /// A test case to verify leak detection.
 class LeakTestCase {
+  LeakTestCase({
+    required this.name,
+    required this.body,
+    this.notDisposedTotal = 0,
+    this.notGCedTotal = 0,
+    this.notDisposedInHelpers = 0,
+    this.notGCedInHelpers = 0,
+  });
+
   /// Name of the test.
   final String name;
 
@@ -44,15 +53,6 @@ class LeakTestCase {
 
   /// Expected number of not GCed objects created by test helpers.
   final int notGCedInHelpers;
-
-  LeakTestCase({
-    required this.name,
-    required this.body,
-    this.notDisposedTotal = 0,
-    this.notGCedTotal = 0,
-    this.notDisposedInHelpers = 0,
-    this.notGCedInHelpers = 0,
-  });
 
   /// Verifies [leaks] contain expected leaks for the test.
   ///

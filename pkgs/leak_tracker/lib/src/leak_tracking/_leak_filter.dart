@@ -11,11 +11,6 @@ class LeakFilter {
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
 
   /// Returns true if the leak should be reported.
-  ///
-  /// If result is true, removes [ContextKeys.startCallstack]
-  /// from [ObjectRecord.context] the call stack
-  /// is not needed for debugging, but only needed to detect if the leak
-  /// should be ignored.
   bool shouldReport(LeakType leakType, ObjectRecord record) {
     final filter = _phases.putIfAbsent(
       record.phase,
@@ -53,6 +48,9 @@ class _PhaseLeakFilter {
 
     // Check for test helpers should happen only in case of leak because
     // it is performance heavy.
+    // TODO(polina-c):  add a test to ensure that the test helper check does not
+    // run when this is false
+    // https://github.com/dart-lang/leak_tracker/issues/210
     final shouldCheckCreator =
         phase.ignoredLeaks.createdByTestHelpers && result;
 
@@ -61,7 +59,7 @@ class _PhaseLeakFilter {
     return !(record.creationChecker?.createdByTestHelpers ?? false);
   }
 
-  /// Returns true if the leak should not be ignored because of type or class.
+  /// Returns whether the leak should be reported based on its type and class.
   bool _shouldReportByTypeAndClass(
     LeakType leakType,
     ObjectRecord record,

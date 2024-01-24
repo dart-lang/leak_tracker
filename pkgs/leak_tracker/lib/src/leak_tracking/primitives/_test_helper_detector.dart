@@ -29,6 +29,13 @@ final _startFrame = RegExp(
   r')',
 );
 
+/// Returns whether the leak reported by [objectCreationTrace]
+/// was created by a test helper.
+///
+/// Frames, that match [exceptions] will be ignored.
+///
+/// See details on what means to be created by a test helper
+/// in doc for `LeakTesting.createdByTestHelpers`.
 @visibleForTesting
 bool isCreatedByTestHelper(
   String objectCreationTrace,
@@ -58,6 +65,14 @@ bool isCreatedByTestHelper(
 /// It is needed because the detection is a heavy operation
 /// and should not be done for every tracked object.
 class CreationChecker {
+  /// Creates instance of [CreationChecker].
+  ///
+  /// Stack frames in [creationStack] that match any of [exceptions]
+  /// will be ignored.
+  CreationChecker(
+      {required StackTrace creationStack, required List<RegExp> exceptions})
+      : _creationStack = creationStack,
+        _exceptions = exceptions;
   StackTrace? _creationStack;
   List<RegExp>? _exceptions;
 
@@ -70,16 +85,9 @@ class CreationChecker {
       _creationStack!.toString(),
       _exceptions!,
     );
+    // Nulling the references to make the object eligible for GC.
     _creationStack = null;
     _exceptions = null;
     return result;
   }();
-
-  /// Creates instance of [CreationChecker].
-  ///
-  /// Frames, that match [exceptions] will be ignored.
-  CreationChecker(
-      {required StackTrace creationStack, required List<RegExp> exceptions})
-      : _creationStack = creationStack,
-        _exceptions = exceptions;
 }

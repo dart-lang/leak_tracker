@@ -10,6 +10,7 @@
         "pkgs",
         "polina",
         "polinach",
-        "sublist"
+        "sublist",
+        "unawaited"
     ],
 }
