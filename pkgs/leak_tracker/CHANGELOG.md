@@ -90,7 +90,7 @@ at time of object tracking start, instead of current configuration.
 
 ## 9.0.2
 
-* Make sure phase bondaries are handled correctly.
+* Make sure phase boundaries are handled correctly.
 
 ## 9.0.1
 
@@ -151,7 +151,7 @@ at time of object tracking start, instead of current configuration.
 ## 6.0.0
 
 * Fix typo in public API.
-* Add assersion for negative delay between snapshots.
+* Add assertion for negative delay between snapshots.
 
 ## 5.0.0
 
@@ -182,7 +182,7 @@ at time of object tracking start, instead of current configuration.
 ## 3.0.1
 
 * Increase sdk version
-* Remove obsolet lint
+* Remove obsolete lint
 
 ## 3.0.0
 
