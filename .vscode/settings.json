@@ -2,14 +2,17 @@
     // Set current working directory to devtools_app.
     "terminal.integrated.cwd": "pkgs/leak_tracker",
     "cSpell.words": [
+        "autosnapshotting",
         "baselining",
         "callstack",
         "cupertino",
         "finalizer",
         "gced",
+        "layerlens",
         "pkgs",
         "polina",
         "polinach",
+        "snapshotting",
         "sublist",
         "unawaited"
     ],
