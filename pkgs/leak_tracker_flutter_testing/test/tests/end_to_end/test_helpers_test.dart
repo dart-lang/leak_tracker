@@ -32,7 +32,7 @@ void main() {
   });
 
   test('Test leak is ignored.', () async {
-    createTestWidget();
+    _createTestWidget();
 
     LeakTracking.declareNotDisposedObjectsAsLeaks();
     final leaks = await LeakTracking.collectLeaks();
@@ -40,4 +40,4 @@ void main() {
   });
 }
 
-StatelessLeakingWidget createTestWidget() => StatelessLeakingWidget();
+StatelessLeakingWidget _createTestWidget() => StatelessLeakingWidget();

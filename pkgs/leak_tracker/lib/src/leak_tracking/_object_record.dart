@@ -5,6 +5,7 @@
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import 'primitives/_gc_counter.dart';
+import 'primitives/_test_helper_detector.dart';
 import 'primitives/model.dart';
 
 /// Information about an object, tracked for leaks.
@@ -13,11 +14,13 @@ class ObjectRecord {
     Object object,
     this.context,
     this.trackedClass,
-    this.phase,
-  )   : ref = WeakReference(object),
+    this.phase, {
+    this.creationChecker,
+  })  : ref = WeakReference(object),
         type = object.runtimeType,
         code = identityHashCode(object);
 
+  /// Weak reference to the tracked object.
   final WeakReference<Object> ref;
 
   /// [IdentityHashCode] of the object.
@@ -25,6 +28,12 @@ class ObjectRecord {
   /// Is needed to help debugging notDisposed leak, for which
   /// the object is already GCed and thus there is no access to its code.
   final IdentityHashCode code;
+
+  /// [CreationChecker] that contains knowledge about creation.
+  ///
+  /// Is not used in the record, but can be used
+  /// by owners of this object.
+  final CreationChecker? creationChecker;
 
   Map<String, dynamic>? context;
 

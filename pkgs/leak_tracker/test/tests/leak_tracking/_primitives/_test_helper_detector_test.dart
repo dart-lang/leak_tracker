@@ -6,11 +6,10 @@ import 'package:leak_tracker/src/leak_tracking/primitives/_test_helper_detector.
 import 'package:test/test.dart';
 
 class _Test {
+  _Test({required this.stackTrace, required this.isHelper, required this.name});
   final String name;
   final String stackTrace;
   final bool isHelper;
-
-  _Test({required this.stackTrace, required this.isHelper, required this.name});
 }
 
 final _tests = [
@@ -131,4 +130,22 @@ void main() {
       expect(isCreatedByTestHelper(t.stackTrace, []), t.isHelper);
     });
   }
+
+  group('$CreationChecker', () {
+    test('no test helpers', () {
+      expect(
+          CreationChecker(creationStack: StackTrace.current, exceptions: [])
+              .createdByTestHelpers,
+          false);
+    });
+
+    test('test helper', () {
+      expect(
+          CreationChecker(creationStack: _traceFromTestHelper(), exceptions: [])
+              .createdByTestHelpers,
+          true);
+    });
+  });
 }
+
+StackTrace _traceFromTestHelper() => StackTrace.current;

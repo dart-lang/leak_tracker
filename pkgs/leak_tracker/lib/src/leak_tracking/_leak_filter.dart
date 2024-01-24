@@ -10,6 +10,7 @@ import 'primitives/model.dart';
 class LeakFilter {
   final Map<PhaseSettings, _PhaseLeakFilter> _phases = {};
 
+  /// Returns true if the leak should be reported.
   bool shouldReport(LeakType leakType, ObjectRecord record) {
     final filter = _phases.putIfAbsent(
       record.phase,
@@ -28,24 +29,40 @@ class _PhaseLeakFilter {
   final PhaseSettings phase;
 
   bool shouldReport(LeakType leakType, ObjectRecord record) {
+    final bool result;
     switch (leakType) {
       case LeakType.notDisposed:
-        return _shouldReport(
+        result = _shouldReportByTypeAndClass(
           leakType,
           record,
           phase.ignoredLeaks.notDisposed,
         );
       case LeakType.notGCed:
       case LeakType.gcedLate:
-        return _shouldReport(
+        result = _shouldReportByTypeAndClass(
           leakType,
           record,
           phase.ignoredLeaks.experimentalNotGCed,
         );
     }
+
+    // Check for test helpers should happen only in case of leak because
+    // it is performance heavy.
+    // TODO(polina-c):  add a test to ensure that the test helper check does not
+    // run when this is false
+    // https://github.com/dart-lang/leak_tracker/issues/210
+    final shouldCheckCreator =
+        phase.ignoredLeaks.createdByTestHelpers && result;
+
+    if (!shouldCheckCreator) return result;
+
+    final createdByTestHelpers =
+        record.creationChecker?.createdByTestHelpers ?? false;
+    return !createdByTestHelpers;
   }
 
-  bool _shouldReport(
+  /// Returns whether the leak should be reported based on its type and class.
+  bool _shouldReportByTypeAndClass(
     LeakType leakType,
     ObjectRecord record,
     IgnoredLeaksSet ignoredLeaks,
