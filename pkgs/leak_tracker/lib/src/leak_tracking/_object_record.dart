@@ -32,7 +32,7 @@ class ObjectRecord {
   /// [CreationChecker] that contains knowledge about creation.
   ///
   /// Is not used in the record, but can be used
-  /// that can be used by owners of this object.
+  /// by owners of this object.
   final CreationChecker? creationChecker;
 
   Map<String, dynamic>? context;
