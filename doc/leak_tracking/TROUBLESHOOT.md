@@ -131,7 +131,7 @@ to identify the owner in case of leaks.
 Be sure to guard the invocation behind the
 [`kFlutterMemoryAllocationsEnabled`](https://api.flutter.dev/flutter/foundation/kFlutterMemoryAllocationsEnabled-constant.html)
 flag.
-This will ensure that body of `maybeDispatchObjectCreation` is only compiled into your app
+This will ensure the body of `maybeDispatchObjectCreation` is only compiled into your app
 if memory allocation events are enabled.
 
 ```
@@ -196,4 +196,5 @@ which reference the leaked type, to named methods.
 If a found leak is originated in the Flutter Framework or a dependent package, file a bug or contribute a fix to the repo.
 
 See the [tracking issue](https://github.com/flutter/flutter/issues/134787) for memory leak clean up in Flutter Framework.
-See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122) on how to ignore leaks while fix is on the way.
+See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122)
+to learn how to ignore leaks while a fix is on the way.
