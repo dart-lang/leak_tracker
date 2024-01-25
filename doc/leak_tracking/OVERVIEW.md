@@ -6,7 +6,7 @@ leak_tracker helps to catch memory issues much earlier by detecting not-disposed
 
 ## Read more
 
-- [Concepts](doc/CONCEPTS.md)
-- [Motivation](doc/MOTIVATION.md)
-- [Detect memory leaks](doc/DETECT.md)
-- [Troubleshoot memory leaks](doc/TROUBLESHOOT.md)
+- [Concepts](CONCEPTS.md)
+- [Motivation](MOTIVATION.md)
+- [Detect memory leaks](DETECT.md)
+- [Troubleshoot memory leaks](TROUBLESHOOT.md)
