@@ -12,8 +12,10 @@
         "pkgs",
         "polina",
         "polinach",
+        "pubspec",
         "snapshotting",
         "sublist",
-        "unawaited"
+        "unawaited",
+        "Upvote"
     ],
 }
