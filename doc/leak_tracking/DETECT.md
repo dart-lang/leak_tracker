@@ -5,6 +5,8 @@ The text below is under construction.
 
 # Detect Memory Leaks
 
+The documentation below is valid for Flutter SDKs >= 3.18.0.
+
 This page describes how to auto-detect certain types of memory leaks.
 Read more about leak tracking in [overview](OVERVIEW.md).
 

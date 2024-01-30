@@ -6,7 +6,7 @@ See other information on memory debugging [here](../README.md).
 Dart and Flutter applications can be configured to automatically
 trigger memory usage events and, in case of memory overuse, to save
 memory heap snapshots to hard drive.
-The snapshots can be later analysed in DevTools.
+The snapshots can be later analyzed in DevTools.
 
 https://user-images.githubusercontent.com/12115586/234953319-6f864d25-9854-4126-b4d6-8e114b9045ff.mov
 
@@ -19,9 +19,9 @@ See [example](../examples/autosnapshotting/).
 We recommend to have auto-snapshotting off by default, with possibility
 to enable it via command line arguments in case of reported memory issues.
 
-## Analyse snapshots
+## Analyze snapshots
 
-Use [CLI](https://github.com/dart-lang/sdk/tree/main/runtime/tools/heapsnapshot#cli-usage) to analyse the collected snapshots.
+Use [CLI](https://github.com/dart-lang/sdk/tree/main/runtime/tools/heapsnapshot#cli-usage) to analyze the collected snapshots.
 
 Upvote [the issue](https://github.com/dart-lang/leak_tracker/issues/125) to enable graphical snapshot analysis with DevTools.
 
