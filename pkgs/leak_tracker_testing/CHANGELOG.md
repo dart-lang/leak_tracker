@@ -1,3 +1,7 @@
+## 3.0.1-wip
+
+* Fixed typo by renaming `experimantalAllNotGCed` to `experimentalAllNotGCed`.
+
 ## 3.0.0
 
 * Rename `IgnoredLeaks.notGCed` to `IgnoredLeaks.experimentalNotGCed`
