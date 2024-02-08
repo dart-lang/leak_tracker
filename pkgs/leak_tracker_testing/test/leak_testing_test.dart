@@ -52,7 +52,7 @@ void main() {
         expect(settings.ignoredLeaks.experimentalNotGCed.ignoreAll, true);
 
         final tracked = settings.withTracked(
-            allNotDisposed: true, experimantalAllNotGCed: true);
+            allNotDisposed: true, experimentalAllNotGCed: true);
 
         expect(tracked.ignoredLeaks.notDisposed.ignoreAll, false);
         expect(tracked.ignoredLeaks.experimentalNotGCed.ignoreAll, false);
@@ -65,7 +65,7 @@ void main() {
       test('not provided args do not affect the instance, tracked', () {
         final settings = LeakTesting.settings
             .withTrackedAll()
-            .withTracked(experimantalAllNotGCed: true);
+            .withTracked(experimentalAllNotGCed: true);
 
         expect(settings.ignore, false);
         expect(settings.ignoredLeaks.notDisposed.ignoreAll, false);

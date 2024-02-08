@@ -177,13 +177,13 @@ class LeakTesting {
     List<String> experimentalNotGCed = const [],
     List<String> notDisposed = const [],
     List<String> classes = const [],
-    bool experimantalAllNotGCed = false,
+    bool experimentalAllNotGCed = false,
     bool allNotDisposed = false,
     bool createdByTestHelpers = false,
   }) {
     var newNotGCed = ignoredLeaks.experimentalNotGCed
         .track([...experimentalNotGCed, ...classes]);
-    if (experimantalAllNotGCed) {
+    if (experimentalAllNotGCed) {
       newNotGCed = newNotGCed.copyWith(ignoreAll: false);
     }
 
