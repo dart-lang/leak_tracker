@@ -17,7 +17,10 @@ final _testHelperFrame = RegExp(
 final _exceptions = RegExp(
   r'(?:'
   r'AutomatedTestWidgetsFlutterBinding.\w|'
-  r'WidgetTester.\w'
+  r'TestWidgetsFlutterBinding.\w|'
+  r'TestAsyncUtils.\w|'
+  r'WidgetTester.\w|'
+  r'testWidgets.<anonymous closure>'
   ')',
 );
 

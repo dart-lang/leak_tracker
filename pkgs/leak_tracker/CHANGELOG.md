@@ -1,3 +1,7 @@
+# 10.0.4
+
+* Add exceptions to test helpers.
+
 # 10.0.3
 
 * Improve performance of the case with ignored test helpers.
