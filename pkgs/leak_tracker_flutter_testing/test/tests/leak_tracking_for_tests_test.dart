@@ -60,7 +60,7 @@ bool _areOnlySkipped(
 
 void main() {
   final defaults =
-      LeakTesting.settings.withTracked(experimantalAllNotGCed: true);
+      LeakTesting.settings.withTracked(experimentalAllNotGCed: true);
 
   setUp(() {
     LeakTesting.settings = defaults;

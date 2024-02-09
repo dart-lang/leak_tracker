@@ -1,6 +1,7 @@
 ## 3.0.3
 
 * Upgrade leak_tracker to 10.0.4.
+* Upgrade leak_tracker_testing to 3.0.1.
 
 ## 3.0.2
 
