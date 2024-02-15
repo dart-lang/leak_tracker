@@ -53,6 +53,8 @@ Future<void> forceGC({
 ///
 /// Does not work in web and in release mode.
 ///
+/// To run this inside `flutter test` pass `--enable-vmservice`.
+///
 /// Also does not work for objects that are not returned by getInstances.
 /// https://github.com/dart-lang/sdk/blob/3e80d29fd6fec56187d651ce22ea81f1e8732214/runtime/vm/object_graph.cc#L1803
 Future<String?> formattedRetainingPath(WeakReference ref) async {
