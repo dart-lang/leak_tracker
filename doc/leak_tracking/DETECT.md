@@ -18,8 +18,8 @@ The Flutter test method `testWidgets` can be configured to track and detect leak
 from all instrumented classes. To enable leak tracking for your entire test suite
 and to configure leak tracking settings:
 
-1. Add dev_dependency on leak_tracker. Put 'any' instead of version, because
-leak_tracker version is defined by version of Flutter SDK you have.
+1. Add dev_dependency on `leak_tracker_flutter_testing`. Put `any` instead of version, because
+the version is defined by your Flutter SDK.
 
 ```yaml
 dev_dependencies:
