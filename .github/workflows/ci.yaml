@@ -33,19 +33,19 @@ jobs:
 
       # unit tests:
 
-      - name: dart test leak_tracker
+      - name: test leak_tracker
         run: dart test
         working-directory: pkgs/leak_tracker
 
-      - name: dart test leak_tracker_testing
+      - name: test leak_tracker_testing
         run: dart test
         working-directory: pkgs/leak_tracker_testing
 
-      - name: flutter test leak_tracker_flutter_testing
+      - name: test leak_tracker_flutter_testing
         run: flutter test --enable-vmservice
         working-directory: pkgs/leak_tracker_flutter_testing
 
-      - name: dart test memory_usage
+      - name: test memory_usage
         run: dart test
         working-directory: pkgs/memory_usage
 
