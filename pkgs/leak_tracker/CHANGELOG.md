@@ -1,3 +1,7 @@
+# 10.0.5
+
+* Stop failing if finalization happened twice.
+
 # 10.0.4
 
 * Add exceptions to test helpers.
