@@ -205,7 +205,7 @@ abstract class LeakTracking {
       return true;
     }());
 
-    await (result ?? Future.value());
+    await (result ?? Future<void>.value());
   }
 
   /// Declares all not disposed objects as leaks.

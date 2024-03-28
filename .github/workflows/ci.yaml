@@ -31,18 +31,44 @@ jobs:
       - name: analyze
         run: sh ./tool/analyze.sh
 
-      - name: dart test
+      # unit tests:
+
+      - name: dart test leak_tracker
         run: dart test
         working-directory: pkgs/leak_tracker
 
-      - name: dart test
+      - name: dart test leak_tracker_testing
         run: dart test
         working-directory: pkgs/leak_tracker_testing
 
-      - name: flutter test
+      - name: flutter test leak_tracker_flutter_testing
         run: flutter test --enable-vmservice
         working-directory: pkgs/leak_tracker_flutter_testing
 
-      - name: integration test
+      - name: dart test memory_usage
+        run: dart test
+        working-directory: pkgs/memory_usage
+
+      # integration tests:
+
+      - name: integration test examples/autosnapshotting
         run: flutter test integration_test/app_test.dart -d flutter-tester
         working-directory: examples/autosnapshotting
+
+      # cycles:
+
+      - name: cycles in leak_tracker
+        run: dart run layerlens --fail-on-cycles
+        working-directory: pkgs/leak_tracker
+
+      - name: cycles in leak_tracker_testing
+        run: dart run layerlens --fail-on-cycles
+        working-directory: pkgs/leak_tracker_testing
+
+      - name: cycles in leak_tracker_flutter_testing
+        run: dart run layerlens --fail-on-cycles
+        working-directory: pkgs/leak_tracker_flutter_testing
+
+      - name: cycles in memory_usage
+        run: dart run layerlens --fail-on-cycles
+        working-directory: pkgs/memory_usage
