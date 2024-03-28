@@ -63,7 +63,10 @@ class ObjectRecord {
   DateTime? _gcedTime;
   int? _gcedGcCount;
   void setGCed(int gcCount, DateTime time) {
-    if (_gcedGcCount != null) throw Exception('The object $code GCed twice');
+    // Normally it should not happen, but sometimes finalizer is called twice.
+    // To repro, update next line to throw exception and run flutter tests with
+    // the updated leak_tracker.
+    if (_gcedGcCount != null) return;
     _gcedGcCount = gcCount;
     _gcedTime = time;
   }
