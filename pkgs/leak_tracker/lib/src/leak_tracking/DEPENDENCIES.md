@@ -22,7 +22,6 @@ _object_tracker.dart-->_object_record.dart;
 _object_tracker.dart-->_object_records.dart;
 _object_tracker.dart-->primitives;
 helpers.dart-->primitives;
-leak_testing.dart-->primitives;
 leak_tracking.dart-->_baseliner.dart;
 leak_tracking.dart-->_leak_tracker.dart;
 leak_tracking.dart-->primitives;
