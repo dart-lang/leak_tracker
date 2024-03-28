@@ -63,6 +63,7 @@ class ObjectRecord {
   DateTime? _gcedTime;
   int? _gcedGcCount;
   void setGCed(int gcCount, DateTime time) {
+    // TODO: throw exception if object is already GCed after fix of https://github.com/dart-lang/sdk/issues/55330
     // Normally it should not happen, but sometimes finalizer is called twice.
     // To repro, update next line to throw exception and run flutter tests with
     // the updated leak_tracker.
