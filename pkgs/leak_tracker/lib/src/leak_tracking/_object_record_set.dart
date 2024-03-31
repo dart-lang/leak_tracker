@@ -12,7 +12,7 @@ import 'primitives/model.dart';
 
 @visibleForTesting
 class ObjectRecordSet {
-  ObjectRecordSet({this.coder = standardIdentityHashCoder});
+  ObjectRecordSet({@visibleForTesting this.coder = standardIdentityHashCoder});
 
   final IdentityHashCoder coder;
 
