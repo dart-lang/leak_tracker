@@ -196,7 +196,7 @@ void main() {
       tracker.startTracking(
         theObject,
         context: null,
-        trackedClass: 'trackedClass',
+        trackedClass: _trackedClass,
         phase: const PhaseSettings(),
       );
       finalizerBuilder.gc(theObject);
@@ -215,7 +215,7 @@ void main() {
         tracker.startTracking(
           theObject,
           context: null,
-          trackedClass: 'trackedClass',
+          trackedClass: _trackedClass,
           phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
@@ -241,7 +241,7 @@ void main() {
         tracker.startTracking(
           theObject,
           context: null,
-          trackedClass: 'trackedClass',
+          trackedClass: _trackedClass,
           phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
