@@ -46,7 +46,7 @@ void main() {
 ObjectRecord _addItemAndValidate(ObjectRecordSet theSet, Object item) {
   final length = theSet.length;
 
-  final record = theSet.putIfAbsent(item, {}, _phase, '');
+  final (:record, wasAbsent: _) = theSet.putIfAbsent(item, {}, _phase, '');
   expect(theSet.length, length + 1);
   expect(theSet.contains(record), true);
   expect(theSet.contains(_record), false);

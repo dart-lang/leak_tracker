@@ -62,8 +62,10 @@ class ObjectTracker implements LeakProvider {
     throwIfDisposed();
     if (phase.ignoreLeaks) return;
 
-    final record =
+    final (:record, :wasAbsent) =
         _objects.notGCed.putIfAbsent(object, context, phase, trackedClass);
+
+    if (!wasAbsent) return;
 
     if (phase.leakDiagnosticConfig.collectStackTraceOnStart) {
       record.setContext(ContextKeys.startCallstack, StackTrace.current);

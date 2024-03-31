@@ -48,10 +48,10 @@ class ObjectRecord {
   int? _disposalGcCount;
 
   void setDisposed(int gcTime, DateTime time) {
-    // TODO(polina-c): handle double disposal in a better way
-    // https://github.com/dart-lang/leak_tracker/issues/118
-    // Noop if object is already disposed.
-    if (_disposalGcCount != null) return;
+    if (_disposalGcCount != null) {
+      // It is not responsibility of leak tracker to check for double disposal.
+      return;
+    }
     if (_gcedGcCount != null) {
       throw Exception(
           'The object $code should not be disposed after being GCed');
@@ -63,11 +63,9 @@ class ObjectRecord {
   DateTime? _gcedTime;
   int? _gcedGcCount;
   void setGCed(int gcCount, DateTime time) {
-    // TODO: throw exception if object is already GCed after fix of https://github.com/dart-lang/sdk/issues/55330
-    // Normally it should not happen, but sometimes finalizer is called twice.
-    // To repro, update next line to throw exception and run flutter tests with
-    // the updated leak_tracker.
-    if (_gcedGcCount != null) return;
+    if (_gcedGcCount != null) {
+      throw Exception('$trackedClass, $code is GCed twice');
+    }
     _gcedGcCount = gcCount;
     _gcedTime = time;
   }
