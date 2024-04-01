@@ -114,6 +114,8 @@ abstract class LeakTracking {
   /// Use [context] to provide additional information,
   /// that may help in leak troubleshooting.
   /// The value must be serializable.
+  ///
+  /// Noop if object creation is already dispatched.
   static void dispatchObjectCreated({
     required String library,
     required String className,
@@ -138,6 +140,8 @@ abstract class LeakTracking {
   /// Dispatches object disposal to the leak_tracker.
   ///
   /// See [dispatchObjectCreated] for parameters documentation.
+  ///
+  /// Noop if object disposal is already dispatched.
   static void dispatchObjectDisposed({
     required Object object,
     Map<String, dynamic>? context,

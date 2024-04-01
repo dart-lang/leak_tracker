@@ -46,21 +46,28 @@ void main() {
 ObjectRecord _addItemAndValidate(ObjectRecordSet theSet, Object item) {
   final length = theSet.length;
 
-  final record = theSet.putIfAbsent(item, {}, _phase, '');
+  // Add first time.
+  final (record: record1, wasAbsent: wasAbsent1) =
+      theSet.putIfAbsent(item, {}, _phase, '');
   expect(theSet.length, length + 1);
-  expect(theSet.contains(record), true);
+  expect(theSet.contains(record1), true);
   expect(theSet.contains(_record), false);
+  expect(wasAbsent1, true);
 
-  expect(theSet.putIfAbsent(item, {}, _phase, ''), record);
+  // Add second time.
+  final (record: record2, wasAbsent: wasAbsent2) =
+      theSet.putIfAbsent(item, {}, _phase, '');
+  expect(identical(record1, record2), true);
   expect(theSet.length, length + 1);
+  expect(wasAbsent2, false);
 
   var count = 0;
   theSet.forEach((record) => count++);
   expect(count, theSet.length);
 
-  expect(theSet.record(item), record);
+  expect(theSet.record(item), record1);
 
-  return record;
+  return record1;
 }
 
 void _removeItemAndValidate(ObjectRecordSet theSet, ObjectRecord record) {

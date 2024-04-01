@@ -1,3 +1,7 @@
+# 10.0.6
+
+* Handle double tracking.
+
 # 10.0.5
 
 * Stop failing if finalization happened twice.

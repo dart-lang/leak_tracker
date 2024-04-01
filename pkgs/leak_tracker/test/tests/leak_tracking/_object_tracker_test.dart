@@ -13,7 +13,7 @@ import 'package:test/test.dart';
 
 import '../../test_infra/data/dart_classes.dart';
 
-const String _trackedClass = 'trackedClass';
+const String _trackedClass = 'MyClass';
 const _disposalTime = Duration(milliseconds: 100);
 
 void main() {
@@ -86,23 +86,32 @@ void main() {
       );
     });
 
-    test('without failures.', () {
-      final object1 = [1, 2, 3];
-      final object2 = ['-'];
+    test('without failures', () async {
+      Object? object = [1, 2, 3];
+      final ref = WeakReference(object);
 
       tracker.startTracking(
-        object1,
+        object,
         context: null,
         trackedClass: _trackedClass,
         phase: const PhaseSettings(),
       );
 
       tracker.startTracking(
-        object2,
+        object,
         context: null,
         trackedClass: _trackedClass,
         phase: const PhaseSettings(),
       );
+
+      tracker.dispatchDisposal(object, context: null);
+      tracker.dispatchDisposal(object, context: null);
+
+      object = null;
+      await forceGC();
+      expect(ref.target, null);
+      // Pause to allow finalizers to run.
+      await Future<void>.delayed(const Duration(milliseconds: 4));
     });
   });
 
@@ -187,7 +196,7 @@ void main() {
       tracker.startTracking(
         theObject,
         context: null,
-        trackedClass: 'trackedClass',
+        trackedClass: _trackedClass,
         phase: const PhaseSettings(),
       );
       finalizerBuilder.gc(theObject);
@@ -206,7 +215,7 @@ void main() {
         tracker.startTracking(
           theObject,
           context: null,
-          trackedClass: 'trackedClass',
+          trackedClass: _trackedClass,
           phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
@@ -232,7 +241,7 @@ void main() {
         tracker.startTracking(
           theObject,
           context: null,
-          trackedClass: 'trackedClass',
+          trackedClass: _trackedClass,
           phase: const PhaseSettings(),
         );
         tracker.dispatchDisposal(theObject, context: null);
@@ -355,7 +364,7 @@ void main() {
       time = time.add(_disposalTime);
       gcCounter.gcCount = gcCounter.gcCount + defaultNumberOfGcCycles;
 
-      // GC and verify leak contains callstacks.
+      // GC and verify leak contains callstack.
       await withClock(Clock.fixed(time), () async {
         finalizerBuilder.gc(theObject);
         final theLeak =

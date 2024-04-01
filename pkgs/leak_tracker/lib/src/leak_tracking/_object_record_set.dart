@@ -12,7 +12,7 @@ import 'primitives/model.dart';
 
 @visibleForTesting
 class ObjectRecordSet {
-  ObjectRecordSet({this.coder = standardIdentityHashCoder});
+  ObjectRecordSet({@visibleForTesting this.coder = standardIdentityHashCoder});
 
   final IdentityHashCoder coder;
 
@@ -49,7 +49,7 @@ class ObjectRecordSet {
     if (list.isEmpty) _records.remove(record.code);
   }
 
-  ObjectRecord putIfAbsent(
+  ({ObjectRecord record, bool wasAbsent}) putIfAbsent(
     Object object,
     Map<String, dynamic>? context,
     PhaseSettings phase,
@@ -59,8 +59,9 @@ class ObjectRecordSet {
 
     final list = _records.putIfAbsent(code, () => []);
 
-    final existing = list.firstWhereOrNull((r) => r.ref.target == object);
-    if (existing != null) return existing;
+    final existing =
+        list.firstWhereOrNull((r) => identical(r.ref.target, object));
+    if (existing != null) return (record: existing, wasAbsent: false);
 
     final creationChecker = phase.ignoredLeaks.createdByTestHelpers
         ? CreationChecker(
@@ -78,7 +79,7 @@ class ObjectRecordSet {
 
     list.add(result);
     _length++;
-    return result;
+    return (record: result, wasAbsent: true);
   }
 
   int _length = 0;
