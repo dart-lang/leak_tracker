@@ -4,7 +4,7 @@
 
 import 'dart:io';
 
-import 'package:memory_usage/src/_snapshot.dart';
+import 'package:memory_usage/src/auto_snapshotting/_snapshot.dart';
 import 'package:test/test.dart';
 
 void main() {
