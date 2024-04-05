@@ -201,7 +201,7 @@ to learn how to ignore leaks while a fix is on the way.
 
 ### 4. Leaking object is Image
 
-Images in Flutter have unusual lifecycle.
+Images in Flutter have unusual lifecycle:
 
 1. Image and ImageInfo have [non-standard contract for disposal](https://github.com/flutter/flutter/blob/1f64be86810ac4082e250fde8efc6ed212c538e1/packages/flutter/lib/src/painting/image_stream.dart#L18).
 
