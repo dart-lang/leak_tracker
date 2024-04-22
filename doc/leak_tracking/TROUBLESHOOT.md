@@ -198,3 +198,15 @@ If a found leak is originated in the Flutter Framework or a dependent package, f
 See the [tracking issue](https://github.com/flutter/flutter/issues/134787) for memory leak clean up in Flutter Framework.
 See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122)
 to learn how to ignore leaks while a fix is on the way.
+
+### 4. Leaking object is Image
+
+Images in Flutter have an unusual lifecycle:
+
+1. Image and ImageInfo have a [non-standard contract for disposal](https://github.com/flutter/flutter/blob/1f64be86810ac4082e250fde8efc6ed212c538e1/packages/flutter/lib/src/painting/image_stream.dart#L18).
+
+2. The setting `.withIgnored(createdByTestHelpers: true)` does not work for images, because
+creation of their native part is not detectable as happening in a test helper.
+
+3. Images are cashed and reused that improves test performance. So, `tearDownAll(imageCache.clear)`
+will help if leaks are caused by test code. 
