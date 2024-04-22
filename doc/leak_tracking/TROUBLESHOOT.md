@@ -201,12 +201,12 @@ to learn how to ignore leaks while a fix is on the way.
 
 ### 4. Leaking object is Image
 
-Images in Flutter have unusual lifecycle:
+Images in Flutter have an unusual lifecycle:
 
-1. Image and ImageInfo have [non-standard contract for disposal](https://github.com/flutter/flutter/blob/1f64be86810ac4082e250fde8efc6ed212c538e1/packages/flutter/lib/src/painting/image_stream.dart#L18).
+1. Image and ImageInfo have a [non-standard contract for disposal](https://github.com/flutter/flutter/blob/1f64be86810ac4082e250fde8efc6ed212c538e1/packages/flutter/lib/src/painting/image_stream.dart#L18).
 
 2. The setting `.withIgnored(createdByTestHelpers: true)` does not work for images, because
-creation of their native part is not detectable as happening in test helper.
+creation of their native part is not detectable as happening in a test helper.
 
 3. Images are cashed and reused that improves test performance. So, `tearDownAll(imageCache.clear)`
 will help if leaks are caused by test code. 
