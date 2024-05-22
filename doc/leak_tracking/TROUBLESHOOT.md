@@ -52,6 +52,12 @@ await gesture.up();
 await tester.pumpAndSettle();
 ```
 
+### 3. The test is leaking Image, ImageInfo or ImageStreamCompleterHandle
+
+If your test is creating images that are designed to stay in the cache, you need to invoke `imageCache.clear()`
+after the test.
+Add it to`tearDownAll` to optimize for testing performance. Add it to`tearDown` to optimize for test isolation.
+
 ## Get additional information
 
 To understand the root cause of a memory leak, you may want to gather additional information.
