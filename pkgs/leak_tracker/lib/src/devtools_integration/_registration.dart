@@ -12,7 +12,7 @@ import 'delivery.dart';
 import 'messages.dart';
 import 'primitives.dart';
 
-bool _extentsionRegistered = false;
+bool _extensionRegistered = false;
 
 /// Registers service extension to signal that leak tracking is
 /// already enabled and other leak tracking systems
@@ -76,13 +76,13 @@ bool _registerServiceExtension(
   Future<ServiceExtensionResponse> Function(String, Map<String, String>)
       handler,
 ) {
-  if (_extentsionRegistered) return false;
+  if (_extensionRegistered) return false;
   try {
     registerExtension(
       memoryLeakTrackingExtensionName,
       handler,
     );
-    _extentsionRegistered = true;
+    _extensionRegistered = true;
 
     return true;
     // ignore: avoid_catching_errors
