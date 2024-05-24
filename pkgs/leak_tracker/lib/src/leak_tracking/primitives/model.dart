@@ -148,7 +148,7 @@ class IgnoredLeaks {
   /// start of leak tracking contains a frame, located after the test body
   /// frame, that points to the folder `test` or the package `flutter_test`,
   /// except:
-  /// * methods intended to be called from test body like `runAsunc` or `pump`
+  /// * methods intended to be called from test body like `runAsync` or `pump`
   /// * frames that match [testHelperExceptions]
   final bool createdByTestHelpers;
 

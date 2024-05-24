@@ -5,7 +5,7 @@
 /// Result of [identityHashCode].
 typedef IdentityHashCode = int;
 
-/// Finilizer builder to mock standard [identityHashCode].
+/// Finalizer builder to mock standard [identityHashCode].
 typedef IdentityHashCoder = IdentityHashCode Function(Object object);
 
 int standardIdentityHashCoder(Object object) => identityHashCode(object);
