@@ -21,7 +21,7 @@ import 'primitives/_retaining_path/_retaining_path.dart';
 /// ensure an object is not held by another object from garbage collection.
 ///
 /// For code example see
-/// https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md
+/// https://github.com/dart-lang/leak_tracker/blob/main/doc/leak_tracking/TROUBLESHOOT.md
 Future<void> forceGC({
   Duration? timeout,
   int fullGcCycles = 1,
