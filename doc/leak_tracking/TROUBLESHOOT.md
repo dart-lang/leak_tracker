@@ -63,8 +63,8 @@ Add it to:
 
 Sometimes `imageCache.clear()` does not dispose images handle, but schedules dispocal
 no happen after rendering cyscles completion. 
-If this is a case, `imageCache.clear()` needs to happen as last statemdne of test,
-instead of tear down, to allow the cycles to happen.
+If this is a case, `imageCache.clear()` needs to happen as last statement of the test,
+instead of in tear down, to allow the cycles to happen.
 
 ## Get additional information
 
