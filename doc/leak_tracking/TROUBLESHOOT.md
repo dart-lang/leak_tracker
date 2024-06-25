@@ -54,9 +54,17 @@ await tester.pumpAndSettle();
 
 ### 3. The test is leaking Image, ImageInfo or ImageStreamCompleterHandle
 
-If your test is creating images that are designed to stay in the cache, you need to invoke `imageCache.clear()`
-after the test.
-Add it to`tearDownAll` to optimize for testing performance. Add it to`tearDown` to optimize for test isolation.
+If your test is creating images that are designed to stay in the cache,
+you need to invoke `imageCache.clear()` after the test.
+
+Add it to:
+* `tearDownAll` to optimize for testing performance
+* `tearDown` to optimize for test isolation
+
+Sometimes `imageCache.clear()` does not dispose the images handle, but schedules disposal
+to happen after the rendering cycle completes. 
+If this is a case, `imageCache.clear()` needs to happen as last statement of the test,
+instead of in tear down, to allow the cycles to happen.
 
 ## Get additional information
 
