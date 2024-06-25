@@ -61,8 +61,8 @@ Add it to:
 * `tearDownAll` to optimize for testing performance
 * `tearDown` to optimize for test isolation
 
-Sometimes `imageCache.clear()` does not dispose images handle, but schedules dispocal
-no happen after rendering cyscles completion. 
+Sometimes `imageCache.clear()` does not dispose the images handle, but schedules disposal
+to happen after the rendering cycle completes. 
 If this is a case, `imageCache.clear()` needs to happen as last statement of the test,
 instead of in tear down, to allow the cycles to happen.
 
