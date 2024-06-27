@@ -62,9 +62,23 @@ Add it to:
 * `tearDown` to optimize for test isolation
 
 Sometimes `imageCache.clear()` does not dispose the images handle, but schedules disposal
-to happen after the rendering cycle completes. 
+to happen after the rendering cycle completes.
 If this is a case, `imageCache.clear()` needs to happen as last statement of the test,
 instead of in tear down, to allow the cycles to happen.
+
+### 4. The test throws flutter exception
+
+Widget states are not disposed by test framework in case of exception.
+
+So, if your test tests a failure, opt it out of leak tracking:
+
+
+```
+testWidgets('async onInit throws FlutterError',
+  experimentalLeakTesting: LeakTesting.settings.withIgnoredAll(), // leaking by design because of exception
+  (WidgetTester tester) async {
+...
+```
 
 ## Get additional information
 
@@ -223,4 +237,4 @@ Images in Flutter have an unusual lifecycle:
 creation of their native part is not detectable as happening in a test helper.
 
 3. Images are cashed and reused that improves test performance. So, `tearDownAll(imageCache.clear)`
-will help if leaks are caused by test code. 
+will help if leaks are caused by test code.
