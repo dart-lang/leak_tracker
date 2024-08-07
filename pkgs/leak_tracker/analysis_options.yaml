@@ -8,8 +8,5 @@ analyzer:
 linter:
   rules:
     - avoid_print
-    - comment_references
-    - only_throw_errors
     - sort_constructors_first
     - sort_unnamed_constructors_first
-    - unawaited_futures
