@@ -8,13 +8,13 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  intl: ^0.18.1
+  intl: ^0.19.0
   memory_usage: any
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^3.0.0
+  flutter_lints: ^4.0.0
   integration_test:
     sdk: flutter
 

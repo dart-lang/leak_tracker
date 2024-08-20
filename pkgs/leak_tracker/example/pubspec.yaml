@@ -8,7 +8,7 @@ dependencies:
   leak_tracker: any
 
 dev_dependencies:
-  lints: ^3.0.0
+  lints: ^4.0.0
 
 dependency_overrides:
   leak_tracker:
