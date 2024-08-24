@@ -1,5 +1,5 @@
 name: leak_tracker_flutter_testing
-version: 3.0.6
+version: 3.0.7
 description: An internal package to test leak tracking with Flutter.
 repository: https://github.com/dart-lang/leak_tracker/tree/main/pkgs/leak_tracker_flutter_testing
 

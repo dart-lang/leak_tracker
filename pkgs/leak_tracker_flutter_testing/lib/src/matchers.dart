@@ -28,7 +28,7 @@ Future<List<ObjectEvent>> memoryEvents(
   return events;
 }
 
-/// Checks if Iterable<ObjectEvent> contains two events,
+/// Checks if `Iterable<ObjectEvent>` contains two events,
 /// first `ObjectCreated` and then `ObjectDisposed`.
 Matcher areCreateAndDispose = const _AreCreateAndDispose();
 

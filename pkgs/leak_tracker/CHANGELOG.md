@@ -1,3 +1,7 @@
+# 10.0.7
+
+* Fix broken link in error message.
+
 # 10.0.6
 
 * Handle double tracking.

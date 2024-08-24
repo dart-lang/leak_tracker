@@ -35,7 +35,7 @@ final leakTrackerYamlHeader = '''
 /// The enum is test covered to catch broken links.
 enum Links {
   gitHubTroubleshooting(
-    'https://github.com/dart-lang/leak_tracker/blob/main/doc/TROUBLESHOOT.md',
+    'https://github.com/dart-lang/leak_tracker/blob/main/doc/leak_tracking/TROUBLESHOOT.md',
     null,
   ),
   ;
