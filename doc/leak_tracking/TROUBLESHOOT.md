@@ -80,6 +80,25 @@ testWidgets('async onInit throws FlutterError',
 ...
 ```
 
+## Convert leak to tech debt
+
+If the leak is complicated and the test failure blocks important process,
+temporary turn off leak tracking and create issue to fix the leak and re-enable leak tracking.
+
+* For one test, add parameter to `testWidgets`:
+    ```
+    // TODO ...
+    experimentalLeakTesting: LeakTesting.settings.withIgnoredAll(),
+
+* For a test suite, add line to the test's `main`:
+    ```
+    // TODO ...
+    LeakTesting.settings = LeakTesting.settings.withIgnoredAll();
+    ```
+
+* For all tests, update[`test/flutter_test_config.dart`](https://api.flutter.dev/flutter/flutter_test/flutter_test-library.html) to not invoke `LeakTesting.enable();`
+
+
 ## Get additional information
 
 To understand the root cause of a memory leak, you may want to gather additional information.
