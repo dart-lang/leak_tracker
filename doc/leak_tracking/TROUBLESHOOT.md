@@ -80,7 +80,7 @@ testWidgets('async onInit throws FlutterError',
 ...
 ```
 
-## Convert leak to tech debt
+## Convert the leak to tech debt
 
 If the leak is complicated and the test failure blocks important process,
 temporary turn off leak tracking and create issue to fix the leak and re-enable leak tracking.
