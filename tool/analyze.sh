@@ -28,10 +28,6 @@ cd -
 
 cd $TOOL_DIR/../pkgs/leak_tracker_flutter_testing
 flutter analyze --fatal-infos
-
-echo "--------- Content of lib/src/matchers.dart:"
-cat lib/src/matchers.dart
-echo "--------- End of content of lib/src/matchers.dart."
 cd -
 
 cd $TOOL_DIR/../pkgs/leak_tracker_testing
