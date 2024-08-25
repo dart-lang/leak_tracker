@@ -1,6 +1,7 @@
-## 3.0.1-wip
+## 3.0.1
 
-* Fixed typo by renaming `experimantalAllNotGCed` to `experimentalAllNotGCed`.
+* Upgrade leak_tracker to
+* Fix typo by renaming `experimantalAllNotGCed` to `experimentalAllNotGCed`.
 
 ## 3.0.0
 
