@@ -82,7 +82,7 @@ testWidgets('async onInit throws FlutterError',
 
 ## Convert the leak to tech debt
 
-If the leak is complicated and the test failure blocks important process,
+If the leak is complicated and the test failure blocks an important process,
 temporary turn off leak tracking and create issue to fix the leak and re-enable leak tracking.
 
 * For one test, add parameter to `testWidgets`:
