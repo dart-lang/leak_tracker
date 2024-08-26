@@ -2,6 +2,10 @@
 
 * Upgrade leak_tracker to 10.0.7.
 
+## 3.0.7
+
+* No changes.
+
 ## 3.0.6
 
 * Upgrade leak_tracker to 10.0.6.
