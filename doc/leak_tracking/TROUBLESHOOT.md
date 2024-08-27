@@ -20,13 +20,16 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
    release the references before the owner disposed the object.
 
-A test specific rule:
+**Flutter specific rules:**
+1. If a widget creates disposables, it should be stateful, to be able to dispose them.
+
+**Test specific rules:**
 1. If your test creates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
 
-```dart
-final FocusNode focusNode = FocusNode();
-addTearDown(focusNode.dispose());
-```
+   ```dart
+   final FocusNode focusNode = FocusNode();
+   addTearDown(focusNode.dispose());
+   ```
 
 ## Known simple cases
 
