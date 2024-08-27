@@ -21,7 +21,7 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
    release the references before the owner disposed the object.
 
 **Flutter specific rules:**
-1. If a widget creates disposables, it should be stateful, to be able to dispose them.
+1. If a widget creates disposables (loke controller), it should be stateful, to be able to dispose the disposables.
 
 **Test specific rules:**
 1. If your test creates a disposable object, it should dispose it in `tearDown`, so that test failure does not result in a leak:
