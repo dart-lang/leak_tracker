@@ -69,7 +69,16 @@ to happen after the rendering cycle completes.
 If this is a case, `imageCache.clear()` needs to happen as last statement of the test,
 instead of in tear down, to allow the cycles to happen.
 
-### 4. The test throws flutter exception
+### 4. The test is hacky
+
+If a test leaks because it uses APIs in non-recommended way, opt out this test from leak tracking:
+
+    ```
+    experimentalLeakTesting: LeakTesting.settings.withIgnoredAll(), // The test is leaking by design.
+    ```
+
+
+### 5. The test throws flutter exception
 
 Widget states are not disposed by test framework in case of exception.
 
@@ -92,8 +101,10 @@ temporary turn off leak tracking and create issue to fix the leak and re-enable 
     ```
     // TODO ...
     experimentalLeakTesting: LeakTesting.settings.withIgnoredAll(),
+    ```
 
 * For a test suite, add line to the test's `main`:
+
     ```
     // TODO ...
     LeakTesting.settings = LeakTesting.settings.withIgnoredAll();
