@@ -10,3 +10,4 @@ linter:
     - avoid_print
     - sort_constructors_first
     - sort_unnamed_constructors_first
+    - curly_braces_in_flow_control_structures: false
