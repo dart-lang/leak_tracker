@@ -43,7 +43,9 @@ void maybeSetupLeakTrackingForTest(
 void maybeTearDownLeakTrackingForTest() {
   if (!LeakTesting.enabled ||
       !LeakTracking.isStarted ||
-      LeakTracking.phase.ignoreLeaks) return;
+      LeakTracking.phase.ignoreLeaks) {
+    return;
+  }
   LeakTracking.phase = const PhaseSettings.ignored();
 }
 
