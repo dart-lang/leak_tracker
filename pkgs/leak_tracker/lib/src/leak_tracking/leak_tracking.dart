@@ -25,6 +25,14 @@ abstract class LeakTracking {
   /// requested for a non-supported platform.
   static bool warnForUnsupportedPlatforms = true;
 
+  /// Customized link to documentation how to troubleshoot leaks.
+  ///
+  /// Used to provide a link to the user in the generated leak report.
+  /// If not provided, the [Links.gitHubTroubleshooting] is used.
+  static String get troubleshootingDocumentationLink => documentationLinkToUse;
+  static set troubleshootingDocumentationLink(String value) =>
+      documentationLinkToUse = value;
+
   /// Settings for leak tracking phase.
   ///
   /// Can be modified before leak tracking is started and while it

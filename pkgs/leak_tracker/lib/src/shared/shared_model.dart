@@ -144,7 +144,7 @@ class Leaks {
           ),
         )
         .join();
-    return '$leakTrackerYamlHeader$leaks';
+    return '${leakTrackerYamlHeader()}$leaks';
   }
 }
 
