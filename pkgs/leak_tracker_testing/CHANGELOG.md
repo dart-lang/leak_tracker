@@ -1,4 +1,4 @@
-## 3.0.1-wip
+## 3.0.1
 
 * Fixed typo by renaming `experimantalAllNotGCed` to `experimentalAllNotGCed`.
 
