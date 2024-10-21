@@ -30,9 +30,8 @@ class _IsLeakFree extends Matcher {
         );
     }
 
-    final itemAsYaml = item.toYaml(phasesAreTests: true);
-
-    return mismatchDescription..add('contains leaks:\n$itemAsYaml');
+    return mismatchDescription
+      ..add('contains leaks:\n${item.toYaml(phasesAreTests: true)}');
   }
 
   @override
