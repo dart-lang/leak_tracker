@@ -258,6 +258,6 @@ Images in Flutter have an unusual lifecycle:
 2. The setting `.withIgnored(createdByTestHelpers: true)` does not work for images, because
 creation of their native part is not detectable as happening in a test helper.
 
-3. Images are cashed and reused that improves test performance. And, `tearDownAll(imageCache.clear)`
-will NOT help, because some image disposals are postponed to after next frame. To clear the cashed
+3. Images are cached and reused that improves test performance. And, `tearDownAll(imageCache.clear)`
+will NOT help, because some image disposals are postponed to after next frame. To clear the cached
 images invoke `imageCache.clear()` and/or `imageCache.clearLiveImages()` at the very end of the test. 
