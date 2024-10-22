@@ -1,3 +1,7 @@
+# 10.0.8
+
+* Make link to documentation customizable.
+
 # 10.0.7
 
 * Fix broken link in error message.
