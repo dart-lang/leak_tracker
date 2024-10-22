@@ -24,7 +24,7 @@ class ObjectRef<T> {
   T value;
 }
 
-/// Link to documentation how to troubleshoot leaks.
+/// Customized link to documentation on how to troubleshoot leaks.
 ///
 /// Used to provide a link to the user in the generated leak report.
 /// Defaults to [Links.gitHubTroubleshooting].
