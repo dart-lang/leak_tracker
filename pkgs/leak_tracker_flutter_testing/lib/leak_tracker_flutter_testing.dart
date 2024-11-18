@@ -11,5 +11,5 @@ export 'src/matchers.dart';
 export 'src/model.dart';
 export 'src/testing.dart';
 export 'src/testing_for_testing/leaking_classes.dart';
-export 'src/testing_for_testing/test_case.dart';
+export 'package:test_helpers/test_helpers.dart';
 export 'src/testing_for_testing/test_settings.dart';
