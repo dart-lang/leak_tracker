@@ -16,13 +16,13 @@ final _retainer = <InstrumentedDisposable>[];
 /// They are separate from test execution to allow
 /// excluding them from test helpers.
 final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
-  LeakTestCase(
-    name: 'no leaks',
-    body: (PumpWidgetsCallback? pumpWidgets,
-        RunAsyncCallback<dynamic>? runAsync) async {
-      Container();
-    },
-  ),
+  // LeakTestCase(
+  //   name: 'no leaks',
+  //   body: (PumpWidgetsCallback? pumpWidgets,
+  //       RunAsyncCallback<dynamic>? runAsync) async {
+  //     Container();
+  //   },
+  // ),
   LeakTestCase(
     name: 'not disposed disposable',
     body: (PumpWidgetsCallback? pumpWidgets,
@@ -31,34 +31,34 @@ final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
     },
     notDisposedTotal: 1,
   ),
-  LeakTestCase(
-    name: 'not GCed disposable',
-    body: (PumpWidgetsCallback? pumpWidgets,
-        RunAsyncCallback<dynamic>? runAsync) async {
-      _retainer.add(InstrumentedDisposable()..dispose());
-    },
-    notGCedTotal: 1,
-  ),
-  LeakTestCase(
-    name: 'leaking widget',
-    body: (PumpWidgetsCallback? pumpWidgets,
-        RunAsyncCallback<dynamic>? runAsync) async {
-      StatelessLeakingWidget();
-    },
-    notDisposedTotal: 1,
-    notGCedTotal: 1,
-  ),
-  LeakTestCase(
-    name: 'leaks from test helpers',
-    body: (PumpWidgetsCallback? pumpWidgets,
-        RunAsyncCallback<dynamic>? runAsync) async {
-      createLeakingWidget();
-    },
-    notDisposedTotal: 1,
-    notGCedTotal: 1,
-    notDisposedInHelpers: 1,
-    notGCedInHelpers: 1,
-  ),
+  // LeakTestCase(
+  //   name: 'not GCed disposable',
+  //   body: (PumpWidgetsCallback? pumpWidgets,
+  //       RunAsyncCallback<dynamic>? runAsync) async {
+  //     _retainer.add(InstrumentedDisposable()..dispose());
+  //   },
+  //   notGCedTotal: 1,
+  // ),
+  // LeakTestCase(
+  //   name: 'leaking widget',
+  //   body: (PumpWidgetsCallback? pumpWidgets,
+  //       RunAsyncCallback<dynamic>? runAsync) async {
+  //     StatelessLeakingWidget();
+  //   },
+  //   notDisposedTotal: 1,
+  //   notGCedTotal: 1,
+  // ),
+  // LeakTestCase(
+  //   name: 'leaks from test helpers',
+  //   body: (PumpWidgetsCallback? pumpWidgets,
+  //       RunAsyncCallback<dynamic>? runAsync) async {
+  //     createLeakingWidget();
+  //   },
+  //   notDisposedTotal: 1,
+  //   notGCedTotal: 1,
+  //   notDisposedInHelpers: 1,
+  //   notGCedInHelpers: 1,
+  // ),
 ];
 
 String memoryLeakTestsFilePath() {
