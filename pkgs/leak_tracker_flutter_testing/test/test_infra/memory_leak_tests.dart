@@ -4,7 +4,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
+import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart'
+    hide createLeakingWidget;
+import 'package:test_helpers/test_case.dart';
 
 import 'test_helpers.dart';
 

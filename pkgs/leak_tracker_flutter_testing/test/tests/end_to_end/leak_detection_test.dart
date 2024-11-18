@@ -4,6 +4,7 @@
 
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 import 'package:test/test.dart';
+import 'package:test_helpers/test_case.dart';
 
 import '../../test_infra/memory_leak_tests.dart';
 

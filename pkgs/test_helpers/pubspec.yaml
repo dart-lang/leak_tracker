@@ -1,4 +1,4 @@
-name: web_tests
+name: test_helpers
 publish_to: 'none'
 
 version: 1.0.0+1
