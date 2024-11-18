@@ -9,12 +9,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  leak_tracker_flutter_testing: any # version is defined by flutter
+  leak_tracker: '>=10.0.8 <11.0.0'
+  # leak_tracker_flutter_testing: any # version is defined by flutter
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.1.0
-  flutter_test:
-    sdk: flutter
+  # flutter_test:
+  #   sdk: flutter
   layerlens: ^1.0.16
 
 flutter:
