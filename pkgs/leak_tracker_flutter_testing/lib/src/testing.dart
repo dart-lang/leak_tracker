@@ -15,6 +15,7 @@ void maybeSetupLeakTrackingForTest(
   LeakTesting? settings,
   String testDescription,
 ) {
+  print('!!!! maybeSetupLeakTrackingForTest');
   if (!LeakTesting.enabled) return;
 
   final leakTesting = settings ?? LeakTesting.settings;
@@ -53,6 +54,7 @@ void maybeTearDownLeakTrackingForTest() {
 ///
 /// Is noop if leak tracking is not started.
 Future<void> maybeTearDownLeakTrackingForAll() async {
+  print('!!!! maybeTearDownLeakTrackingForAll');
   if (!LeakTesting.enabled || !LeakTracking.isStarted) {
     // Reporter is invoked so that tests can verify the number of
     // collected leaks is as expected.
@@ -65,6 +67,7 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   FlutterMemoryAllocations.instance
       .removeListener(_dispatchFlutterEventToLeakTracker);
   await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+  print('!!!! about to declareNotDisposedObjectsAsLeaks');
   LeakTracking.declareNotDisposedObjectsAsLeaks();
   final leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();

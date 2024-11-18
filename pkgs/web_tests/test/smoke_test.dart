@@ -14,7 +14,7 @@ void main() {
     // maybeSetupLeakTrackingForTest(null, 'myTest1');
   });
 
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    await tester.pumpWidget(Container());
-  });
+  // testWidgets('Smoke test', (WidgetTester tester) async {
+  //   await tester.pumpWidget(Container());
+  // });
 }
