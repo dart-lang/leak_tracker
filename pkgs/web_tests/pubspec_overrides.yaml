@@ -1,0 +1,3 @@
+dependency_overrides:
+  leak_tracker_flutter_testing:
+    path: ../leak_tracker_flutter_testing

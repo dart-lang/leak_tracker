@@ -1,0 +1,21 @@
+name: web_tests
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0-140.0.dev
+
+dependencies:
+
+dev_dependencies:
+  dart_flutter_team_lints: ^3.1.0
+  flutter:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  layerlens: ^1.0.16
+  leak_tracker_flutter_testing: any # version is defined by flutter
+
+flutter:
+  uses-material-design: true
