@@ -10,6 +10,5 @@ export 'package:leak_tracker_testing/leak_tracker_testing.dart'
 export 'src/matchers.dart';
 export 'src/model.dart';
 export 'src/testing.dart';
-export 'src/testing_for_testing/leaking_classes.dart';
 export 'package:test_helpers/test_helpers.dart';
 export 'src/testing_for_testing/test_settings.dart';
