@@ -44,15 +44,12 @@ bool isCreatedByTestHelper(
   String objectCreationTrace,
   List<RegExp> exceptions,
 ) {
-  print('!!!! exceptions: $exceptions');
   final frames = objectCreationTrace.split('\n');
   for (final frame in frames) {
     if (_startFrame.hasMatch(frame)) {
       return false;
     }
     if (_testHelperFrame.hasMatch(frame)) {
-      print('!!!! exceptions: $exceptions');
-
       if (exceptions.any((exception) => exception.hasMatch(frame)) ||
           _exceptions.hasMatch(frame)) {
         continue;

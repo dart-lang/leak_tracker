@@ -108,7 +108,6 @@ class ObjectTracker implements LeakProvider {
   /// Is used to make sure all disposables are disposed
   /// by the the end of the test.
   void declareAllNotDisposedAsLeaks() {
-    print('!!!! declareAllNotDisposedAsLeaks');
     throwIfDisposed();
     // We need this temporary storage to avoid error
     // 'concurrent modification during iteration'
@@ -279,7 +278,6 @@ class ObjectTracker implements LeakProvider {
   }
 
   void throwIfDisposed() {
-    if (disposed) print('!!!! disposed!!!!');
     if (disposed) throw StateError('The disposed instance should not be used.');
   }
 
