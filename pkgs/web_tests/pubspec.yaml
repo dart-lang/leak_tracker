@@ -4,14 +4,16 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0-140.0.dev
+  sdk: ^3.2.0
+  flutter: '>=3.18.0-18.0.pre.54'
 
 dependencies:
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
   dart_flutter_team_lints: ^3.1.0
-  flutter:
-    sdk: flutter
+
   flutter_test:
     sdk: flutter
   layerlens: ^1.0.16
