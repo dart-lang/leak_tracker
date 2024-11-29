@@ -33,6 +33,8 @@ void main() {
 
   tearDown(maybeTearDownLeakTrackingForTest);
 
+  tearDownAll(maybeTearDownLeakTrackingForAll);
+
   for (final t in memoryLeakTests) {
     for (final settingsCase in leakTestingSettingsCases.entries) {
       final settings = settingsCase.value(LeakTesting.settings);

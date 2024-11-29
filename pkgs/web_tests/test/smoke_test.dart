@@ -13,5 +13,8 @@ void main() {
 
   testWidgets('Smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(Container());
+    await tester.runAsync(() async {
+      await tester.pump();
+    });
   });
 }
