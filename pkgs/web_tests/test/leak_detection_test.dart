@@ -37,18 +37,18 @@ void main() {
 
   for (final t in memoryLeakTests) {
     for (final settingsCase in leakTestingSettingsCases.entries) {
-      // final settings = settingsCase.value(LeakTesting.settings);
-      // final execution = _TestExecution(
-      //   settingName: settingsCase.key,
-      //   test: t,
-      //   settings: settings,
-      // );
-      // _testExecutions.add(execution);
+      final settings = settingsCase.value(LeakTesting.settings);
+      final execution = _TestExecution(
+        settingName: settingsCase.key,
+        test: t,
+        settings: settings,
+      );
+      _testExecutions.add(execution);
 
-      // test(execution.name, () async {
-      //   maybeSetupLeakTrackingForTest(settings, execution.name);
-      //   await t.body(null, null);
-      // });
+      test(execution.name, () async {
+        maybeSetupLeakTrackingForTest(settings, execution.name);
+        await t.body(null, null);
+      });
     }
   }
 }
