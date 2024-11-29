@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
@@ -43,9 +44,13 @@ void main() {
       );
       _testExecutions.add(execution);
 
-      test(execution.name, () async {
+      testWidgets(execution.name, (tester) async {
         maybeSetupLeakTrackingForTest(settings, execution.name);
-        await t.body(null, null);
+        await t.body(
+          (Widget widget, [Duration? duration]) =>
+              tester.pumpWidget(widget, duration: duration),
+          (callback) => tester.runAsync(callback),
+        );
       });
     }
   }
