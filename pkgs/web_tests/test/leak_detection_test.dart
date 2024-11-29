@@ -33,7 +33,7 @@ void main() {
 
   tearDown(maybeTearDownLeakTrackingForTest);
 
-  tearDownAll(maybeTearDownLeakTrackingForAll);
+  // tearDownAll(maybeTearDownLeakTrackingForAll);
 
   for (final t in memoryLeakTests) {
     for (final settingsCase in leakTestingSettingsCases.entries) {
