@@ -9,12 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  setUp(() {
-    // LeakTesting.settings = LeakTesting.settings.withTrackedAll();
-    // maybeSetupLeakTrackingForTest(null, 'myTest1');
-  });
+  setUp(() {});
 
-  // testWidgets('Smoke test', (WidgetTester tester) async {
-  //   await tester.pumpWidget(Container());
-  // });
+  testWidgets('Smoke test', (WidgetTester tester) async {
+    await tester.pumpWidget(Container());
+  });
 }

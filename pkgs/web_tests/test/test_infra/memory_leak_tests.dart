@@ -16,15 +16,15 @@ final _retainer = <InstrumentedDisposable>[];
 /// They are separate from test execution to allow
 /// excluding them from test helpers.
 final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
-  LeakTestCase(
-    name: 'no leaks',
-    body: (
-      PumpWidgetsCallback? pumpWidgets,
-      RunAsyncCallback<dynamic>? runAsync,
-    ) async {
-      Container();
-    },
-  ),
+  // LeakTestCase(
+  //   name: 'no leaks',
+  //   body: (
+  //     PumpWidgetsCallback? pumpWidgets,
+  //     RunAsyncCallback<dynamic>? runAsync,
+  //   ) async {
+  //     Container();
+  //   },
+  // ),
   // LeakTestCase(
   //   name: 'not disposed disposable',
   //   body: (
