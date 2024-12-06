@@ -85,12 +85,40 @@ final List<LeakTestCase> memoryLeakTests = <LeakTestCase>[
       PumpWidgetsCallback? pumpWidgets,
       RunAsyncCallback<dynamic>? runAsync,
     ) async {
+      printStats();
       await pumpWidgets!(MyApp());
-      await runAsync!(() => Future.delayed(const Duration(seconds: 3)));
+
+      printStats();
+      await runAsync!(() => Future.delayed(const Duration(seconds: 1)));
+      printStats();
+      await runAsync(() => Future.delayed(const Duration(seconds: 1)));
+      printStats();
+      await runAsync(() => Future.delayed(const Duration(seconds: 1)));
+      printStats();
     },
     notDisposedTotal: 0,
   ),
 ];
+
+void printStats() {
+  final notDisposed = <String, int>{};
+  LeakTracking.forEach((r) {
+    if (r.isDisposed) return;
+    final type = r.type.toString();
+    if (!type.contains('Picture') && !type.contains('picture')) return;
+    notDisposed[type] = notDisposed[type] ?? 0 + 1;
+  });
+
+  if (notDisposed.isEmpty) {
+    print('No not disposed');
+    return;
+  }
+
+  print('!!!! Not disposed:');
+  for (final entry in notDisposed.entries) {
+    print('${entry.key}: ${entry.value}');
+  }
+}
 
 String memoryLeakTestsFilePath() {
   final result = RegExp(

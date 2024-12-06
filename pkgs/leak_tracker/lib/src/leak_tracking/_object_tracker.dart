@@ -287,4 +287,7 @@ class ObjectTracker implements LeakProvider {
   }
 
   int get notGCed => _objects.notGCed.length;
+
+  void forEach(void Function(ObjectRecord) callback) =>
+      _objects.notGCed.forEach(callback);
 }
