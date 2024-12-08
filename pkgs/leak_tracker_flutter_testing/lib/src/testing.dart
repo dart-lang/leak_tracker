@@ -20,10 +20,10 @@ void maybeSetupLeakTrackingForTest(
   final leakTesting = settings ?? LeakTesting.settings;
   if (leakTesting.ignore) return;
 
-  if (!_checkPlatformAndMayBePrintWarning(
-      platformName: defaultTargetPlatform.name, isBrowser: kIsWeb)) {
-    return;
-  }
+  // if (!_checkPlatformAndMayBePrintWarning(
+  //     platformName: defaultTargetPlatform.name, isBrowser: kIsWeb)) {
+  //   return;
+  // }
 
   _maybeStartLeakTracking();
 
@@ -64,7 +64,11 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   // because GC may happen after test is complete.
   FlutterMemoryAllocations.instance
       .removeListener(_dispatchFlutterEventToLeakTracker);
-  await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+
+  if (!LeakTesting.settings.ignoredLeaks.experimentalNotGCed.ignoreAll) {
+    await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+  }
+
   LeakTracking.declareNotDisposedObjectsAsLeaks();
   final leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
