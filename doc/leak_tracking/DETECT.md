@@ -69,30 +69,30 @@ Use the [example](https://github.com/flutter/flutter/pull/141526/files) as a gui
 
 ### See leaks in a running Flutter application
 
-TODO(polina-c): implement and test this scenario https://github.com/dart-lang/leak_tracker/issues/172
-
 1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
 
 2. Before `runApp` invocation, enable leak tracking, and connect
 the Flutter memory allocation events:
 
-```dart
-import 'package:flutter/foundation.dart';
-import 'package:leak_tracker/leak_tracker.dart';
+  ```dart
+  import 'package:flutter/foundation.dart';
+  import 'package:leak_tracker/leak_tracker.dart';
 
-...
+  ...
 
-LeakTracking.start();
-FlutterMemoryAllocations.instance.addListener(
-  (ObjectEvent event) => LeakTracking.dispatchObjectEvent(event.toMap()),
-);
-runApp(...);
+  LeakTracking.start();
+  FlutterMemoryAllocations.instance.addListener(
+    (ObjectEvent event) => LeakTracking.dispatchObjectEvent(event.toMap()),
+  );
+  runApp(...);
 
-```
+  ```
 
 3. Run the application in debug mode and watch for a leak related warnings.
 
-TODO(polina-c): add example of the warning https://github.com/dart-lang/leak_tracker/issues/172
+  ```
+  leak_tracker: 134 memory leak(s): not disposed: 134, not GCed: 0, GCed late: 0
+  ```
 
 ## Limitations
 
