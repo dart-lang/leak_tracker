@@ -82,9 +82,10 @@ import 'package:leak_tracker/leak_tracker.dart';
 
 ...
 
-enableLeakTracking();
-FlutterMemoryAllocations.instance
-      .addListener((ObjectEvent event) => dispatchObjectEvent(event.toMap()));
+LeakTracking.start();
+FlutterMemoryAllocations.instance.addListener(
+  (ObjectEvent event) => LeakTracking.dispatchObjectEvent(event.toMap()),
+);
 runApp(...);
 
 ```
