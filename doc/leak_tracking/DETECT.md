@@ -96,6 +96,18 @@ the Flutter memory allocation events:
   leak_tracker: 134 memory leak(s): not disposed: 134, not GCed: 0, GCed late: 0
   ```
 
+4. (optional) To verify leaks are actually being detecting, add leaks:
+
+    a. **not-disposed** Add `FocusNode();` (or any Flutter disposable)
+    to a build method. After build method is executed, and some number of GC cycles
+    have passed, you will see the the detected leak.
+
+    b. **not-GCed** At `main` of application, after start of leak tracking,
+    create and dispose any Flutter disposable (for example
+    `FocusNode`), and store the instance in a global array.
+
+5. Get the details of the leaks by invoking `` on a button click or on some other event.
+
 ## Limitations
 
 ### By environment
