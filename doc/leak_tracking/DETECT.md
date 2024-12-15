@@ -81,10 +81,10 @@ the Flutter memory allocation events:
   ...
 
   void main() {
-    LeakTracking.start();
     FlutterMemoryAllocations.instance.addListener(
       (ObjectEvent event) => LeakTracking.dispatchObjectEvent(event.toMap()),
     );
+    LeakTracking.start();
     runApp(...);
   }
 

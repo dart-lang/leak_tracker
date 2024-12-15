@@ -20,7 +20,6 @@ class LeakTracker {
       checkPeriod: config.checkPeriod,
       onLeaks: config.onLeaks,
       stdoutSink: config.stdoutLeaks ? StdoutSummarySink() : null,
-      devToolsSink: config.notifyDevTools ? DevToolsSummarySink() : null,
     );
   }
 

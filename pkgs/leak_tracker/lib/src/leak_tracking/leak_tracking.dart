@@ -2,7 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_baseliner.dart';
@@ -78,15 +77,6 @@ abstract class LeakTracking {
       final leakTracker = _leakTracker = LeakTracker(config, _phase);
       _leakProvider.value = WeakReference(leakTracker.objectTracker);
 
-      if (config.notifyDevTools) {
-        // While [leakTracker] will push summary leak notifications to DevTools,
-        // DevTools may request leak details from
-        // the application via integration.
-        // That's why it needs [_leakProvider].
-        initializeDevToolsIntegration(_leakProvider);
-      } else {
-        registerLeakTrackingServiceExtension();
-      }
       return true;
     }());
   }

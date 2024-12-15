@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import '../devtools_integration/delivery.dart';
 import '../shared/_util.dart';
 import '../shared/shared_model.dart';
 import 'primitives/model.dart';
@@ -19,7 +18,6 @@ class LeakReporter {
     required this.checkPeriod,
     required this.onLeaks,
     required this.stdoutSink,
-    required this.devToolsSink,
   }) {
     final period = checkPeriod;
     _timer = period == null
@@ -40,10 +38,6 @@ class LeakReporter {
   // leak totals change.
   final StdoutSummarySink? stdoutSink;
 
-  // If not null, the leak summary will be sent here, when
-  // leak totals change.
-  final DevToolsSummarySink? devToolsSink;
-
   /// Listener for leaks.
   ///
   /// Will be invoked if leak totals change.
@@ -58,7 +52,6 @@ class LeakReporter {
     if (!summary.matches(_previousResult)) {
       onLeaks?.call(summary);
       stdoutSink?.send(summary);
-      devToolsSink?.send(summary);
 
       _previousResult = summary;
     }
@@ -72,8 +65,4 @@ class LeakReporter {
 
 class StdoutSummarySink {
   void send(LeakSummary summary) => printToConsole(summary.toMessage());
-}
-
-class DevToolsSummarySink {
-  void send(LeakSummary summary) => EventFromApp(summary).post();
 }
