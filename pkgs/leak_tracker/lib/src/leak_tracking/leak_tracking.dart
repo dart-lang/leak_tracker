@@ -2,11 +2,11 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_baseliner.dart';
 import '_leak_tracker.dart';
+import '_object_record.dart';
 import 'primitives/_dispatcher.dart' as dispatcher;
 import 'primitives/model.dart';
 
@@ -77,15 +77,6 @@ abstract class LeakTracking {
       final leakTracker = _leakTracker = LeakTracker(config, _phase);
       _leakProvider.value = WeakReference(leakTracker.objectTracker);
 
-      if (config.notifyDevTools) {
-        // While [leakTracker] will push summary leak notifications to DevTools,
-        // DevTools may request leak details from
-        // the application via integration.
-        // That's why it needs [_leakProvider].
-        initializeDevToolsIntegration(_leakProvider);
-      } else {
-        registerLeakTrackingServiceExtension();
-      }
       return true;
     }());
   }
@@ -130,6 +121,10 @@ abstract class LeakTracking {
     required Object object,
     Map<String, dynamic>? context,
   }) {
+    // if (object.runtimeType.toString() == 'CkPicture') {
+    //   final code = identityHashCode(object);
+    //   print('!!! CkPicture created: $code');
+    // }
     assert(() {
       _baseliner?.takeSample();
       if (phase.ignoredLeaks.isIgnored(className)) return true;
@@ -227,4 +222,8 @@ abstract class LeakTracking {
   static void declareNotDisposedObjectsAsLeaks() {
     _leakTracker?.objectTracker.declareAllNotDisposedAsLeaks();
   }
+
+  /// Performs an operation for each object, not detected as GCed.
+  static void forEach(void Function(ObjectRecord) callback) =>
+      _leakTracker?.objectTracker.forEach(callback);
 }
