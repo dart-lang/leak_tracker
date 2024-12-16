@@ -106,7 +106,16 @@ the Flutter memory allocation events:
     create and dispose any Flutter disposable (for example
     `FocusNode`), and store the instance in a global array.
 
-5. Get the details of the leaks by invoking `` on a button click or on some other event.
+5. Get the details of the leaks by collecting them
+on a button click or on some other event. Then either
+analyze the leaks programmatically or print them to the console.
+
+```
+final leaks = await LeakTracking.collectLeaks();
+print(leaks.toYaml(phasesAreTests: false));
+```
+
+7. If you want to get memory footprint...
 
 ## Limitations
 

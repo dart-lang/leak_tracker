@@ -121,10 +121,10 @@ abstract class LeakTracking {
     required Object object,
     Map<String, dynamic>? context,
   }) {
-    if (object.runtimeType.toString() == 'CkPicture') {
-      final code = identityHashCode(object);
-      print('!!! CkPicture created: $code');
-    }
+    // if (object.runtimeType.toString() == 'CkPicture') {
+    //   final code = identityHashCode(object);
+    //   print('!!! CkPicture created: $code');
+    // }
     assert(() {
       _baseliner?.takeSample();
       if (phase.ignoredLeaks.isIgnored(className)) return true;

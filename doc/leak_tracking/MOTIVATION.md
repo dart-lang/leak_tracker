@@ -61,6 +61,7 @@ The cases below are selected from the GitHub issue history and illustrate three 
 1. VideoController caused crash: https://github.com/flutter/flutter/issues/72643
 2. Canvas size is growing infinitely: https://github.com/flutter/flutter/issues/58437
 3. WebGL caused 2GB+ Leak: https://github.com/flutter/flutter/issues/52485
+4. Out of memory crash in web app: https://github.com/dart-lang/leak_tracker/issues/258
 
 ### Disposed, but notGCed
 
