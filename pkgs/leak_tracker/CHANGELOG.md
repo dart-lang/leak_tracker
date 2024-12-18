@@ -1,3 +1,7 @@
+# 11.0.0
+
+* Removed integration with DevTools and class LeakTrackingTestConfig.
+
 # 10.0.8
 
 * Make link to documentation customizable.
