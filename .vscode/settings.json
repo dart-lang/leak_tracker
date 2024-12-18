@@ -1,5 +1,5 @@
 {
-    // Set current working directory to devtools_app.
+    // Set current working directory to pkgs/leak_tracker.
     "terminal.integrated.cwd": "pkgs/leak_tracker",
     "cSpell.words": [
         "autosnapshotting",

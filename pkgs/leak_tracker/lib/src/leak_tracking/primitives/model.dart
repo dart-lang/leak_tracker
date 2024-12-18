@@ -283,7 +283,6 @@ const defaultNumberOfGcCycles = 3;
 class LeakTrackingConfig {
   const LeakTrackingConfig({
     this.stdoutLeaks = true,
-    this.notifyDevTools = true,
     this.onLeaks,
     this.checkPeriod = const Duration(seconds: 1),
     this.disposalTime = const Duration(milliseconds: 100),
@@ -303,7 +302,6 @@ class LeakTrackingConfig {
     int? maxRequestsForRetainingPath = 10,
   }) : this(
           stdoutLeaks: false,
-          notifyDevTools: false,
           checkPeriod: null,
           disposalTime: disposalTime,
           numberOfGcCycles: numberOfGcCycles,
@@ -320,9 +318,6 @@ class LeakTrackingConfig {
 
   /// If true, leak information will output to console.
   final bool stdoutLeaks;
-
-  /// If true, DevTools will be notified about leaks.
-  final bool notifyDevTools;
 
   /// Listener for leaks.
   final LeakSummaryCallback? onLeaks;
