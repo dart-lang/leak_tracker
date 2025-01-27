@@ -68,6 +68,8 @@ abstract class LeakTracking {
         stop();
       }
 
+      _leakTracker = LeakTracker(config, _phase);
+
       return true;
     }());
   }
