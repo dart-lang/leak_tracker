@@ -31,8 +31,7 @@ for (var i in Iterable.generate(1000)) {
         (widgetTester) async {
           ...
         },
-        leakTrackingTestConfig: const LeakTrackingTestConfig(
-            isLeakTrackingPaused: true,
+        experimentalLeakTesting: LeakTesting.settings.copyWith(
             baselining: MemoryBaselining(),
         ),
     );
@@ -58,11 +57,21 @@ To set as new baseline, set parameter of MemoryBaselining:
 
 ## Limitations
 
-Baselining in `leak_tracker` only works, if the measured code deals with
-[instrumented classes](DETECT.md#limitations), because samples are taken at the moments when objects dispatch their creation or disposal.
+### For instrumented classes only
 
-Flutter Framework contains number of instrumented classes, so baselining normally works well for
+Baselining in `leak_tracker` only works, if the measured code deals with
+[instrumented classes](DETECT.md#limitations),
+because samples are taken at the moments when
+objects dispatch their creation or disposal.
+
+Flutter Framework contains a lot of instrumented classes,
+so baselining normally works well for
 Flutter tests.
+
+### Platform
+
+Baselining works for dart vm based platforms, that means it does not
+work for web.
 
 ## Regression testing
 

@@ -2,10 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/widgets.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
-import 'package:test/test.dart';
 
-import '../../test_infra/memory_leak_tests.dart';
+import 'test_infra/memory_leak_tests.dart';
 
 class _TestExecution {
   _TestExecution({
@@ -33,18 +34,23 @@ void main() {
 
   tearDown(maybeTearDownLeakTrackingForTest);
 
-  tearDownAll(maybeTearDownLeakTrackingForAll);
-
   for (final t in memoryLeakTests) {
     for (final settingsCase in leakTestingSettingsCases.entries) {
       final settings = settingsCase.value(LeakTesting.settings);
       final execution = _TestExecution(
-          settingName: settingsCase.key, test: t, settings: settings);
+        settingName: settingsCase.key,
+        test: t,
+        settings: settings,
+      );
       _testExecutions.add(execution);
 
-      test(execution.name, () async {
+      testWidgets(execution.name, (tester) async {
         maybeSetupLeakTrackingForTest(settings, execution.name);
-        await t.body(null, null);
+        await t.body(
+          (Widget widget, [Duration? duration]) =>
+              tester.pumpWidget(widget, duration: duration),
+          (callback) => tester.runAsync(callback),
+        );
       });
     }
   }
@@ -53,7 +59,10 @@ void main() {
 void _verifyLeaks(Leaks leaks) {
   for (final execution in _testExecutions) {
     final testLeaks = leaks.byPhase[execution.name] ?? Leaks.empty();
-    execution.test.verifyLeaks(testLeaks, execution.settings,
-        testDescription: execution.name);
+    execution.test.verifyLeaks(
+      testLeaks,
+      execution.settings,
+      testDescription: execution.name,
+    );
   }
 }
