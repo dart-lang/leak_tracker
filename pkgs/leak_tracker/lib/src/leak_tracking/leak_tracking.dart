@@ -2,7 +2,6 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import '../devtools_integration/_registration.dart';
 import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_baseliner.dart';
@@ -15,11 +14,6 @@ abstract class LeakTracking {
   static Baseliner? _baseliner;
 
   static LeakTracker? _leakTracker;
-
-  /// Leak provider, used for integration with DevTools.
-  ///
-  /// It's value should be updated every time leak tracking is reconfigured.
-  static final _leakProvider = ObjectRef<WeakReference<LeakProvider>?>(null);
 
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.
@@ -74,18 +68,8 @@ abstract class LeakTracking {
         stop();
       }
 
-      final leakTracker = _leakTracker = LeakTracker(config, _phase);
-      _leakProvider.value = WeakReference(leakTracker.objectTracker);
+      _leakTracker = LeakTracker(config, _phase);
 
-      if (config.notifyDevTools) {
-        // While [leakTracker] will push summary leak notifications to DevTools,
-        // DevTools may request leak details from
-        // the application via integration.
-        // That's why it needs [_leakProvider].
-        initializeDevToolsIntegration(_leakProvider);
-      } else {
-        registerLeakTrackingServiceExtension();
-      }
       return true;
     }());
   }
