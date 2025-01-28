@@ -1,3 +1,7 @@
+# 10.0.9
+
+* Update `vm_service` dependency to `>=11.0.0 <16.0.0`.
+
 # 10.0.8
 
 * Make link to documentation customizable.
