@@ -3,5 +3,3 @@ dependency_overrides:
     path: ../leak_tracker
   leak_tracker_testing:
     path: ../leak_tracker_testing
-  test_helpers:
-    path: ../test_helpers
