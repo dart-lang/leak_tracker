@@ -36,5 +36,16 @@
             "request": "launch",
             "type": "dart",
         },
+        {
+            "name": "web tests",
+            "cwd": "pkgs/web_tests",
+            "request": "launch",
+            "type": "dart",
+            "program": "test/",
+            "args": [
+                "--platform",
+                "chrome",
+            ],
+        },
     ]
 }
