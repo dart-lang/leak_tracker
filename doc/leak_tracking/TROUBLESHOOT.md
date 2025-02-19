@@ -28,7 +28,7 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 
    ```dart
    final FocusNode focusNode = FocusNode();
-   addTearDown(focusNode.dispose());
+   addTearDown(focusNode.dispose);
    ```
 
 ## Known simple cases
