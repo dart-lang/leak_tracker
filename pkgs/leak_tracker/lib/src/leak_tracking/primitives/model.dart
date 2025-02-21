@@ -128,7 +128,7 @@ class IgnoredLeaksSet {
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
-    this.experimentalNotGCed = const IgnoredLeaksSet.ignore(),
+    this.experimentalNotGCed = const IgnoredLeaksSet(),
     this.notDisposed = const IgnoredLeaksSet(),
     this.createdByTestHelpers = false,
     this.testHelperExceptions = const [],
