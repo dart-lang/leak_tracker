@@ -124,11 +124,19 @@ class IgnoredLeaksSet {
 
 /// The total set of ignored leaks.
 ///
-/// Includes both [experimentalNotGCed] and [notDisposed] leaks.
+/// - `experimentalNotGCed`: Ignore leaks that are not garbage-collected or collected late. 
+///   This is experimental and ignored by default.
+///
+/// - `notDisposed`: Ignore leaks that are not disposed.
+///
+/// - `createdByTestHelpers`: Ignore leaks introduced by test helpers.
+///
+/// - `testHelperExceptions`: If [createdByTestHelpers] is `true`, ignore leaks
+///   that are exception to that rule.
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
-    this.experimentalNotGCed = const IgnoredLeaksSet(),
+    this.experimentalNotGCed = const IgnoredLeaksSet.ignore(),
     this.notDisposed = const IgnoredLeaksSet(),
     this.createdByTestHelpers = false,
     this.testHelperExceptions = const [],
