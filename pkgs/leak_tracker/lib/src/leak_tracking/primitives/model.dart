@@ -131,8 +131,8 @@ class IgnoredLeaksSet {
 ///
 /// - `createdByTestHelpers`: Ignore leaks introduced by test helpers.
 ///
-/// - `testHelperExceptions`: If [createdByTestHelpers] is `true`, ignore leaks
-///   that are exception to that rule.
+/// - `testHelperExceptions`: If [createdByTestHelpers] rule is `true`, 
+/// set exceptions for that rule.
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
