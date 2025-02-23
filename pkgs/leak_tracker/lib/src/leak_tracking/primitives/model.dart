@@ -124,7 +124,15 @@ class IgnoredLeaksSet {
 
 /// The total set of ignored leaks.
 ///
-/// Includes both [experimentalNotGCed] and [notDisposed] leaks.
+/// - `experimentalNotGCed`: Ignore leaks that are not garbage-collected or 
+///   collected late. This is experimental and ignored by default.
+///
+/// - `notDisposed`: Ignore leaks that are not disposed.
+///
+/// - `createdByTestHelpers`: Ignore leaks introduced by test helpers.
+///
+/// - `testHelperExceptions`: If [createdByTestHelpers] rule is `true`, 
+/// set exceptions for that rule.
 @immutable
 class IgnoredLeaks {
   const IgnoredLeaks({
