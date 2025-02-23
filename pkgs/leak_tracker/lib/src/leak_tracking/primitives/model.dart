@@ -124,8 +124,8 @@ class IgnoredLeaksSet {
 
 /// The total set of ignored leaks.
 ///
-/// - `experimentalNotGCed`: Ignore leaks that are not garbage-collected or collected late. 
-///   This is experimental and ignored by default.
+/// - `experimentalNotGCed`: Ignore leaks that are not garbage-collected or 
+///   collected late. This is experimental and ignored by default.
 ///
 /// - `notDisposed`: Ignore leaks that are not disposed.
 ///

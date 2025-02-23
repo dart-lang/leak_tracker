@@ -264,7 +264,9 @@ class ObjectTracker implements LeakProvider {
           .map((record) => record.toLeakReport())
           .toList(),
       LeakType.gcedLate: _objects.gcedLateLeaks
-          .where((record) => _leakFilter.shouldReport(LeakType.gcedLate, record))
+          .where(
+            (record) => _leakFilter.shouldReport(LeakType.gcedLate, record),
+          )
           .map((record) => record.toLeakReport())
           .toList(),
     });
