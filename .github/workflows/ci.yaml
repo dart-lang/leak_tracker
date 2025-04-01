@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
 
       - name: install Flutter sdk
-        uses: subosito/flutter-action@74af56c5ed2697ba4621264652728e8d217e53d3
+        uses: subosito/flutter-action@e938fdf56512cc96ef2f93601a5a40bde3801046
         with:
           channel: 'master'
 
