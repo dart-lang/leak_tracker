@@ -6,8 +6,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:leak_tracker_flutter_testing/leak_tracker_flutter_testing.dart';
 
-import 'test_infra/memory_leak_tests.dart';
-
 class _TestExecution {
   _TestExecution({
     required this.settings,
@@ -27,14 +25,10 @@ final List<_TestExecution> _testExecutions = <_TestExecution>[];
 void main() {
   LeakTesting.collectedLeaksReporter = _verifyLeaks;
   LeakTesting.enable();
-  LeakTesting.settings = LeakTesting.settings.withIgnored(
-    createdByTestHelpers: true,
-    testHelperExceptions: [RegExp(RegExp.escape(memoryLeakTestsFilePath()))],
-  );
 
   tearDown(maybeTearDownLeakTrackingForTest);
 
-  for (final t in memoryLeakTests) {
+  for (final t in _memoryLeakTests) {
     for (final settingsCase in leakTestingSettingsCases.entries) {
       final settings = settingsCase.value(LeakTesting.settings);
       final execution = _TestExecution(
@@ -66,3 +60,36 @@ void _verifyLeaks(Leaks leaks) {
     );
   }
 }
+
+/// Test cases for memory leaks.
+final List<LeakTestCase> _memoryLeakTests = <LeakTestCase>[
+  LeakTestCase(
+    name: 'no leaks',
+    body: (
+      PumpWidgetsCallback? pumpWidgets,
+      RunAsyncCallback<dynamic>? runAsync,
+    ) async {
+      Container();
+    },
+  ),
+  LeakTestCase(
+    name: 'not disposed disposable',
+    body: (
+      PumpWidgetsCallback? pumpWidgets,
+      RunAsyncCallback<dynamic>? runAsync,
+    ) async {
+      InstrumentedDisposable();
+    },
+    notDisposedTotal: 1,
+  ),
+  LeakTestCase(
+    name: 'leaking widget',
+    body: (
+      PumpWidgetsCallback? pumpWidgets,
+      RunAsyncCallback<dynamic>? runAsync,
+    ) async {
+      StatelessLeakingWidget();
+    },
+    notDisposedTotal: 1,
+  ),
+];
