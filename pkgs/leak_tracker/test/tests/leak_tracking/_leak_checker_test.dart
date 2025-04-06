@@ -32,7 +32,6 @@ void main() {
     required bool checkPeriodically,
     required bool hasListener,
     required bool hasStdout,
-    required bool hasDevtools,
   }) =>
       LeakReporter(
         leakProvider: leakProvider,
@@ -45,7 +44,6 @@ void main() {
         checkPeriodically: true,
         hasListener: false,
         hasStdout: true,
-        hasDevtools: true,
       );
 
   setUp(() {
@@ -73,7 +71,7 @@ void main() {
     expect(config.checkPeriod == null, checker.checkPeriod == null);
   });
 
-  test('Default checker sends leaks to stdout and devtools.', () async {
+  test('Default checker sends leaks to stdout.', () async {
     // ignore: unused_local_variable
     final checker = defaultLeakChecker();
 
@@ -108,7 +106,6 @@ void main() {
   test('Listener-only checker sends leaks to just listener.', () async {
     // ignore: unused_local_variable
     final checker = leakChecker(
-      hasDevtools: false,
       hasStdout: false,
       hasListener: true,
       checkPeriodically: true,
@@ -153,7 +150,6 @@ void main() {
     // ignore: unused_local_variable
     final checker = leakChecker(
       checkPeriodically: false,
-      hasDevtools: true,
       hasStdout: true,
       hasListener: true,
     );

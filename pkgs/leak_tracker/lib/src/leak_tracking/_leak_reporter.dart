@@ -11,7 +11,7 @@ import 'primitives/model.dart';
 /// Checks [leakProvider] either by schedule or by request.
 ///
 /// If there are leaks, reports them to the enabled outputs:
-/// listener, console and DevTools.
+/// listener and console.
 class LeakReporter {
   LeakReporter({
     required this.leakProvider,

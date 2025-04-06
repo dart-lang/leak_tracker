@@ -148,8 +148,7 @@ class Leaks {
   }
 }
 
-/// Leak information, passed from application to DevTools and than extended by
-/// DevTools after deeper analysis.
+/// Leak information for troubleshooting.
 class LeakReport {
   LeakReport({
     required this.trackedClass,

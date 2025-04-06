@@ -16,11 +16,6 @@ abstract class LeakTracking {
 
   static LeakTracker? _leakTracker;
 
-  /// Leak provider, used for integration with DevTools.
-  ///
-  /// It's value should be updated every time leak tracking is reconfigured.
-  static final _leakProvider = ObjectRef<WeakReference<LeakProvider>?>(null);
-
   /// If true, a warning will be printed when leak tracking is
   /// requested for a non-supported platform.
   static bool warnForUnsupportedPlatforms = true;
@@ -74,8 +69,7 @@ abstract class LeakTracking {
         stop();
       }
 
-      final leakTracker = _leakTracker = LeakTracker(config, _phase);
-      _leakProvider.value = WeakReference(leakTracker.objectTracker);
+      _leakTracker = LeakTracker(config, _phase);
 
       return true;
     }());

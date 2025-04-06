@@ -14,7 +14,7 @@ switch to [more complicated troubleshooting](#more-complicated-cases).
 
 Follow the rules to avoid/fix notGCed and notDisposed leaks:
 
-1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle.
+1. **Ownership**. Every disposable object should have clear owner that manages its lifecycle. Normally, it it creator of the object. If it is different, the exception should be clearly documented.
 2. **Disposal**. The owner should invoke the object's `dispose`.
 3. **Release**. The owner should null reference to the disposed object, if its `dispose` happens earlier than owner's disposal.
 4. **Weak referencing**. Non-owners should either link the object with WeakReference, or make sure to
@@ -28,7 +28,7 @@ Follow the rules to avoid/fix notGCed and notDisposed leaks:
 
    ```dart
    final FocusNode focusNode = FocusNode();
-   addTearDown(focusNode.dispose());
+   addTearDown(focusNode.dispose);
    ```
 
 ## Known simple cases
