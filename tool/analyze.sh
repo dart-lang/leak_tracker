@@ -34,6 +34,10 @@ cd $TOOL_DIR/../pkgs/leak_tracker_testing
 dart analyze --fatal-infos
 cd -
 
+cd $TOOL_DIR/../pkgs/leak_tracker_web_tests
+dart analyze --fatal-infos
+cd -
+
 cd $TOOL_DIR/../pkgs/memory_usage
 dart analyze --fatal-infos
 cd -

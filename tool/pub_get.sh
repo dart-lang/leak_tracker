@@ -32,6 +32,10 @@ cd $TOOL_DIR/../pkgs/leak_tracker_testing
 flutter pub get
 cd -
 
+cd $TOOL_DIR/../pkgs/leak_tracker_web_tests
+flutter pub get
+cd -
+
 cd $TOOL_DIR/../pkgs/memory_usage
 dart pub get
 cd -

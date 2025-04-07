@@ -45,6 +45,10 @@ jobs:
         run: flutter test --enable-vmservice
         working-directory: pkgs/leak_tracker_flutter_testing
 
+      - name: test leak_tracker_web_tests
+        run: flutter test --platform chrome
+        working-directory: pkgs/leak_tracker_web_tests
+
       - name: test memory_usage
         run: dart test
         working-directory: pkgs/memory_usage
