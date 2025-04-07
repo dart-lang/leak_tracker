@@ -21,3 +21,26 @@ To regenerate [diagrams](https://pub.dev/packages/layerlens), run in the root of
 sh tool/diagrams.sh
 ```
 
+## Use different leak tracker
+
+When you reference leak tracker from your application, version should be `any`, because
+the version is pinned by Flutter.
+
+If you want to use a different version, you will need to reference a renamed leak tracker package.
+
+To use the latest version of leak tracker locally, if Flutter did not upgrade to it yet:
+
+1. Clone it: `git clone git@github.com:dart-lang/leak_tracker.git`
+
+2. Replace ' leak_tracker' with ' new_leak_tracker' in all files 'pubspec.yaml, pubspec_overrides.yaml':
+
+   ![replace](images/rename.png "Rename leak_tracker")
+
+3. In your project reference leak tracker with path:
+
+   ```
+   new_leak_tracker:
+     path: <local path to leak tracker>
+   ```
+
+4. Follow steps in

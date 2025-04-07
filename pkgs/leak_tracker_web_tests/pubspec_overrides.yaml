@@ -1,7 +1,7 @@
 dependency_overrides:
-  leak_tracker:
+  new_leak_tracker:
     path: ../leak_tracker
-  leak_tracker_testing:
+  new_leak_tracker_testing:
     path: ../leak_tracker_testing
-  leak_tracker_flutter_testing:
+  new_leak_tracker_flutter_testing:
     path: ../leak_tracker_flutter_testing
