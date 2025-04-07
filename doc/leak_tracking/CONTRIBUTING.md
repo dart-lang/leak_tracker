@@ -2,23 +2,18 @@
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
-### How to roll the latest version of `leak_tracker` to Flutter
+##  Roll the latest version of `leak_tracker` to Flutter
 
-To upgrade versions of leak_tracker and/or leak_tracker_testing used by `testWidgets`:
+To upgrade version of leak tracking packages used by `testWidgets`:
 
 1. Publish new version of the packages.
 
-2. Ask a googler to refresh the packages with copybara in G3.
+2. Upgrade [Flutter](https://github.com/flutter/flutter):
 
-3. Upgrade [Flutter](https://github.com/flutter/flutter):
+    - Update versions of leak_tracker* in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
+    - In flutter package run `../../bin/flutter update-packages --force-upgrade`
 
-    Update versions of leak_tracker and/or leak_tracker_testing in the files:
-
-    - packages/flutter/pubspec.yaml
-    - packages/flutter_test/pubspec.yaml
-    - packages/flutter_tools/lib/src/commands/update_packages.dart
-
-### How to regenerate DEPENDENCIES.md
+## Regenerate DEPENDENCIES.md
 
 To regenerate [diagrams](https://pub.dev/packages/layerlens), run in the root of packages:
 
