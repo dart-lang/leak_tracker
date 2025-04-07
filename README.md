@@ -3,7 +3,7 @@
 
 # Memory leak_tracker
 
-This is a framework for detecting memory issues in Dart and Flutter applications.
+This is a framework for detecting troubleshooting memory issues in Dart and Flutter applications.
 
 ## Packages
 
@@ -25,41 +25,11 @@ Under construction:
 - [Memory leak tracking](doc/leak_tracking/OVERVIEW.md)
 - [Memory baselining](doc/BASELINE.md)
 
-## Roadmap
-
-Check [Work in progress](https://github.com/dart-lang/leak_tracker/labels/P1) to see what is under construction.
-
-Help us to prioritize future work by upvoting and commenting [potential new features](https://github.com/dart-lang/leak_tracker/labels/P2).
-
 ## Contributing
 
 For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
 
-### How to roll the latest version of this package to the Dart SDK repo
+For package-specific contributing guidance see:
 
-To upgrade Dart SDK with new version of `memory_usage` update leak_tracker commit
-hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
-
-### How to roll the latest version of this package to Flutter
-
-To upgrade versions of leak_tracker and/or leak_tracker_testing used by `testWidgets`:
-
-1. Publish new version of the packages.
-
-2. Ask a googler to refresh the packages with copybara in G3.
-
-3. Upgrade [Flutter](https://github.com/flutter/flutter):
-
-    Update versions of leak_tracker and/or leak_tracker_testing in the files:
-
-    - packages/flutter/pubspec.yaml
-    - packages/flutter_test/pubspec.yaml
-    - packages/flutter_tools/lib/src/commands/update_packages.dart
-
-### How to regenerate DEPENDENCIES.md
-
-To regenerate [diagrams](https://pub.dev/packages/layerlens), run in the root of packages:
-
-```shell
-dart run layerlens
-```
+* [Leak tracking](doc/leak_tracking/CONTRIBUTING.md)
+* [Memory usage](doc/USAGE.md#contributing)
