@@ -20,11 +20,6 @@ void maybeSetupLeakTrackingForTest(
   final leakTesting = settings ?? LeakTesting.settings;
   if (leakTesting.ignore) return;
 
-  // if (!_checkPlatformAndMayBePrintWarning(
-  //     platformName: defaultTargetPlatform.name, isBrowser: kIsWeb)) {
-  //   return;
-  // }
-
   _maybeStartLeakTracking();
 
   final phase = PhaseSettings(

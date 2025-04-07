@@ -25,28 +25,28 @@ final List<_TestExecution> _testExecutions = <_TestExecution>[];
 void main() {
   LeakTesting.collectedLeaksReporter = _verifyLeaks;
   LeakTesting.enable();
+  LeakTesting.settings = LeakTesting.settings
+      .withTrackedAll()
+      .withTracked(allNotDisposed: true, experimentalAllNotGCed: false);
 
   tearDown(maybeTearDownLeakTrackingForTest);
 
   for (final t in _memoryLeakTests) {
-    for (final settingsCase in leakTestingSettingsCases.entries) {
-      final settings = settingsCase.value(LeakTesting.settings);
-      final execution = _TestExecution(
-        settingName: settingsCase.key,
-        test: t,
-        settings: settings,
-      );
-      _testExecutions.add(execution);
+    final execution = _TestExecution(
+      settingName: 'not disposed',
+      test: t,
+      settings: LeakTesting.settings,
+    );
+    _testExecutions.add(execution);
 
-      testWidgets(execution.name, (tester) async {
-        maybeSetupLeakTrackingForTest(settings, execution.name);
-        await t.body(
-          (Widget widget, [Duration? duration]) =>
-              tester.pumpWidget(widget, duration: duration),
-          (callback) => tester.runAsync(callback),
-        );
-      });
-    }
+    testWidgets(execution.name, (tester) async {
+      maybeSetupLeakTrackingForTest(LeakTesting.settings, execution.name);
+      await t.body(
+        (Widget widget, [Duration? duration]) =>
+            tester.pumpWidget(widget, duration: duration),
+        (callback) => tester.runAsync(callback),
+      );
+    });
   }
 }
 
