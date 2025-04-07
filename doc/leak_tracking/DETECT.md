@@ -7,7 +7,7 @@ The text below is under construction.
 
 The documentation below is valid for Flutter SDKs >= 3.18.0.
 
-This page describes how to auto-detect certain types of memory leaks.
+This page describes how to auto-detect not disposed and not GCed objects.
 Read more about leak tracking in [overview](OVERVIEW.md).
 
 ## Quick start to track leaks for Flutter

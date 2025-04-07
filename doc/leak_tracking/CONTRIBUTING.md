@@ -36,11 +36,10 @@ To use the latest version of leak tracker locally, if Flutter did not upgrade to
 
    ![replace](images/rename.png "Rename leak_tracker")
 
-3. In your project reference leak tracker with path:
+3. Follow steps in [DETECT](./DETECT.md) to enable leak tracking, referencing
+   local leak tracker packages, instead of published:
 
    ```
-   new_leak_tracker:
+   new_leak_tracker...:
      path: <local path to leak tracker>
    ```
-
-4. Follow steps in
