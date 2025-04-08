@@ -8,7 +8,9 @@ To upgrade version of leak tracking packages used by `testWidgets`:
 
 1. Publish new version of the packages.
 
-2. Upgrade [Flutter](https://github.com/flutter/flutter):
+2. Ask a googler to refresh the packages with copybara in G3.
+
+3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
     - Update versions of leak_tracker* in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
     - In flutter package run `../../bin/flutter update-packages --force-upgrade`
