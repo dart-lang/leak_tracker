@@ -4,11 +4,13 @@ For general contributing information, see Dart-wide [CONTRIBUTING.md](https://gi
 
 ##  Roll the latest version of `leak_tracker` to Flutter
 
-To upgrade version of leak tracking packages used by `testWidgets`:
+To upgrade version of leak tracking packages used by Flutter and thus used by
+all applications that depend on Flutter:
 
 1. Publish new version of the packages.
 
-2. Ask a googler to refresh the packages with copybara in G3.
+2. If the changes affect APIs used by Flutter,
+   ask a googler to refresh the packages with copybara in G3.
 
 3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
