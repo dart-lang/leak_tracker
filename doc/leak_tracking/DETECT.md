@@ -64,10 +64,22 @@ for more information.
 
 ### Instrument more disposables
 
-To instrument a disposable class for leak tracking, you need to dispatch object creation and disposal events to leak_tracker.
-Use the [example](https://github.com/flutter/flutter/pull/141526/files) as a guide.
+To instrument a disposable class for leak tracking, you need to dispatch object creation and disposal events.
 
-### See leaks in a running Flutter application
+#### Instrument objects in Dart packages
+
+
+
+#### Instrument objects in Flutter packages
+
+For objects in Flutter packages you may take advantage of the class `FlutterMemoryAllocations`.
+For pure dart packages reference leak_tracker directly.
+
+https://github.com/flutter/flutter/blob/110b07835ab17e6aea29c6d192649b6fa48e4092/packages/flutter/lib/src/foundation/debug.dart#L149
+
+
+### See leaks in a running application (experimental)
+
 
 1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
 
