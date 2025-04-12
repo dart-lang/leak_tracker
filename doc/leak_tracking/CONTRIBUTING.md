@@ -14,7 +14,7 @@ all applications that depend on Flutter:
 
 3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
-    - Update versions of leak_tracker* in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
+    - Update versions of `leak_tracker*` in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
     - In flutter package run `../../bin/flutter update-packages --force-upgrade`
 
 ## Regenerate DEPENDENCIES.md
@@ -25,14 +25,13 @@ To regenerate [diagrams](https://pub.dev/packages/layerlens), run in the root of
 sh tool/diagrams.sh
 ```
 
-## Use different leak tracker
+## Use different `leak_tracker`
 
-When you reference leak tracker from your application, version should be `any`, because
+When you reference `leak_tracker` from your application, version should be `any`, because
 the version is pinned by Flutter.
 
-If you want to use a different version, you will need to reference a renamed leak tracker package.
-
-To use the latest version of leak tracker locally, if Flutter did not upgrade to it yet:
+If you want to use a different version of `leak_tracker` in your Flutter application,
+you can reference a local renamed leak tracker package:
 
 1. Clone it: `git clone git@github.com:dart-lang/leak_tracker.git`
 
@@ -41,7 +40,7 @@ To use the latest version of leak tracker locally, if Flutter did not upgrade to
    ![replace](images/rename.png "Rename leak_tracker")
 
 3. Follow steps in [DETECT](./DETECT.md) to enable leak tracking, referencing
-   local leak tracker packages, instead of published:
+   the local `new_leak_tracker*`:
 
    ```
    new_leak_tracker...:
