@@ -102,10 +102,11 @@ class InstrumentedDisposable {
 
 ### See leaks in a running application (experimental)
 
-
 1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
 
-2. Before `runApp` invocation, enable leak tracking, and connect
+2. Before `runApp` invocation, enable leak tracking
+
+3. For Flutter applications, connect to
 the Flutter memory allocation events:
 
   ```dart
@@ -140,24 +141,31 @@ the Flutter memory allocation events:
     create and dispose any Flutter disposable (for example
     `FocusNode`), and store the instance in a global array.
 
-5. Get the details of the leaks by collecting them
-on a button click or on some other event. Then either
-analyze the leaks programmatically or print them to the console.
+    To track notGCed leaks, you
 
-```
-final leaks = await LeakTracking.collectLeaks();
-print(leaks.toYaml(phasesAreTests: false));
-```
+5. Troubleshooting tips:
 
-7. If you want to get memory footprint...
+  a. Get the details of the leaks by collecting them
+  on a button click or on some other event. Then either
+  analyze the leaks programmatically or print them to the console:
+
+    ```
+    final leaks = await LeakTracking.collectLeaks();
+    print(leaks.toYaml(phasesAreTests: false));
+    ```
+
+  b. To declare all not disposed objects as leaks, invoke `LeakTracking.declareNotDisposedObjectsAsLeaks()`
+
+  c. To add debugging information to an object's record, invoke
+  `LeakTracking.dispatchObjectTrace(theObject, <some debugging information>)`
 
 ## Limitations
 
 ### By environment
 
-At this time, leak tracking is supported only for unit tests within Flutter packages.
+Leak tracking is supported only for unit tests within Flutter packages.
 
-With the latest version of leak_tracker, leak tracking is not supported for:
+It is enabled experimentally for:
 
 1. Web platform
 2. Running applications
@@ -176,14 +184,12 @@ objects (see [concepts](CONCEPTS.md) for details).
 However, the good news is:
 
 1. Disposables in the Flutter Framework are instrumented.
-If your Flutter app manages widgets in a way that results in leaks,
+If your Flutter app uses widgets in a way that results in leaks,
 `leak_tracker` will catch them.
 
 2. If a leak involves at least one instrumented object,
 the leak will be caught and all
 other objects, even non-instrumented, will stop leaking as well.
-
-See [the instrumentation guidance](#instrument-your-code).
 
 ### By build mode
 
@@ -199,7 +205,7 @@ Leak tracking is fully available.
 
 Leak tracking is available, but `FlutterMemoryAllocations` that listens to
 Flutter instrumented objects,
-should be [turned on](https://github.com/flutter/flutter/blob/15af81782e19ebe7273872f8b07ac71df4e749f2/packages/flutter/lib/src/foundation/memory_allocations.dart#L13)
+should be [turned on](https://github.com/flutter/flutter/blob/a7f820163c5d7d5321872c60f22fa047fb94bd7b/packages/flutter/lib/src/foundation/memory_allocations.dart#L13)
 if you want to track Flutter Framework objects.
 
 **Dart production and Flutter release**
