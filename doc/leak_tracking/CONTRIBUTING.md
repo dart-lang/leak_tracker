@@ -35,12 +35,16 @@ you can reference a local renamed leak tracker package:
 
 1. Clone it: `git clone git@github.com:dart-lang/leak_tracker.git`
 
-2. Replace ' leak_tracker' with ' new_leak_tracker' in all files 'pubspec.yaml, pubspec_overrides.yaml':
+2. Make global replacements:
+
+   - In all '*.dart' files: replace 'package:leak_tracker' with 'package:new_leak_tracker'
+
+   - In all files 'pubspec.yaml, pubspec_overrides.yaml': replace ' leak_tracker' with ' new_leak_tracker'
 
    ![replace](images/rename.png "Rename leak_tracker")
 
 3. Follow steps in [DETECT](./DETECT.md) to enable leak tracking, referencing
-   the local `new_leak_tracker*`:
+   the local `new_leak_tracker*`, instead of what is instructed:
 
    ```
    new_leak_tracker...:

@@ -64,19 +64,41 @@ for more information.
 
 ### Instrument more disposables
 
-To instrument a disposable class for leak tracking, you need to dispatch object creation and disposal events.
-
-#### Instrument objects in Dart packages
-
-
+To instrument a disposable class for leak tracking, you need to report
+object creation and disposal events.
 
 #### Instrument objects in Flutter packages
 
 For objects in Flutter packages you may take advantage of the class `FlutterMemoryAllocations`.
-For pure dart packages reference leak_tracker directly.
 
-https://github.com/flutter/flutter/blob/110b07835ab17e6aea29c6d192649b6fa48e4092/packages/flutter/lib/src/foundation/debug.dart#L149
+To do this, create helper methods, specific to your package,
+similar to [what is created in Flutter Framework](https://github.com/flutter/flutter/blob/110b07835ab17e6aea29c6d192649b6fa48e4092/packages/flutter/lib/src/foundation/debug.dart#L149).
 
+Invoke the helpers [in constructor](https://github.com/flutter/flutter/blob/a7f820163c5d7d5321872c60f22fa047fb94bd7b/packages/flutter/lib/src/animation/animation_controller.dart#L256) and [in `dispose`](https://github.com/flutter/flutter/blob/a7f820163c5d7d5321872c60f22fa047fb94bd7b/packages/flutter/lib/src/animation/animation_controller.dart#L932).
+
+#### Instrument objects in Dart packages
+
+To instrument objects in pure dart packages, you need to use leak_tracker directly:
+
+```dart
+import 'package:new_leak_tracker/leak_tracker.dart';
+
+const library = 'package:my_package/lib/src/my_lib.dart';
+
+class InstrumentedDisposable {
+  InstrumentedDisposable() {
+    LeakTracking.dispatchObjectCreated(
+      library: library,
+      className: 'InstrumentedDisposable',
+      object: this,
+    );
+  }
+
+  void dispose() {
+    LeakTracking.dispatchObjectDisposed(object: this);
+  }
+}
+```
 
 ### See leaks in a running application (experimental)
 
@@ -102,7 +124,7 @@ the Flutter memory allocation events:
 
   ```
 
-3. Run the application in debug mode and watch for a leak related warnings.
+3. Run the application in debug mode and watch for a leak related warnings, like this:
 
   ```
   leak_tracker: 134 memory leak(s): not disposed: 134, not GCed: 0, GCed late: 0
