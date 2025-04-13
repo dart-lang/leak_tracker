@@ -1,3 +1,7 @@
+# 11.0.1-dev
+
+* Add method `forEach` to `LeakTracking`.
+
 # 11.0.0
 
 * Remove integration with DevTools and class LeakTrackingTestConfig.
