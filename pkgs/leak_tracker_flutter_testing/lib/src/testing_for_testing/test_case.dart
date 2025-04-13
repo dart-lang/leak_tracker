@@ -4,8 +4,8 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:new_leak_tracker/leak_tracker.dart';
-import 'package:new_leak_tracker_testing/leak_tracker_testing.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 import 'package:matcher/expect.dart';
 
 /// Signature of `pumpWidget` method.

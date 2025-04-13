@@ -2,9 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-export 'package:new_leak_tracker/leak_tracker.dart'
+export 'package:leak_tracker/leak_tracker.dart'
     show IgnoredLeaks, LeakReport, LeakTracking, LeakType, Leaks;
-export 'package:new_leak_tracker_testing/leak_tracker_testing.dart'
+export 'package:leak_tracker_testing/leak_tracker_testing.dart'
     show LeakTesting, isLeakFree;
 
 export 'src/matchers.dart';

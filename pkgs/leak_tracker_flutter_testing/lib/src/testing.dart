@@ -3,8 +3,8 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/foundation.dart';
-import 'package:new_leak_tracker/leak_tracker.dart';
-import 'package:new_leak_tracker_testing/leak_tracker_testing.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker_testing/leak_tracker_testing.dart';
 
 /// Makes sure leak tracking is set up for a test.
 ///

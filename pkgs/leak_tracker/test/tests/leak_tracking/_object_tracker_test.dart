@@ -3,12 +3,12 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:clock/clock.dart';
-import 'package:new_leak_tracker/leak_tracker.dart';
-import 'package:new_leak_tracker/src/leak_tracking/_object_record.dart';
-import 'package:new_leak_tracker/src/leak_tracking/_object_tracker.dart';
-import 'package:new_leak_tracker/src/leak_tracking/primitives/_finalizer.dart';
-import 'package:new_leak_tracker/src/leak_tracking/primitives/_gc_counter.dart';
-import 'package:new_leak_tracker/src/shared/_util.dart';
+import 'package:leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
+import 'package:leak_tracker/src/leak_tracking/_object_tracker.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/_finalizer.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/_gc_counter.dart';
+import 'package:leak_tracker/src/shared/_util.dart';
 import 'package:test/test.dart';
 
 import '../../test_infra/data/dart_classes.dart';

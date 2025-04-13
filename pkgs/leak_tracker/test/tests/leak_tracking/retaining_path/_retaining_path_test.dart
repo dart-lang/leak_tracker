@@ -4,8 +4,8 @@
 
 import 'dart:async';
 
-import 'package:new_leak_tracker/src/leak_tracking/primitives/_retaining_path/_connection.dart';
-import 'package:new_leak_tracker/src/leak_tracking/primitives/_retaining_path/_retaining_path.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/_retaining_path/_connection.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/_retaining_path/_retaining_path.dart';
 import 'package:test/test.dart';
 
 class MyClass {

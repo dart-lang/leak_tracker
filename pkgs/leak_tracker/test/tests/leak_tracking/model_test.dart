@@ -4,8 +4,8 @@
 
 import 'dart:convert';
 
-import 'package:new_leak_tracker/src/leak_tracking/primitives/model.dart';
-import 'package:new_leak_tracker/src/shared/shared_model.dart';
+import 'package:leak_tracker/src/leak_tracking/primitives/model.dart';
+import 'package:leak_tracker/src/shared/shared_model.dart';
 import 'package:test/test.dart';
 
 void main() {

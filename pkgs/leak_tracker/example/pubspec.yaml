@@ -1,15 +1,15 @@
-name: new_leak_tracker_minimal_dart_example
+name: leak_tracker_minimal_dart_example
 publish_to: none
 
 environment:
   sdk: ^3.2.0
 
 dependencies:
-  new_leak_tracker: any
+  leak_tracker: any
 
 dev_dependencies:
   lints: ^4.0.0
 
 dependency_overrides:
-  new_leak_tracker:
+  leak_tracker:
     path: ..

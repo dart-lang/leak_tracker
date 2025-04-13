@@ -3,7 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:new_leak_tracker/leak_tracker.dart';
+import 'package:leak_tracker/leak_tracker.dart';
 
 final _notGcedStorage = <InstrumentedDisposable>[];
 

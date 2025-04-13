@@ -1,4 +1,4 @@
-name: new_leak_tracker_minimal_flutter_example
+name: leak_tracker_minimal_flutter_example
 publish_to: none
 
 environment:
@@ -8,7 +8,7 @@ dependencies:
   flutter:
     sdk: flutter
   # The version is `any` because it is defined by Flutter SDK.
-  new_leak_tracker: any
+  leak_tracker: any
 
 dev_dependencies:
   flutter_lints: ^4.0.0
