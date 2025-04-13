@@ -10,9 +10,7 @@ The documentation below is valid for Flutter SDKs >= 3.18.0.
 This page describes how to auto-detect not disposed and not GCed objects.
 Read more about leak tracking in [overview](OVERVIEW.md).
 
-## Quick start to track leaks for Flutter
-
-### Test cover with `testWidgets`
+## Test cover with `testWidgets`
 
 The Flutter test method `testWidgets` can be configured to track and detect leaks
 from all instrumented classes. To enable leak tracking for your entire test suite
@@ -62,12 +60,12 @@ experimentalLeakTesting: LeakTesting.settings.withIgnored(classes: ['Image']),
 See documentation for [`testWidgets`](https://github.com/flutter/flutter/blob/4570d35d49477a53278e648ce59a26a06201ec97/packages/flutter_test/lib/src/widget_tester.dart#L122)
 for more information.
 
-### Instrument more disposables
+## Instrument more disposables
 
 To instrument a disposable class for leak tracking, you need to report
 object creation and disposal events.
 
-#### Instrument objects in Flutter packages
+### Instrument objects in Flutter packages
 
 For objects in Flutter packages you may take advantage of the class `FlutterMemoryAllocations`.
 
@@ -76,7 +74,7 @@ similar to [what is created in Flutter Framework](https://github.com/flutter/flu
 
 Invoke the helpers [in constructor](https://github.com/flutter/flutter/blob/a7f820163c5d7d5321872c60f22fa047fb94bd7b/packages/flutter/lib/src/animation/animation_controller.dart#L256) and [in `dispose`](https://github.com/flutter/flutter/blob/a7f820163c5d7d5321872c60f22fa047fb94bd7b/packages/flutter/lib/src/animation/animation_controller.dart#L932).
 
-#### Instrument objects in Dart packages
+### Instrument objects in Dart packages
 
 To instrument objects in pure dart packages, you need to use leak_tracker directly:
 
@@ -100,7 +98,7 @@ class InstrumentedDisposable {
 }
 ```
 
-### See leaks in a running application (experimental)
+## See leaks in a running application (experimental)
 
 1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
 
