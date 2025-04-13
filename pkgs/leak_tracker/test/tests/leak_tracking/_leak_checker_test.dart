@@ -2,8 +2,8 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/leak_tracker.dart';
-import 'package:leak_tracker/src/leak_tracking/_leak_reporter.dart';
+import 'package:new_leak_tracker/leak_tracker.dart';
+import 'package:new_leak_tracker/src/leak_tracking/_leak_reporter.dart';
 import 'package:test/test.dart';
 
 class _SummaryValues {

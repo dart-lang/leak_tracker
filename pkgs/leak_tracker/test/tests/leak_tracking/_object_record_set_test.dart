@@ -2,10 +2,10 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:leak_tracker/src/leak_tracking/_object_record.dart';
-import 'package:leak_tracker/src/leak_tracking/_object_record_set.dart';
-import 'package:leak_tracker/src/leak_tracking/primitives/model.dart';
-import 'package:leak_tracker/src/shared/_primitives.dart';
+import 'package:new_leak_tracker/src/leak_tracking/_object_record.dart';
+import 'package:new_leak_tracker/src/leak_tracking/_object_record_set.dart';
+import 'package:new_leak_tracker/src/leak_tracking/primitives/model.dart';
+import 'package:new_leak_tracker/src/shared/_primitives.dart';
 import 'package:test/test.dart';
 
 bool _tick = true;
