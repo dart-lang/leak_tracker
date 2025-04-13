@@ -3,7 +3,7 @@
 
 # Memory leak_tracker
 
-This is a framework for detecting troubleshooting memory issues in Dart and Flutter applications.
+This is a framework for detecting and troubleshooting memory issues in Dart and Flutter applications.
 
 ## Packages
 
