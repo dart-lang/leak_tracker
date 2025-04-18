@@ -60,7 +60,10 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   FlutterMemoryAllocations.instance
       .removeListener(_dispatchFlutterEventToLeakTracker);
 
-  if (!LeakTesting.settings.ignoredLeaks.experimentalNotGCed.ignoreAll) {
+  final notGCedTracked =
+      !LeakTesting.settings.ignoredLeaks.experimentalNotGCed.ignoreAll;
+
+  if (notGCedTracked) {
     await forceGC(fullGcCycles: defaultNumberOfGcCycles);
   }
 
