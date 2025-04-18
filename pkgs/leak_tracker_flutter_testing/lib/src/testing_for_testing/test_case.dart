@@ -113,7 +113,7 @@ class LeakTestCase {
     expect(
       list.length,
       ignore ? 0 : expectedCount,
-      reason: testDescription,
+      reason: '$testDescription, $type, ignore: $ignore',
     );
 
     // Verify context keys.

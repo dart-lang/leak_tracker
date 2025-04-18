@@ -211,4 +211,8 @@ abstract class LeakTracking {
   static void declareNotDisposedObjectsAsLeaks() {
     _leakTracker?.objectTracker.declareAllNotDisposedAsLeaks();
   }
+
+  /// Performs an operation for each object, not detected as GCed.
+  static Iterable tracked() =>
+      _leakTracker?.objectTracker.tracked() ?? const Iterable.empty();
 }

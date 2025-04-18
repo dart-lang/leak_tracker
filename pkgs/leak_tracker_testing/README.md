@@ -5,7 +5,7 @@ Coming soon! See https://github.com/flutter/devtools/issues/3951.
 
 ## What is this?
 
-This package contains the test-only leak tracking APIs.
+This package contains the test-only leak tracking APIs for pure dart projects.
 
 They are separated from `leak_tracker` to make sure
 testing code is not used in production.

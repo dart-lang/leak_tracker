@@ -113,7 +113,7 @@ class ObjectTracker implements LeakProvider {
     // 'concurrent modification during iteration'
     // for internal iterables in `_objects.notGCed`.
     final notGCedAndNotDisposed = <ObjectRecord>[];
-    _objects.notGCed.forEach((record) {
+    _objects.notGCed.toIterable().forEach((record) {
       if (!record.isDisposed) notGCedAndNotDisposed.add(record);
     });
     notGCedAndNotDisposed.forEach(_declareNotDisposedLeak);
@@ -287,4 +287,6 @@ class ObjectTracker implements LeakProvider {
   }
 
   int get notGCed => _objects.notGCed.length;
+
+  Iterable<ObjectRecord> tracked() => _objects.notGCed.toIterable();
 }

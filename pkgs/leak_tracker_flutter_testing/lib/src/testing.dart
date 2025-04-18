@@ -20,11 +20,6 @@ void maybeSetupLeakTrackingForTest(
   final leakTesting = settings ?? LeakTesting.settings;
   if (leakTesting.ignore) return;
 
-  if (!_checkPlatformAndMayBePrintWarning(
-      platformName: defaultTargetPlatform.name, isBrowser: kIsWeb)) {
-    return;
-  }
-
   _maybeStartLeakTracking();
 
   final phase = PhaseSettings(
@@ -64,7 +59,14 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
   // because GC may happen after test is complete.
   FlutterMemoryAllocations.instance
       .removeListener(_dispatchFlutterEventToLeakTracker);
-  await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+
+  final notGCedTracked =
+      !LeakTesting.settings.ignoredLeaks.experimentalNotGCed.ignoreAll;
+
+  if (notGCedTracked) {
+    await forceGC(fullGcCycles: defaultNumberOfGcCycles);
+  }
+
   LeakTracking.declareNotDisposedObjectsAsLeaks();
   final leaks = await LeakTracking.collectLeaks();
   LeakTracking.stop();
@@ -74,34 +76,6 @@ Future<void> maybeTearDownLeakTrackingForAll() async {
 
 void _dispatchFlutterEventToLeakTracker(ObjectEvent event) {
   return LeakTracking.dispatchObjectEvent(event.toMap());
-}
-
-bool _notSupportedWarningPrinted = false;
-
-/// Checks if platform supported and, if no,
-/// prints warning if the warning is needed.
-///
-/// Warning is printed one time if
-/// `LeakTracking.warnForNotSupportedPlatforms` is `true`.
-bool _checkPlatformAndMayBePrintWarning(
-    {required String platformName, required bool isBrowser}) {
-  final isSupported = !isBrowser;
-
-  if (isSupported) return true;
-
-  final shouldPrintWarning =
-      LeakTracking.warnForUnsupportedPlatforms && !_notSupportedWarningPrinted;
-
-  if (!shouldPrintWarning) return false;
-
-  _notSupportedWarningPrinted = true;
-  debugPrint(
-    "Leak tracking is not supported on the platform '$platformName'.\n"
-    'To turn off this message, set '
-    '`LeakTracking.warnForNotSupportedPlatforms` to false.',
-  );
-
-  return false;
 }
 
 /// Starts leak tracking with all leaks ignored.

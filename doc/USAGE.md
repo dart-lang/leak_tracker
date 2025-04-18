@@ -41,3 +41,12 @@ is on or off depending on the build mode:
 
 See [Dart build modes](https://github.com/dart-lang/site-www/issues/4436)
 or [Flutter build modes](https://docs.flutter.dev/testing/build-modes).
+
+## Contributing
+
+For general contributing information, see Dart-wide [CONTRIBUTING.md](https://github.com/dart-lang/.github/blob/main/CONTRIBUTING.md).
+
+### How to roll the latest version of `memory_usage` to the Dart SDK repo
+
+To upgrade Dart SDK with new version of `memory_usage` update leak_tracker commit
+hash for leak_tracker_rev in [Dart SDK DEPS](https://github.com/dart-lang/sdk/blob/main/DEPS).
