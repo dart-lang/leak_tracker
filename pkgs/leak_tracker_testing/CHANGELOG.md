@@ -1,3 +1,7 @@
+## 3.0.2
+
+* Update `leak_tracker` dependency to `>=9.0.0 <12.0.0`.
+
 ## 3.0.1
 
 * Fixed typo by renaming `experimantalAllNotGCed` to `experimentalAllNotGCed`.
