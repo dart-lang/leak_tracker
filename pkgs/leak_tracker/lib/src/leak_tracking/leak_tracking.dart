@@ -6,7 +6,6 @@ import '../shared/_primitives.dart';
 import '../shared/shared_model.dart';
 import '_baseliner.dart';
 import '_leak_tracker.dart';
-import '_object_record.dart';
 import 'primitives/_dispatcher.dart' as dispatcher;
 import 'primitives/model.dart';
 
@@ -214,6 +213,6 @@ abstract class LeakTracking {
   }
 
   /// Performs an operation for each object, not detected as GCed.
-  static void forEach(void Function(ObjectRecord) callback) =>
-      _leakTracker?.objectTracker.forEach(callback);
+  static Iterable tracked() =>
+      _leakTracker?.objectTracker.tracked() ?? const Iterable.empty();
 }

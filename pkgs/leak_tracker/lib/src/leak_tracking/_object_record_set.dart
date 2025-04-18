@@ -85,9 +85,7 @@ class ObjectRecordSet {
   int _length = 0;
   int get length => _length;
 
-  void forEach(void Function(ObjectRecord record) callback) {
-    for (var list in _records.values) {
-      list.forEach(callback);
-    }
+  Iterable<ObjectRecord> toIterable() {
+    return _records.values.expand((list) => list);
   }
 }

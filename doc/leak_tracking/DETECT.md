@@ -157,7 +157,7 @@ the Flutter memory allocation events:
   c. To add debugging information to an object's record, invoke
   `LeakTracking.dispatchObjectTrace(theObject, <some debugging information>)`
 
-  d. To loop through all tracked objects, invoke `LeakTracking.forEach()`
+  d. To analyze all tracked objects, invoke `LeakTracking.tracked()`
 
 ## Limitations
 

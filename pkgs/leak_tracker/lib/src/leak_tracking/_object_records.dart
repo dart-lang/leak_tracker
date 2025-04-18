@@ -66,7 +66,7 @@ class ObjectRecords {
 
   void assertIntegrity() {
     assert(() {
-      notGCed.forEach(assertRecordIntegrity);
+      notGCed.toIterable().forEach(assertRecordIntegrity);
       gcedLateLeaks.forEach(_assertNotWatchedToBeGCed);
       gcedNotDisposedLeaks.forEach(_assertNotWatchedToBeGCed);
       return true;
