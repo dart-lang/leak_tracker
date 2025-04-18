@@ -1,6 +1,6 @@
-# 11.0.1-dev
+# 11.0.1
 
-* Add method `forEachTracked` to `LeakTracking`.
+* Add method `tracked` to `LeakTracking`.
 
 # 11.0.0
 
