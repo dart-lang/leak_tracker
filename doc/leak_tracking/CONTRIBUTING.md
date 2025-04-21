@@ -7,7 +7,7 @@ For general contributing information, see Dart-wide [CONTRIBUTING.md](https://gi
 To upgrade version of leak tracking packages used by Flutter and thus used by
 all applications that depend on Flutter:
 
-1. Publish new version of the packages.
+1. Publish new version of the packages by running `sh tool/lt_publish.sh`.
 
 2. If the changes affect APIs used by Flutter,
    ask a googler to refresh the packages with copybara in G3.
@@ -15,7 +15,7 @@ all applications that depend on Flutter:
 3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
     - Update versions of `leak_tracker*` in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
-    - In flutter package run `../../bin/flutter update-packages --force-upgrade`
+    - In `packages/flutter` run `../../bin/flutter update-packages --force-upgrade`
 
 ## Regenerate DEPENDENCIES.md
 
