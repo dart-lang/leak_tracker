@@ -14,8 +14,16 @@ all applications that depend on Flutter:
 
 3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
-    - Update versions of `leak_tracker*` in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
-    - In `packages/flutter` run `../../bin/flutter update-packages --force-upgrade`
+    1. Update versions of `leak_tracker*` in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
+    2. In `packages/flutter` run `../../bin/flutter update-packages --force-upgrade`
+  
+       If upgrade for all packages causes complicated failure of bots, cherry pick upgrade for
+       just leak tracker:
+   
+      ```
+      ../../bin/flutter update-packages --cherry-pick-package leak_tracker --cherry-pick-version <version of leak_tracker> 
+      ../../bin/flutter update-packages --cherry-pick-package leak_tracker_flutter_testing --cherry-pick-version <version of leak_tracker_flutter_testing>
+      ```
 
 ## Regenerate DEPENDENCIES.md
 
