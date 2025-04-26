@@ -1,8 +1,4 @@
 
-Coming soon! See https://github.com/flutter/devtools/issues/3951.
-
-The text below is under construction.
-
 # Detect Memory Leaks
 
 The documentation below is valid for Flutter SDKs >= 3.18.0.
