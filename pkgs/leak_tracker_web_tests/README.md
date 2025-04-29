@@ -1,4 +1,6 @@
-This package contains web tests for leak tracker.
+# Web tests for leak tracker
+
+This package contains web-platform tests for leak tracker.
 
 The tests are in separate package, because:
 1. `flutter test --platform chrome` fails for any test folder except `test`.
