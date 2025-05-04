@@ -96,11 +96,9 @@ class InstrumentedDisposable {
 
 ## See leaks in a running application (experimental)
 
-1. Add [leak_tracker](https://pub.dev/packages/leak_tracker) to `dependencies` in `pubspec.yaml`.
+1. Add `leak_tracker: any` to `dependencies` in `pubspec.yaml`.
 
-2. Before `runApp` invocation, enable leak tracking
-
-3. For Flutter applications, connect to
+2. Before `runApp` invocation, enable leak tracking and connect to
 the Flutter memory allocation events:
 
   ```dart
@@ -135,25 +133,37 @@ the Flutter memory allocation events:
     create and dispose any Flutter disposable (for example
     `FocusNode`), and store the instance in a global array.
 
-    To track notGCed leaks, you
+    NOTE: To track notGCed leaks (experimental feature), you need to enable them:
+
+    ```
+    LeakTracking.phase = PhaseSettings(
+      ignoredLeaks: IgnoredLeaks(experimentalNotGCed: IgnoredLeaksSet()),
+    );
+    ```
 
 5. Troubleshooting tips:
 
-  a. Get the details of the leaks by collecting them
-  on a button click or on some other event. Then either
-  analyze the leaks programmatically or print them to the console:
+    a. To analyze the leaks programmatically run:
 
-    ```
-    final leaks = await LeakTracking.collectLeaks();
-    print(leaks.toYaml(phasesAreTests: false));
-    ```
+      ```
+      final leaks = await LeakTracking.collectLeaks();
+      print(leaks.toYaml(phasesAreTests: false));
+      ```
 
-  b. To declare all not disposed objects as leaks, invoke `LeakTracking.declareNotDisposedObjectsAsLeaks()`
+    b. To start collecting creation call stack, update `phase`:
 
-  c. To add debugging information to an object's record, invoke
-  `LeakTracking.dispatchObjectTrace(theObject, <some debugging information>)`
+        ```dart
+        LeakTracking.phase = PhaseSettings(
+          leakDiagnosticConfig: LeakDiagnosticConfig(collectStackTraceOnStart: true),
+        );
+        ```
 
-  d. To analyze all tracked objects, invoke `LeakTracking.tracked()`
+    c. To declare all not disposed objects as leaks, invoke `LeakTracking.declareNotDisposedObjectsAsLeaks()`
+
+    d. To add debugging information to an object's record, invoke
+    `LeakTracking.dispatchObjectTrace(theObject, <some debugging information>)`
+
+    e. To analyze all tracked objects, invoke `LeakTracking.tracked()`
 
 ## Limitations
 
