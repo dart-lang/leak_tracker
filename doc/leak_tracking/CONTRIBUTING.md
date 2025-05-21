@@ -14,7 +14,9 @@ all applications that depend on Flutter:
 
 3. Upgrade [Flutter](https://github.com/flutter/flutter):
 
-    1. Update versions of `leak_tracker*` in [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart)
+    1. If `leak_tracker*` is pinned in
+       [update_packages_pins.dart](https://github.com/flutter/flutter/blob/main/packages/flutter_tools/lib/src/update_packages_pins.dart),
+       update the versions.
     2. In `packages/flutter` run `../../bin/flutter update-packages --force-upgrade`
   
        If upgrade for all packages causes complicated failure of bots, cherry pick upgrade for
