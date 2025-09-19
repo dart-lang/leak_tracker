@@ -19,9 +19,6 @@ This is a framework for detecting and troubleshooting memory issues in Dart and 
 Ready for use:
 
 - [Memory usage](doc/USAGE.md)
-
-Under construction:
-
 - [Memory leak tracking](doc/leak_tracking/OVERVIEW.md)
 - [Memory baselining](doc/BASELINE.md)
 
